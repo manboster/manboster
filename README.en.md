@@ -8,11 +8,11 @@ At the beginning, it may be a personal AI assistant which is able to chat with y
 
 ## Features
 
-1. Out of the box, only a executable file, based on Golang.
+1. Out of the box, only an executable file, based on Golang.
 2. Fast, multithreaded, non-blocking in chats.
-3. When the LLM(either using markdown skills or wasm skills) wants to do anything on your machine, small LLM(hachimi) in your machine will evaluate and score it first. If the score is high, it will send you a message, let you decide.
-4. While maintaining compatability with OpenClaw markdown-based skills, we introduced plugins based on wasm, which is lightweight and prevents malicious skills from breaking your machine.
-5. Mock touching, screenshot, web search, execute commands and more, there are a plenty of Built-in SDKs to use for.
+3. When the LLM(either using Markdown skills or wasm plugins) wants to do anything on your machine, small LLM(hachimi) in your machine will evaluate and score it first. If the score is high, it will send you a message, let you decide.
+4. While maintaining compatability with OpenClaw markdown-based skills, we introduced plugins based on wasm, which is lightweight and prevents malicious plugins from breaking your machine.
+5. Mock touching, screenshot, web search, execute commands and more, there are a plenty of Built-in SDKs to use for building your plugins.
 6. When it comes to web search, you can choose API Key or headless browsers, which the latter will save you from expenses!
 7. MamboHub enables you to use and download skills and plugins with ease, install skills using `.manboskill` files or plugins using `.manboplugin` files, and you can even develop and write your skills and plugins!
 
