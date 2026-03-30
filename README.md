@@ -4,7 +4,7 @@
 
 > Manboster = Manbo(曼波) + Lobster
 
-我们取了龙虾OpenClaw和龙虾增强版IronClaw的精华，吸收了安全性差的缺点，做成了现在你所看到的Manboster。
+我们取了龙虾OpenClaw和龙虾增强版IronClaw的精华，修复了其安全性差的缺点，做成了现在你所看到的Manboster。
 
 在刚开始，它可能只是一个普通的ai聊天软件。但是，在用技能和插件把它武装后，它可以成为你的可靠助手！
 
