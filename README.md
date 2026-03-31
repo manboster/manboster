@@ -1,42 +1,33 @@
-# 🐱🦞Manboster: 你的曼波虾头小助手！ 
+# 🐱🦞Manboster: Your Personal Manbo Lobster!
 
-[English Version](README.en.md)
+[简体中文](README.md)
 
-> Manboster = Manbo(曼波) + Lobster
+> Tips: Manboster = Manbo + Lobster
 
-我们取了龙虾OpenClaw和龙虾增强版IronClaw的精华，修复了其安全性差的缺点，做成了现在你所看到的Manboster。
+Inspired by IronClaw and OpenClaw, we've built a lobster more secure than others!
 
-在刚开始，它可能只是一个普通的ai聊天软件。但是，在用技能和插件把它武装后，它可以成为你的可靠助手！
+At the beginning, it is a personal AI assistant which is able to chat with you with ease. However, equipped with wasm-based plugins, you can use it to do anything you want with security guaranteed!
 
-## 特色功能
+## Features
 
-1. 基于Golang，单可执行文件，开箱即用。
-2. 运行速度快，内置多线程，不会聊天卡死。
-3. 主控端执行无论是插件还是技能还是命令时，本地运行的llm小模型(哈基米)都会对执行的命令进行打分，分数高需要用户明确授权。
-4. 同时在兼容openclaw提供的md的技能的情况下，我们推出了基于wasm的插件配置。wasm的特性可以在快速启动时还能保证插件的执行几乎不会对你的电脑做出任何破坏。
-5. 内置控制电脑的sdk可供插件沙盒调用，比如说屏幕截图，模拟点击，互联网搜索等等。
-6. 互联网搜索可选api搜索或无头浏览器搜索。
-7. manbohub可以直接安装和配置技能和插件。你可以直接安装 `.manboskill` 或 `.manboplugin` ，也可以来贡献自己写的技能和插件！
+1. Out of the box, only an executable file, based on Golang.
+2. Fast, multithreaded, non-blocking in chats.
+3. When the LLM(either using Markdown skills or wasm plugins) wants to do anything on your machine, small LLM(hachimi) in your machine will evaluate and score it first. If the score is high, it will send you a message, let you decide.
+4. While maintaining compatability with OpenClaw markdown-based skills, we introduced plugins based on wasm & extism, which is lightweight and prevents malicious plugins from breaking your machine.
+5. Mock touching, screenshot, web search, execute commands and more, there are a plenty of extism-based Built-in SDKs to use for building your plugins.
+6. When it comes to web search, you can choose API Key or headless browsers, which the latter will save you from expenses!
+7. MamboHub enables you to use and download skills and plugins with ease, install skills using `.manboskill` files or plugins using `.manboplugin` files, and you can even develop and write your skills and plugins!
 
-## 开发进度
+## QuickStart
 
-- [ ] 聊天api
-- [ ] SDK Agent API
+1. Download binary files built in releases and open it.
+2. You're required to configure your manboster when it runs in the first time, just configure it.
+3. Enjoy yourselves!
 
-## 快速上手
+For more details, you can run `manboster help` in your terminal!
 
-去releases下载匹配自己系统的可执行文件，直接打开即可。
+**Notes for the Daemon**: Simply double-click would not start the daemon, if you want to create and start the daemon, please run `manboster start`.
 
-第一次开启时，它会要求你配置信息，根据要求配置就好了。
+## License
 
-更多详见命令行帮助文档： `manboster help`
-
-直接启动不会开启守护进程，输入以下内容启动守护进程。
-
-```shell
-manboster start
-```
-
-## 授权协议
-
-本软件使用MIT协议作为开源协议。
+This application's license is MIT.
