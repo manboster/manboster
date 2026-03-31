@@ -7,6 +7,7 @@ import (
 	"github.com/manboster/manboster/core/chat/providers/telegram"
 	"github.com/manboster/manboster/core/llm/providers/oai_compat"
 	"github.com/manboster/manboster/core/llm/providers/openrouter"
+	"github.com/manboster/manboster/core/util"
 )
 
 // Form provides a huh form configuration with TUI.
@@ -21,6 +22,7 @@ func Form() (Config, error) {
 		return c, err
 	}
 
+	// TODO: Refactor to single functions
 	// Step 1: choose Chat Providers
 	var chatProvider string
 	chatProviderForm := huh.NewForm(
@@ -35,7 +37,6 @@ func Form() (Config, error) {
 	if err != nil {
 		return c, err
 	}
-
 	switch chatProvider {
 	// Telegram specific configuration, you can change this in chat/providers/telegram/types.go.
 	case "telegram":
@@ -110,7 +111,7 @@ func Form() (Config, error) {
 	}
 
 	// Step 3: See what's entered and start to write configuration.
-	conf := fmt.Sprintf(`
+	confDesc := fmt.Sprintf(`
 You need to review what you have entered. 
 If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster config'.
 Your Chat Provider: %s
@@ -119,10 +120,11 @@ Your LLM Provider: %s
 Your LLM Provider's Configuration: %s
 If there is no problem, you can press enter and we will work on it.
 `, c.Chats[0].Provider, c.Chats[0].Configuration, c.LLMs[0].Provider, c.LLMs[0].Configuration)
+	confDesc = util.EscapeMarkdown(confDesc)
 
 	err = huh.NewNote().
 		Title("Before you proceed...").
-		Description(conf).
+		Description(confDesc).
 		Next(true).Run()
 	if err != nil {
 		return c, err

@@ -1,6 +1,11 @@
 package openrouter
 
-import "github.com/charmbracelet/huh"
+import (
+	"fmt"
+
+	"github.com/charmbracelet/huh"
+	"github.com/manboster/manboster/core/util"
+)
 
 // Config contains what you should enter in application configuration.
 type Config struct {
@@ -57,10 +62,10 @@ func (c *Config) ToHuhGroup() []*huh.Group {
 
 	return []*huh.Group{
 		huh.NewGroup(
-			huh.NewInput().Title("Your OpenRouter API Key").Description("Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.").Value(&c.ApiKey),
 			huh.NewSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
 				modelOptions...,
 			).Value(&c.Model),
+			huh.NewInput().Title("Your OpenRouter API Key").Description("Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.").EchoMode(huh.EchoModePassword).Value(&c.ApiKey),
 		),
 	}
 }
@@ -80,4 +85,9 @@ func (c *Config) VerifyAndConvert() error {
 		}
 	}
 	return nil
+}
+
+// String is used to print sth.
+func (c *Config) String() string {
+	return fmt.Sprintf("API Key: %s, Model: %s", util.MaskSecret(c.ApiKey), c.Model)
 }

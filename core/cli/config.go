@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/manboster/manboster/core/config"
@@ -24,6 +25,7 @@ func ConfigCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	err = config.Write(cfg)
+	fmt.Println("Successfully created config.yaml, open Manboster directly and enjoy it!")
 	if err != nil {
 		os.Exit(1)
 		return

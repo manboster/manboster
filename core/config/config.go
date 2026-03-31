@@ -25,6 +25,7 @@ func Init() {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Println("Successfully created config.yaml, open Manboster again and enjoy it!")
 		os.Exit(0)
 	}
 	if err := viper.Unmarshal(&conf); err != nil {
