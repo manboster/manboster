@@ -1,4 +1,4 @@
-module github.com/chi-net/manboster
+module github.com/manboster/manboster
 
 go 1.25.5
 

@@ -2,9 +2,9 @@
 
 > Tips: Manboster = Manbo + Lobster
 
-Inspired by IronClaw and OpenClaw, we've built a lobster that is more secure than others!
+Inspired by IronClaw and OpenClaw, we've built a lobster more secure than others!
 
-At the beginning, it may be a personal AI assistant which is able to chat with you with ease. However, equipped with wasm-based plugins, you can use it to do anything you want with security guaranteed!
+At the beginning, it is a personal AI assistant which is able to chat with you with ease. However, equipped with wasm-based plugins, you can use it to do anything you want with security guaranteed!
 
 ## Features
 
