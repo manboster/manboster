@@ -16,17 +16,20 @@ func Init() {
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("config.yaml is not found, now guide you to create one...")
-		conf, err := Form()
-		if err != nil {
-			panic(err)
+		// if no args, execute guide configuration.
+		if len(os.Args) == 1 {
+			fmt.Println("config.yaml is not found, now guide you to create one...")
+			conf, err := Form()
+			if err != nil {
+				panic(err)
+			}
+			err = Write(conf)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("Successfully created config.yaml, open Manboster again and enjoy it!")
+			os.Exit(0)
 		}
-		err = Write(conf)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("Successfully created config.yaml, open Manboster again and enjoy it!")
-		os.Exit(0)
 	}
 	if err := viper.Unmarshal(&conf); err != nil {
 		panic(err)

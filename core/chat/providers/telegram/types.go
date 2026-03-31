@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -27,11 +28,16 @@ func (c *Config) ToHuhGroup() []*huh.Group {
 
 // VerifyAndConvert helps to convert internal string ru to RootUser int64 type.
 func (c *Config) VerifyAndConvert() error {
-	rUid, err := strconv.ParseInt(c.ru, 10, 64)
-	if err != nil {
-		return err
+	if c.ru != "" {
+		rUid, err := strconv.ParseInt(c.ru, 10, 64)
+		if err != nil {
+			return err
+		}
+		c.RootUser = rUid
 	}
-	c.RootUser = rUid
+	if c.BotToken == "" {
+		return errors.New("bot token is required")
+	}
 	return nil
 }
 
