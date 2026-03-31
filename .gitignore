@@ -1,5 +1,4 @@
 .DS_Store
 .idea
-manboster.*
-manboster
+build/
 config.yaml
