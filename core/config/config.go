@@ -1,0 +1,38 @@
+package config
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/spf13/viper"
+)
+
+var conf Config
+
+// Init reads your configuration from ~/.manboster/config.yml
+func Init() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("config.yaml is not found, now guide you to create one...")
+		conf, err := Form()
+		if err != nil {
+			panic(err)
+		}
+		err = Write(conf)
+		if err != nil {
+			panic(err)
+		}
+		os.Exit(0)
+	}
+	if err := viper.Unmarshal(&conf); err != nil {
+		panic(err)
+	}
+}
+
+// Read provides a whole data using viper to application.
+func Read() Config {
+	return conf
+}
