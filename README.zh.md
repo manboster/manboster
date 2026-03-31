@@ -1,6 +1,6 @@
 # 🐱🦞Manboster: 你的曼波虾头小助手！ 
 
-[English Version](README.en.md)
+[English Version](README.md)
 
 > Manboster = Manbo(曼波) + Lobster
 

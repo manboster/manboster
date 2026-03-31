@@ -1,6 +1,6 @@
 # 🐱🦞Manboster: Your Personal Manbo Lobster!
 
-[简体中文](README.md)
+[简体中文](README.zh.md)
 
 > Tips: Manboster = Manbo + Lobster
 
