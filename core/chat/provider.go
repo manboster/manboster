@@ -18,7 +18,7 @@ type Provider interface {
 // Message defines the universal definition of a provider's message standard.
 type Message struct {
 	Provider         string      // Provider Platform like Telegram.
-	MessageID        string      // Global ID of a message
+	MessageID        string      // Global ID of a message, if this is request, it's the message id that replies.
 	ChatID           string      // The chat id
 	UserID           string      // Sender user's identify ID
 	Username         string      // Sender username

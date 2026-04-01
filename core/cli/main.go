@@ -93,6 +93,13 @@ func main(cmd *cobra.Command, args []string) {
 						color.Blue("Got an message from Telegram by %s", msg.Username)
 						sessionId := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
 						sessionData := sessionManager.GetSession(sessionId)
+						if len(sessionData.Messages) == 0 {
+							sessionData.Messages = append(sessionData.Messages, llm.Message{
+								Role: llm.RoleTypeSystem,
+								Text: "You're an assistant named Manboster. You are chatting with people. The one who is chatting with you is your owner.", // TODO: prompt engineering
+								Type: llm.MessageTypeText,
+							})
+						}
 						msgData := append(sessionData.Messages, llm.Message{
 							Role: llm.RoleTypeUser,
 							Text: msg.Text,
