@@ -9,9 +9,9 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey string `yaml:"api_key"` // your openrouter system's apikey
+	ApiKey string `yaml:"api_key" json:"api_key" mapstructure:"api_key"` // your openrouter system's apikey
 	// BaseURL string `yaml:"base_url"` // this is fixed so you don't need to enter it.
-	Model string `yaml:"model"` // your wanted model like anthropic/claude-sonnet-4.5
+	Model string `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
 }
 
 // models defines some recently used popular models so you don't search it in openrouter.

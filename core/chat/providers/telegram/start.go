@@ -43,7 +43,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 		_ = s.Stop(ctx)
 	}()
 
-	//
+	// Handler for Message Resp calling.
 	s.tgInstance.Handle(telebot.OnText, func(c telebot.Context) error {
 		msg := &chat.Message{
 			Text:        c.Text(),
@@ -55,7 +55,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 			Provider:    "telegram",
 		}
 
-		// 触发 main 函数传入的回调逻辑 (例如调用 LLM)
+		// call onMsg on index
 		onMsg(msg)
 		return nil
 	})
