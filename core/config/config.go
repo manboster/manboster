@@ -9,7 +9,7 @@ import (
 
 var conf Config
 
-// Init reads your configuration from ~/.manboster/config.yml
+// Init reads your configuration from $PWD/config.yml
 func Init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

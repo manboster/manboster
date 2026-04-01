@@ -13,9 +13,7 @@ func Init() {
 		Use:   "manboster",
 		Short: "manboster: Your Personal Manbo Lobster",
 		Long:  `Powered by LLM, manboster is an AI assistant delivers you the best experience while keeping your device fully secured!`,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Hello World!")
-		},
+		Run:   main,
 	}
 
 	// Add version indicator.

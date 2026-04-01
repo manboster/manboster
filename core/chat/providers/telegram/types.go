@@ -11,8 +11,8 @@ import (
 
 // Config configures their Telegram bot.
 type Config struct {
-	BotToken string `yaml:"bot_token"` // Telegram requires your bot token to authenticate their server.
-	RootUser int64  `yaml:"root_user"` // Telegram uid used to authenticate root access.
+	BotToken string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token"` // Telegram requires your bot token to authenticate their server.
+	RootUser int64  `yaml:"root_user" json:"root_user" mapstructure:"root_user"` // Telegram uid used to authenticate root access.
 	ru       string // this is used to transfer data.
 }
 
