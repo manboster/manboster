@@ -15,7 +15,7 @@ func NewService(cli *openai.Client) *Service {
 }
 
 func (s *Service) Name() string {
-	return "openrouter"
+	return "oai-compat"
 }
 
 func (s *Service) Model() string {

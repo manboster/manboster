@@ -1,7 +1,8 @@
-package chat
+package config
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 )
 
@@ -12,12 +13,12 @@ var (
 	mu               sync.RWMutex
 )
 
-// Register helps chat instance register their services
+// Register helps instance register their services
 func Register(name string, factory ProviderFactory) {
 	mu.Lock()
 	defer mu.Unlock()
 	if _, duplicant := providerRegistry[name]; duplicant {
-		panic(fmt.Sprintf("chat: Register called twice for provider %s", name))
+		panic(fmt.Sprintf("Config register called twice for provider %s", name))
 	}
 	providerRegistry[name] = factory
 }
@@ -28,18 +29,20 @@ func GetProvider(name string) (Provider, error) {
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("chat: unknown provider %q (did you forget to import it?)", name)
+		return nil, fmt.Errorf("unknown config provider %q (did you forget to import it?)", name)
 	}
 	return factory(), nil
 }
 
 // AvailProviders gets providers to iterate
-func AvailProviders() []string {
+func AvailProviders(scope string) []string {
 	mu.RLock()
 	defer mu.RUnlock()
 	var list []string
 	for name := range providerRegistry {
-		list = append(list, name)
+		if strings.HasPrefix(name, scope) && strings.Split(name, ":")[0] == scope {
+			list = append(list, name)
+		}
 	}
 	return list
 }

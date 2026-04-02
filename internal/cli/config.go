@@ -19,7 +19,7 @@ func configCmd() *cobra.Command {
 
 // ConfigCmdRun is used to run interactive huh forms.
 func ConfigCmdRun(cmd *cobra.Command, args []string) {
-	cfg, err := config.Form()
+	cfg, err := Form()
 	if err != nil {
 		os.Exit(1)
 		return

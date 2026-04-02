@@ -5,12 +5,6 @@ import (
 	"gopkg.in/telebot.v3"
 )
 
-func init() {
-	chat.Register("telegram", func() chat.Provider {
-		return &Service{}
-	})
-}
-
 type Service struct {
 	tgInstance *telebot.Bot
 }

@@ -43,3 +43,5 @@ func (c *Config) Name() string {
 func (c *Config) DisplayName() string {
 	return "OpenAI compatible API"
 }
+
+func (c *Config) VerifyAndConvert() error { return nil }

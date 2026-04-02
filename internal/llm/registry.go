@@ -28,7 +28,8 @@ func GetProvider(name string) (Provider, error) {
 	return factory(), nil
 }
 
-func GetLLMProviders() []string {
+// AvailProviders gets providers to iterate
+func AvailProviders() []string {
 	mu.RLock()
 	defer mu.RUnlock()
 	var list []string

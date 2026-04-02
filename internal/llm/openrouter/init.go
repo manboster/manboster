@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-viper/mapstructure/v2"
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 	oai_compat2 "github.com/manboster/manboster/internal/llm/oai_compat"
 )
@@ -29,5 +30,8 @@ func (s *Service) Init(ctx context.Context, config any) error {
 func init() {
 	llm.Register("openrouter", func() llm.Provider {
 		return &Service{}
+	})
+	config.Register("llm:openrouter", func() config.Provider {
+		return &Config{}
 	})
 }
