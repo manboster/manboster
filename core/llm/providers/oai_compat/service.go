@@ -1,16 +1,17 @@
-package openrouter
+package oai_compat
 
 import (
 	"github.com/manboster/manboster/core/llm"
-	"github.com/manboster/manboster/core/llm/providers/oai_compat"
+	"github.com/sashabaranov/go-openai"
 )
 
 type Service struct {
-	oaiInstance *oai_compat.Service
+	cli *openai.Client
+	cfg Config
 }
 
-func NewService(cli *oai_compat.Service) *Service {
-	return &Service{oaiInstance: cli}
+func NewService(cli *openai.Client) *Service {
+	return &Service{cli: cli}
 }
 
 func (s *Service) Name() string {
@@ -18,7 +19,7 @@ func (s *Service) Name() string {
 }
 
 func (s *Service) Model() string {
-	return s.oaiInstance.Model()
+	return s.cfg.Model
 }
 
 func (s *Service) New() llm.Provider {

@@ -4,23 +4,23 @@ import (
 	"context"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/sashabaranov/go-openai"
+	"github.com/manboster/manboster/core/llm/providers/oai_compat"
 )
 
 func (s *Service) Init(ctx context.Context, config any) error {
 	// read config
-	var conf Config
+	var conf oai_compat.Config
 	err := mapstructure.Decode(config, &conf)
 	if err != nil {
 		return err
 	}
-	s.cfg = conf
-
-	// create a brand new configuration using configs.
-	orConfig := openai.DefaultConfig(conf.ApiKey)
-	orConfig.BaseURL = "https://openrouter.ai/api/v1" // fixed openrouter api calls
-	orCli := openai.NewClientWithConfig(orConfig)
-	s.cli = orCli
+	conf.BaseURL = "https://openrouter.ai/api/v1" // fixed openrouter api calls
+	oaiInstance := &oai_compat.Service{}
+	err = oaiInstance.InitWithConfig(ctx, conf)
+	if err != nil {
+		return err
+	}
+	s.oaiInstance = oaiInstance
 
 	return nil
 }

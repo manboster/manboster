@@ -9,9 +9,10 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey  string `yaml:"api_key"`  // your apikey
-	BaseURL string `yaml:"base_url"` // this is dynamic when you choose oai_compat systems
-	Model   string `yaml:"model"`    // your wanted model like anthropic/claude-sonnet-4.5
+	ApiKey  string            `yaml:"api_key" mapstructure:"api_key" json:"api_key"`    // your apikey
+	BaseURL string            `yaml:"base_url" mapstructure:"base_url" json:"base_url"` // this is dynamic when you choose oai_compat systems
+	Model   string            `yaml:"model" mapstructure:"model" json:"model"`          // your wanted model like anthropic/claude-sonnet-4.5
+	Headers map[string]string `json:"headers" mapstructure:"headers" yaml:"headers"`
 }
 
 // ToHuhGroup enables configuration go ahead.

@@ -61,3 +61,13 @@ const (
 	ActionUnknown ActionType = ""
 	ActionTyping  ActionType = "typing"
 )
+
+// CommandType defines command's types.
+type CommandType string
+
+const (
+	CommandUnknown CommandType = ""
+	CommandVersion CommandType = "version"
+	CommandHelp    CommandType = "help"
+	CommandGrant   CommandType = "grant"
+)
