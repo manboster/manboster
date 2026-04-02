@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/manboster/manboster/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -16,5 +17,5 @@ func versionCmd() *cobra.Command {
 }
 
 func versionCmdExecutor(cmd *cobra.Command, args []string) {
-	fmt.Println("0.0.0")
+	fmt.Println(config.Version)
 }

@@ -34,3 +34,6 @@ type LLMConfig struct {
 // AppConfig stores configurations used for applications
 type AppConfig struct {
 }
+
+// Version defines manboster's application version.
+const Version = "0.0.0"

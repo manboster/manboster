@@ -31,7 +31,7 @@ func GetProvider(name string) (Provider, error) {
 	if !ok {
 		return nil, fmt.Errorf("chat: unknown provider %q (did you forget to import it?)", name)
 	}
-	if _, valid := importedRegistry[name]; !valid {
+	if _, valid := importedRegistry[name]; valid {
 		return nil, fmt.Errorf("chat: you define 2 times with %q! The second one will be ignored", name)
 	}
 	return factory(), nil

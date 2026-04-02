@@ -17,16 +17,22 @@ type Provider interface {
 
 // Message defines the universal definition of a provider's message standard.
 type Message struct {
-	Provider         string      // Provider Platform like Telegram.
-	MessageID        string      // Global ID of a message, if this is request, it's the message id that replies.
-	ChatID           string      // The chat id
-	UserID           string      // Sender user's identify ID
-	Username         string      // Sender username
-	MessageType      MessageType // TODO: reserved to stickers or more... Now we define 1 is Text.
-	ChatType         ChatsType   // Chat's type, like Group, Channel, and Personal Chats.
-	Text             string      // Text Info
-	CommandType      CommandType // Command's type
-	SelectionSession string      // if MessageType == MessageSelectionCallback, it should have a value.
+	Provider    string      // Required. Provider Platform like Telegram.
+	MessageID   string      // Required. Global ID of a message, if this is request, it's the message id that replies.
+	ChatID      string      // Required. The chat id
+	UserID      string      // Required. Sender user's identify ID
+	Username    string      // Required. Sender username
+	MessageType MessageType // Required. reserved to stickers or more...
+	ChatType    ChatsType   // Required. Chat's type, like Group, Channel, and Personal Chats.
+
+	Reply *Message // Optional. When it's valid, it means the message replied
+
+	Text string // Optional. Required when MessageType = MessageText Text Info
+
+	CommandType CommandType // Optional. Required when MessageType = MessageCommand Command's type
+	CommandArgs []string    // Optional. Required when MessageType = MessageCommand Command's args
+
+	SelectionSession string // Optional. Required when MessageType == MessageSelectionCallback, it should have a value.
 }
 
 // MessageType is an enum defining msg types.
@@ -55,7 +61,7 @@ type Selection struct {
 	Value string // actual value
 }
 
-// ActionType gives you the type of current actions callback.
+// ActionType gives you the type of current action's callback.
 type ActionType string
 
 const (
@@ -67,8 +73,28 @@ const (
 type CommandType string
 
 const (
-	CommandUnknown CommandType = ""
-	CommandVersion CommandType = "version"
-	CommandHelp    CommandType = "help"
-	CommandGrant   CommandType = "grant"
+	CommandUnknown CommandType = ""        // No Command Available
+	CommandVersion CommandType = "version" // Get Version Data
+	CommandHelp    CommandType = "help"    // Get Helper Messages
+	CommandOp      CommandType = "op"      // Grant a user
+	CommandDeOp    CommandType = "deop"    // Ungrant a user
+	CommandId      CommandType = "id"      // display ids
+	CommandStatus  CommandType = "status"  // display current status
+	CommandSave    CommandType = "save"    // save this chat to database
+	CommandNew     CommandType = "new"     // delete this and create a new chat
+	CommandSummary CommandType = "summary" // summary this chat and create a new chat with summarized items
+	CommandModels  CommandType = "models"  // select models you want
 )
+
+// Build gives a builder of Message
+func (*Message) Build(provider Provider) *Message {
+	return &Message{
+		Provider:    provider.Name(),
+		MessageID:   "",
+		ChatID:      "",
+		UserID:      "",
+		Username:    "",
+		MessageType: MessageUnknown,
+		ChatType:    ChatsUnknown,
+	}
+}
