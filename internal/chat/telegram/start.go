@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/fatih/color"
@@ -45,23 +44,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 
 	// Handler for Message Resp calling.
 	s.tgInstance.Handle(telebot.OnText, func(c telebot.Context) error {
-		msg := &chat.Message{
-			Text:        c.Text(),
-			MessageType: chat.MessageText,
-			MessageID:   fmt.Sprintf("%d", c.Message().ID),
-			Username:    c.Sender().FirstName + " " + c.Sender().LastName,
-			UserID:      fmt.Sprintf("%d", c.Sender().ID),
-			ChatID:      fmt.Sprintf("%d", c.Chat().ID),
-			Provider:    "telegram",
-		}
-
-		typingCtx, cancelTyping := context.WithCancel(ctx)
-		defer cancelTyping()
-		go s.Type(telebot.ChatID(c.Chat().ID), typingCtx)
-
-		// call onMsg on index
-		onMsg(msg)
-		return nil
+		return s.HandleText(ctx, c, onMsg)
 	})
 
 	color.Blue("Starting the telegram bot...")

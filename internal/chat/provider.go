@@ -25,6 +25,7 @@ type Message struct {
 	MessageType      MessageType // TODO: reserved to stickers or more... Now we define 1 is Text.
 	ChatType         ChatsType   // Chat's type, like Group, Channel, and Personal Chats.
 	Text             string      // Text Info
+	CommandType      CommandType // Command's type
 	SelectionSession string      // if MessageType == MessageSelectionCallback, it should have a value.
 }
 
