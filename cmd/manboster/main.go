@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/manboster/manboster/core/cli"
-	"github.com/manboster/manboster/core/config"
+	"github.com/manboster/manboster/internal/cli"
+	"github.com/manboster/manboster/internal/config"
 )
 
 // Manboster: Your Personal Manbo Lobster!
