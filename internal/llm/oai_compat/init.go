@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-viper/mapstructure/v2"
+	"github.com/manboster/manboster/internal/llm"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -49,4 +50,10 @@ func (s *Service) InitWithConfig(ctx context.Context, config Config) error {
 	oaiCli := openai.NewClientWithConfig(oaiConfig)
 	s.cli = oaiCli
 	return nil
+}
+
+func init() {
+	llm.Register("openrouter", func() llm.Provider {
+		return &Service{}
+	})
 }
