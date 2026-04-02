@@ -1,28 +1,22 @@
 package config
 
 import (
-	"encoding/json"
-
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 )
 
 // Write writes config into a yml file.
 func Write(conf Config) error {
-	// dull jobs: get the correct map to feed viper's configuration.
-	jsonData, err := json.Marshal(conf)
-	if err != nil {
+	var m map[string]any
+
+	if err := mapstructure.Decode(conf, &m); err != nil {
 		return err
 	}
 
-	var cMap map[string]any
-	if err := json.Unmarshal(jsonData, &cMap); err != nil {
+	if err := viper.MergeConfigMap(m); err != nil {
 		return err
 	}
 
-	// write configuration
-	if err := viper.MergeConfigMap(cMap); err != nil {
-		return err
-	}
 	viper.SetConfigName("config.yaml")
 	return viper.WriteConfigAs("config.yaml")
 }
