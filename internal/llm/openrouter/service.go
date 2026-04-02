@@ -1,0 +1,26 @@
+package openrouter
+
+import (
+	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/internal/llm/oai_compat"
+)
+
+type Service struct {
+	oaiInstance *oai_compat.Service
+}
+
+func NewService(cli *oai_compat.Service) *Service {
+	return &Service{oaiInstance: cli}
+}
+
+func (s *Service) Name() string {
+	return "openrouter"
+}
+
+func (s *Service) Model() string {
+	return s.oaiInstance.Model()
+}
+
+func (s *Service) New() llm.Provider {
+	return &Service{}
+}
