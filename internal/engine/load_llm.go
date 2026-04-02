@@ -15,13 +15,13 @@ func loadLLM(ctx context.Context, llmConf []config.LLMConfig) ([]llm.Provider, e
 	for _, llmConfigs := range llmConf {
 		lProvider, err := llm.GetProvider(llmConfigs.Provider)
 		if err != nil {
-			color.Red(fmt.Sprintf("There is no provider named %q when importing chats providers. Please check your configuration.", llmConfigs.Provider))
+			color.Red(fmt.Sprintf("There is no provider named %q when importing llm providers. Please check your configuration.", llmConfigs.Provider))
 			return nil, err
 		}
 		newLProvider := lProvider.New()
 		err = newLProvider.Init(ctx, llmConfigs.Configuration)
 		if err != nil {
-			color.Red("Activate ", lProvider.Name(), " Chat API Error! Message:", err.Error())
+			color.Red("Activate ", lProvider.Name(), " LLM API Error! Message:", err.Error())
 		}
 
 		// append it into array!
