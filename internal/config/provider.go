@@ -1,0 +1,12 @@
+package config
+
+import "github.com/charmbracelet/huh"
+
+// Provider provides interfaces for all configurations
+type Provider interface {
+	Name() string
+	DisplayName() string
+	ToHuhGroup() []*huh.Group
+	VerifyAndConvert() error
+	GetConfig() any
+}

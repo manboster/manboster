@@ -84,6 +84,7 @@ const (
 	CommandNew     CommandType = "new"     // delete this and create a new chat
 	CommandSummary CommandType = "summary" // summary this chat and create a new chat with summarized items
 	CommandModels  CommandType = "models"  // select models you want
+	CommandStart   CommandType = "start"   // start command gives tips to you, when it's the first run, it will grant you the root access to this application.
 )
 
 // Build gives a builder of Message

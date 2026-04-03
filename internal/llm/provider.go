@@ -4,7 +4,8 @@ import "context"
 
 // Provider defines which functions should LLM provides give.
 type Provider interface {
-	Chat(ctx context.Context, messages []Message) (*Message, error) // now one.
+	Chat(ctx context.Context, messages []Message) (*Message, error)              // now one.
+	ChatStream(ctx context.Context, messages []Message) (<-chan *Message, error) // WIP: New Streaming chat
 	Init(ctx context.Context, config any) error
 	Name() string
 	Model() string
@@ -13,9 +14,13 @@ type Provider interface {
 
 // Message defines the chats between user and LLM.
 type Message struct {
-	Role RoleType // Who send it?
-	Type MessageType
-	Text string // send text
+	Role RoleType    // Required. Who send it?
+	Type MessageType // Required. What's the type of message?
+
+	Text string // Optional. Required when MessageType = MessageTypeText send text
+
+	ToolName string // Optional. Required when MessageType = MessageTypeToolCallRequest or MessageTypeToolCallResponse , the name you want to call.
+	ToolArgs any    // Optional. Required when MessageType = MessageTypeToolCallRequest or MessageTypeToolCallResponse, the params you want to call, or returns.
 }
 
 // MessageType defines Message's type.

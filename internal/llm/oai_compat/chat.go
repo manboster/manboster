@@ -42,3 +42,9 @@ func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Messag
 		Role: llm.RoleTypeAssistant,
 	}, nil
 }
+
+// ChatStream is the next generation WIP TODO:
+func (s *Service) ChatStream(ctx context.Context, messages []llm.Message) (<-chan *llm.Message, error) {
+	msgChan := make(chan *llm.Message)
+	return msgChan, nil
+}

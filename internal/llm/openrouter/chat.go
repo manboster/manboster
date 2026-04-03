@@ -10,3 +10,8 @@ import (
 func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Message, error) {
 	return s.oaiInstance.Chat(ctx, messages)
 }
+
+// ChatStream is the next generation async completion function
+func (s *Service) ChatStream(ctx context.Context, messages []llm.Message) (<-chan *llm.Message, error) {
+	return s.oaiInstance.ChatStream(ctx, messages)
+}
