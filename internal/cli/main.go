@@ -25,6 +25,7 @@ func main(cmd *cobra.Command, args []string) {
 	cfg := config.Read()
 	err := cfg.Validate()
 	if err != nil {
+		color.Red(err.Error())
 		os.Exit(1)
 	}
 

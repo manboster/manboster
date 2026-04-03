@@ -11,7 +11,7 @@ func Op(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	return nil
 }
 
-// DeOp Command TODO：revokes a administrator.
+// DeOp Command TODO：revokes an administrator.
 func DeOp(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	return nil
 }

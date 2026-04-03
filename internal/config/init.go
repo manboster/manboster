@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
@@ -14,14 +15,21 @@ var conf Config
 func Init() error {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
+	// first, we check whether there is ~/.manboster/ or not
+	home, err := os.UserHomeDir()
+	if err == nil {
+		viper.AddConfigPath(filepath.Join(home, ".manboster"))
+	}
 	viper.AddConfigPath(".")
-
-	if err := viper.ReadInConfig(); err != nil {
+	
+	if err := viper.ReadInConfig(); errors.As(err, &viper.ConfigFileNotFoundError{}) {
 		// if no args, execute guide configuration.
-		if errors.As(err, &viper.ConfigFileNotFoundError{}) && len(os.Args) == 1 {
+		if len(os.Args) == 1 {
 			color.Yellow("config.yaml is not found, now guide you to create one...\n")
 			return ErrNoConfig
 		}
+		return err
+	} else if err != nil {
 		return err
 	}
 	if err := viper.Unmarshal(&conf); err != nil {

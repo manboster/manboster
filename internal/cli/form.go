@@ -15,7 +15,9 @@ import (
 
 // Form provides a huh form configuration with TUI.
 func Form() (config.Config, error) {
+	// get default configuration's value
 	var c config.Config
+	c = config.Default(c)
 
 	err := huh.NewNote().
 		Title("Manboster Configuration Wizard").
