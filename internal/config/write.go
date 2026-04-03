@@ -28,7 +28,7 @@ func Write(conf Config) error {
 		dir := filepath.Join(homedir, ".manboster")
 
 		// make directory first
-		if err := os.MkdirAll(dir, 0755); err != nil {
+		if err := os.MkdirAll(dir, 0700); err != nil {
 			return err
 		}
 
