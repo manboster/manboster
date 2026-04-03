@@ -9,6 +9,26 @@ func (c *Client) Migrate() error {
 	if err != nil {
 		return err
 	}
-	
+
+	err = c.db.AutoMigrate(&types.Chat{})
+	if err != nil {
+		return err
+	}
+
+	err = c.db.AutoMigrate(&types.Session{})
+	if err != nil {
+		return err
+	}
+
+	err = c.db.AutoMigrate(&types.Memory{})
+	if err != nil {
+		return err
+	}
+
+	err = c.db.AutoMigrate(&types.Soul{})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
