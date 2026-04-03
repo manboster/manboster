@@ -8,7 +8,9 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
+	"github.com/manboster/manboster/internal/repository"
 	"github.com/spf13/cobra"
 
 	_ "github.com/manboster/manboster/internal/chat/telegram"
@@ -29,6 +31,20 @@ func main(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	// initialize database
+	dbi := &database.Client{}
+	dbPath := config.Read().App.DBPath
+	// if there is no manboster.db definition, fallback to same folder
+	if dbPath == "" {
+		dbPath = "manboster.db"
+	}
+	err = dbi.Init(dbPath)
+	if err != nil {
+		color.Red(err.Error())
+		os.Exit(1)
+	}
+	repo := repository.New(dbi.Instance())
+
 	// create a universal context for this application
 	ctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -38,7 +54,7 @@ func main(cmd *cobra.Command, args []string) {
 	defer stop()
 
 	// open a new engine
-	e, err := engine.New(cfg)
+	e, err := engine.New(cfg, repo)
 	if err != nil {
 		color.Red(err.Error())
 		os.Exit(1)

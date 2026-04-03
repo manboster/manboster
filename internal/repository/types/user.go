@@ -7,3 +7,7 @@ const (
 	UserRoot    UserType = iota
 	UserAdmin   UserType = iota
 )
+
+type User struct {
+	ID uint64
+}
