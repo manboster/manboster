@@ -8,7 +8,7 @@ import (
 type Provider interface {
 	Start(ctx context.Context, config any, handlerFunc func(msg *Message)) error
 	SendMessage(ctx context.Context, msg *Message) error
-	Select(ctx context.Context, title string, name string, selection []Selection) (string, error) // returned session id
+	Select(ctx context.Context, msg *Message) (string, error) // returned session id
 	Stop(ctx context.Context) error
 	Notify(chatID string, action ActionType) error
 	Name() string
@@ -32,7 +32,10 @@ type Message struct {
 	CommandType CommandType // Optional. Required when MessageType = MessageCommand Command's type
 	CommandArgs []string    // Optional. Required when MessageType = MessageCommand Command's args
 
-	SelectionSession string // Optional. Required when MessageType == MessageSelectionCallback, it should have a value.
+	SelectionSession string // Optional. Required when MessageType = MessageSelectionCallback, it should have a value.
+	SelectionValue   string // Optional. Required when MessageType = MessageSelectionCallback, it should be the value of the selection.
+
+	Selection []Selection // Optional. Required when MessageType = MessageSelection, it defines selection's data.
 }
 
 // MessageType is an enum defining msg types.
@@ -43,6 +46,7 @@ const (
 	MessageText              MessageType = 1
 	MessageCommand           MessageType = 255
 	MessageSelectionCallback MessageType = 256
+	MessageSelection         MessageType = 257
 )
 
 // ChatsType is an enum defining chat types.
