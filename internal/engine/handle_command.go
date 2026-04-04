@@ -10,7 +10,10 @@ import (
 // HandleCommand handles commands occurs
 func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	// TODO: check user
-	switch msg.CommandType {
+	if msg.Command == nil {
+		return ErrInvalidParams
+	}
+	switch msg.Command.CommandType {
 	case chat.CommandVersion:
 		return commands.Version(ctx, instance, msg)
 	case chat.CommandId:

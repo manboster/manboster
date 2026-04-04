@@ -9,18 +9,21 @@ import (
 )
 
 // Select give user a plenty of selections and wait for them to reply.
-func (s *Service) Select(ctx context.Context, title string, message *chat.Message, selection []chat.Selection) (string, error) {
+func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Message) error {
 	menu := &telebot.ReplyMarkup{}
 
 	recp, err := recipientParser(message.ChatID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// define buttons
 	var btns []telebot.Btn
-	for _, slc := range selection {
-		btn := menu.Data(slc.Name, slc.Value, "select:"+message.ChatID+":"+title)
+	if message.Selection == nil {
+		return ErrInvalidSelectionMessage
+	}
+	for _, slc := range message.Selection.Selection {
+		btn := menu.Data(slc.Name, slc.Value, sessionId)
 		btns = append(btns, btn)
 	}
 	menu.Inline(menu.Split(3, btns)...)
@@ -28,8 +31,8 @@ func (s *Service) Select(ctx context.Context, title string, message *chat.Messag
 	// send menu selection
 	send, err := s.tgInstance.Send(recp, menu)
 	if err != nil {
-		return "", err
+		return err
 	}
-
-	return fmt.Sprintf("%s:%d", message.ChatID, send.ID), nil
+	message.MessageID = fmt.Sprintf("%d", send.ID)
+	return nil
 }

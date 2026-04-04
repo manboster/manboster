@@ -19,14 +19,14 @@ type Message struct {
 }
 
 // MessageType is an enum defining msg types.
-type MessageType int16
+type MessageType int
 
 const (
-	MessageUnknown           MessageType = 0
-	MessageText              MessageType = 1
-	MessageCommand           MessageType = 255
-	MessageSelectionCallback MessageType = 256
-	MessageSelection         MessageType = 257
+	MessageUnknown MessageType = 1 << iota
+	MessageText
+	MessageCommand
+	MessageSelectionCallback
+	MessageSelection
 )
 
 // Build gives a builder of Message

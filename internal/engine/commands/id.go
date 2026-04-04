@@ -19,6 +19,9 @@ func Id(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 		respText.WriteString(fmt.Sprintf("Message Replying Chat ID: %s\n", msg.Reply.ChatID))
 		respText.WriteString(fmt.Sprintf("Message Replying User ID: %s\n", msg.Reply.UserID))
 	}
-	msg.Text = respText.String()
+	msg.Text = &chat.TextPayload{
+		Text: respText.String(),
+	}
+
 	return instance.SendMessage(ctx, msg)
 }

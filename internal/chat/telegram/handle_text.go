@@ -62,11 +62,15 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 			}
 		}
 		msg.MessageType = chat.MessageCommand
-		msg.CommandType = chat.CommandType(command)
-		msg.CommandArgs = args
+		msg.Command = &chat.CommandPayload{
+			CommandType: chat.CommandType(command),
+			CommandArgs: args,
+		}
 	} else {
 		msg.MessageType = chat.MessageText
-		msg.Text = c.Text()
+		msg.Text = &chat.TextPayload{
+			Text: c.Text(),
+		}
 	}
 
 	typingCtx, cancelTyping := context.WithCancel(ctx)

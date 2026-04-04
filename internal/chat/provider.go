@@ -9,7 +9,7 @@ type Provider interface {
 	Start(ctx context.Context, config any, handlerFunc func(msg *Message)) error
 	SendMessage(ctx context.Context, msg *Message) error
 	EditMessage(ctx context.Context, msg *Message) error
-	Select(ctx context.Context, msg *Message) (string, error) // returned session id
+	Select(ctx context.Context, sessionId string, msg *Message) error // returned session id
 	Stop(ctx context.Context) error
 	Notify(chatID string, action ActionType) error
 	Name() string
