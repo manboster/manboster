@@ -27,6 +27,8 @@ func Init() {
 	rootCmd.AddCommand(stopCmd())
 	rootCmd.AddCommand(restartCmd())
 	rootCmd.AddCommand(statusCmd())
+	// Add log options (along with daemon)
+	rootCmd.AddCommand(logCmd())
 
 	// Disable smart completion in order to clean help, no more about it!
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
