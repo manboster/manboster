@@ -11,6 +11,9 @@ import (
 
 // HandleText handles text messages.
 func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	color.Blue("[Manboster Engine]Now handling text message...")
+
+	msg.MessageType = chat.MessageText
 	sessionId := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
 	sessionData := e.sessionManager.GetSession(sessionId)
 	if len(sessionData.Messages) == 0 {
@@ -33,16 +36,17 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	for tries < 5 {
 		mesg, err = e.llmProviders[0].Chat(ctx, msgData)
 		if err != nil {
-			color.Red("Failed to get message from LLMProvider %s after %d tries, get error: %s", e.llmProviders[0].Name(), tries+1, err.Error())
+			color.Red(fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after %d tries, get error: %s", e.llmProviders[0].Name(), tries+1, err.Error()))
 			tries++
 		} else {
+			color.Blue(fmt.Sprintf("[Manboster Engine]Got message feedback from LLMProvider %s", e.llmProviders[0].Name()))
 			break
 		}
 	}
 	if err != nil {
-		color.Red(fmt.Sprintf("Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
+		color.Red(fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
 		msg.Text = &chat.TextPayload{
-			Text: fmt.Sprintf("[Manboster]Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
+			Text: fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
 		}
 	} else {
 		msg.Text = &chat.TextPayload{

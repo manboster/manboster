@@ -28,6 +28,9 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 	settings := telebot.Settings{
 		Token:  cfg.BotToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
+		OnError: func(err error, c telebot.Context) {
+			color.Red("[Manboster Telegram Provider]We encountered an error: %v", err)
+		},
 	}
 
 	// start the bot
@@ -37,18 +40,20 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 	}
 	s.tgInstance = b
 
-	// ctx done cleaning
-	go func() {
-		_ = s.Stop(ctx)
-	}()
-
 	// Handler for Message Resp calling.
 	s.tgInstance.Handle(telebot.OnText, func(c telebot.Context) error {
 		return s.HandleText(ctx, c, onMsg)
 	})
 
-	color.Blue("Starting the telegram bot...")
-	go s.tgInstance.Start()
+	color.Blue("[Manboster Telegram Provider]Starting the telegram bot...")
+
+	s.tgInstance.Start()
+
+	// ctx done cleaning
+	go func() {
+		_ = s.Stop(ctx)
+	}()
+
 	return nil
 }
 
@@ -61,10 +66,10 @@ func (s *Service) Notify(chatID string, action chat.ActionType) error {
 }
 
 func (s *Service) Type(chatId telebot.ChatID, ctx context.Context) {
-	// 立即发一次
-	_ = s.tgInstance.Notify(chatId, "typing")
+	// send immediately
+	_ = s.tgInstance.Notify(chatId, telebot.Typing)
 
-	ticker := time.NewTicker(4 * time.Second) // 每 4 秒重发一次（略小于 5 秒过期时间）
+	ticker := time.NewTicker(4 * time.Second) // send every 4 seconds
 	defer ticker.Stop()
 
 	for {
@@ -72,7 +77,7 @@ func (s *Service) Type(chatId telebot.ChatID, ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-			_ = s.tgInstance.Notify(chatId, "typing")
+			_ = s.tgInstance.Notify(chatId, telebot.Typing)
 		}
 	}
 }

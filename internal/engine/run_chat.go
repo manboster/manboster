@@ -10,34 +10,20 @@ import (
 
 // RunChat is a separate goroutine running for polling chats.
 func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) {
+	//tries := 1
+	//for tries <= 3 {
 	err := instance.Start(ctx, conf, func(msg *chat.Message) {
-		color.Blue(fmt.Sprintf("Got an message from %s by %s(%s)", instance.Name(), msg.Username, msg.UserID))
-		// we get commands first, then others, in order to avoid errors
-		// and command handler should authenticate!
-		if msg.MessageType == chat.MessageCommand {
-			err := e.HandleCommand(ctx, instance, msg)
-			if err != nil {
-				color.Red(err.Error())
-				return
-			}
-			return
-		}
-
-		// TODO: before receiving messages, we should check users' identity.
-		// get message types
-		switch msg.MessageType {
-		case chat.MessageText:
-			err := e.HandleText(ctx, instance, msg)
-			if err != nil {
-				color.Red(err.Error())
-				return
-			}
-			// TODO: Add more types...
-		}
-
+		e.HandleMessage(ctx, instance, msg)
 	})
+
 	if err != nil {
 		color.Red(err.Error())
+		//tries++
+		//continue
+	} else {
+		color.Green(fmt.Sprintf("[Manboster Engine]Successfully started a message provider on %s", instance.Name()))
 		return
 	}
+	//}
+	//color.Red(fmt.Sprintf("Failed to start the chat instance: %s", instance.Name()))
 }

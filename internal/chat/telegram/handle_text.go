@@ -6,12 +6,17 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
 	"gopkg.in/telebot.v3"
 )
 
 func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(msg *chat.Message)) error {
-	var msg = &chat.Message{}
+	// var msg = chat.BuildMessage(s.New())
+	var msg *chat.Message
+	msg = msg.Build(&Service{})
+
+	color.Cyan("[Manboster Telegram Provider]Got a text message.")
 
 	// define things all we know.
 	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)

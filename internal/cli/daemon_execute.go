@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"syscall"
 	"time"
 
@@ -40,6 +42,13 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 		}
 	}(ctx)
 
+	err = config.Init()
+	if errors.Is(err, config.ErrNoConfig) {
+		color.Red("There is no configuration file available, please run at least once!")
+		os.Exit(0)
+	} else if err != nil {
+		panic(err)
+	}
 	main(cmd, args)
 }
 
