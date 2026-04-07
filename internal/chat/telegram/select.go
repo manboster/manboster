@@ -29,7 +29,7 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 	menu.Inline(menu.Split(3, btns)...)
 
 	// send menu selection
-	send, err := s.tgInstance.Send(recp, menu)
+	send, err := s.tgInstance.Send(recp, message.Text.Text, menu)
 	if err != nil {
 		return err
 	}

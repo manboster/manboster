@@ -25,7 +25,7 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 			return err
 		}
 	}
-	_, err = s.tgInstance.Send(recp, msg.Text, opts)
+	_, err = s.tgInstance.Send(recp, msg.Text.Text, opts)
 	if err != nil {
 		return err
 	}

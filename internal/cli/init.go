@@ -22,6 +22,12 @@ func Init() {
 	// Add configuration options
 	rootCmd.AddCommand(configCmd())
 
+	// Add daemon options
+	rootCmd.AddCommand(startCmd())
+	rootCmd.AddCommand(stopCmd())
+	rootCmd.AddCommand(restartCmd())
+	rootCmd.AddCommand(statusCmd())
+
 	// Disable smart completion in order to clean help, no more about it!
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 

@@ -11,6 +11,7 @@ import (
 
 func loadLLM(ctx context.Context, llmConf []config.LLMConfig) ([]llm.Provider, error) {
 	llmProviders := make([]llm.Provider, 0, len(llmConf))
+	color.Cyan("Loading LLM Providers...")
 	// configure and init LLM providers
 	for _, llmConfigs := range llmConf {
 		lProvider, err := llm.GetProvider(llmConfigs.Provider)
@@ -22,6 +23,8 @@ func loadLLM(ctx context.Context, llmConf []config.LLMConfig) ([]llm.Provider, e
 		err = newLProvider.Init(ctx, llmConfigs.Configuration)
 		if err != nil {
 			color.Red("Activate ", lProvider.Name(), " LLM API Error! Message:", err.Error())
+		} else {
+			color.Green(fmt.Sprintf("Activate LLM Provider %q successful!", llmConfigs.Provider))
 		}
 
 		// append it into array!

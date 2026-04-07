@@ -12,7 +12,6 @@ import (
 func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) {
 	err := instance.Start(ctx, conf, func(msg *chat.Message) {
 		color.Blue(fmt.Sprintf("Got an message from %s by %s(%s)", instance.Name(), msg.Username, msg.UserID))
-
 		// we get commands first, then others, in order to avoid errors
 		// and command handler should authenticate!
 		if msg.MessageType == chat.MessageCommand {
