@@ -42,7 +42,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 
 		// we make timeout requests.
-		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		timeoutCtx, cancel := context.WithTimeout(ctx, 1*time.Minute)
 		event, err = e.llmProviders[0].Chat(timeoutCtx, msgData)
 		cancel()
 

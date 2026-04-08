@@ -18,7 +18,7 @@ func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Event,
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:       s.cfg.Model,
+		Model:       s.cfg.Model.Name,
 		Messages:    apiMsgs,
 		Temperature: 0.7,
 	}

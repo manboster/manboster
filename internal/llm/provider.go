@@ -9,5 +9,6 @@ type Provider interface {
 	Init(ctx context.Context, config any) error
 	Name() string
 	Model() string
+	ModelInfo() Model
 	New() Provider
 }

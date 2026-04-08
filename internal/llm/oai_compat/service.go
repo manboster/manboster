@@ -19,6 +19,10 @@ func (s *Service) Name() string {
 }
 
 func (s *Service) Model() string {
+	return s.cfg.Model.Name
+}
+
+func (s *Service) ModelInfo() llm.Model {
 	return s.cfg.Model
 }
 

@@ -21,6 +21,10 @@ func (s *Service) Model() string {
 	return s.oaiInstance.Model()
 }
 
+func (s *Service) ModelInfo() llm.Model {
+	return s.oaiInstance.ModelInfo()
+}
+
 func (s *Service) New() llm.Provider {
 	return &Service{}
 }

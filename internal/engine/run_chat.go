@@ -27,5 +27,5 @@ func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 			return
 		}
 	}
-	color.Red(fmt.Sprintf("Failed to start the chat instance: %s", instance.Name()))
+	color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", instance.Name()))
 }
