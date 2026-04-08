@@ -23,30 +23,12 @@ var GoogleModels = []llm.Model{
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
 	},
 	{
-		DisplayName:     "Google Gemma 4 26B A4B(Free Model)",
-		Name:            "google/gemma-4-26b-a4b-it:free",
-		Context:         262144,
-		MaxOutputTokens: 8192, // max output token defines as 262144 in openrouter, we hard limit it to 8192.
-		InputPrice:      0,
-		OutputPrice:     0,
-		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
-	},
-	{
 		DisplayName:     "Google Gemma 4 26B A4B",
 		Name:            "google/gemma-4-26b-a4b-it",
 		Context:         262144,
 		MaxOutputTokens: 8192, // max output token defines as 262144 in openrouter, we hard limit it to 8192.
 		InputPrice:      0.13,
 		OutputPrice:     0.4,
-		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
-	},
-	{
-		DisplayName:     "Google Gemma 4 31B(Free Model)",
-		Name:            "google/gemma-4-31b-it:free",
-		Context:         262144,
-		MaxOutputTokens: 33000,
-		InputPrice:      0,
-		OutputPrice:     0,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{

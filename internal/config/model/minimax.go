@@ -13,15 +13,6 @@ var MinimaxModels = []llm.Model{
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
-		DisplayName:     "Minimax M2.5(Free Model)",
-		Name:            "minimax/minimax-m2.5:free",
-		Context:         197000,
-		MaxOutputTokens: 66000,
-		InputPrice:      0,
-		OutputPrice:     0,
-		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
-	},
-	{
 		DisplayName:     "Minimax M2.5",
 		Name:            "minimax/minimax-m2.5",
 		Context:         197000,
