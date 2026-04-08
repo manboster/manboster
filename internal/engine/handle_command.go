@@ -2,7 +2,9 @@ package engine
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/engine/commands"
 )
@@ -13,6 +15,8 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	if msg.Command == nil {
 		return ErrInvalidParams
 	}
+	color.Blue(fmt.Sprintf("[Manboster Engine] Handling command... Received command: %s, args: %s", msg.Command.CommandType, msg.Command.CommandArgs))
+
 	switch msg.Command.CommandType {
 	case chat.CommandVersion:
 		return commands.Version(ctx, instance, msg)

@@ -22,7 +22,7 @@ import (
 func main(cmd *cobra.Command, args []string) {
 	// output welcome
 	color.Cyan("Welcome to Manboster!")
-	color.Blue("Your Lobster is on the way, please wait...")
+	color.Blue("[Manboster Client] Your Lobster is on the way, please wait...")
 
 	cfg := config.Read()
 	err := cfg.Validate()
@@ -68,5 +68,5 @@ func main(cmd *cobra.Command, args []string) {
 	}
 
 	<-ctx.Done()
-	color.Yellow("Your Manboster is going to sleep, thank you for playing with it!")
+	color.Yellow("[Manboster Client] Your Manboster is going to sleep, thank you for playing with it!")
 }
