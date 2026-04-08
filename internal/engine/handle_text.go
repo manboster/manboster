@@ -6,6 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 )
 
@@ -19,7 +20,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	if len(sessionData.Messages) == 0 {
 		sessionData.Messages = append(sessionData.Messages, llm.Message{
 			Role: llm.RoleSystem,
-			Text: "You're an assistant named Manboster. You are chatting with people. The one who is chatting with you is your owner.", // TODO: prompt engineering
+			Text: config.InitialSystemPrompt, // TODO: prompt engineering
 			Type: llm.MessageText,
 		})
 	}
