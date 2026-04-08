@@ -8,7 +8,7 @@ import (
 )
 
 // Chat allows you to chat with your model
-func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Message, error) {
+func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Event, error) {
 	apiMsgs := make([]openai.ChatCompletionMessage, 0, len(messages))
 	for _, msg := range messages {
 		apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
@@ -36,15 +36,18 @@ func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Messag
 	// fmt.Println(resp.Choices[0].Message)
 
 	// then return its message
-	return &llm.Message{
-		Text: resp.Choices[0].Message.Content,
-		Type: llm.MessageTypeText,
-		Role: llm.RoleTypeAssistant,
+	return &llm.Event{
+		EventType: llm.EventMessage,
+		Message: &llm.Message{
+			Text: resp.Choices[0].Message.Content,
+			Type: llm.MessageText,
+			Role: llm.RoleAssistant,
+		},
 	}, nil
 }
 
 // ChatStream is the next generation WIP TODO:
-func (s *Service) ChatStream(ctx context.Context, messages []llm.Message) (<-chan *llm.Message, error) {
-	msgChan := make(chan *llm.Message)
+func (s *Service) ChatStream(ctx context.Context, messages []llm.Message) (<-chan *llm.Event, error) {
+	msgChan := make(chan *llm.Event)
 	return msgChan, nil
 }

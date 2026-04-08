@@ -18,23 +18,23 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	sessionData := e.sessionManager.GetSession(sessionId)
 	if len(sessionData.Messages) == 0 {
 		sessionData.Messages = append(sessionData.Messages, llm.Message{
-			Role: llm.RoleTypeSystem,
+			Role: llm.RoleSystem,
 			Text: "You're an assistant named Manboster. You are chatting with people. The one who is chatting with you is your owner.", // TODO: prompt engineering
-			Type: llm.MessageTypeText,
+			Type: llm.MessageText,
 		})
 	}
 	msgData := append(sessionData.Messages, llm.Message{
-		Role: llm.RoleTypeUser,
+		Role: llm.RoleUser,
 		Text: msg.Text.Text,
-		Type: llm.MessageTypeText,
+		Type: llm.MessageText,
 	})
 
 	tries := 0
-	var mesg *llm.Message
+	var event *llm.Event
 	var err error
 	// try 5 times
 	for tries < 5 {
-		mesg, err = e.llmProviders[0].Chat(ctx, msgData)
+		event, err = e.llmProviders[0].Chat(ctx, msgData)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after %d tries, get error: %s", e.llmProviders[0].Name(), tries+1, err.Error()))
 			tries++
@@ -50,12 +50,12 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 	} else {
 		msg.Text = &chat.TextPayload{
-			Text: mesg.Text,
+			Text: event.Message.Text,
 		}
 		msgData = append(msgData, llm.Message{
-			Text: mesg.Text,
-			Role: mesg.Role,
-			Type: llm.MessageTypeText,
+			Text: event.Message.Text,
+			Role: event.Message.Role,
+			Type: llm.MessageText,
 		})
 	}
 
