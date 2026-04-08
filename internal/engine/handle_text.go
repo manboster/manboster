@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
@@ -12,7 +13,7 @@ import (
 
 // HandleText handles text messages.
 func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
-	color.Blue("[Manboster Engine]Now handling text message...")
+	color.Blue("[Manboster Engine] Now handling text message...")
 
 	msg.MessageType = chat.MessageText
 	sessionId := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
@@ -30,24 +31,33 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		Type: llm.MessageText,
 	})
 
-	tries := 0
+	tries := 1
 	var event *llm.Event
 	var err error
 	// try 5 times
-	for tries < 5 {
-		event, err = e.llmProviders[0].Chat(ctx, msgData)
+	for tries <= 5 {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+
+		// we make timeout requests.
+		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		event, err = e.llmProviders[0].Chat(timeoutCtx, msgData)
+		cancel()
+
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after %d tries, get error: %s", e.llmProviders[0].Name(), tries+1, err.Error()))
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after %d tries, get error: %s", e.llmProviders[0].Name(), tries, err.Error()))
+			time.Sleep(time.Second * time.Duration(tries+1))
 			tries++
 		} else {
-			color.Blue(fmt.Sprintf("[Manboster Engine]Got message feedback from LLMProvider %s", e.llmProviders[0].Name()))
+			color.Blue(fmt.Sprintf("[Manboster Engine] Got message feedback from LLMProvider %s", e.llmProviders[0].Name()))
 			break
 		}
 	}
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
+		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
 		msg.Text = &chat.TextPayload{
-			Text: fmt.Sprintf("[Manboster Engine]Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
+			Text: fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
 		}
 	} else {
 		msg.Text = &chat.TextPayload{
@@ -63,10 +73,25 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	sessionData.Messages = msgData
 	e.sessionManager.SetSession(sessionId, sessionData)
 
-	err = instance.SendMessage(ctx, msg)
-	if err != nil {
-		color.Red(err.Error())
-		return nil
+	tries = 1
+	for tries <= 5 {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+
+		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		err = instance.SendMessage(timeoutCtx, msg)
+		cancel()
+
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] Tried %d times sending via %s, got error: %q", tries, instance.Name(), err))
+			time.Sleep(time.Second * time.Duration(tries+1))
+			tries++
+			continue
+		} else {
+			color.Green(fmt.Sprintf("[Manboster Engine] Tried %d times sending via %s, success.", tries, instance.Name()))
+			return nil
+		}
 	}
-	return nil
+	return err
 }

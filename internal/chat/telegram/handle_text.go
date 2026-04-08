@@ -16,7 +16,7 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 	var msg *chat.Message
 	msg = msg.Build(&Service{})
 
-	color.Cyan("[Manboster Telegram Provider]Got a text message.")
+	color.Cyan("[Manboster Telegram Provider] Got a text message.")
 
 	// define things all we know.
 	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)

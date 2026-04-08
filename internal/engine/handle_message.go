@@ -9,8 +9,8 @@ import (
 )
 
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {
-	color.Blue("[Manboster Engine]Handling message")
-	color.Blue(fmt.Sprintf("[Manboster Engine]Got an message from %s by %s(%s), Type:%d", instance.Name(), msg.Username, msg.UserID, msg.MessageType))
+	color.Blue("[Manboster Engine] Handling message")
+	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type:%d", instance.Name(), msg.Username, msg.UserID, msg.MessageType))
 	// we get commands first, then others, in order to avoid errors
 	// and command handler should authenticate!
 	if msg.MessageType == chat.MessageCommand {

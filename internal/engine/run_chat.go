@@ -21,7 +21,7 @@ func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 		//tries++
 		//continue
 	} else {
-		color.Green(fmt.Sprintf("[Manboster Engine]Successfully started a message provider on %s", instance.Name()))
+		color.Green(fmt.Sprintf("[Manboster Engine] Successfully started a message provider on %s", instance.Name()))
 		return
 	}
 	//}

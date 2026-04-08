@@ -29,7 +29,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 		Token:  cfg.BotToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, c telebot.Context) {
-			color.Red("[Manboster Telegram Provider]We encountered an error: %v", err)
+			color.Red("[Manboster Telegram Provider] We encountered an error: %v", err)
 		},
 	}
 
@@ -45,7 +45,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 		return s.HandleText(ctx, c, onMsg)
 	})
 
-	color.Blue("[Manboster Telegram Provider]Starting the telegram bot...")
+	color.Blue("[Manboster Telegram Provider] Starting the telegram bot...")
 
 	s.tgInstance.Start()
 
