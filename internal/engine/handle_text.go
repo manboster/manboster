@@ -58,25 +58,24 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
 		// now we have to wrap this into friendly prompt
-		tips := fmt.Sprintf("%q", err)
-		if strings.Contains("429", tips) {
+		tips := fmt.Sprintf("%+v", err)
+		if strings.Contains(tips, "429") {
 			msg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("[Manboster] %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", e.llmProviders[0].Name()),
 			}
-		} else if strings.Contains("500", tips) || strings.Contains("502", tips) || strings.Contains("503", tips) || strings.Contains("501", tips) {
+		} else if strings.Contains(tips, "500") || strings.Contains("502", tips) || strings.Contains("503", tips) || strings.Contains("501", tips) {
 			msg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("[Manboster] %s has been down, please check your provider's status page, or change providers and try again later.", e.llmProviders[0].Name()),
 			}
-		} else if strings.Contains("context deadline exceeded", tips) {
+		} else if strings.Contains(tips, "context deadline exceeded") {
 			msg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.", e.llmProviders[0].Name()),
 			}
-		} else if strings.Contains("403", tips) || strings.Contains("401", tips) {
+		} else if strings.Contains(tips, "403") || strings.Contains(tips, "401") {
 			msg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.", e.llmProviders[0].Name()),
 			}
-		}
-		else {
+		} else {
 			msg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
 			}
