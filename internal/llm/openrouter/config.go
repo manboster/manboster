@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
 )
@@ -12,7 +13,9 @@ import (
 type Config struct {
 	ApiKey string `yaml:"api_key" json:"api_key" mapstructure:"api_key"` // your openrouter system's apikey
 	// BaseURL string `yaml:"base_url"` // this is fixed so you don't need to enter it.
-	Model llm.Model `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
+	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
+	Default        string      `yaml:"default" json:"default" mapstructure:"default"`
+	inputModelData []string    // internal input keys
 }
 
 // ToHuhGroup enables configuration go ahead.
@@ -25,9 +28,9 @@ func (c *Config) ToHuhGroup() []*huh.Group {
 
 	return []*huh.Group{
 		huh.NewGroup(
-			huh.NewSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
+			huh.NewMultiSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
 				modelOptions...,
-			).Value(&c.Model.Name),
+			).Value(&c.inputModelData),
 			huh.NewInput().Title("Your OpenRouter API Key").Description("Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.").EchoMode(huh.EchoModePassword).Value(&c.ApiKey),
 		),
 	}
@@ -40,19 +43,39 @@ func (c *Config) GetConfig() any {
 
 // VerifyAndConvert ensures configuration is valid.
 func (c *Config) VerifyAndConvert() error {
+	if len(c.inputModelData) == 0 {
+		return ErrModelNameRequired
+	}
+
 	// If you choose Custom Model, you should specify it.
-	if c.Model.Name == "CustomModel" {
-		err := huh.NewForm(huh.NewGroup(huh.NewInput().Title("Your Model Name").Description("Please specify the model name. You can copy it by clicking the clipboard icon on OpenRouter's model page.").Value(&c.Model.Name))).Run()
-		if err != nil {
-			return err
+	for _, m := range c.inputModelData {
+		if m == "CustomModel" {
+			customModel, err := c.InputCustomModel()
+			if err != nil {
+				return err
+			}
+			c.Model = append(c.Model, customModel)
+		} else {
+			avail := false
+			for _, k := range Models() {
+				// check if these name is valid or not
+				if k.Name == m {
+					c.Model = append(c.Model, k)
+					avail = true
+				}
+			}
+			if !avail {
+				color.Yellow(fmt.Sprintf("Input Model %s is not found in models data", m))
+			}
 		}
 	}
+
 	return nil
 }
 
 // String is used to print sth.
 func (c *Config) String() string {
-	return fmt.Sprintf("API Key: %s, Model: %s", util.MaskSecret(c.ApiKey), c.Model)
+	return fmt.Sprintf("API Key: %s, Model: %+v", util.MaskSecret(c.ApiKey), c.Model)
 }
 
 func (c *Config) Name() string {
