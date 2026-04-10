@@ -10,6 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/internal/util"
 )
 
 // HandleText handles text messages.
@@ -82,14 +83,24 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			}
 		}
 	} else {
-		msg.Text = &chat.TextPayload{
-			Text: event.Message.Text,
-		}
+		textWithoutThinking := util.StripThink(event.Message.Text)
 		msgData = append(msgData, llm.Message{
-			Text: event.Message.Text,
+			Text: textWithoutThinking,
 			Role: event.Message.Role,
 			Type: llm.MessageText,
 		})
+		if util.ExtractThinkContent(event.Message.Text) != "" {
+			msg.Text = &chat.TextPayload{
+				Text: "Model Thinking:\n" + util.ExtractThinkContent(event.Message.Text),
+			}
+			err := instance.SendMessage(ctx, msg)
+			if err != nil {
+				return err
+			}
+		}
+		msg.Text = &chat.TextPayload{
+			Text: textWithoutThinking,
+		}
 	}
 
 	sessionData.Messages = msgData

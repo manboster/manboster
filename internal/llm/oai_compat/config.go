@@ -1,11 +1,13 @@
 package oai_compat
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/charmbracelet/huh"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/sashabaranov/go-openai"
 )
 
 // Config contains what you should enter in application configuration.
@@ -44,12 +46,61 @@ func (c *Config) DisplayName() string {
 	return "OpenAI compatible API"
 }
 
-func (c *Config) VerifyAndConvert() error {
-
-	model, err := InputModel()
+func (c *Config) VerifyAndConvert(ctx context.Context) error {
+	svc := NewService(&openai.Client{})
+	err := svc.Init(ctx, c)
 	if err != nil {
 		return err
 	}
-	c.Model = append(c.Model, model)
+	models, err := svc.FetchModels(ctx)
+	if err != nil {
+		return err
+	}
+
+	var ModelOptions []huh.Option[string]
+	for _, m := range models {
+		ModelOptions = append(ModelOptions, huh.NewOption(m, m))
+	}
+	ModelOptions = append(ModelOptions, huh.NewOption("Other Model", "_CustomModel_"))
+
+	var modelValues []string
+	err = huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().Title("Models").Description("Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.").Options(
+				ModelOptions...).Value(&modelValues),
+		),
+	).Run()
+	if err != nil {
+		return err
+	}
+
+	for _, m := range modelValues {
+		if m == "_CustomModel_" {
+			model, err := InputModel()
+			if err != nil {
+				return err
+			}
+			c.Model = append(c.Model, model)
+		} else {
+			// give it a default value, or make user complete? TODO: First read model library and get information.
+			c.Model = append(c.Model, llm.Model{
+				Name:            m,
+				DisplayName:     m,
+				Context:         262144,
+				MaxOutputTokens: 8192,
+				InputPrice:      0,
+				OutputPrice:     0,
+				Capabilities: llm.Capabilities{
+					Input:  llm.CapabilityText,
+					Output: llm.CapabilityText,
+				},
+			})
+		}
+	}
+
+	if len(c.Model) == 0 {
+		return fmt.Errorf("no models selected")
+	}
+
 	return nil
 }

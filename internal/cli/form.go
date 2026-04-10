@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -14,7 +15,7 @@ import (
 )
 
 // Form provides a huh form configuration with TUI.
-func Form() (config.Config, error) {
+func Form(ctx context.Context) (config.Config, error) {
 	// get default configuration's value
 	var c config.Config
 	c = config.Default(c)
@@ -29,14 +30,14 @@ func Form() (config.Config, error) {
 
 	// TODO: Refactor to single functions
 	// Step 1: choose Chat Providers
-	chatCfg, err := ChatConfigForm()
+	chatCfg, err := ChatConfigForm(ctx)
 	if err != nil {
 		return c, err
 	}
 	c.Chats = append(c.Chats, chatCfg)
 
 	// Step 2: config LLMs
-	llmCfg, err := LLMConfigForm()
+	llmCfg, err := LLMConfigForm(ctx)
 	c.LLMs = append(c.LLMs, llmCfg)
 
 	// Step 3: See what's entered and start to write configuration.
@@ -62,7 +63,7 @@ func Form() (config.Config, error) {
 }
 
 // ChatConfigForm returns chats' config data.
-func ChatConfigForm() (config.ChatConfig, error) {
+func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	// get providers to generate options
 	var chatProviders []config.Provider
 	names := config.AvailProviders("chat")
@@ -103,7 +104,7 @@ func ChatConfigForm() (config.ChatConfig, error) {
 		return config.ChatConfig{}, err
 	}
 
-	err = provider.VerifyAndConvert()
+	err = provider.VerifyAndConvert(ctx)
 	if err != nil {
 		return config.ChatConfig{}, err
 	}
@@ -115,7 +116,7 @@ func ChatConfigForm() (config.ChatConfig, error) {
 }
 
 // LLMConfigForm returns LLMs' config data.
-func LLMConfigForm() (config.LLMConfig, error) {
+func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	// get providers to generate options
 	var llmProviders []config.Provider
 	names := config.AvailProviders("llm")
@@ -156,7 +157,7 @@ func LLMConfigForm() (config.LLMConfig, error) {
 		return config.LLMConfig{}, err
 	}
 
-	err = provider.VerifyAndConvert()
+	err = provider.VerifyAndConvert(ctx)
 	if err != nil {
 		return config.LLMConfig{}, err
 	}

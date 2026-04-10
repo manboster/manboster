@@ -1,6 +1,7 @@
 package openrouter
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/charmbracelet/huh"
@@ -24,7 +25,7 @@ func (c *Config) ToHuhGroup() []*huh.Group {
 	for _, m := range Models() {
 		modelOptions = append(modelOptions, huh.NewOption(m.DisplayName, m.Name))
 	}
-	modelOptions = append(modelOptions, huh.NewOption("Other Model", "CustomModel"))
+	modelOptions = append(modelOptions, huh.NewOption("Other Model", "_CustomModel_"))
 
 	return []*huh.Group{
 		huh.NewGroup(
@@ -42,14 +43,14 @@ func (c *Config) GetConfig() any {
 }
 
 // VerifyAndConvert ensures configuration is valid.
-func (c *Config) VerifyAndConvert() error {
+func (c *Config) VerifyAndConvert(ctx context.Context) error {
 	if len(c.inputModelData) == 0 {
 		return ErrModelNameRequired
 	}
 
 	// If you choose Custom Model, you should specify it.
 	for _, m := range c.inputModelData {
-		if m == "CustomModel" {
+		if m == "_CustomModel_" {
 			customModel, err := c.InputCustomModel()
 			if err != nil {
 				return err

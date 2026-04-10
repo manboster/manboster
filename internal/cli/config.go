@@ -1,7 +1,10 @@
 package cli
 
 import (
+	"context"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
@@ -19,7 +22,14 @@ func configCmd() *cobra.Command {
 
 // ConfigCmdRun is used to run interactive huh forms.
 func ConfigCmdRun(cmd *cobra.Command, args []string) {
-	cfg, err := Form()
+	ctx, stop := signal.NotifyContext(
+		context.Background(),
+		os.Interrupt,
+		syscall.SIGTERM,
+	)
+	defer stop()
+
+	cfg, err := Form(ctx)
 	if err != nil {
 		os.Exit(1)
 		return

@@ -2,6 +2,7 @@ package oai_compat
 
 import "context"
 
+// FetchModels gets models available.
 func (s *Service) FetchModels(ctx context.Context) ([]string, error) {
 	var modelInfos []string
 	models, err := s.cli.ListModels(ctx)
@@ -12,6 +13,6 @@ func (s *Service) FetchModels(ctx context.Context) ([]string, error) {
 	for _, m := range models.Models {
 		modelInfos = append(modelInfos, m.ID)
 	}
-	
+
 	return modelInfos, nil
 }

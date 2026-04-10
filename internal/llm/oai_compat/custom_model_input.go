@@ -57,7 +57,7 @@ func InputModel() (llm.Model, error) {
 
 	customModel.DisplayName = fmt.Sprintf("%s(Custom Model)", customModel.Name)
 	customModel.Context = 262144
-	customModel.MaxOutputTokens = 4096
+	customModel.MaxOutputTokens = 8192
 	customModel.InputPrice = 0
 	customModel.OutputPrice = 0
 	customModel.Capabilities.Input = llm.MergeCapabilityFields(modelInputCapabilities)
