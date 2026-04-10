@@ -16,8 +16,12 @@ func Cancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sess
 
 	var text string
 	if avail {
-		sessData.Cancel()
-		text = "[Manboster] Successfully cancelled the request."
+		if sessData.Active {
+			sessData.Cancel()
+			text = "[Manboster] Successfully cancelled the request."
+		} else {
+			text = "[Manboster] The request in this session is not active."
+		}
 	} else {
 		text = "[Manboster] Failed to cancel the request: Session Object not found."
 	}

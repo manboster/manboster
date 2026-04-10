@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
@@ -22,6 +23,7 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 	msg.Username = c.Sender().FirstName + " " + c.Sender().LastName
 	msg.UserID = fmt.Sprintf("%d", c.Sender().ID)
 	msg.ChatID = fmt.Sprintf("%d", c.Chat().ID)
+	msg.CreatedAt = time.Now()
 	msg.Provider = s.Name()
 
 	// check whether replies available or not

@@ -1,5 +1,7 @@
 package chat
 
+import "time"
+
 // Message defines the universal definition of a provider's message standard.
 type Message struct {
 	Provider    string      // Required. Provider Platform like Telegram.
@@ -9,6 +11,7 @@ type Message struct {
 	Username    string      // Required. Sender username
 	MessageType MessageType // Required. reserved to stickers or more...
 	ChatType    ChatsType   // Required. Chat's type, like Group, Channel, and Personal Chats.
+	CreatedAt   time.Time   // Required. When is the message created?
 
 	Reply *Message // Optional. When it's valid, it means the message replied
 

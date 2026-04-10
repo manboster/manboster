@@ -39,13 +39,13 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 	htmlStr = reList.ReplaceAllString(htmlStr, "")
 
 	reListEnd := regexp.MustCompile(`(?i)</(ul|ol)>`)
-	htmlStr = reListEnd.ReplaceAllString(htmlStr, "\n")
+	htmlStr = reListEnd.ReplaceAllString(htmlStr, "")
 
 	reLi := regexp.MustCompile(`(?i)<li[^>]*>`)
-	htmlStr = reLi.ReplaceAllString(htmlStr, " • ")
+	htmlStr = reLi.ReplaceAllString(htmlStr, "• ")
 
 	reLiEnd := regexp.MustCompile(`(?i)</li>`)
-	htmlStr = reLiEnd.ReplaceAllString(htmlStr, "\n")
+	htmlStr = reLiEnd.ReplaceAllString(htmlStr, "")
 
 	// change tags
 	replacer := strings.NewReplacer(
