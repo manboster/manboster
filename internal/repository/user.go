@@ -9,6 +9,8 @@ import (
 
 type UserRepository interface {
 	UserCounts(ctx context.Context) (int64, error) // get user's counts
+	UserInfo(ctx context.Context, platform string, id string) (types.User, error)
+	CreateUser(ctx context.Context, user types.User) error
 }
 
 // UserCounts gets the total number of users.
