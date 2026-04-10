@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/internal/llm/oai_compat"
 	"github.com/manboster/manboster/internal/util"
 )
 
@@ -50,7 +51,7 @@ func (c *Config) VerifyAndConvert(ctx context.Context) error {
 
 	// If you choose Custom Model, you should specify it.
 	for _, m := range c.inputModelData {
-		if m == "_CustomModel_" {
+		if m == oai_compat.CustomModel {
 			customModel, err := c.InputCustomModel()
 			if err != nil {
 				return err

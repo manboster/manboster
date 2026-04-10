@@ -3,6 +3,7 @@ package oai_compat
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/charmbracelet/huh"
 	"github.com/manboster/manboster/internal/llm"
@@ -17,6 +18,8 @@ type Config struct {
 	Model   []llm.Model       `yaml:"model" mapstructure:"model" json:"model"`          // your wanted model's information like anthropic/claude-sonnet-4.5
 	Headers map[string]string `json:"headers" mapstructure:"headers" yaml:"headers"`
 }
+
+const CustomModel = "__CustomModel__"
 
 // ToHuhGroup enables configuration go ahead.
 func (c *Config) ToHuhGroup() []*huh.Group {
@@ -49,33 +52,36 @@ func (c *Config) DisplayName() string {
 func (c *Config) VerifyAndConvert(ctx context.Context) error {
 	svc := NewService(&openai.Client{})
 	err := svc.Init(ctx, c)
-	if err != nil {
-		return err
-	}
 	models, err := svc.FetchModels(ctx)
-	if err != nil {
-		return err
-	}
-
-	var ModelOptions []huh.Option[string]
-	for _, m := range models {
-		ModelOptions = append(ModelOptions, huh.NewOption(m, m))
-	}
-	ModelOptions = append(ModelOptions, huh.NewOption("Other Model", "_CustomModel_"))
-
 	var modelValues []string
-	err = huh.NewForm(
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().Title("Models").Description("Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.").Options(
-				ModelOptions...).Value(&modelValues),
-		),
-	).Run()
+
 	if err != nil {
-		return err
+		err := huh.NewForm(huh.NewGroup(huh.NewNote().Title("Oops! We can't get information based on your credentials!").Description("We strongly recommend you check your Internet Connection and credentials. If you have a poor Internet connection or have a strong belief that you're not wrong, please press enter to proceed to add model manually. Otherwise, please press Ctrl + C to exit.").Next(true))).Run()
+		modelValues = append(modelValues, CustomModel)
+		if err != nil {
+			// don't do that, it will continue to configuration acceptance
+			os.Exit(1)
+		}
+	} else {
+		var ModelOptions []huh.Option[string]
+		for _, m := range models {
+			ModelOptions = append(ModelOptions, huh.NewOption(m, m))
+		}
+		ModelOptions = append(ModelOptions, huh.NewOption("Other Model", CustomModel))
+
+		err = huh.NewForm(
+			huh.NewGroup(
+				huh.NewMultiSelect[string]().Title("Models").Description("Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.").Options(
+					ModelOptions...).Value(&modelValues),
+			),
+		).Run()
+		if err != nil {
+			return err
+		}
 	}
 
 	for _, m := range modelValues {
-		if m == "_CustomModel_" {
+		if m == CustomModel {
 			model, err := InputModel()
 			if err != nil {
 				return err
