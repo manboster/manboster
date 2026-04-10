@@ -30,7 +30,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		err := e.HandleText(ctx, instance, msg)
 		if err != nil {
 			color.Red(err.Error())
-			panic(err)
+			// panic(err)
 			return
 		}
 		// TODO: Add more types...

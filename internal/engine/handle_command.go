@@ -35,7 +35,10 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandNew:
 	case chat.CommandSummary:
 	case chat.CommandModels:
+	case chat.CommandProviders:
 	case chat.CommandStart:
+	default:
+		return commands.Default(ctx, instance, msg)
 	}
 	return nil
 }

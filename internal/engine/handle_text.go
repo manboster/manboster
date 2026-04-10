@@ -42,8 +42,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			return ctx.Err()
 		}
 
+		color.Blue(fmt.Sprintf("[Manboster Engine] Fetching message response from LLMProvider %s, try %d times", e.llmProviders[0].Name(), tries))
 		// we make timeout requests.
-		timeoutCtx, cancel := context.WithTimeout(ctx, 1*time.Minute)
+		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
 		models := e.llmProviders[0].Models()
 		event, err = e.llmProviders[0].Chat(timeoutCtx, models[0].Name, msgData)
 		cancel()
@@ -90,14 +91,16 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			Type: llm.MessageText,
 		})
 		if util.ExtractThinkContent(event.Message.Text) != "" {
+			msg.MessageType = chat.MessageThinkingText
 			msg.Text = &chat.TextPayload{
-				Text: "Model Thinking:\n" + util.ExtractThinkContent(event.Message.Text),
+				Text: util.ExtractThinkContent(event.Message.Text),
 			}
 			err := instance.SendMessage(ctx, msg)
 			if err != nil {
 				return err
 			}
 		}
+		msg.MessageType = chat.MessageText
 		msg.Text = &chat.TextPayload{
 			Text: textWithoutThinking,
 		}

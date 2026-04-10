@@ -25,6 +25,7 @@ const (
 	MessageUnknown MessageType = 1 << iota
 	MessageText
 	MessageCommand
+	MessageThinkingText
 	MessageSelectionCallback
 	MessageSelection
 )

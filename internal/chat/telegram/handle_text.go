@@ -3,7 +3,6 @@ package telegram
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/fatih/color"
@@ -55,11 +54,9 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 		// process "/xxxxxx xxxx" and "/xxxx@xxxxbot xxxxxxx"
 		var command string
 		var args []string
-		if len(strings.Split(c.Text(), "@")) > 1 {
-			if match, _ := regexp.MatchString("^[a-zA-Z]+$", strings.Split(c.Text(), "@")[0]); match {
-				command = strings.ToLower(strings.Split(c.Text(), "@")[0])
-				args = strings.Split(c.Text(), " ")[1:]
-			}
+		if len(strings.Split(c.Text(), "@"+c.Bot().Me.Username)) > 1 {
+			command = strings.ToLower(strings.Split(c.Text(), "@"+c.Bot().Me.Username)[0][1:])
+			args = strings.Split(c.Text(), " ")[1:]
 		} else {
 			command = strings.ToLower(strings.Split(c.Text(), " ")[0][1:])
 			if len(strings.Split(c.Text(), " ")) > 1 {
