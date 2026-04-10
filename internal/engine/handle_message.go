@@ -2,10 +2,12 @@ package engine
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
+	"gorm.io/gorm"
 )
 
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {
@@ -29,6 +31,18 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 					color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling start guardrail via %s, error: %q", instance.Name(), err))
 				}
 				return
+			} else {
+				_, err := e.repo.UserInfo(ctx, instance.Name(), msg.UserID)
+				if err != nil {
+					if !errors.Is(err, gorm.ErrRecordNotFound) {
+						color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while fetching user data from repository, error: %q", err))
+					}
+					err := e.HandleReject(ctx, instance, msg)
+					if err != nil {
+						color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", instance.Name(), err))
+					}
+					return
+				}
 			}
 		}
 		err := e.HandleCommand(ctx, instance, msg)
@@ -46,6 +60,21 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling start guardrail via %s, error: %q", instance.Name(), err))
 		}
 		return
+	}
+
+	if msg.ChatType == chat.ChatsPersonal {
+		_, err := e.repo.UserInfo(ctx, instance.Name(), msg.UserID)
+		if err != nil {
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while fetching user data from repository, error: %q", err))
+
+			}
+			err := e.HandleReject(ctx, instance, msg)
+			if err != nil {
+				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", instance.Name(), err))
+			}
+			return
+		}
 	}
 	// TODO: before receiving messages, we should check users' identity.
 	// get message types

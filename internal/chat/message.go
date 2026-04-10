@@ -13,7 +13,8 @@ type Message struct {
 	ChatType    ChatsType   // Required. Chat's type, like Group, Channel, and Personal Chats.
 	CreatedAt   time.Time   // Required. When is the message created?
 
-	Reply *Message // Optional. When it's valid, it means the message replied
+	Reply   *Message // Optional. When it's valid, it means the message replied
+	Forward *Message // Optional. When it's valid, it means the message was forwarded from someone.
 
 	Command           *CommandPayload           // Optional. Required when MessageType = MessageCommand
 	Selection         *SelectionPayload         // Optional. Required when MessageType = MessageSelection

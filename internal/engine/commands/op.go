@@ -6,8 +6,10 @@ import (
 	"github.com/manboster/manboster/internal/chat"
 )
 
-// Op Command TODO: gives Operator to replied users or given user ids.
+// Op Command gives Operator to replied users or given user ids.
 func Op(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	// first we check whether there is any uid or not.
+
 	return nil
 }
 

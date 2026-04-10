@@ -29,7 +29,7 @@ func (repo *Repo) UserCounts(ctx context.Context) (int64, error) {
 func (repo *Repo) UserInfo(ctx context.Context, platform string, id string) (types.User, error) {
 	var user dbtypes.User
 
-	err := repo.db.Where("id = ? AND platform = ?", id, platform).First(&user).Error
+	err := repo.db.Where("userid = ? AND platform = ?", id, platform).First(&user).Error
 	if err != nil {
 		return types.User{}, err
 	}
