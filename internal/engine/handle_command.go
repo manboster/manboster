@@ -37,6 +37,9 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandModels:
 	case chat.CommandProviders:
 	case chat.CommandStart:
+	case chat.CommandPair:
+	case chat.CommandCancel:
+		return commands.Cancel(ctx, instance, msg, e.sessionManager)
 	default:
 		return commands.Default(ctx, instance, msg)
 	}

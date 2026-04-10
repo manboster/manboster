@@ -23,4 +23,6 @@ const (
 	CommandModels    CommandType = "models"    // select models you want
 	CommandProviders CommandType = "providers" // select providers you want
 	CommandStart     CommandType = "start"     // start command gives tips to you, when it's the first run, it will grant you the root access to this application.
+	CommandPair      CommandType = "pair"      // pair Manboster with pair code
+	CommandCancel    CommandType = "cancel"    // cancel this request
 )

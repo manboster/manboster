@@ -57,7 +57,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 	return nil
 }
 
-func (s *Service) Notify(chatID string, action chat.ActionType) error {
+func (s *Service) Notify(ctx context.Context, chatID string, action chat.ActionType) error {
 	recipient, err := recipientParser(chatID)
 	if err != nil {
 		return err

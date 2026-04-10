@@ -11,7 +11,7 @@ type Provider interface {
 	EditMessage(ctx context.Context, msg *Message) error
 	Select(ctx context.Context, sessionId string, msg *Message) error // returned session id
 	Stop(ctx context.Context) error
-	Notify(chatID string, action ActionType) error
+	Notify(ctx context.Context, chatID string, action ActionType) error
 	Name() string
 	New() Provider
 }

@@ -1,5 +1,7 @@
 package session
 
+import "fmt"
+
 // NewManager creates an session manager instance.
 func NewManager() *Manager {
 	return &Manager{
@@ -8,15 +10,15 @@ func NewManager() *Manager {
 }
 
 // GetSession gets session information for you.
-func (m *Manager) GetSession(sessionId string) Session {
+func (m *Manager) GetSession(sessionId string) (Session, bool) {
 	m.Lock.RLock()
 	defer m.Lock.RUnlock()
 
 	session, avail := m.Sessions[sessionId]
 	if !avail {
-		return Session{}
+		return Session{}, false
 	}
-	return session
+	return session, true
 }
 
 // SetSession sets session information for you.
@@ -33,4 +35,9 @@ func (m *Manager) DeleteSession(key string) {
 	defer m.Lock.Unlock()
 
 	delete(m.Sessions, key)
+}
+
+// ID helps you to get sessionID
+func (m *Manager) ID(provider string, chatId string) string {
+	return fmt.Sprintf("%s:%s", provider, chatId)
 }

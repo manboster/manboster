@@ -18,9 +18,25 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	color.Blue("[Manboster Engine] Now handling text message...")
 
 	msg.MessageType = chat.MessageText
-	sessionId := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
-	sessionData := e.sessionManager.GetSession(sessionId)
-	if len(sessionData.Messages) == 0 {
+	sessionId := e.sessionManager.ID(instance.Name(), msg.ChatID)
+	sessionData, avail := e.sessionManager.GetSession(sessionId)
+
+	cancelCtx, cancel := context.WithCancel(ctx)
+	defer func(sid string) {
+		sd, avail := e.sessionManager.GetSession(sid)
+		cancel()
+		sd.Active = false
+		sd.Cancel = nil
+		if avail {
+			e.sessionManager.SetSession(sid, sd)
+		}
+	}(sessionId)
+
+	sessionData.Active = true
+	sessionData.Cancel = cancel
+	e.sessionManager.SetSession(sessionId, sessionData)
+
+	if !avail {
 		sessionData.Messages = append(sessionData.Messages, llm.Message{
 			Role: llm.RoleSystem,
 			Text: config.InitialSystemPrompt, // TODO: prompt engineering
@@ -38,13 +54,13 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	var err error
 	// try 5 times
 	for tries <= 5 {
-		if ctx.Err() != nil {
-			return ctx.Err()
+		if cancelCtx.Err() != nil {
+			return cancelCtx.Err()
 		}
 
 		color.Blue(fmt.Sprintf("[Manboster Engine] Fetching message response from LLMProvider %s, try %d times", e.llmProviders[0].Name(), tries))
 		// we make timeout requests.
-		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+		timeoutCtx, cancel := context.WithTimeout(cancelCtx, 2*time.Minute)
 		models := e.llmProviders[0].Models()
 		event, err = e.llmProviders[0].Chat(timeoutCtx, models[0].Name, msgData)
 		cancel()
@@ -62,26 +78,20 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
 		// now we have to wrap this into friendly prompt
 		tips := fmt.Sprintf("%+v", err)
+		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error())
 		if strings.Contains(tips, "429") {
-			msg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("[Manboster] %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", e.llmProviders[0].Name()),
-			}
+			text = fmt.Sprintf("[Manboster] %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", e.llmProviders[0].Name())
 		} else if strings.Contains(tips, "500") || strings.Contains(tips, "502") || strings.Contains(tips, "503") || strings.Contains(tips, "501") {
-			msg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("[Manboster] %s has been down, please check your provider's status page, or change providers and try again later.", e.llmProviders[0].Name()),
-			}
+			text = fmt.Sprintf("[Manboster] %s has been down, please check your provider's status page, or change providers and try again later.", e.llmProviders[0].Name())
 		} else if strings.Contains(tips, "context deadline exceeded") {
-			msg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.", e.llmProviders[0].Name()),
-			}
+			text = fmt.Sprintf("[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.", e.llmProviders[0].Name())
 		} else if strings.Contains(tips, "403") || strings.Contains(tips, "401") {
-			msg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.", e.llmProviders[0].Name()),
-			}
-		} else {
-			msg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error()),
-			}
+			text = fmt.Sprintf("[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.", e.llmProviders[0].Name())
+		} else if strings.Contains(tips, "cancel") {
+			text = fmt.Sprintf("[Manboster] You cancelled provider %s's request.", e.llmProviders[0].Name())
+		}
+		msg.Text = &chat.TextPayload{
+			Text: text,
 		}
 	} else {
 		textWithoutThinking := util.StripThink(event.Message.Text)
@@ -104,18 +114,17 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		msg.Text = &chat.TextPayload{
 			Text: textWithoutThinking,
 		}
+		sessionData.Messages = msgData
+		e.sessionManager.SetSession(sessionId, sessionData)
 	}
-
-	sessionData.Messages = msgData
-	e.sessionManager.SetSession(sessionId, sessionData)
 
 	tries = 1
 	for tries <= 5 {
-		if ctx.Err() != nil {
-			return ctx.Err()
+		if cancelCtx.Err() != nil {
+			return cancelCtx.Err()
 		}
 
-		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		timeoutCtx, cancel := context.WithTimeout(cancelCtx, 10*time.Second)
 		err = instance.SendMessage(timeoutCtx, msg)
 		cancel()
 
