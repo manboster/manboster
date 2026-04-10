@@ -18,11 +18,7 @@ func (s *Service) Name() string {
 	return "oai-compat"
 }
 
-func (s *Service) Model() string {
-	return s.cfg.Model.Name
-}
-
-func (s *Service) ModelInfo() llm.Model {
+func (s *Service) Models() []llm.Model {
 	return s.cfg.Model
 }
 

@@ -8,7 +8,7 @@ import (
 )
 
 // Chat allows you to chat with your model
-func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Event, error) {
+func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message) (*llm.Event, error) {
 	apiMsgs := make([]openai.ChatCompletionMessage, 0, len(messages))
 	for _, msg := range messages {
 		apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
@@ -18,7 +18,7 @@ func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Event,
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:       s.cfg.Model.Name,
+		Model:       model,
 		Messages:    apiMsgs,
 		Temperature: 0.7,
 	}
@@ -47,7 +47,7 @@ func (s *Service) Chat(ctx context.Context, messages []llm.Message) (*llm.Event,
 }
 
 // ChatStream is the next generation WIP TODO:
-func (s *Service) ChatStream(ctx context.Context, messages []llm.Message) (<-chan *llm.Event, error) {
+func (s *Service) ChatStream(ctx context.Context, model string, messages []llm.Message) (<-chan *llm.Event, error) {
 	msgChan := make(chan *llm.Event)
 	return msgChan, nil
 }

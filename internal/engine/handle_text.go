@@ -43,7 +43,8 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 1*time.Minute)
-		event, err = e.llmProviders[0].Chat(timeoutCtx, msgData)
+		models := e.llmProviders[0].Models()
+		event, err = e.llmProviders[0].Chat(timeoutCtx, models[0].Name, msgData)
 		cancel()
 
 		if err != nil {

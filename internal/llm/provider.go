@@ -1,14 +1,15 @@
 package llm
 
-import "context"
+import (
+	"context"
+)
 
 // Provider defines which functions should LLM provides give.
 type Provider interface {
-	Chat(ctx context.Context, messages []Message) (*Event, error)              // now one.
-	ChatStream(ctx context.Context, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
+	Chat(ctx context.Context, model string, messages []Message) (*Event, error)              // now one.
+	ChatStream(ctx context.Context, model string, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
 	Init(ctx context.Context, config any) error
 	Name() string
-	Model() string
-	ModelInfo() Model
+	Models() []Model
 	New() Provider
 }
