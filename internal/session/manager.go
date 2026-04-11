@@ -1,11 +1,16 @@
 package session
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // NewManager creates an session manager instance.
 func NewManager() *Manager {
 	return &Manager{
-		Sessions: make(map[string]Session),
+		Sessions:     make(map[string]Session),
+		Lock:         sync.RWMutex{},
+		SessionLocks: make(map[string]*sync.Mutex),
 	}
 }
 

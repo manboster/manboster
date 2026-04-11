@@ -11,7 +11,7 @@ import (
 )
 
 // Pair executes pair command
-func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, lock *sync.Mutex, code *int64, retry *int, count *int) error {
+func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, lock *sync.Mutex, code *int64, retry *int, count *int64) error {
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {

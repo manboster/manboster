@@ -19,41 +19,50 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 	msg.MessageType = chat.MessageText
 	sessionId := e.sessionManager.ID(instance.Name(), msg.ChatID)
-	sessionData, avail := e.sessionManager.GetSession(sessionId)
 
+	// TODO: replace it to channel queue
+	lock := e.sessionManager.GetSessionLocks(sessionId)
+	lock.Lock()
+	defer lock.Unlock()
+
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	// make a cancelable context
 	cancelCtx, cancel := context.WithCancel(ctx)
 	defer func(sid string) {
-		sd, avail := e.sessionManager.GetSession(sid)
 		cancel()
-		sd.Active = false
-		sd.Cancel = nil
-		if avail {
-			e.sessionManager.SetSession(sid, sd)
-		}
+		e.sessionManager.Deactivate(sid)
 	}(sessionId)
-
-	sessionData.Active = true
-	sessionData.Cancel = cancel
-	e.sessionManager.SetSession(sessionId, sessionData)
-
+	e.sessionManager.Activate(sessionId, cancel)
+	_, avail := e.sessionManager.GetSession(sessionId)
 	if !avail {
-		sessionData.Messages = append(sessionData.Messages, llm.Message{
+		e.sessionManager.AppendMessage(sessionId, llm.Message{
 			Role: llm.RoleSystem,
 			Text: config.InitialSystemPrompt, // TODO: prompt engineering
 			Type: llm.MessageText,
 		})
 	}
-	msgData := append(sessionData.Messages, llm.Message{
+
+	// who say...
+	chatName := "(Private Chat)"
+	if msg.ChatType != chat.ChatsPersonal {
+		chatName = msg.ChatName
+	}
+	promptTxt := fmt.Sprintf("%s said in %s, [%s]:\n%s", msg.Username, chatName, msg.CreatedAt, msg.Text.Text)
+	msgData := llm.Message{
 		Role: llm.RoleUser,
-		Text: msg.Text.Text,
+		Text: promptTxt,
 		Type: llm.MessageText,
-	})
+	}
+	e.sessionManager.AppendMessage(sessionId, msgData)
 
 	tries := 1
 	var event *llm.Event
 	var err error
-	// try 5 times
-	for tries <= 5 {
+	// try 3 times
+	for tries <= 3 {
 		if cancelCtx.Err() != nil {
 			return cancelCtx.Err()
 		}
@@ -62,7 +71,8 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(cancelCtx, 2*time.Minute)
 		models := e.llmProviders[0].Models()
-		event, err = e.llmProviders[0].Chat(timeoutCtx, models[0].Name, msgData)
+		data, _ := e.sessionManager.GetSession(sessionId)
+		event, err = e.llmProviders[0].Chat(timeoutCtx, models[0].Name, data.Messages)
 		cancel()
 
 		if err != nil {
@@ -75,10 +85,10 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 	}
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after 5 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
+		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s after 3 tries, get error: %s", e.llmProviders[0].Name(), err.Error()))
 		// now we have to wrap this into friendly prompt
 		tips := fmt.Sprintf("%+v", err)
-		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s after trying 5 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error())
+		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s after trying 3 times, get error: %s\nYou can resend your message or check the API's availability.", e.llmProviders[0].Name(), err.Error())
 		if strings.Contains(tips, "429") {
 			text = fmt.Sprintf("[Manboster] %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", e.llmProviders[0].Name())
 		} else if strings.Contains(tips, "500") || strings.Contains(tips, "502") || strings.Contains(tips, "503") || strings.Contains(tips, "501") {
@@ -95,11 +105,12 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 	} else {
 		textWithoutThinking := util.StripThink(event.Message.Text)
-		msgData = append(msgData, llm.Message{
+		e.sessionManager.AppendMessage(sessionId, llm.Message{
 			Text: textWithoutThinking,
 			Role: event.Message.Role,
 			Type: llm.MessageText,
 		})
+
 		if util.ExtractThinkContent(event.Message.Text) != "" {
 			msg.MessageType = chat.MessageThinkingText
 			msg.Text = &chat.TextPayload{
@@ -110,12 +121,11 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 				return err
 			}
 		}
+
 		msg.MessageType = chat.MessageText
 		msg.Text = &chat.TextPayload{
 			Text: textWithoutThinking,
 		}
-		sessionData.Messages = msgData
-		e.sessionManager.SetSession(sessionId, sessionData)
 	}
 
 	tries = 1

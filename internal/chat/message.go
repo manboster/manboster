@@ -16,6 +16,8 @@ type Message struct {
 	Reply   *Message // Optional. When it's valid, it means the message replied
 	Forward *Message // Optional. When it's valid, it means the message was forwarded from someone.
 
+	ChatName string // Optional. The chat's name, Required when ChatsType = ChatsGroup or ChatsChannel
+
 	Command           *CommandPayload           // Optional. Required when MessageType = MessageCommand
 	Selection         *SelectionPayload         // Optional. Required when MessageType = MessageSelection
 	SelectionCallback *SelectionCallbackPayload // Optional. Required when MessageType = MessageSelectionCallback

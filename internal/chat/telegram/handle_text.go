@@ -21,6 +21,7 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 	// define things all we know.
 	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)
 	msg.Username = c.Sender().FirstName + " " + c.Sender().LastName
+	msg.ChatName = c.Chat().Title // Only Group available
 	msg.UserID = fmt.Sprintf("%d", c.Sender().ID)
 	msg.ChatID = fmt.Sprintf("%d", c.Chat().ID)
 	msg.CreatedAt = time.Now()
@@ -77,11 +78,20 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 		}
 	}
 
-	typingCtx, cancelTyping := context.WithCancel(ctx)
-	defer cancelTyping()
-	go s.Type(telebot.ChatID(c.Chat().ID), typingCtx)
+	if (msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && strings.HasPrefix(c.Text(), "@"+c.Bot().Me.Username) {
+		msg.MessageType = chat.MessageText
+		msg.Text = &chat.TextPayload{
+			Text: c.Text()[len("@"+c.Bot().Me.Username)+1:],
+		}
+	}
 
-	// call onMsg on index
-	onMsg(msg)
+	if msg.ChatType == chat.ChatsPersonal || ((msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && (msg.Reply != nil || strings.Contains(c.Text(), "@"+c.Bot().Me.Username))) {
+		typingCtx, cancelTyping := context.WithCancel(ctx)
+		defer cancelTyping()
+		go s.Type(telebot.ChatID(c.Chat().ID), typingCtx)
+
+		// call onMsg on index
+		onMsg(msg)
+	}
 	return nil
 }

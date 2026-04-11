@@ -15,6 +15,7 @@ type Session struct {
 }
 
 type Manager struct {
-	Sessions map[string]Session
-	Lock     sync.RWMutex
+	Sessions     map[string]Session
+	Lock         sync.RWMutex
+	SessionLocks map[string]*sync.Mutex
 }
