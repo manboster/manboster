@@ -18,6 +18,7 @@ type Engine struct {
 	onboardLock sync.Mutex
 	pairKey     int64
 	retry       int
+	userCount   int64
 }
 
 func New(cfg config.Config, repo repository.Repository) (*Engine, error) {
@@ -28,5 +29,6 @@ func New(cfg config.Config, repo repository.Repository) (*Engine, error) {
 		repo:           repo,
 		pairKey:        0,
 		retry:          0,
+		userCount:      0,
 	}, nil
 }

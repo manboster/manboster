@@ -11,7 +11,7 @@ import (
 )
 
 // Pair executes pair command
-func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, lock *sync.Mutex, code *int64, retry *int) error {
+func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, lock *sync.Mutex, code *int64, retry *int, count *int) error {
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {
@@ -51,6 +51,7 @@ func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo r
 			text += "\nEnjoy using your personal Lobster!"
 			*code = 0
 			*retry = 0
+			*count += 1
 		}
 	} else {
 		text = "Pair failed, invalid pair code, please check your code!"
