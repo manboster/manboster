@@ -2,3 +2,5 @@
 .idea
 build/
 config.yaml
+main
+main.exe

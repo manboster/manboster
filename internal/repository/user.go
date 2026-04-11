@@ -11,6 +11,7 @@ type UserRepository interface {
 	UserCounts(ctx context.Context) (int64, error) // get user's counts
 	UserInfo(ctx context.Context, platform string, id string) (types.User, error)
 	CreateUser(ctx context.Context, user types.User) error
+	DeleteUser(ctx context.Context, platform string, id string) error
 }
 
 // UserCounts gets the total number of users.
@@ -41,4 +42,10 @@ func (repo *Repo) CreateUser(ctx context.Context, user types.User) error {
 	var uInfo dbtypes.User
 	uInfo = types.MapU(user)
 	return repo.db.Create(&uInfo).Error
+}
+
+// DeleteUser deletes authenticated user from this repository
+func (repo *Repo) DeleteUser(ctx context.Context, platform string, id string) error {
+	var uData dbtypes.User
+	return repo.db.Where("userid = ? AND platform = ?", id, platform).Delete(&uData).Error
 }

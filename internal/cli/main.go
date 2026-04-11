@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
@@ -30,6 +31,7 @@ func main(cmd *cobra.Command, args []string) {
 	err := cfg.Validate()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error while validating the configuration: %q", err))
+		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 
@@ -44,6 +46,7 @@ func main(cmd *cobra.Command, args []string) {
 	err = dbi.Init(dbPath)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error while loading the database: %q", err))
+		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 	repo := repository.New(dbi.Instance())
@@ -61,6 +64,7 @@ func main(cmd *cobra.Command, args []string) {
 	e, err := engine.New(cfg, repo)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error while creating the engine: %q", err))
+		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 
@@ -68,9 +72,11 @@ func main(cmd *cobra.Command, args []string) {
 	err = e.Load(ctx)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error while loading and running the engine: %q", err))
+		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 
 	<-ctx.Done()
 	color.Yellow("[Manboster Client] Your Manboster is going to sleep, thank you for playing with it!")
+	time.Sleep(1 * time.Second)
 }

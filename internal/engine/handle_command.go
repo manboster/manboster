@@ -25,9 +25,9 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandHelp:
 		// return commands.Help(ctx, instance, msg)
 	case chat.CommandOp:
-		// return commands.Op(ctx, instance, msg)
+		return commands.Op(ctx, instance, msg, e.repo)
 	case chat.CommandDeOp:
-		// return commands.DeOp(ctx, instance, msg)
+		return commands.DeOp(ctx, instance, msg, e.repo)
 	case chat.CommandStatus:
 		// return commands.Status(ctx, instance, msg)
 	case chat.CommandSave:

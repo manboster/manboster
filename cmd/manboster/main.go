@@ -20,7 +20,7 @@ func main() {
 	if errors.Is(err, config.ErrNoConfig) {
 		cli.ConfigCmdRun(&cobra.Command{}, os.Args[1:])
 		color.Green("Successfully created config.yaml, open Manboster again and enjoy it!")
-		time.Sleep(2 * time.Second)
+		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	} else if err != nil {
 		panic(err)
