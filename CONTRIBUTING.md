@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 1; Apr 13, 2026*
+*Rev 1.1; Apr 13, 2026*
 
 ## TL;DR
 
@@ -20,7 +20,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 ## 2. About the Versioning
 
-2.1 The Versioning obeys the principle of [SemVer](https://semver.org/).
+2.1 The Versioning follows the principle of [SemVer](https://semver.org/).
 
 2.2 Version `0.0.1` represents minor bug fixes.
 
@@ -41,7 +41,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 2.10 Core contributors shall create new git branches for 0.1.0 and 1.0.0 versions (e.g., `dev-v0.x`, `dev-v1.x`) and merge bug fixes from older versions.
 ## 3. About the commit 
 
-3.1 The commit message should obey the rule of [conventional commits](https://www.conventionalcommits.org/)
+3.1 Commit messages must follow [the Conventional Commits](https://www.conventionalcommits.org/) standard. 
 
 ## 4. About the features
 
@@ -59,7 +59,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 5.2 Please follow standard Go naming conventions: use `MixedCaps` (PascalCase) for exported identifiers and `camelCase` for unexported variables.
 
-5.3 Please human-friendly function, variable, type names. Meaningless or ambiguous words **ARE NOT** allowed in any identifiers.
+5.3 Please use human-friendly function, variable, type names. Meaningless or ambiguous words **ARE NOT** allowed in any identifiers.
 
 5.4 Comments in code **MUST BE** English, not other languages.
 
@@ -73,4 +73,6 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
 
-Rev 1: Updated on 2026.4.13
+Rev 1.1: Minor Typo fixes, Updated on 2026.4.13
+
+Rev 1: CONTRIBUTING.md created, Updated on 2026.4.13
