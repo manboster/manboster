@@ -39,6 +39,20 @@
 manboster start
 ```
 
+## 加入我们！
+
+欢迎来为社区做出自己的一份贡献！
+
+在写代码，提出PR前，请先阅读[CONTRIBUTING.md](./CONTRIBUTING.md)来了解项目的贡献要求
+
+## 遇到了问题？
+
+如果你遇到了问题，请先阅读[文档](https://manboster.dev/docs/)。
+
+文档里面没有给出解决方案或者是解决方案无法解决问题时再去issue搜索这个问题，如果还没有，请开issue。
+
+在开issue之前，请先充分阅读并理解[提问的艺术](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)以给你我减少不必要的时间，冲突和麻烦。
+
 ## 授权协议
 
 本软件使用Apache 2.0协议作为开源协议。

@@ -78,14 +78,15 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 		}
 	}
 
-	if (msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && strings.HasPrefix(c.Text(), "@"+c.Bot().Me.Username) {
+	// TODO: Passthrough all messages from Group, handle it in handleMessage, check.
+	if ((msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && strings.HasPrefix(c.Text(), "@"+c.Bot().Me.Username)) && msg.MessageType != chat.MessageCommand {
 		msg.MessageType = chat.MessageText
 		msg.Text = &chat.TextPayload{
 			Text: c.Text()[len("@"+c.Bot().Me.Username)+1:],
 		}
 	}
 
-	if msg.ChatType == chat.ChatsPersonal || ((msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && (msg.Reply != nil || strings.Contains(c.Text(), "@"+c.Bot().Me.Username))) {
+	if msg.ChatType == chat.ChatsPersonal || ((msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && ((msg.Reply != nil && c.Message().ReplyTo.Sender.ID == c.Bot().Me.ID) || strings.Contains(c.Text(), "@"+c.Bot().Me.Username))) || msg.MessageType == chat.MessageCommand {
 		typingCtx, cancelTyping := context.WithCancel(ctx)
 		defer cancelTyping()
 		go s.Type(telebot.ChatID(c.Chat().ID), typingCtx)

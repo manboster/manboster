@@ -30,6 +30,18 @@ For more details, you can run `manboster help` in your terminal!
 
 **Notes for the Daemon**: Simply double-click would not start the daemon, if you want to create and start the daemon, please run `manboster start`.
 
+## Make a contribution
+
+We are looking forward you to contribute this repository! But Before you start, please carefully read [CONTRIBUTING.md](./CONTRIBUTING.md) then write code, open PR. 
+
+## Troubleshoot
+
+If you are facing troubles, please read [our documentation](https://manboster.dev/docs/) first.
+
+You can create a new issue after trying ways that documentation says or what you've faced is not recorded in documentation.
+
+Before you create a new issue, you can search for the problem, if there is none, you can create it after reading [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html).
+
 ## License
 
 This application's license is Apache 2.0.
