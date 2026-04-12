@@ -12,7 +12,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 ## 1. About the AI code
 
-1.1 We **DO NOT** accept **ANY** AI Agent's contribution, unless the pull request is opened by the owner and the owner are responsible for the code.
+1.1 We **DO NOT** accept **ANY** AI Agent's contribution, unless the pull request is opened by the owner and the owner is responsible for the code.
 
 1.2 We accept AI generated codes. But the creator of the pull request is **FULLY RESPONSIBLE** for the code AI generated.
 
@@ -36,7 +36,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 2.8 Before a `1.0.0` release, Alpha, Beta, and Release Candidate (RC) versions should be released, tagged as `x.0.0-alpha`, `x.0.0-beta`, and `x.0.0-rc`.
 
-2.9 Core contributors may release RC, and Beta versions for `1.0.0`. Only the owner can release stable `1.0.0` versions.
+2.9 Core contributors may release RC and Beta versions for `1.0.0`. Only the owner can release stable `1.0.0` versions.
 
 2.10 Core contributors shall create new git branches for 0.1.0 and 1.0.0 versions (e.g., `dev-v0.x`, `dev-v1.x`) and merge bug fixes from older versions.
 ## 3. About the commit 
@@ -73,6 +73,6 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
 
-Rev 1.1: Minor Typo fixes, Updated on 2026.4.13
+Rev 1.1, 1.2: Minor Typo fixes, Updated on 2026.4.13
 
 Rev 1: CONTRIBUTING.md created, Updated on 2026.4.13
