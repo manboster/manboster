@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 1.1; Apr 13, 2026*
+*Rev 2; Apr 13, 2026*
 
 ## TL;DR
 
@@ -39,6 +39,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 2.9 Core contributors may release RC and Beta versions for `1.0.0`. Only the owner can release stable `1.0.0` versions.
 
 2.10 Core contributors shall create new git branches for 0.1.0 and 1.0.0 versions (e.g., `dev-v0.x`, `dev-v1.x`) and merge bug fixes from older versions.
+
 ## 3. About the commit 
 
 3.1 Commit messages must follow [the Conventional Commits](https://www.conventionalcommits.org/) standard. 
@@ -69,9 +70,47 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 6.2 Before you commit, you should run `go test ./...` to ensure all tests are passed.
 
+## 7. About the Contribution Roles
+
+7.1 A Contributor is any individual who contributes to the project, ranging from minor typo fixes to significant bug resolutions.
+
+7.2 A Core Contributor is dedicated member who actively participates in technical discussions, provides roadmap suggestions, and maintains the codebase consistently.
+
+7.3 The Owner is the creator and primary maintainer of the Manboster Project.
+
+7.4 To be nominated as a Core Contributor, you must:
+
+7.4.1 Propose and implement at least one meaningful feature. A meaningful feature means the feature should align with this project's roadmap and approved by the owner.
+
+7.4.2 Demonstrate frequent and consistent contributions to the project.
+
+7.4.3 Or, provide exceptional help in building documentation and managing the community.
+
+7.5 Once you become a Core Contributor, you will have privileges below:
+
+7.5.1 Your name will be featured in the Core Contributors section of THANKS.md.
+
+7.5.2 You will be invited to the Manboster GitHub Organization and our internal developer group.
+
+7.5.3 You will be granted extended permissions (e.g., branch management, issue labeling, and PR reviews).
+
+7.6 Core Contributors who have not contributed code or participated in maintenance for more than 6 months will have their repository write permissions suspended for security reasons. If you wish to resume active contribution, please contact the owner to restore your permissions.
+
+## 8. About the Issues and Discussions
+
+8.1 Issues is the place where people discuss features and bug fixes. 
+
+8.2 Discussions is our community space for casual chat, questions, and networking. All participants must adhere to [GitHub's Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service).
+
+8.3 We **DO NOT** welcome spam, including "check-ins" (such as sending "留名" "打卡" and more) or meaningless comments in Issues. Such content will be closed or deleted **WITHOUT NOTICE**. While we are more lenient in Discussions, please keep the content constructive.
+
+8.4 If you are a security researcher and have found a vulnerability in Manboster, please **DO NOT** open a public issue. Use the GitHub Security Advisory feature or send a detailed report to `security@manboster.dev`. Once verified, we will coordinate a fix as a priority.
+
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 2: Add contribution roles and issues, discussions, Updated on 2026.4.13
 
 Rev 1.1, 1.2: Minor Typo fixes, Updated on 2026.4.13
 

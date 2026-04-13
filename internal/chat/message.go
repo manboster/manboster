@@ -32,6 +32,10 @@ const (
 	MessageText
 	MessageCommand
 	MessageThinkingText
+	MessageImage
+	MessageVoice
+	MessageVideo
+	MessageFile
 	MessageSelectionCallback
 	MessageSelection
 )
