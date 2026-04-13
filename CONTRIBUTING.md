@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 2.1; Apr 13, 2026*
+*Rev 2.2; Apr 13, 2026*
 
 ## TL;DR
 
@@ -12,7 +12,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 ## 1. About the AI code
 
-1.1 We **DO NOT** accept **ANY** AI Agent's indepdent contribution, unless the pull request is opened by its human contributor and is responsible for the code.
+1.1 We **DO NOT** accept **ANY** AI Agent's independent contribution, unless the pull request is opened by its human contributor and is responsible for the code.
 
 1.2 We accept AI generated codes. But the creator of the pull request is **FULLY RESPONSIBLE** for the code AI generated.
 
@@ -109,6 +109,8 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 2.2: Fix typo, Updated on 2026.4.13
 
 Rev 2.1: Fix ambiguous words may occur misunderstanding, Updated on 2026.4.13
 
