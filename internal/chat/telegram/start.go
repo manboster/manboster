@@ -45,9 +45,10 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 	go func() {
 		select {
 		case <-ctx.Done():
-			color.Yellow("[Manboster Telegram] Context cancelled, shutting down...")
+			color.Yellow("[Manboster Telegram Provider] Context cancelled, shutting down...")
 			s.tgInstance.Stop()
 		case <-stopDone:
+			s.tgInstance.Stop()
 		}
 	}()
 
