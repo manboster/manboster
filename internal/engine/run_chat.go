@@ -19,7 +19,7 @@ func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 		})
 
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to start a message provider on %s, get error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to start a chat provider on %s, get error: %q", instance.Name(), err))
 			tries++
 			continue
 		} else {
@@ -27,5 +27,14 @@ func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 			return
 		}
 	}
-	color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", instance.Name()))
+	if tries > 3 {
+		color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", instance.Name()))
+		return
+	}
+
+	<-ctx.Done()
+	color.Yellow(fmt.Sprintf("[Manboster Engine] Stopping chat provider: %s", instance.Name()))
+	if stopErr := instance.Stop(ctx); stopErr != nil {
+		color.Red(fmt.Sprintf("[Manboster Engine] Error stopping chat provider %s: %v", instance.Name(), stopErr))
+	}
 }

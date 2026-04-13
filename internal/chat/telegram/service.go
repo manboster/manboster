@@ -25,3 +25,9 @@ func (s *Service) New() chat.Provider {
 func (s *Service) Name() string {
 	return "telegram"
 }
+
+func (s *Service) Ability() chat.AbilityType {
+	// return chat.AbilityAll
+	// Now select function is a problem so we deleted without select info
+	return chat.AbilityNoSelect
+}

@@ -10,3 +10,8 @@ const (
 	AbilitySendFile
 	AbilitySendSelect
 )
+
+var AbilityAll = AbilityNoSelect | AbilitySendSelect
+var AbilityTextAndImage = AbilitySendText | AbilitySendImage
+var AbilityTextAndFile = AbilitySendText | AbilitySendFile
+var AbilityNoSelect = AbilitySendText | AbilitySendImage | AbilitySendVoice | AbilitySendFile | AbilitySendVideo

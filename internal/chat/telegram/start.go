@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/fatih/color"
@@ -40,6 +41,16 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 	}
 	s.tgInstance = b
 
+	stopDone := make(chan struct{}) // make a channel to align with
+	go func() {
+		select {
+		case <-ctx.Done():
+			color.Yellow("[Manboster Telegram] Context cancelled, shutting down...")
+			s.tgInstance.Stop()
+		case <-stopDone:
+		}
+	}()
+
 	// Handler for Message Resp calling.
 	s.tgInstance.Handle(telebot.OnText, func(c telebot.Context) error {
 		return s.HandleText(ctx, c, onMsg)
@@ -49,12 +60,12 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 
 	s.tgInstance.Start()
 
-	// ctx done cleaning
-	go func() {
-		_ = s.Stop(ctx)
-	}()
-
-	return nil
+	select {
+	case <-ctx.Done():
+		return nil
+	case <-stopDone:
+		return errors.New("telegram provider is facing an problem")
+	}
 }
 
 func (s *Service) Notify(ctx context.Context, chatID string, action chat.ActionType) error {
