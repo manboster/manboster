@@ -6,5 +6,5 @@ type Chat struct {
 	ChatProvider   uint64 `gorm:"column:chat_provider"`   // chat's provider
 	ChatModel      string `gorm:"column:chat_model"`      // chat's model
 	ChatPermission int16  `gorm:"column:chat_permission"` // chat's permission
-	SessionID      string `gorm:"column:session_id"`      // chat's session id
+	SessionID      string `gorm:"column:session_id"`      // chat's session id, n chat ids to session ids
 }

@@ -40,7 +40,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	if !avail {
 		e.sessionManager.AppendMessage(sessionId, llm.Message{
 			Role: llm.RoleSystem,
-			Text: config.InitialSystemPrompt, // TODO: prompt engineering
+			Text: &llm.MessageTextPayload{
+				Text: config.InitialSystemPrompt, // TODO: prompt engineering
+			},
 			Type: llm.MessageText,
 		})
 	}
@@ -53,7 +55,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	promptTxt := fmt.Sprintf("%s said in %s, [%s]:\n%s", msg.Username, chatName, msg.CreatedAt, msg.Text.Text)
 	msgData := llm.Message{
 		Role: llm.RoleUser,
-		Text: promptTxt,
+		Text: &llm.MessageTextPayload{
+			Text: promptTxt,
+		},
 		Type: llm.MessageText,
 	}
 	e.sessionManager.AppendMessage(sessionId, msgData)
@@ -104,17 +108,19 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			Text: text,
 		}
 	} else {
-		textWithoutThinking := util.StripThink(event.Message.Text)
+		textWithoutThinking := util.StripThink(event.Message.Text.Text)
 		e.sessionManager.AppendMessage(sessionId, llm.Message{
-			Text: textWithoutThinking,
+			Text: &llm.MessageTextPayload{
+				Text: textWithoutThinking,
+			},
 			Role: event.Message.Role,
 			Type: llm.MessageText,
 		})
 
-		if util.ExtractThinkContent(event.Message.Text) != "" {
+		if util.ExtractThinkContent(event.Message.Text.Text) != "" {
 			msg.MessageType = chat.MessageThinkingText
 			msg.Text = &chat.TextPayload{
-				Text: util.ExtractThinkContent(event.Message.Text),
+				Text: util.ExtractThinkContent(event.Message.Text.Text),
 			}
 			err := instance.SendMessage(ctx, msg)
 			if err != nil {

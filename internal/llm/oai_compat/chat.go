@@ -13,7 +13,7 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 	for _, msg := range messages {
 		apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
 			Role:    string(msg.Role),
-			Content: msg.Text,
+			Content: msg.Text.Text,
 		})
 	}
 
@@ -39,7 +39,9 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 	return &llm.Event{
 		EventType: llm.EventMessage,
 		Message: &llm.Message{
-			Text: resp.Choices[0].Message.Content,
+			Text: &llm.MessageTextPayload{
+				Text: resp.Choices[0].Message.Content,
+			},
 			Type: llm.MessageText,
 			Role: llm.RoleAssistant,
 		},

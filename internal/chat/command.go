@@ -19,7 +19,7 @@ const (
 	CommandStatus    CommandType = "status"    // display current status
 	CommandSave      CommandType = "save"      // save this chat to database
 	CommandNew       CommandType = "new"       // delete this and create a new chat
-	CommandSummary   CommandType = "summary"   // summary this chat and create a new chat with summarized items
+	CommandCompact   CommandType = "compact"   // summary this chat and create a new chat with summarized items
 	CommandModels    CommandType = "models"    // select models you want
 	CommandProviders CommandType = "providers" // select providers you want
 	CommandStart     CommandType = "start"     // start command gives tips to you, when it's the first run, it will grant you the root access to this application.

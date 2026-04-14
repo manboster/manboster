@@ -23,7 +23,7 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandId:
 		return commands.Id(ctx, instance, msg)
 	case chat.CommandHelp:
-		// return commands.Help(ctx, instance, msg)
+		return commands.Help(ctx, instance, msg)
 	case chat.CommandOp:
 		return commands.Op(ctx, instance, msg, e.repo)
 	case chat.CommandDeOp:
@@ -33,7 +33,7 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandSave:
 		// return commands.Save(ctx, instance, msg)
 	case chat.CommandNew:
-	case chat.CommandSummary:
+	case chat.CommandCompact:
 	case chat.CommandModels:
 	case chat.CommandProviders:
 	case chat.CommandStart:
