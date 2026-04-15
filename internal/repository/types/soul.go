@@ -10,12 +10,13 @@ import (
 )
 
 type Soul struct {
-	ID       uint64
-	Priority uint8
-	UserID   string
-	Scope    []string
-	Time     time.Time
-	Content  string
+	ID        uint64
+	Priority  uint8
+	UserID    string
+	Scope     []string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Content   string
 }
 
 func MapS(soul Soul) types.Soul {
@@ -25,12 +26,13 @@ func MapS(soul Soul) types.Soul {
 		return types.Soul{}
 	}
 	return types.Soul{
-		ID:       soul.ID,
-		Priority: soul.Priority,
-		UserID:   soul.UserID,
-		Scope:    string(val),
-		Time:     soul.Time,
-		Content:  soul.Content,
+		ID:        soul.ID,
+		Priority:  soul.Priority,
+		UserID:    soul.UserID,
+		Scope:     string(val),
+		CreatedAt: soul.CreatedAt,
+		UpdatedAt: soul.UpdatedAt,
+		Content:   soul.Content,
 	}
 }
 
@@ -44,7 +46,8 @@ func MapSoul(soul types.Soul) Soul {
 	sl.ID = soul.ID
 	sl.Priority = soul.Priority
 	sl.UserID = soul.UserID
-	sl.Time = soul.Time
+	sl.CreatedAt = soul.CreatedAt
+	sl.UpdatedAt = soul.UpdatedAt
 	sl.Content = soul.Content
 	return sl
 }

@@ -3,16 +3,19 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/database/types"
 )
 
 type Memory struct {
-	ID    uint64
-	Key   string
-	Value string
-	Scope []string
+	ID        uint64
+	Key       string
+	Value     string
+	Scope     []string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func MapMem(memory Memory) types.Memory {
@@ -22,10 +25,12 @@ func MapMem(memory Memory) types.Memory {
 		return types.Memory{}
 	}
 	return types.Memory{
-		ID:    memory.ID,
-		Key:   memory.Key,
-		Value: memory.Value,
-		Scope: string(val),
+		ID:        memory.ID,
+		Key:       memory.Key,
+		Value:     memory.Value,
+		Scope:     string(val),
+		CreatedAt: memory.CreatedAt,
+		UpdatedAt: memory.UpdatedAt,
 	}
 }
 
@@ -38,5 +43,7 @@ func MapMemory(memory types.Memory) Memory {
 	mem.ID = memory.ID
 	mem.Key = memory.Key
 	mem.Value = memory.Value
+	mem.CreatedAt = memory.CreatedAt
+	mem.UpdatedAt = memory.UpdatedAt
 	return mem
 }

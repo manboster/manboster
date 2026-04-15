@@ -18,7 +18,7 @@ type UserRepository interface {
 func (repo *Repo) UserCounts(ctx context.Context) (int64, error) {
 	var count int64
 
-	err := repo.db.Model(&dbtypes.User{}).Count(&count).Error
+	err := repo.db.WithContext(ctx).Model(&dbtypes.User{}).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}
@@ -30,7 +30,7 @@ func (repo *Repo) UserCounts(ctx context.Context) (int64, error) {
 func (repo *Repo) UserInfo(ctx context.Context, platform string, id string) (types.User, error) {
 	var user dbtypes.User
 
-	err := repo.db.Where("userid = ? AND platform = ?", id, platform).First(&user).Error
+	err := repo.db.WithContext(ctx).Where("userid = ? AND platform = ?", id, platform).First(&user).Error
 	if err != nil {
 		return types.User{}, err
 	}
@@ -39,13 +39,12 @@ func (repo *Repo) UserInfo(ctx context.Context, platform string, id string) (typ
 
 // CreateUser adds user
 func (repo *Repo) CreateUser(ctx context.Context, user types.User) error {
-	var uInfo dbtypes.User
-	uInfo = types.MapU(user)
-	return repo.db.Create(&uInfo).Error
+	uInfo := types.MapU(user)
+	return repo.db.WithContext(ctx).Create(&uInfo).Error
 }
 
 // DeleteUser deletes authenticated user from this repository
 func (repo *Repo) DeleteUser(ctx context.Context, platform string, id string) error {
 	var uData dbtypes.User
-	return repo.db.Where("userid = ? AND platform = ?", id, platform).Delete(&uData).Error
+	return repo.db.WithContext(ctx).Where("userid = ? AND platform = ?", id, platform).Delete(&uData).Error
 }

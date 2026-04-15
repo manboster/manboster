@@ -7,6 +7,7 @@ type Repository interface {
 	ChatRepository
 	ChatDataRepository
 	SessionRepository
+	SoulRepository
 }
 
 type Repo struct {

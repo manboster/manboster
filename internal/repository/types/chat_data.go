@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"github.com/manboster/manboster/internal/database/types"
 	"github.com/manboster/manboster/internal/llm"
 )
@@ -12,6 +14,8 @@ type ChatData struct {
 	MessageType    llm.MessageType
 	Tokens         int
 	MessagePayload string // json encoded
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 func MapCD(chatData ChatData) types.ChatData {
@@ -22,6 +26,8 @@ func MapCD(chatData ChatData) types.ChatData {
 		MessageType:    int16(chatData.MessageType),
 		Tokens:         chatData.Tokens,
 		MessagePayload: chatData.MessagePayload,
+		CreatedAt:      chatData.CreatedAt,
+		UpdatedAt:      chatData.UpdatedAt,
 	}
 }
 
@@ -33,5 +39,7 @@ func MapChatData(chatData types.ChatData) ChatData {
 		MessageType:    llm.MessageType(chatData.MessageType),
 		Tokens:         chatData.Tokens,
 		MessagePayload: chatData.MessagePayload,
+		CreatedAt:      chatData.CreatedAt,
+		UpdatedAt:      chatData.UpdatedAt,
 	}
 }
