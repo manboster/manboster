@@ -1,4 +1,4 @@
 package repository
 
-type SessionRepository struct {
+type SessionRepository interface {
 }

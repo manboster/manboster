@@ -1,14 +1,15 @@
 package schema
 
+// Args defines a plugin's call args tree.
 type Args struct {
-	Name        string
-	Type        ArgsType
-	Description string
-	Required    bool
+	Name        string   `json:"name" yaml:"name"`               // Required. The arg's name
+	Type        ArgsType `json:"type" yaml:"type"`               // Required. The args's type, like int32, etc...
+	Description string   `json:"description" yaml:"description"` // Required. The arg's description, you need to write descriptive so that there are something ambiguous
+	Required    bool     `json:"required" yaml:"required"`       // Required. it means this is required or not.
 
-	Properties map[string]*Args // When Type == Object
-	Items      *Args            // When Type == Items
-	Enum       []any            //
+	Properties []*Args `json:"properties" yaml:"properties"` // Optional. Required when ArgsType == ArgsTypeObject
+	Items      *Args   `json:"items" yaml:"items"`           // Optional. Required When ArgsType == ArgsTypeArray
+	Enum       []any   `json:"enum" yaml:"enum"`             // Optional. Required when ArgsType == ArgsTypeEnum
 }
 
 type ArgsType int16
