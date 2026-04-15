@@ -10,7 +10,7 @@ import (
 )
 
 // HandleCommand handles commands occurs
-func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	// TODO: check user
 	if msg.Command == nil {
 		return ErrInvalidParams

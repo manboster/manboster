@@ -1,20 +1,22 @@
 package session
 
-import (
-	"github.com/manboster/manboster/internal/llm"
-)
+import "github.com/manboster/manboster/internal/llm"
 
-func (m *Manager) AppendMessage(sid string, msg llm.Message) {
-	m.Lock.Lock()
-	defer m.Lock.Unlock()
-
+// GetMessages return messages from sid
+func (m *Manager) GetMessages(sid string) []llm.Message {
+	m.Lock.RLock()
+	defer m.Lock.RUnlock()
+	
 	s, avail := m.Sessions[sid]
 	if !avail {
-		m.Sessions[sid] = Session{
-			Messages: []llm.Message{msg},
-		}
-	} else {
-		s.Messages = append(s.Messages, msg)
-		m.Sessions[sid] = s
+		return nil
 	}
+
+	var msgs []llm.Message
+	for _, event := range s.Events {
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil {
+			msgs = append(msgs, *event.Message)
+		}
+	}
+	return msgs
 }

@@ -25,3 +25,5 @@ func (s *Service) Models() []llm.Model {
 func (s *Service) New() llm.Provider {
 	return &Service{}
 }
+
+func (s *Service) DisplayName() string { return "OpenAI Compatible API" }

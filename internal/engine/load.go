@@ -12,8 +12,6 @@ func (e *Engine) Load(ctx context.Context) error {
 
 	color.Blue("[Manboster Engine] Loading engine...")
 
-	// TODO: get model data from SQLite(Repository)
-
 	// First, we get user counts using cache
 	count, err := e.repo.UserCounts(ctx)
 	if err != nil {
@@ -27,7 +25,15 @@ func (e *Engine) Load(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	if len(llmProviders) == 0 {
+		color.Red(fmt.Sprintf("[Manboster Engine] All LLM providers have tried to connect but failed."))
+		return ErrNoAvailableLLMProvider
+	}
 	e.llmProviders = llmProviders
+
+	// get model data from configuration
+	e.loadDefaultModel(ctx)
 
 	// Then, we activate chats.
 	err = e.loadChats(ctx)

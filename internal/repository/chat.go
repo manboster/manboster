@@ -8,7 +8,7 @@ import (
 )
 
 type ChatRepository interface {
-	CreateChat(chat types.Chat) error
+	CreateChat(ctx context.Context, chat types.Chat) error
 	GetChat(ctx context.Context, chatId string, provider string) (types.Chat, error)
 	GetAllChats(ctx context.Context) ([]types.Chat, error)
 	DeleteChat(ctx context.Context, chatId string, provider string) error

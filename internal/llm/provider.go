@@ -10,6 +10,7 @@ type Provider interface {
 	ChatStream(ctx context.Context, model string, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
 	Init(ctx context.Context, config any) error
 	Name() string
+	DisplayName() string
 	Models() []Model
 	New() Provider
 }

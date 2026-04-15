@@ -9,7 +9,9 @@ import (
 
 // Session gives, stores and writes users session storages.
 type Session struct {
-	Messages []llm.Message
+	Events   []llm.Event
+	Provider string
+	Model    string
 	Active   bool
 	Cancel   context.CancelFunc
 }

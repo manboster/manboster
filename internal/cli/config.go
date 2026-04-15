@@ -29,7 +29,7 @@ func ConfigCmdRun(cmd *cobra.Command, args []string) {
 	)
 	defer stop()
 
-	cfg, err := Form(ctx)
+	cfg, err := ConfigurationForm(ctx)
 	if err != nil {
 		os.Exit(1)
 		return

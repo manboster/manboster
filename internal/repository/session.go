@@ -11,7 +11,7 @@ type SessionRepository interface {
 	CreateSession(ctx context.Context, session types.Session) error
 	GetSession(ctx context.Context, sessionId string) (types.Session, error)
 	GetAllSessions(ctx context.Context) ([]types.Session, error)
-	UpdateSession(ctx context.Context, session types.Session) error
+	UpdateSession(ctx context.Context, sid string, updates map[string]interface{}) error
 	DeleteSession(ctx context.Context, sessionId string) error
 }
 

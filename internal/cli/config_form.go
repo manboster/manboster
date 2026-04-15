@@ -14,8 +14,8 @@ import (
 	_ "github.com/manboster/manboster/internal/llm/openrouter"
 )
 
-// Form provides a huh form configuration with TUI.
-func Form(ctx context.Context) (config.Config, error) {
+// ConfigurationForm provides a huh form configuration with TUI.
+func ConfigurationForm(ctx context.Context) (config.Config, error) {
 	// get default configuration's value
 	var c config.Config
 	c = config.Default(c)

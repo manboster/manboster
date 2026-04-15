@@ -26,3 +26,11 @@ const (
 	CommandPair      CommandType = "pair"      // pair Manboster with pair code
 	CommandCancel    CommandType = "cancel"    // cancel this request
 )
+
+func IsPublicCommand(commandType CommandType) bool {
+	return commandType == CommandId || commandType == CommandPair || commandType == CommandVersion
+}
+
+func IsSessionRequiredCommand(commandType CommandType) bool {
+	return commandType == CommandCompact || commandType == CommandCancel || commandType == CommandNew || commandType == CommandSave || commandType == CommandStatus
+}

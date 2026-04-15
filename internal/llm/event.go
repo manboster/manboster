@@ -12,7 +12,6 @@ type Event struct {
 type EventType int16
 
 const (
-	EventUnknown EventType = 1 << iota
-	EventUsage
+	EventUsage EventType = 1 << iota
 	EventMessage
 )
