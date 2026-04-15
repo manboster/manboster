@@ -1,4 +1,4 @@
-package tool
+package plugin
 
 import "github.com/manboster/manboster/spec/schema"
 
