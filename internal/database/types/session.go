@@ -4,5 +4,5 @@ type Session struct {
 	ID               uint64 `gorm:"primaryKey;autoIncrement;column:id"` // session's auto-increment ids
 	SessionID        string `gorm:"uniqueIndex;column:session_id"`      // identifiable session id (maybe 16 keys?)
 	LLMProviderModel string `gorm:"column:llm_provider_model"`          //
-	LLMProviderID    uint64 `gorm:"column:llm_provider_id"`
+	LLMProvider      string `gorm:"column:llm_provider"`
 }

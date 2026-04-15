@@ -4,6 +4,8 @@ import "gorm.io/gorm"
 
 type Repository interface {
 	UserRepository
+	ChatRepository
+	ChatDataRepository
 }
 
 type Repo struct {
