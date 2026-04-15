@@ -26,22 +26,37 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		chatName = msg.ChatName
 	}
 	promptTxt := fmt.Sprintf("%s said in %s, [%s]:\n%s", msg.Username, chatName, msg.CreatedAt, msg.Text.Text)
-	msgData := llm.Message{
-		Role: llm.RoleUser,
-		Text: &llm.MessageTextPayload{
-			Text: promptTxt,
+	msgData := llm.Event{
+		EventType: llm.EventMessage,
+		Message: &llm.Message{
+			Role: llm.RoleUser,
+			Parts: []llm.MessageParts{
+				{
+					PartsType: llm.MessagePartsText,
+					Text: &llm.MessageTextPayload{
+						Text: promptTxt,
+					},
+				},
+			},
+			Type: llm.MessageText,
 		},
-		Type: llm.MessageText,
 	}
-	e.sessionManager.AppendMessage(sessionId, msgData)
+	e.sessionManager.AppendEvent(sessionId, msgData)
+	errW := e.writeChatData(ctx, msgData, sessionId)
+	if errW != nil {
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), errW))
+	}
 
 	var event *llm.Event
 
 	data, _ := e.sessionManager.GetSession(sessionId)
+	msgList := e.sessionManager.GetMessages(sessionId)
 	pIndex, mIndex := e.modelIndexWithFallback(ctx, data.Provider, data.Model)
 	llmProviderDisplayName := e.llmProviders[pIndex].DisplayName()
 	llmModelDisplayName := e.llmProviders[pIndex].Models()[mIndex].DisplayName
 	llmModelName := e.llmProviders[pIndex].Models()[mIndex].Name
+
+	// fmt.Printf("%+q \n%+q", data.Events, msgList)
 
 	var err error
 	// try 3 times
@@ -57,7 +72,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
 
-		event, err = e.llmProviders[pIndex].Chat(timeoutCtx, llmModelName, data.Messages)
+		event, err = e.llmProviders[pIndex].Chat(timeoutCtx, llmModelName, msgList)
 
 		cancel()
 
@@ -90,29 +105,30 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			Text: text,
 		}
 	} else {
-		textWithoutThinking := util.StripThink(event.Message.Text.Text)
-		e.sessionManager.AppendMessage(sessionId, llm.Message{
-			Text: &llm.MessageTextPayload{
-				Text: textWithoutThinking,
-			},
-			Role: event.Message.Role,
-			Type: llm.MessageText,
-		})
-
-		if util.ExtractThinkContent(event.Message.Text.Text) != "" {
-			msg.MessageType = chat.MessageThinkingText
-			msg.Text = &chat.TextPayload{
-				Text: util.ExtractThinkContent(event.Message.Text.Text),
-			}
-			err := instance.SendMessage(ctx, msg)
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
+			text := event.Message.Parts[0].Text.Text
+			textWithoutThinking := util.StripThink(text)
+			e.sessionManager.AppendEvent(sessionId, *event)
+			err := e.writeChatData(ctx, *event, sessionId)
 			if err != nil {
-				return err
+				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
 			}
-		}
 
-		msg.MessageType = chat.MessageText
-		msg.Text = &chat.TextPayload{
-			Text: textWithoutThinking,
+			if util.ExtractThinkContent(text) != "" {
+				msg.MessageType = chat.MessageThinkingText
+				msg.Text = &chat.TextPayload{
+					Text: util.ExtractThinkContent(text),
+				}
+				err := instance.SendMessage(ctx, msg)
+				if err != nil {
+					return err
+				}
+			}
+
+			msg.MessageType = chat.MessageText
+			msg.Text = &chat.TextPayload{
+				Text: textWithoutThinking,
+			}
 		}
 	}
 

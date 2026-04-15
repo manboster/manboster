@@ -11,10 +11,17 @@ import (
 func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message) (*llm.Event, error) {
 	apiMsgs := make([]openai.ChatCompletionMessage, 0, len(messages))
 	for _, msg := range messages {
-		apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
-			Role:    string(msg.Role),
-			Content: msg.Text.Text,
-		})
+		if msg.Type&(llm.MessageText) != 0 {
+			for _, part := range msg.Parts {
+				switch part.PartsType {
+				case llm.MessagePartsText:
+					apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
+						Role:    string(msg.Role),
+						Content: part.Text.Text,
+					})
+				}
+			}
+		}
 	}
 
 	req := openai.ChatCompletionRequest{
@@ -39,8 +46,13 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 	return &llm.Event{
 		EventType: llm.EventMessage,
 		Message: &llm.Message{
-			Text: &llm.MessageTextPayload{
-				Text: resp.Choices[0].Message.Content,
+			Parts: []llm.MessageParts{
+				{
+					PartsType: llm.MessagePartsText,
+					Text: &llm.MessageTextPayload{
+						Text: resp.Choices[0].Message.Content,
+					},
+				},
 			},
 			Type: llm.MessageText,
 			Role: llm.RoleAssistant,

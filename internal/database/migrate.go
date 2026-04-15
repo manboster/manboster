@@ -30,5 +30,10 @@ func (c *Client) Migrate() error {
 		return err
 	}
 
+	err = c.db.AutoMigrate(&types.ChatData{})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

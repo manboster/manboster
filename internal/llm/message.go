@@ -5,7 +5,7 @@ type Message struct {
 	Role RoleType    // Required. Who send it?
 	Type MessageType // Required. What's the type of message?
 
-	Text *MessageTextPayload // Optional. Required when MessageType = MessageText send text
+	Parts []MessageParts // Optional. Required when MessageType = MessageText || MessageImage || MessageFile send text
 
 	ToolRequest  *MessageToolRequestPayload  // Optional. Required when MessageType = MessageToolCallRequest
 	ToolResponse *MessageToolResponsePayload // Optional. Required when MessageType = MessageToolCallResponse
@@ -15,8 +15,7 @@ type Message struct {
 type MessageType int16
 
 const (
-	MessageUnknown MessageType = 1 << iota
-	MessageText
+	MessageText MessageType = 1 << iota
 	MessageImage
 	MessageAudio
 	MessageVideo
