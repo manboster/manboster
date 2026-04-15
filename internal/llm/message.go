@@ -7,7 +7,8 @@ type Message struct {
 
 	Text *MessageTextPayload // Optional. Required when MessageType = MessageText send text
 
-	Tool *MessageToolPayload // Optional. Required when MessageType = MessageToolCallRequest or MessageToolCallResponse
+	ToolRequest  *MessageToolRequestPayload  // Optional. Required when MessageType = MessageToolCallRequest
+	ToolResponse *MessageToolResponsePayload // Optional. Required when MessageType = MessageToolCallResponse
 }
 
 // MessageType defines Message's type.

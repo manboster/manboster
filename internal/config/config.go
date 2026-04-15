@@ -24,9 +24,3 @@ type LLMConfig struct {
 type AppConfig struct {
 	DBPath string `yaml:"dbpath" mapstructure:"dbpath" json:"dbpath"` // SQLite's path
 }
-
-// Version defines manboster's application version.
-const Version = "0.0.0"
-
-// V indicates config's version, now is 0
-const V = 0
