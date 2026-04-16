@@ -40,7 +40,7 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandPair:
 		return commands.Pair(ctx, instance, msg, e.repo, &e.onboardLock, &e.pairKey, &e.retry, &e.userCount)
 	case chat.CommandCancel:
-		return commands.Cancel(ctx, instance, msg, e.sessionManager)
+		return commands.Cancel(ctx, instance, msg, e.sessionManager, sessionId)
 	default:
 		if msg.ChatType == chat.ChatsPersonal {
 			return commands.Default(ctx, instance, msg)

@@ -12,13 +12,14 @@ import (
 )
 
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {
+	displayName := instance.DisplayName()
 	color.Blue("[Manboster Engine] Handling message")
-	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type: %d", instance.Name(), msg.Username, msg.UserID, msg.MessageType))
+	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
 	if msg.MessageType == chat.MessageCommand && chat.IsPublicCommand(msg.Command.CommandType) {
 		err := e.HandleCommand(ctx, instance, msg, "")
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling commands message via %s, error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling commands message via %s, error: %q", displayName, err))
 		}
 		return
 	}
@@ -27,7 +28,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		if msg.ChatType == chat.ChatsPersonal {
 			err := e.HandleStart(ctx, instance, msg)
 			if err != nil {
-				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling start onboard via %s, error: %q", instance.Name(), err))
+				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling start onboard via %s, error: %q", displayName, err))
 			}
 		}
 		return
@@ -35,7 +36,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	//  before receiving messages, we should check users' identity.
 	// get user information
-	uInfo, err := e.repo.UserInfo(ctx, instance.Name(), msg.UserID)
+	uInfo, err := e.repo.UserInfo(ctx, displayName, msg.UserID)
 	if err != nil {
 		// cause error!
 		if !errors.Is(err, repository.ErrNotFound) {
@@ -49,7 +50,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	if uInfo.Type < types.UserAdmin && msg.ChatType == chat.ChatsPersonal {
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
 		}
 		return
 	}
@@ -57,20 +58,20 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	if msg.MessageType == chat.MessageCommand && !chat.IsSessionRequiredCommand(msg.Command.CommandType) {
 		err := e.HandleCommand(ctx, instance, msg, "")
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", displayName, err))
 			return
 		}
 		return
 	}
 
 	// get message types
-	// sessionId := e.sessionManager.ID(instance.Name(), msg.ChatID)
+	// sessionId := e.sessionManager.ID(displayName, msg.ChatID)
 	sessionId, err := e.loadSession(ctx, instance, msg, uInfo.Type >= types.UserAdmin)
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
 		}
 		return
 	}
@@ -81,9 +82,10 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// cancel command, passthrough session lock
 	if msg.MessageType == chat.MessageCommand && msg.Command.CommandType == chat.CommandCancel {
-		err := e.HandleCommand(ctx, instance, msg, "")
+		color.Blue(fmt.Sprintf("[Manboster Engine] Handling cancel command via %s, sessionId: %s", displayName, sessionId))
+		err := e.HandleCommand(ctx, instance, msg, sessionId)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", instance.Name(), err))
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", displayName, err))
 			return
 		}
 		return
@@ -132,6 +134,6 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling message type(%d) message via %s, error: %q", msg.MessageType, instance.Name(), err))
+		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling message type(%d) message via %s, error: %q", msg.MessageType, displayName, err))
 	}
 }

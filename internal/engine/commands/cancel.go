@@ -8,10 +8,8 @@ import (
 )
 
 // Cancel enables user to cancel their request
-func Cancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sessManager *session.Manager) error {
+func Cancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sessManager *session.Manager, sessionId string) error {
 	msg.MessageType = chat.MessageText
-
-	sessionId := sessManager.ID(instance.Name(), msg.ChatID)
 	sessData, avail := sessManager.GetSession(sessionId)
 
 	var text string
