@@ -1,4 +1,4 @@
-package app
+package loader
 
 type Loader struct {
 }

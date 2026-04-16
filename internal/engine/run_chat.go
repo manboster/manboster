@@ -2,6 +2,7 @@ package engine
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -10,31 +11,39 @@ import (
 
 // RunChat is a separate goroutine running for polling chats.
 func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) {
-	tries := 1
-	for tries <= 3 {
-		color.Blue(fmt.Sprintf("[Manboster Engine] Try %d times, now activating chat provider %s...", tries, instance.Name()))
+	displayName := instance.DisplayName()
 
-		err := instance.Start(ctx, conf, func(msg *chat.Message) {
+	defer func(instance chat.Provider) {
+		displayName := instance.DisplayName()
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Stopping chat provider: %s", displayName))
+		if stopErr := instance.Stop(); stopErr != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] Error stopping chat provider %s: %v", displayName, stopErr))
+		}
+	}(instance)
+
+	for tries := 1; tries <= 3; tries++ {
+		color.Blue(fmt.Sprintf("[Manboster Engine] Try %d times, now activating chat provider %s...", tries, displayName))
+
+		err := instance.Init(ctx, conf)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to init a chat provider on %s, get error: %q", displayName, err))
+			continue
+		}
+
+		err = instance.Start(ctx, func(msg *chat.Message) {
 			e.HandleMessage(ctx, instance, msg)
 		})
 
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to start a chat provider on %s, get error: %q", instance.Name(), err))
-			tries++
+			if errors.Is(err, context.Canceled) {
+				return
+			}
+
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to start a chat provider on %s, get error: %q", displayName, err))
 			continue
-		} else {
-			// color.Green(fmt.Sprintf("[Manboster Engine] Successfully started a message provider on %s", instance.Name()))
-			return
 		}
-	}
-	if tries > 3 {
-		color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", instance.Name()))
+
 		return
 	}
-
-	<-ctx.Done()
-	color.Yellow(fmt.Sprintf("[Manboster Engine] Stopping chat provider: %s", instance.Name()))
-	if stopErr := instance.Stop(ctx); stopErr != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] Error stopping chat provider %s: %v", instance.Name(), stopErr))
-	}
+	color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", displayName))
 }

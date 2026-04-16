@@ -6,22 +6,15 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/go-viper/mapstructure/v2"
 	"github.com/manboster/manboster/internal/chat"
 	"gopkg.in/telebot.v3"
 )
 
 // Start starts your Telegram Service
-func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Message)) error {
-	// get config
-	var cfg Config
-	err := mapstructure.Decode(conf, &cfg)
-	if err != nil {
-		return err
-	}
+func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) error {
 
 	// validate
-	if cfg.BotToken == "" {
+	if s.cfg.BotToken == "" {
 		return ErrBotTokenRequired
 	}
 
@@ -29,7 +22,7 @@ func (s *Service) Start(ctx context.Context, conf any, onMsg func(msg *chat.Mess
 
 	// set the bot and start it.
 	settings := telebot.Settings{
-		Token:  cfg.BotToken,
+		Token:  s.cfg.BotToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, c telebot.Context) {
 			color.Red("[Manboster Telegram Provider] We encountered an error: %v", err)

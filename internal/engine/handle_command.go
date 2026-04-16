@@ -42,7 +42,9 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandCancel:
 		return commands.Cancel(ctx, instance, msg, e.sessionManager)
 	default:
-		return commands.Default(ctx, instance, msg)
+		if msg.ChatType == chat.ChatsPersonal {
+			return commands.Default(ctx, instance, msg)
+		}
 	}
 	return nil
 }
