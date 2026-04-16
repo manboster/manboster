@@ -10,7 +10,8 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 )
 
-func (e *Engine) loadSession(ctx context.Context, instance chat.Provider, msg *chat.Message) (string, error) {
+// loadSession helps Manboster Engine get sessionId, preparing for the message handler
+func (e *Engine) loadSession(ctx context.Context, instance chat.Provider, msg *chat.Message, isAdmin bool) (string, error) {
 	lockerID := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
 	chatLock := e.sessionManager.GetSessionChatLocks(lockerID)
 
@@ -22,11 +23,17 @@ func (e *Engine) loadSession(ctx context.Context, instance chat.Provider, msg *c
 	if err == nil {
 		sessionId = chatInfo.SessionID
 	} else if errors.Is(err, repository.ErrNotFound) {
-		sid, err := e.newSession(ctx, msg, instance.Name())
-		sessionId = sid
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while creating session to repository, error: %q", err))
-			return "", err
+		// if you're not an administrator, you can not create a new session
+		if isAdmin {
+			sid, err := e.newSession(ctx, msg, instance.Name())
+			sessionId = sid
+			if err != nil {
+				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while creating session to repository, error: %q", err))
+				return "", err
+			}
+		} else {
+			// return access denied and reject it
+			return "", ErrAccessDenied
 		}
 	} else {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while reading user information to repository, error: %q", err))

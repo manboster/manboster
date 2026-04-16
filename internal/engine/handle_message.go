@@ -65,7 +65,15 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// get message types
 	// sessionId := e.sessionManager.ID(instance.Name(), msg.ChatID)
-	sessionId, err := e.loadSession(ctx, instance, msg)
+	sessionId, err := e.loadSession(ctx, instance, msg, uInfo.Type >= types.UserAdmin)
+	// if you're not an administrator, you can not create a new session
+	if errors.Is(err, ErrAccessDenied) {
+		err := e.HandleReject(ctx, instance, msg)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", instance.Name(), err))
+		}
+		return
+	}
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while loading sessionId, error: %q", err))
 		return
