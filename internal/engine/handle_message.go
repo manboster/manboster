@@ -78,6 +78,17 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while loading sessionId, error: %q", err))
 		return
 	}
+
+	// cancel command, passthrough session lock
+	if msg.MessageType == chat.MessageCommand && msg.Command.CommandType == chat.CommandCancel {
+		err := e.HandleCommand(ctx, instance, msg, "")
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", instance.Name(), err))
+			return
+		}
+		return
+	}
+
 	// TODO: replace it to channel queue
 	lock := e.sessionManager.GetSessionLocks(sessionId)
 	lock.Lock()

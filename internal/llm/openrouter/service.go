@@ -26,3 +26,5 @@ func (s *Service) New() llm.Provider {
 }
 
 func (s *Service) DisplayName() string { return "OpenRouter" }
+
+func (s *Service) Stop() error { return s.oaiInstance.Stop() }

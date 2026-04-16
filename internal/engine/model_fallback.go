@@ -27,15 +27,15 @@ func (e *Engine) modelIndexWithFallback(ctx context.Context, targetProvider stri
 					break
 				}
 			}
+			break
 		}
-		break
 	}
 
 	if availProvider && availModel {
 		return providerIndex, modelIndex
 	}
 
-	if !availModel && availProvider {
+	if availProvider {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Not found LLM model. We changed model to %s", e.llmProviders[providerIndex].Models()[0].DisplayName))
 		return providerIndex, 0
 	}

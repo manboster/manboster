@@ -27,3 +27,5 @@ func (s *Service) New() llm.Provider {
 }
 
 func (s *Service) DisplayName() string { return "OpenAI Compatible API" }
+
+func (s *Service) Stop() error { return nil }

@@ -27,3 +27,17 @@ func (m *Manager) GetSessionChatLocks(sid string) *sync.Mutex {
 
 	return s
 }
+
+func (m *Manager) DeleteSessionLocks(sid string) {
+	m.Lock.Lock()
+	defer m.Lock.Unlock()
+
+	delete(m.SessionLocks, sid)
+}
+
+func (m *Manager) DeleteSessionChatLocks(sid string) {
+	m.Lock.Lock()
+	defer m.Lock.Unlock()
+
+	delete(m.SessionChatLocks, sid)
+}
