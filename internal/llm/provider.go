@@ -2,6 +2,8 @@ package llm
 
 import (
 	"context"
+
+	"github.com/manboster/manboster/internal/config"
 )
 
 // Provider defines which functions should LLM provides give.
@@ -12,6 +14,7 @@ type Provider interface {
 	Stop() error
 	Name() string
 	DisplayName() string
+	Config() config.Provider
 	Models() []Model
 	New() Provider
 }

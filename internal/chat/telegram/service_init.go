@@ -9,11 +9,15 @@ import (
 // Init initial service
 func (s *Service) Init(ctx context.Context, conf any) error {
 	// get config
-	var cfg Config
-	err := mapstructure.Decode(conf, &cfg)
-	s.cfg = cfg
+	err := mapstructure.Decode(conf, s.cfg)
 	if err != nil {
 		return err
 	}
+
+	err = s.cfg.Validate()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

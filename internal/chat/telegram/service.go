@@ -10,7 +10,7 @@ import (
 
 type Service struct {
 	tgInstance *telebot.Bot
-	cfg        Config
+	cfg        *Config
 	sendMutex  sync.Mutex
 }
 

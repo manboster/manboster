@@ -1,6 +1,7 @@
 package openrouter
 
 import (
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
 )
@@ -28,3 +29,5 @@ func (s *Service) New() llm.Provider {
 func (s *Service) DisplayName() string { return "OpenRouter" }
 
 func (s *Service) Stop() error { return s.oaiInstance.Stop() }
+
+func (s *Service) Config() config.Provider { return &Config{} }

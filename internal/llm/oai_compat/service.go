@@ -1,6 +1,7 @@
 package oai_compat
 
 import (
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/sashabaranov/go-openai"
 )
@@ -29,3 +30,5 @@ func (s *Service) New() llm.Provider {
 func (s *Service) DisplayName() string { return "OpenAI Compatible API" }
 
 func (s *Service) Stop() error { return nil }
+
+func (s *Service) Config() config.Provider { return &Config{} }

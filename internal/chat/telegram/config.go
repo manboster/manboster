@@ -30,6 +30,14 @@ func (c *Config) VerifyAndConvert(ctx context.Context) error {
 	return nil
 }
 
+// Validate validates configuration data
+func (c *Config) Validate() error {
+	if c.BotToken == "" {
+		return errors.New("bot token is required")
+	}
+	return nil
+}
+
 // GetConfig returns itself directly to the app.
 func (c *Config) GetConfig() any {
 	return c

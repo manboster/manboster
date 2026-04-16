@@ -2,6 +2,7 @@ package openrouter
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/charmbracelet/huh"
@@ -16,7 +17,6 @@ type Config struct {
 	ApiKey string `yaml:"api_key" json:"api_key" mapstructure:"api_key"` // your openrouter system's apikey
 	// BaseURL string `yaml:"base_url"` // this is fixed so you don't need to enter it.
 	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
-	Default        string      `yaml:"default" json:"default" mapstructure:"default"`
 	inputModelData []string    // internal input keys
 }
 
@@ -86,4 +86,14 @@ func (c *Config) Name() string {
 
 func (c *Config) DisplayName() string {
 	return "OpenRouter"
+}
+
+func (c *Config) Validate() error {
+	if c.Model == nil {
+		return errors.New("model is empty")
+	}
+	if c.ApiKey == "" {
+		return errors.New("api_key is empty")
+	}
+	return nil
 }

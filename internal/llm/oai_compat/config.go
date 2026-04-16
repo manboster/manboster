@@ -110,3 +110,16 @@ func (c *Config) VerifyAndConvert(ctx context.Context) error {
 
 	return nil
 }
+
+func (c *Config) Validate() error {
+	if len(c.Model) == 0 {
+		return fmt.Errorf("no models selected")
+	}
+	if c.BaseURL == "" {
+		return fmt.Errorf("no Base URL provided")
+	}
+	if c.ApiKey == "" {
+		return fmt.Errorf("no API key provided")
+	}
+	return nil
+}

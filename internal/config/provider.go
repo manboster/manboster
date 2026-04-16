@@ -12,5 +12,6 @@ type Provider interface {
 	DisplayName() string
 	ToHuhGroup() []*huh.Group
 	VerifyAndConvert(ctx context.Context) error
+	Validate() error
 	GetConfig() any
 }
