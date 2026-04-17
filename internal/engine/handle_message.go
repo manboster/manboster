@@ -47,7 +47,6 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		}
 	}
 
-	fmt.Println(uInfo.Type)
 	if uInfo.Type < types.UserAdmin && msg.ChatType == chat.ChatsPersonal {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
 		err := e.HandleReject(ctx, instance, msg)
