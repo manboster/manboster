@@ -1,4 +1,4 @@
-package commands
+package engine
 
 import (
 	"context"
@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// Op Command gives Operator to replied users or given user ids.
-func Op(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository) error {
+// cmdOp Command gives Operator to replied users or given user ids.
+func (e *Engine) cmdOp(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	// first we check whether there is any uid or not.
 	args := msg.Command.CommandArgs
 
@@ -21,7 +21,7 @@ func Op(ctx context.Context, instance chat.Provider, msg *chat.Message, repo rep
 
 	grantUserID, err := getTargetUserID(msg, args)
 
-	err = validateUser(ctx, instance, msg, repo)
+	err = validateUser(ctx, instance, msg, e.repo)
 	if err != nil {
 		msg.Text = &chat.TextPayload{
 			Text: err.Error(),
@@ -30,7 +30,7 @@ func Op(ctx context.Context, instance chat.Provider, msg *chat.Message, repo rep
 	}
 
 	// check user availability
-	_, err = repo.UserInfo(ctx, instance.Name(), grantUserID)
+	_, err = e.repo.UserInfo(ctx, instance.Name(), grantUserID)
 	if err == nil {
 		msg.Text = &chat.TextPayload{
 			Text: "The one you want to grant permission is already an Administrator.",
@@ -39,7 +39,7 @@ func Op(ctx context.Context, instance chat.Provider, msg *chat.Message, repo rep
 	}
 
 	// create user and make it as an Administrator
-	err = repo.CreateUser(ctx, types.User{
+	err = e.repo.CreateUser(ctx, types.User{
 		UserID:   grantUserID,
 		Platform: instance.Name(),
 		Type:     types.UserAdmin,
@@ -59,8 +59,8 @@ func Op(ctx context.Context, instance chat.Provider, msg *chat.Message, repo rep
 	return instance.SendMessage(ctx, msg)
 }
 
-// DeOp Command revokes an administrator.
-func DeOp(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository) error {
+// cmdDeOp Command revokes an administrator.
+func (e *Engine) cmdDeOp(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	args := msg.Command.CommandArgs
 	msg.MessageType = chat.MessageText
 
@@ -72,7 +72,7 @@ func DeOp(ctx context.Context, instance chat.Provider, msg *chat.Message, repo r
 		return instance.SendMessage(ctx, msg)
 	}
 
-	err = validateUser(ctx, instance, msg, repo)
+	err = validateUser(ctx, instance, msg, e.repo)
 	if err != nil {
 		msg.Text = &chat.TextPayload{
 			Text: err.Error(),
@@ -80,9 +80,9 @@ func DeOp(ctx context.Context, instance chat.Provider, msg *chat.Message, repo r
 		return instance.SendMessage(ctx, msg)
 	}
 
-	_, err = repo.UserInfo(ctx, instance.Name(), targetUserID)
+	_, err = e.repo.UserInfo(ctx, instance.Name(), targetUserID)
 	if err == nil {
-		err = repo.DeleteUser(ctx, instance.Name(), targetUserID)
+		err = e.repo.DeleteUser(ctx, instance.Name(), targetUserID)
 		if err != nil {
 			msg.Text = &chat.TextPayload{
 				Text: "Failed to delete user.",

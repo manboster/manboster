@@ -49,9 +49,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 	var event *llm.Event
 
-	data, _ := e.sessionManager.GetSession(sessionId)
+	provider, model, _ := e.sessionManager.GetModel(sessionId)
 	msgList := e.sessionManager.GetMessages(sessionId)
-	pIndex, mIndex := e.modelIndexWithFallback(ctx, data.Provider, data.Model)
+	pIndex, mIndex := e.modelIndexWithFallback(ctx, provider, model)
 	llmProviderDisplayName := e.llmProviders[pIndex].DisplayName()
 	llmModelDisplayName := e.llmProviders[pIndex].Models()[mIndex].DisplayName
 	llmModelName := e.llmProviders[pIndex].Models()[mIndex].Name

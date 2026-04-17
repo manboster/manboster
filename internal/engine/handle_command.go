@@ -6,7 +6,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
-	"github.com/manboster/manboster/internal/engine/commands"
 )
 
 // HandleCommand handles commands occurs
@@ -19,31 +18,30 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 
 	switch msg.Command.CommandType {
 	case chat.CommandVersion:
-		return commands.Version(ctx, instance, msg)
+		return e.cmdVersion(ctx, instance, msg)
 	case chat.CommandId:
-		return commands.Id(ctx, instance, msg)
+		return e.cmdId(ctx, instance, msg)
 	case chat.CommandHelp:
-		return commands.Help(ctx, instance, msg)
+		return e.cmdHelp(ctx, instance, msg)
 	case chat.CommandOp:
-		return commands.Op(ctx, instance, msg, e.repo)
+		return e.cmdOp(ctx, instance, msg)
 	case chat.CommandDeOp:
-		return commands.DeOp(ctx, instance, msg, e.repo)
+		return e.cmdDeOp(ctx, instance, msg)
 	case chat.CommandStatus:
-		// return commands.Status(ctx, instance, msg)
 	case chat.CommandSave:
-		// return commands.Save(ctx, instance, msg)
 	case chat.CommandNew:
 	case chat.CommandCompact:
 	case chat.CommandModels:
 	case chat.CommandProviders:
 	case chat.CommandStart:
+		return e.cmdStart(ctx, instance, msg)
 	case chat.CommandPair:
-		return commands.Pair(ctx, instance, msg, e.repo, &e.onboardLock, &e.pairKey, &e.retry, &e.userCount)
+		return e.cmdPair(ctx, instance, msg)
 	case chat.CommandCancel:
-		return commands.Cancel(ctx, instance, msg, e.sessionManager, sessionId)
+		return e.cmdCancel(ctx, instance, msg, sessionId)
 	default:
 		if msg.ChatType == chat.ChatsPersonal {
-			return commands.Default(ctx, instance, msg)
+			return e.cmdDefault(ctx, instance, msg)
 		}
 	}
 	return nil

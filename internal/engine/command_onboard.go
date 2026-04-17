@@ -1,17 +1,15 @@
-package commands
+package engine
 
 import (
 	"context"
 	"strconv"
-	"sync"
 
 	"github.com/manboster/manboster/internal/chat"
-	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 )
 
-// Pair executes pair command
-func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, lock *sync.Mutex, code *int64, retry *int, count *int64) error {
+// cmdPair executes pair command
+func (e *Engine) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {
@@ -36,10 +34,10 @@ func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo r
 		}
 		return instance.SendMessage(ctx, msg)
 	}
-	lock.Lock()
-	if num == *code {
+	e.onboardLock.Lock()
+	if num == e.pairKey {
 		text = "Successfully paired!"
-		err := repo.CreateUser(ctx, types.User{
+		err := e.repo.CreateUser(ctx, types.User{
 			ID:       0,
 			UserID:   msg.UserID,
 			Platform: instance.Name(),
@@ -49,15 +47,15 @@ func Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo r
 			text += " But we failed to create the user! Error: " + err.Error()
 		} else {
 			text += "\nEnjoy using your personal Lobster!"
-			*code = 0
-			*retry = 0
-			*count += 1
+			e.pairKey = 0
+			e.retry = 0
+			e.retry += 1
 		}
 	} else {
 		text = "Pair failed, invalid pair code, please check your code!"
-		*retry++
+		e.retry++
 	}
-	lock.Unlock()
+	e.onboardLock.Unlock()
 
 	msg.Text = &chat.TextPayload{
 		Text: text,
