@@ -6,7 +6,7 @@ import (
 
 // Stop stops Telegram bot
 func (s *Service) Stop() error {
-	color.Blue("[Manboster Telegram Provider] Stopping the telegram bot...")
+	color.Yellow("[Manboster Telegram Provider] Stopping the telegram bot...")
 	if s.tgInstance != nil {
 		s.tgInstance.Stop()
 	}

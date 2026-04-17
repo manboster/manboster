@@ -1,4 +1,4 @@
-package engine
+package chatdata
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/repository/types"
 )
 
-func (e *Engine) writeChatData(ctx context.Context, event llm.Event, sessionId string) error {
+func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) error {
 	var chatData types.ChatData
 
 	if (event.EventType&llm.EventMessage == 0) && (event.EventType&llm.EventUsage == 0) {
@@ -33,5 +33,5 @@ func (e *Engine) writeChatData(ctx context.Context, event llm.Event, sessionId s
 		chatData.TotalTokens = event.Usage.TotalTokens
 	}
 
-	return e.repo.CreateChatData(ctx, chatData)
+	return s.repo.CreateChatData(ctx, chatData)
 }

@@ -5,7 +5,9 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/onboard"
+	"github.com/manboster/manboster/internal/engine/safeguard"
 )
 
 func (e *Engine) Load(ctx context.Context) error {
@@ -20,6 +22,9 @@ func (e *Engine) Load(ctx context.Context) error {
 	if err != nil || count == 0 {
 		e.onboard = onboard.New()
 	}
+
+	e.chatDataService = chatdata.New(e.repo, e.sessionManager)
+	e.safeGuardService = safeguard.New(e.repo)
 
 	return nil
 }

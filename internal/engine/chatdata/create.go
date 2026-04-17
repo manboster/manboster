@@ -1,4 +1,4 @@
-package engine
+package chatdata
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 	"github.com/manboster/manboster/internal/llm"
 )
 
-func (e *Engine) newChatData(ctx context.Context, sessionId string) error {
+// Create creates chat session with system prompt
+func (s *Service) Create(ctx context.Context, sessionId string) error {
 	textPayload := &llm.MessageTextPayload{
 		Text: config.InitialSystemPrompt, // TODO: prompt engineering
 	}
@@ -27,9 +28,9 @@ func (e *Engine) newChatData(ctx context.Context, sessionId string) error {
 		Usage: nil,
 	}
 
-	e.sessionManager.AppendEvent(sessionId, event)
+	s.sessionManager.AppendEvent(sessionId, event)
 
-	err := e.writeChatData(ctx, event, sessionId)
+	err := s.Write(ctx, event, sessionId)
 	if err != nil {
 		return err
 	}

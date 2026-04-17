@@ -1,4 +1,4 @@
-package engine
+package chatdata
 
 import (
 	"context"
@@ -10,9 +10,9 @@ import (
 	"github.com/manboster/manboster/internal/repository/types"
 )
 
-func (e *Engine) mergeChatData(ctx context.Context, chatDataInfo []types.ChatData, sid string) error {
-	s, avail := e.sessionManager.GetSession(sid)
-	if avail && len(s.Events) > 0 {
+func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid string) error {
+	sess, avail := s.sessionManager.GetSession(sid)
+	if avail && len(sess.Events) > 0 {
 		return nil
 	}
 
@@ -60,7 +60,7 @@ func (e *Engine) mergeChatData(ctx context.Context, chatDataInfo []types.ChatDat
 			event.Message.ToolResponse = msg.ToolResponse
 		}
 
-		e.sessionManager.AppendEvent(sid, event)
+		s.sessionManager.AppendEvent(sid, event)
 	}
 
 	return nil
