@@ -2,6 +2,7 @@ package engine
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/manboster/manboster/internal/chat"
 )
@@ -31,20 +32,29 @@ func (e *Engine) cmdCancel(ctx context.Context, instance chat.Provider, msg *cha
 }
 
 func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
-	msg.MessageType = chat.MessageText
+	respMessage := msg.Clone()
+	respMessage.MessageType = chat.MessageText
 	_, avail := e.sessionManager.GetSession(sessionId)
 	if !avail {
-		msg.Text = &chat.TextPayload{
+		respMessage.Text = &chat.TextPayload{
 			Text: "Session is not active, there is nothing to do!",
 		}
-		return instance.SendMessage(ctx, msg)
+		return instance.SendMessage(ctx, respMessage)
 	}
 
 	e.sessionManager.DeleteSession(sessionId)
-	sessionId, err := e.loadSession(ctx, instance, msg, true)
+	err := e.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
 		return err
 	}
 
-	return instance.SendMessage(ctx, msg)
+	sid, err := e.loadSession(ctx, instance, msg, true)
+	if err != nil {
+		return err
+	}
+
+	respMessage.Text = &chat.TextPayload{
+		Text: fmt.Sprintf("Old session %s reserved. New session: %s", sessionId, sid),
+	}
+	return instance.SendMessage(ctx, respMessage)
 }

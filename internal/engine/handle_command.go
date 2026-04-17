@@ -30,6 +30,7 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandStatus:
 	case chat.CommandSave:
 	case chat.CommandNew:
+		return e.cmdNew(ctx, instance, msg, sessionId)
 	case chat.CommandCompact:
 	case chat.CommandModels:
 	case chat.CommandProviders:

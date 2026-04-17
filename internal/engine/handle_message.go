@@ -36,7 +36,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	// get user information
 	uType := e.safeguardService.UserType(ctx, instance.Name(), msg.ChatID)
 
-	if e.safeguardService.IsAdmin(uType) && msg.ChatType == chat.ChatsPersonal {
+	if !e.safeguardService.IsAdmin(uType) && msg.ChatType == chat.ChatsPersonal {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
