@@ -21,7 +21,7 @@ func Cancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sess
 			text = "[Manboster] The request in this session is not active."
 		}
 	} else {
-		text = "[Manboster] Failed to cancel the request: Session Object not found."
+		text = "[Manboster] The request in this session is not active."
 	}
 
 	msg.Text = &chat.TextPayload{

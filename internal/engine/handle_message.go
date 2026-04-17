@@ -36,7 +36,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	//  before receiving messages, we should check users' identity.
 	// get user information
-	uInfo, err := e.repo.UserInfo(ctx, displayName, msg.UserID)
+	uInfo, err := e.repo.UserInfo(ctx, instance.Name(), msg.UserID)
 	if err != nil {
 		// cause error!
 		if !errors.Is(err, repository.ErrNotFound) {
@@ -47,7 +47,9 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		}
 	}
 
+	fmt.Println(uInfo.Type)
 	if uInfo.Type < types.UserAdmin && msg.ChatType == chat.ChatsPersonal {
+		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
@@ -69,6 +71,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	sessionId, err := e.loadSession(ctx, instance, msg, uInfo.Type >= types.UserAdmin)
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {
+		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to start a new chat!"))
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
