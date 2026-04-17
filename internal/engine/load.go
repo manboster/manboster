@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/engine/onboard"
 )
 
 func (e *Engine) Load(ctx context.Context) error {
@@ -15,9 +16,10 @@ func (e *Engine) Load(ctx context.Context) error {
 	count, err := e.repo.UserCounts(ctx)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting user counts from repository, error: %s", err))
-		e.userCount = 0
 	}
-	e.userCount = count
+	if err != nil || count == 0 {
+		e.onboard = onboard.New()
+	}
 
 	return nil
 }

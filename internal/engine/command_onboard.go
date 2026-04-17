@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/manboster/manboster/internal/chat"
-	"github.com/manboster/manboster/internal/repository/types"
 )
 
 // cmdPair executes pair command
@@ -34,28 +33,18 @@ func (e *Engine) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.
 		}
 		return instance.SendMessage(ctx, msg)
 	}
-	e.onboardLock.Lock()
-	if num == e.pairKey {
-		text = "Successfully paired!"
-		err := e.repo.CreateUser(ctx, types.User{
-			ID:       0,
-			UserID:   msg.UserID,
-			Platform: instance.Name(),
-			Type:     types.UserRoot,
-		})
+
+	if e.onboard != nil {
+		err = e.onboard.Pair(ctx, instance, msg, e.repo, num)
 		if err != nil {
-			text += " But we failed to create the user! Error: " + err.Error()
+			text = err.Error()
 		} else {
-			text += "\nEnjoy using your personal Lobster!"
-			e.pairKey = 0
-			e.retry = 0
-			e.retry += 1
+			text = "Successfully paired!"
+			e.onboard = nil
 		}
 	} else {
-		text = "Pair failed, invalid pair code, please check your code!"
-		e.retry++
+		text = "There is no need to pair!"
 	}
-	e.onboardLock.Unlock()
 
 	msg.Text = &chat.TextPayload{
 		Text: text,

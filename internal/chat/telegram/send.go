@@ -28,9 +28,9 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		ParseMode: telebot.ModeHTML,
 	}
 
-	if msg.MessageID != "" {
+	if msg.Reply != nil {
 		var replyID int
-		_, err = fmt.Sscanf(msg.MessageID, "%d", &replyID)
+		_, err = fmt.Sscanf(msg.Reply.MessageID, "%d", &replyID)
 		opts.ReplyTo = &telebot.Message{ID: replyID}
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Telegram Provider] Error getting reply id: %q", err))

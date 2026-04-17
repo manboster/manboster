@@ -5,23 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
-	"github.com/manboster/manboster/internal/util"
 )
 
-// HandleStart helps user tackle onboarding problems
-func (e *Engine) HandleStart(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
-	e.onboardLock.Lock()
-	if e.pairKey == 0 || e.retry > 5 {
-		if e.retry > 5 {
-			color.Red("[Manboster Engine] Retry limit exceeded so we revoked the old key and created a new one.")
-			e.retry = 0
-		}
-		e.pairKey = util.RandomNumber(100000, 999999)
-		color.HiCyan(fmt.Sprintf("[Manboster Engine] !!! Your Pair Code is %d! You can enter '/pair %d' in your dialog window and adopt to this Lobster! !!!", e.pairKey, e.pairKey))
+// HandleOnBoard helps user tackle onboarding problems
+func (e *Engine) HandleOnBoard(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	if e.onboard != nil {
+		e.onboard.HandleOnBoard()
 	}
-	e.onboardLock.Unlock()
+	respMessage := msg.Clone()
 
 	var text strings.Builder
 	text.WriteString(fmt.Sprintf("Welcome to use Manboster!\n"))
@@ -31,11 +23,10 @@ func (e *Engine) HandleStart(ctx context.Context, instance chat.Provider, msg *c
 	text.WriteString(fmt.Sprintf("2. Get that 6-digit number code showed above and send it with `/pair`, just like `/pair [your 6-digit code]`.\n"))
 	text.WriteString(fmt.Sprintf("3. Let Lobster to validate it, if it is ok, you can chat with your Lobster with ease!\n"))
 	text.WriteString(fmt.Sprintf("Wish you a wonderful journey with your Lobster!"))
-	color.HiCyan(fmt.Sprintf("[Manboster Engine] !!! Your Pair Code is %d! You can enter '/pair %d' in your dialog window and adopt to this Lobster! !!!", e.pairKey, e.pairKey))
 
-	msg.MessageType = chat.MessageText
-	msg.Text = &chat.TextPayload{
+	respMessage.MessageType = chat.MessageText
+	respMessage.Text = &chat.TextPayload{
 		Text: text.String(),
 	}
-	return instance.SendMessage(ctx, msg)
+	return instance.SendMessage(ctx, respMessage)
 }

@@ -16,6 +16,8 @@ import (
 func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	color.Blue("[Manboster Engine] Now handling text message...")
 
+	respMessage := msg.Clone()
+
 	if err := ctx.Err(); err != nil {
 		return err
 	}
@@ -101,7 +103,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		} else if strings.Contains(tips, "cancel") {
 			text = fmt.Sprintf("[Manboster] You cancelled provider %s's request.", llmProviderDisplayName)
 		}
-		msg.Text = &chat.TextPayload{
+		respMessage.Text = &chat.TextPayload{
 			Text: text,
 		}
 	} else {
@@ -111,22 +113,22 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			e.sessionManager.AppendEvent(sessionId, *event)
 			err := e.writeChatData(ctx, *event, sessionId)
 			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
+				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
 			}
 
 			if util.ExtractThinkContent(text) != "" {
-				msg.MessageType = chat.MessageThinkingText
-				msg.Text = &chat.TextPayload{
+				respMessage.MessageType = chat.MessageThinkingText
+				respMessage.Text = &chat.TextPayload{
 					Text: util.ExtractThinkContent(text),
 				}
-				err := instance.SendMessage(ctx, msg)
+				err := instance.SendMessage(ctx, respMessage)
 				if err != nil {
 					return err
 				}
 			}
 
-			msg.MessageType = chat.MessageText
-			msg.Text = &chat.TextPayload{
+			respMessage.MessageType = chat.MessageText
+			respMessage.Text = &chat.TextPayload{
 				Text: textWithoutThinking,
 			}
 		}
@@ -139,7 +141,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 
 		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
-		err = instance.SendMessage(timeoutCtx, msg)
+		err = instance.SendMessage(timeoutCtx, respMessage)
 		cancel()
 
 		if err != nil {
