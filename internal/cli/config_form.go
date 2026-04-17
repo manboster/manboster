@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
+	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
 
 	_ "github.com/manboster/manboster/internal/chat/telegram"
@@ -66,12 +68,13 @@ func ConfigurationForm(ctx context.Context) (config.Config, error) {
 func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	// get providers to generate options
 	var chatProviders []config.Provider
-	names := config.AvailProviders("chat")
+	names := chat.AvailProviders()
 	for _, name := range names {
-		provider, err := config.GetProvider(name)
+		chatProvider, err := chat.GetProvider(name)
 		if err != nil {
 			return config.ChatConfig{}, err
 		}
+		provider := chatProvider.Config()
 		chatProviders = append(chatProviders, provider)
 	}
 
@@ -94,11 +97,12 @@ func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 		return config.ChatConfig{}, err
 	}
 
-	provider, err := config.GetProvider("chat:" + chatProvider)
+	cProvider, err := chat.GetProvider(chatProvider)
 	if err != nil {
 		return config.ChatConfig{}, err
 	}
 
+	provider := cProvider.Config()
 	err = huh.NewForm(provider.ToHuhGroup()...).Run()
 	if err != nil {
 		return config.ChatConfig{}, err
@@ -119,12 +123,13 @@ func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	// get providers to generate options
 	var llmProviders []config.Provider
-	names := config.AvailProviders("llm")
+	names := llm.AvailProviders()
 	for _, name := range names {
-		provider, err := config.GetProvider(name)
+		lProvider, err := llm.GetProvider(name)
 		if err != nil {
 			return config.LLMConfig{}, err
 		}
+		provider := lProvider.Config()
 		llmProviders = append(llmProviders, provider)
 	}
 
@@ -147,11 +152,12 @@ func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 		return config.LLMConfig{}, err
 	}
 
-	provider, err := config.GetProvider("llm:" + lProvider)
+	llmProvider, err := llm.GetProvider(lProvider)
 	if err != nil {
 		return config.LLMConfig{}, err
 	}
 
+	provider := llmProvider.Config()
 	err = huh.NewForm(provider.ToHuhGroup()...).Run()
 	if err != nil {
 		return config.LLMConfig{}, err

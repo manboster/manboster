@@ -12,7 +12,7 @@ import (
 type Engine struct {
 	sessionManager *session.Manager
 	llmProviders   []llm.Provider
-	config         config.Config
+	config         *config.Config
 	repo           repository.Repository
 
 	onboardLock sync.Mutex
@@ -21,10 +21,10 @@ type Engine struct {
 	userCount   int64
 }
 
-func New(cfg config.Config, repo repository.Repository) (*Engine, error) {
+func New(cfg *config.Config, repo repository.Repository, llmProviders []llm.Provider) (*Engine, error) {
 	return &Engine{
 		sessionManager: session.NewManager(),
-		llmProviders:   []llm.Provider{},
+		llmProviders:   llmProviders,
 		config:         cfg,
 		repo:           repo,
 		pairKey:        0,

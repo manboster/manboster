@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/loader"
 	"github.com/spf13/cobra"
 
@@ -31,7 +32,12 @@ func main(cmd *cobra.Command, args []string) {
 	)
 	defer stop()
 
-	err := loader.Load(ctx)
+	color.Blue(fmt.Sprintf("[Manboster Client] Reading Configuration..."))
+	cfg := config.Read()
+
+	// create a loader instance
+	loaderInstance := loader.New(&cfg)
+	err := loaderInstance.Load(ctx)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] Error while load using the loader: %q", err))
 		time.Sleep(1 * time.Second)

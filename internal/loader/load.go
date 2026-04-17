@@ -12,11 +12,9 @@ import (
 )
 
 // Load loads the loader
-func Load(ctx context.Context) error {
-	color.Blue(fmt.Sprintf("[Manboster Loader] Reading Configuration..."))
-	cfg := config.Read()
+func (l *Loader) Load(ctx context.Context) error {
 	color.Blue(fmt.Sprintf("[Manboster Loader] Validating Configuration..."))
-	err := cfg.Validate()
+	err := l.cfg.Validate()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while validating the configuration: %q", err))
 		return err
@@ -35,14 +33,29 @@ func Load(ctx context.Context) error {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading the database: %q", err))
 		return err
 	}
+	l.db = dbi
 	repo := repository.New(dbi.Instance())
-	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
+	l.repo = repo
+
+	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing LLM Providers..."))
+	llmProviders, err := LoadLLMProviders(ctx, l.cfg.LLMs)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while initializing LLM Providers: %q", err))
+		return err
+	}
+	if len(llmProviders) == 0 {
+		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while initializing LLM Providers: no llm provider available"))
+		return fmt.Errorf("no llm provider available")
+	}
+
 	// open a new engine
-	e, err := engine.New(cfg, repo)
+	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
+	e, err := engine.New(l.cfg, repo, llmProviders)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err
 	}
+	l.engine = e
 
 	// load it, and enjoy it!
 	err = e.Load(ctx)
