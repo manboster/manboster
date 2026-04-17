@@ -16,7 +16,7 @@ type Engine struct {
 	config           *config.Config
 	repo             repository.Repository
 	onboard          *onboard.Service
-	safeGuardService *safeguard.Service
+	safeguardService *safeguard.Service
 	chatDataService  *chatdata.Service
 }
 

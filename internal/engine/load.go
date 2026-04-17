@@ -24,7 +24,7 @@ func (e *Engine) Load(ctx context.Context) error {
 	}
 
 	e.chatDataService = chatdata.New(e.repo, e.sessionManager)
-	e.safeGuardService = safeguard.New(e.repo)
+	e.safeguardService = safeguard.New(e.repo)
 
 	return nil
 }

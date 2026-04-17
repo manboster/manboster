@@ -7,8 +7,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
-	"github.com/manboster/manboster/internal/repository"
-	"github.com/manboster/manboster/internal/repository/types"
 )
 
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {
@@ -36,18 +34,9 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	//  before receiving messages, we should check users' identity.
 	// get user information
-	uInfo, err := e.repo.UserInfo(ctx, instance.Name(), msg.UserID)
-	if err != nil {
-		// cause error!
-		if !errors.Is(err, repository.ErrNotFound) {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while fetching user data from repository, error: %q", err))
-		}
-		uInfo = types.User{
-			Type: types.UserUnknown,
-		}
-	}
+	uType := e.safeguardService.UserType(ctx, instance.Name(), msg.ChatID)
 
-	if uInfo.Type < types.UserAdmin && msg.ChatType == chat.ChatsPersonal {
+	if e.safeguardService.IsAdmin(uType) && msg.ChatType == chat.ChatsPersonal {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
 		err := e.HandleReject(ctx, instance, msg)
 		if err != nil {
@@ -67,7 +56,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// get message types
 	// sessionId := e.sessionManager.ID(displayName, msg.ChatID)
-	sessionId, err := e.loadSession(ctx, instance, msg, uInfo.Type >= types.UserAdmin)
+	sessionId, err := e.loadSession(ctx, instance, msg, e.safeguardService.IsAdmin(uType))
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to start a new chat!"))
