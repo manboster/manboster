@@ -14,18 +14,10 @@ type Provider interface {
 	EditMessage(ctx context.Context, msg *Message) error
 	Select(ctx context.Context, sessionId string, msg *Message) error // returned session id, If AbilityType & AbilitySelect == 0, this function is null and unable to send it.
 	Stop() error
-	Notify(ctx context.Context, chatID string, action ActionType) error
+	Notify(ctx context.Context, msg *Message, action ActionType) error
 	Name() string
 	DisplayName() string
 	New() Provider
 	Ability() AbilityType // return the ability, which is this provider able to do.
 	Config() config.Provider
 }
-
-// ActionType gives you the type of current action's callback.
-type ActionType string
-
-const (
-	ActionUnknown ActionType = ""
-	ActionTyping  ActionType = "typing"
-)

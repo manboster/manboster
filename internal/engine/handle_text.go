@@ -16,6 +16,13 @@ import (
 func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	color.Blue("[Manboster Engine] Now handling text message...")
 
+	// now, notify process!
+	errI := instance.Notify(ctx, msg, chat.ActionPending)
+	color.Blue("[Manboster Engine] Notified provider pending status")
+	if errI != nil {
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Error while notifying provider %s: %q", instance.DisplayName(), errI))
+	}
+
 	respMessage := msg.Clone()
 
 	if err := ctx.Err(); err != nil {
