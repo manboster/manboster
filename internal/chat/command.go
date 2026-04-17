@@ -1,11 +1,5 @@
 package chat
 
-// CommandPayload defines what's in commands
-type CommandPayload struct {
-	CommandType CommandType // Optional. Required when MessageType = MessageCommand Command's type
-	CommandArgs []string    // Optional. Required when MessageType = MessageCommand Command's args
-}
-
 // CommandType defines command's types.
 type CommandType string
 
