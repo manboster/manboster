@@ -1,4 +1,4 @@
-package engine
+package loader
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 )
 
 // RunChat is a separate goroutine running for polling chats.
-func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) {
+func (l *Loader) RunChat(ctx context.Context, instance chat.Provider, conf any) {
 	displayName := instance.DisplayName()
 
 	defer func(instance chat.Provider) {
@@ -31,7 +31,8 @@ func (e *Engine) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 		}
 
 		err = instance.Start(ctx, func(msg *chat.Message) {
-			e.HandleMessage(ctx, instance, msg)
+			// TODO: signal notification
+			l.engine.HandleMessage(ctx, instance, msg)
 		})
 
 		if err != nil {

@@ -1,20 +1,21 @@
-package engine
+package util
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/llm"
 )
 
-// modelIndexWithFallback gets provider and model's index with fallback provided
-func (e *Engine) modelIndexWithFallback(ctx context.Context, targetProvider string, targetModel string) (int, int) {
+// GetModelIndexWithFallback gets provider and model's index with fallback provided
+func GetModelIndexWithFallback(ctx context.Context, llmProviders []llm.Provider, targetProvider string, targetModel string) (int, int) {
 	availProvider := false
 	availModel := false
 	providerIndex := 0
 	modelIndex := 0
 
-	for i, provider := range e.llmProviders {
+	for i, provider := range llmProviders {
 		if provider.Name() == targetProvider {
 			models := provider.Models()
 			availProvider = true
@@ -36,7 +37,7 @@ func (e *Engine) modelIndexWithFallback(ctx context.Context, targetProvider stri
 	}
 
 	if availProvider {
-		color.Yellow(fmt.Sprintf("[Manboster Engine] Not found LLM model. We changed model to %s", e.llmProviders[providerIndex].Models()[0].DisplayName))
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Not found LLM model. We changed model to %s", llmProviders[providerIndex].Models()[0].DisplayName))
 		return providerIndex, 0
 	}
 

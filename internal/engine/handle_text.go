@@ -51,7 +51,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 	provider, model, _ := e.sessionManager.GetModel(sessionId)
 	msgList := e.sessionManager.GetMessages(sessionId)
-	pIndex, mIndex := e.modelIndexWithFallback(ctx, provider, model)
+	pIndex, mIndex := util.GetModelIndexWithFallback(ctx, e.llmProviders, provider, model)
 	llmProviderDisplayName := e.llmProviders[pIndex].DisplayName()
 	llmModelDisplayName := e.llmProviders[pIndex].Models()[mIndex].DisplayName
 	llmModelName := e.llmProviders[pIndex].Models()[mIndex].Name

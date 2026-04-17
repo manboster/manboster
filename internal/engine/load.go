@@ -19,13 +19,5 @@ func (e *Engine) Load(ctx context.Context) error {
 	}
 	e.userCount = count
 
-	// get model data from configuration
-	e.loadDefaultModel(ctx)
-
-	// Then, we activate chats.
-	err = e.loadChats(ctx)
-	if err != nil {
-		return err
-	}
 	return nil
 }

@@ -47,6 +47,9 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while initializing LLM Providers: no llm provider available"))
 		return fmt.Errorf("no llm provider available")
 	}
+	l.llmProviders = llmProviders
+	// load default model
+	l.loadDefaultModel(ctx)
 
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
@@ -63,5 +66,13 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the engine: %q", err))
 		return err
 	}
+
+	// we activate chats after loading engine
+	err = l.LoadChats(ctx, l.cfg.Chats)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the chat providers: %q", err))
+		return err
+	}
+
 	return nil
 }
