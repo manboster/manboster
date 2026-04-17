@@ -44,7 +44,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		},
 	}
 	e.sessionManager.AppendEvent(sessionId, msgData)
-	errW := e.writeChatData(ctx, msgData, sessionId)
+	errW := e.chatDataService.Write(ctx, msgData, sessionId)
 	if errW != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), errW))
 	}
@@ -111,7 +111,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			text := event.Message.Parts[0].Text.Text
 			textWithoutThinking := util.StripThink(text)
 			e.sessionManager.AppendEvent(sessionId, *event)
-			err := e.writeChatData(ctx, *event, sessionId)
+			err := e.chatDataService.Write(ctx, *event, sessionId)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
 			}
