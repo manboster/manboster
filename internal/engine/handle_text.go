@@ -158,6 +158,10 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			continue
 		} else {
 			color.Green(fmt.Sprintf("[Manboster Engine] Tried %d times sending via %s, success.", tries, instance.Name()))
+			err := instance.Notify(ctx, msg, chat.ActionSuccess)
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 	}

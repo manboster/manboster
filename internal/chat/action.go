@@ -7,5 +7,6 @@ const (
 	ActionUnknown ActionType = ""
 	ActionTyping  ActionType = "typing"
 	ActionPending ActionType = "pending" // received request
-	ActionEnded   ActionType = "ended"
+	ActionSuccess ActionType = "success"
+	ActionError   ActionType = "error"
 )

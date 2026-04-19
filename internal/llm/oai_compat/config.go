@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
+	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/config/model"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/sashabaranov/go-openai"
@@ -82,25 +84,22 @@ func (c *Config) VerifyAndConvert(ctx context.Context) error {
 
 	for _, m := range modelValues {
 		if m == CustomModel {
-			model, err := InputModel()
+			iModel, err := InputModel()
 			if err != nil {
 				return err
 			}
-			c.Model = append(c.Model, model)
+			c.Model = append(c.Model, iModel)
 		} else {
-			// give it a default value, or make user complete? TODO: First read model library and get information.
-			c.Model = append(c.Model, llm.Model{
-				Name:            m,
-				DisplayName:     m,
-				Context:         262144,
-				MaxOutputTokens: 8192,
-				InputPrice:      0,
-				OutputPrice:     0,
-				Capabilities: llm.Capabilities{
-					Input:  llm.CapabilityText,
-					Output: llm.CapabilityText,
-				},
-			})
+			// give it a default value, or make user complete?
+			modelData := llm.Model{}
+			modelData, avail := model.Search(m)
+			modelData.Name = m // if this is not 'm', it would not get any available messages
+			if !avail {
+				// default value
+				color.Yellow(fmt.Sprintf("[Manboster Configuration Wizard] We can't find %s in our library, we have set this model's params data to default value. If you want to change it, please edit config file.", m))
+				modelData = model.Default(m)
+			}
+			c.Model = append(c.Model, modelData)
 		}
 	}
 

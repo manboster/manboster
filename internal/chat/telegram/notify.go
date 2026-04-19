@@ -43,6 +43,12 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 				},
 			},
 		})
+	case chat.ActionSuccess:
+		// TODO
+		return nil
+	case chat.ActionError:
+		// TODO
+		return nil
 	default:
 		return fmt.Errorf("invalid action type: %v", action)
 	}

@@ -44,7 +44,7 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 
 	// then return its message
 	return &llm.Event{
-		EventType: llm.EventMessage,
+		EventType: llm.EventMessage | llm.EventUsage,
 		Message: &llm.Message{
 			Parts: []llm.MessageParts{
 				{
@@ -56,6 +56,11 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 			},
 			Type: llm.MessageText,
 			Role: llm.RoleAssistant,
+		},
+		Usage: &llm.Usage{
+			PromptTokens:     resp.Usage.PromptTokens,
+			CompletionTokens: resp.Usage.CompletionTokens,
+			TotalTokens:      resp.Usage.TotalTokens,
 		},
 	}, nil
 }
