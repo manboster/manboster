@@ -133,6 +133,11 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	if err != nil {
+		err := instance.Notify(ctx, msg, chat.ActionError)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while notifying chat provider %s, error: %q", displayName, err))
+			return
+		}
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling message type(%d) message via %s, error: %q", msg.MessageType, displayName, err))
 	}
 }

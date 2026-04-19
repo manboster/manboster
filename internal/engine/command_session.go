@@ -119,3 +119,24 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
+
+// cmdSession TODO: if args is empty, it would display the list of sessions. if args is not empty, it would change session to given session id by modifying database
+func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	respMessage := msg.Clone()
+	respMessage.MessageType = chat.MessageText
+	return nil
+}
+
+// cmdProvider TODO: if args is empty, it would display the list of providers. if args is not empty, it would change providers to given provider id by modifying database
+func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	respMessage := msg.Clone()
+	respMessage.MessageType = chat.MessageText
+	return nil
+}
+
+// cmdModel TODO: if args is empty, it would display the list of models. if args is not empty, is would change models to given provider id by modifying database
+func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	respMessage := msg.Clone()
+	respMessage.MessageType = chat.MessageText
+	return nil
+}

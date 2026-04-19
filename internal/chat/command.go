@@ -14,8 +14,12 @@ const (
 	CommandSave      CommandType = "save"      // save this chat to database
 	CommandNew       CommandType = "new"       // delete this and create a new chat
 	CommandCompact   CommandType = "compact"   // summary this chat and create a new chat with summarized items
-	CommandModels    CommandType = "models"    // select models you want
-	CommandProviders CommandType = "providers" // select providers you want
+	CommandModel     CommandType = "model"     // select models you want
+	CommandModels    CommandType = "models"    // select models using interactive selection field, when AbilityType & AbilitySendSelect != 0
+	CommandSession   CommandType = "session"   // select sessions you want
+	CommandSessions  CommandType = "sessions"  // select sessions using interactive selection field, when AbilityType & AbilitySendSelect != 0
+	CommandProvider  CommandType = "provider"  // select providers you want
+	CommandProviders CommandType = "providers" // select providers using interactive selection field, when AbilityType & AbilitySendSelect != 0
 	CommandStart     CommandType = "start"     // start command gives tips to you, when it's the first run, it will grant you the root access to this application.
 	CommandPair      CommandType = "pair"      // pair Manboster with pair code
 	CommandCancel    CommandType = "cancel"    // cancel this request
