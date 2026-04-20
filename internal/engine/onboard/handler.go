@@ -18,8 +18,8 @@ func (s *Service) HandleOnBoard() {
 			s.retry = 0
 		}
 		s.pairKey = util.RandomNumber(100000, 999999)
-		for i := 0; i < 5; i++ {
-			color.HiCyan(fmt.Sprintf("[Manboster Engine] !!! Your Pair Code is %d! You can enter '/pair %d' in your dialog window and adopt to this Lobster! !!!", s.pairKey, s.pairKey))
-		}
+	}
+	for i := 0; i < 5; i++ {
+		color.HiCyan(fmt.Sprintf("[Manboster Engine] !!! Your Pair Code is %d! You can enter '/pair %d' in your dialog window and adopt to this Lobster! !!!", s.pairKey, s.pairKey))
 	}
 }
