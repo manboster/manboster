@@ -13,6 +13,7 @@ type ChatRepository interface {
 	GetAllChats(ctx context.Context) ([]types.Chat, error)
 	DeleteChat(ctx context.Context, chatId string, provider string) error
 	UpdateChat(ctx context.Context, chatId string, provider string, sessionId string) error
+	ReplaceChatSessions(ctx context.Context, oldSession string, newSession string) error
 }
 
 // CreateChat creates a new chat information
@@ -54,6 +55,11 @@ func (repo *Repo) UpdateChat(ctx context.Context, chatId string, provider string
 	}
 
 	return nil
+}
+
+// ReplaceChatSessions replaces old session to new ones
+func (repo *Repo) ReplaceChatSessions(ctx context.Context, oldSession string, newSession string) error {
+	return repo.db.WithContext(ctx).Model(&dbtypes.Chat{}).Where("session_id = ?", oldSession).Update("session_id", newSession).Error
 }
 
 // DeleteChat deletes chat information by chatId and Provider

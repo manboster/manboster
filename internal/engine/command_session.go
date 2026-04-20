@@ -71,8 +71,14 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 		return err
 	}
 
+	// auto migration
+	err = e.repo.ReplaceChatSessions(ctx, sessionId, sid)
+	if err != nil {
+		return err
+	}
+
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Deleted session `%s` .\nCreated session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
+		Text: fmt.Sprintf("Deleted session `%s` and created session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
@@ -101,7 +107,7 @@ func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Saved session `%s`.\nCreated session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.If you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
+		Text: fmt.Sprintf("Saved session `%s` and created session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.If you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
@@ -218,7 +224,7 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed session to %s!", sid))
+	respString.WriteString(fmt.Sprintf("Successfully changed session to `%s`!", sid))
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}

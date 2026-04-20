@@ -113,7 +113,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	respMessage := mesg.Clone()
 	respMessage.MessageType = chat.MessageText
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Compacted session `%s` and created a new session `%s`.\nCompacted summary data:\n`%s`", sessionId, newSessionID, compactedMessage),
+		Text: fmt.Sprintf("Compacted session `%s` and created a new session `%s`.\nCompacted summary data:\n```%s```\nOld session is saved. If you want to bind other chats to this new session, please run `/session %s` in that chat.", sessionId, newSessionID, compactedMessage, newSessionID),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
