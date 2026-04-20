@@ -31,5 +31,5 @@ func IsPublicCommand(commandType CommandType) bool {
 
 // IsSessionRequiredCommand returns whether the command need a Session ID. CommandCancel is included because it needs a sessionId lookup
 func IsSessionRequiredCommand(commandType CommandType) bool {
-	return commandType == CommandCompact || commandType == CommandCancel || commandType == CommandNew || commandType == CommandSave || commandType == CommandStatus
+	return commandType == CommandCompact || commandType == CommandCancel || commandType == CommandNew || commandType == CommandSave || commandType == CommandStatus || commandType == CommandProvider || commandType == CommandProviders || commandType == CommandModels || commandType == CommandModel || commandType == CommandSessions || commandType == CommandSession
 }

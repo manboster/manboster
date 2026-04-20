@@ -18,14 +18,14 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 		return ErrBotTokenRequired
 	}
 
-	stopDone := make(chan struct{}) // make a channel to align with
+	stopDone := make(chan struct{}, 1) // make a channel to align with
 
 	// set the bot and start it.
 	settings := telebot.Settings{
 		Token:  s.cfg.BotToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, c telebot.Context) {
-			color.Red("[Manboster Telegram Provider] We encountered an error: %v", err)
+			color.Red("[Manboster Telegram Provider] We encountered an error: %q", err)
 			stopDone <- struct{}{}
 		},
 	}
@@ -54,7 +54,7 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 
 	color.Blue("[Manboster Telegram Provider] Starting the telegram bot...")
 
-	s.tgInstance.Start()
+	go s.tgInstance.Start()
 
 	select {
 	case <-ctx.Done():

@@ -30,18 +30,22 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	case chat.CommandStatus:
 		return e.cmdStatus(ctx, instance, msg, sessionId)
 	case chat.CommandSave:
+		return e.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, e.cmdSave)
 	case chat.CommandNew:
-		return e.cmdNew(ctx, instance, msg, sessionId)
+		return e.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, e.cmdNew)
 	case chat.CommandCompact:
 	case chat.CommandModel:
-		return e.cmdModel(ctx, instance, msg)
+		return e.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, e.cmdModel)
 	case chat.CommandModels:
+		// TODO: interactive select
 	case chat.CommandProvider:
-		return e.cmdProvider(ctx, instance, msg)
+		return e.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, e.cmdProvider)
 	case chat.CommandProviders:
+		// TODO: interactive select
 	case chat.CommandSession:
-		return e.cmdSession(ctx, instance, msg)
+		return e.handleAdminCommand(ctx, instance, msg, e.cmdSession)
 	case chat.CommandSessions:
+		// TODO: interactive select
 	case chat.CommandStart:
 		return e.cmdStart(ctx, instance, msg)
 	case chat.CommandPair:
@@ -60,6 +64,14 @@ func (e *Engine) handleAdminCommand(ctx context.Context, instance chat.Provider,
 	isAdmin := e.safeguardService.IsAdmin(e.safeguardService.UserType(ctx, instance.Name(), msg.UserID))
 	if isAdmin {
 		return call(ctx, instance, msg)
+	}
+	return e.HandleReject(ctx, instance, msg)
+}
+
+func (e *Engine) handleAdminCommandWithSessionID(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string, call func(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string) error) error {
+	isAdmin := e.safeguardService.IsAdmin(e.safeguardService.UserType(ctx, instance.Name(), msg.UserID))
+	if isAdmin {
+		return call(ctx, instance, msg, sid)
 	}
 	return e.HandleReject(ctx, instance, msg)
 }

@@ -47,12 +47,17 @@ func (repo *Repo) GetSessions(ctx context.Context) ([]types.Session, error) {
 
 // UpdateSession updates session data
 func (repo *Repo) UpdateSession(ctx context.Context, sid string, updates map[string]interface{}) error {
+	var count int64
+	if err := repo.db.Model(&dbtypes.Session{}).Where("session_id = ?", sid).Count(&count).Error; err != nil {
+		return err
+	}
+	if count == 0 {
+		return ErrNotFound
+	}
+
 	resp := repo.db.WithContext(ctx).Model(&dbtypes.Session{}).Where("session_id = ?", sid).Updates(updates)
 	if resp.Error != nil {
 		return resp.Error
-	}
-	if resp.RowsAffected == 0 {
-		return ErrNotFound
 	}
 	return nil
 }

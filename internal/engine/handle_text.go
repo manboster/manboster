@@ -121,7 +121,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	} else {
 		if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
 			text := event.Message.Parts[0].Text.Text
+			// fmt.Println(text)
 			textWithoutThinking := util.StripThink(text)
+			// fmt.Println(textWithoutThinking)
 			e.sessionManager.AppendEvent(sessionId, *event)
 			err := e.chatDataService.Write(ctx, *event, sessionId)
 			if err != nil {

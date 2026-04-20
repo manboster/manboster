@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -37,7 +38,47 @@ func (e *Engine) cmdCancel(ctx context.Context, instance chat.Provider, msg *cha
 	return instance.SendMessage(ctx, msg)
 }
 
+// cmdNew deletes old session and creates a new session
 func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+	respMessage := msg.Clone()
+	respMessage.MessageType = chat.MessageText
+	_, avail := e.sessionManager.GetSession(sessionId)
+	if !avail {
+		respMessage.Text = &chat.TextPayload{
+			Text: "Session is not active, there is nothing to do!",
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	e.sessionManager.DeleteSession(sessionId)
+	err := e.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
+	if err != nil {
+		return err
+	}
+
+	// delete chat data and session data
+	err = e.repo.DeleteChatData(ctx, sessionId)
+	if err != nil {
+		return err
+	}
+	err = e.repo.DeleteSession(ctx, sessionId)
+	if err != nil {
+		return err
+	}
+
+	sid, err := e.loadSession(ctx, instance, msg, true)
+	if err != nil {
+		return err
+	}
+
+	respMessage.Text = &chat.TextPayload{
+		Text: fmt.Sprintf("Old session `%s` deleted.\nNew session: `%s` created.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
+	}
+	return instance.SendMessage(ctx, respMessage)
+}
+
+// cmdSave saves old session and create a new session
+func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	_, avail := e.sessionManager.GetSession(sessionId)
@@ -60,7 +101,7 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Old session %s reserved. New session: %s", sessionId, sid),
+		Text: fmt.Sprintf("Old session `%s` saved.\nNew session: `%s` created.\nIf you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
@@ -97,7 +138,7 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	respString.WriteString(fmt.Sprintf("Current usage data: \n"))
 	respString.WriteString(fmt.Sprintf("Current session id: `%s`\n", sessionId))
 	respString.WriteString(fmt.Sprintf("Current chat times: %d(call LLM API %d times)\n", len(sessData.Events), llmCallTimes))
-	respString.WriteString(fmt.Sprintf("Current provider: `%s`, model: `%s`\n", provider.DisplayName(), model.DisplayName))
+	respString.WriteString(fmt.Sprintf("Current provider: `%s`(ID:`%d`), model: `%s`(ID:`%d`)\n", provider.DisplayName(), pIndex+1, model.DisplayName, mIndex+1))
 	respString.WriteString(fmt.Sprintf("Total Tokens Cost: %d tokens\n(input: %d tokens, output: %d tokens, thinking %d tokens)\n", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
 
 	totPrice := 0.0
@@ -184,16 +225,122 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 	return instance.SendMessage(ctx, respMessage)
 }
 
-// cmdProvider TODO: if args is empty, it would display the list of providers. if args is not empty, it would change providers to given provider id by modifying database
-func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+// cmdProvider returns current available providers, if args is empty, it would display the list of providers. if args is not empty, it would change providers to given provider id by modifying database
+func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
-	return nil
+	var respString strings.Builder
+	if len(msg.Command.CommandArgs) == 0 {
+		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [id]`, we will automatically change the first model of the provider for you):\n")
+		for i, provider := range e.llmProviders {
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models\n", i+1, provider.DisplayName(), len(provider.Models())))
+		}
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	id, err := strconv.Atoi(msg.Command.CommandArgs[0])
+	if err != nil || id > len(e.llmProviders) || id < 1 {
+		respString.WriteString("Invalid input data!\n")
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	s, _ := e.sessionManager.GetSession(sessionId)
+
+	if e.llmProviders[id-1].Name() == s.Provider {
+		respString.WriteString("Current provider is what you have entered!")
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	s.Provider = e.llmProviders[id-1].Name()
+	s.Model = e.llmProviders[id-1].Models()[0].Name
+
+	e.sessionManager.SetSession(sessionId, s)
+	err = e.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
+		"llm_provider":       s.Provider,
+		"llm_provider_model": s.Model,
+	})
+	if err != nil {
+		respString.WriteString("An error was occurred when updating provider name for this session!")
+		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when updating provider name for this session: %q", err))
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to %s, model %s.", s.Provider, s.Model))
+	respMessage.Text = &chat.TextPayload{
+		Text: respString.String(),
+	}
+	return instance.SendMessage(ctx, respMessage)
 }
 
-// cmdModel TODO: if args is empty, it would display the list of models. if args is not empty, is would change models to given provider id by modifying database
-func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+// cmdModel if args is empty, it would display the list of models. if args is not empty, is would change models to given provider id by modifying database
+func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
-	return nil
+	var respString strings.Builder
+
+	s, _ := e.sessionManager.GetSession(sid)
+
+	pIndex, _ := util.GetModelIndexWithFallback(ctx, e.llmProviders, s.Model, s.Provider)
+
+	if len(msg.Command.CommandArgs) == 0 {
+		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
+		for i, m := range e.llmProviders[pIndex].Models() {
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `%.4f`/mtokens, output: `%.4f`/mtokens\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice))
+		}
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	id, err := strconv.Atoi(msg.Command.CommandArgs[0])
+	if err != nil || id > len(e.llmProviders[pIndex].Models()) || id < 1 {
+		respString.WriteString("Invalid input data!\n")
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when parsing data: %q", err))
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	if e.llmProviders[pIndex].Models()[id-1].Name == s.Model {
+		respString.WriteString("Current model is what you have entered!")
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	s.Model = e.llmProviders[pIndex].Models()[id-1].Name
+
+	e.sessionManager.SetSession(sid, s)
+	err = e.repo.UpdateSession(ctx, sid, map[string]interface{}{
+		"llm_provider_model": s.Model,
+	})
+	if err != nil {
+		respString.WriteString("An error was occurred when updating model name for this session!")
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when updating model name for this session: %q", err))
+		return instance.SendMessage(ctx, respMessage)
+	}
+
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to %s.", s.Model))
+	respMessage.Text = &chat.TextPayload{
+		Text: respString.String(),
+	}
+	return instance.SendMessage(ctx, respMessage)
 }
