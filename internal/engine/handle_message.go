@@ -34,7 +34,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	//  before receiving messages, we should check users' identity.
 	// get user information
-	uType := e.safeguardService.UserType(ctx, instance.Name(), msg.ChatID)
+	uType := e.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 
 	if !e.safeguardService.IsAdmin(uType) && msg.ChatType == chat.ChatsPersonal {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
