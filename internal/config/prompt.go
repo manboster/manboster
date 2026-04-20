@@ -91,5 +91,4 @@ You are a Context Compression Engine for Manboster chat sessions. Condense the p
 7. **Word Limit**: Output must not exceed 1000 words. If the log exceeds this, apply Rule 6 to decide what to cut.
 8. **Output Format**: Dense bullet points only. No intro, no conclusion, no markdown headers, no XML tags.
 [Conversation Log]
-
 `

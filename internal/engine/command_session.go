@@ -72,7 +72,7 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Old session `%s` deleted.\nNew session: `%s` created.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
+		Text: fmt.Sprintf("Deleted session `%s` .\nCreated session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
@@ -101,7 +101,7 @@ func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Old session `%s` saved.\nNew session: `%s` created.\nIf you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
+		Text: fmt.Sprintf("Saved session `%s`.\nCreated session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.If you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
@@ -145,12 +145,12 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	if model.InputPrice != 0 {
 		inputPrice := model.InputPrice * float64(usage.PromptTokens) / 1000000
 		totPrice += inputPrice
-		respString.WriteString(fmt.Sprintf("Input Price: $%.6f/mtokens, Current Estimated Input Price Cost: $%.6f\n", model.InputPrice, inputPrice))
+		respString.WriteString(fmt.Sprintf("Input Price: $%.6f/mtokens, Current Estimated Input Cost: $%.6f\n", model.InputPrice, inputPrice))
 	}
 	if model.OutputPrice != 0 {
 		outputPrice := model.OutputPrice * float64(usage.TotalTokens-usage.PromptTokens) / 1000000
 		totPrice += outputPrice
-		respString.WriteString(fmt.Sprintf("Output Price: $%.6f/mtokens, Current Estimated Output Price Cost: $%.6f\n", model.OutputPrice, outputPrice))
+		respString.WriteString(fmt.Sprintf("Output Price: $%.6f/mtokens, Current Estimated Output Cost: $%.6f\n", model.OutputPrice, outputPrice))
 	}
 	if totPrice > 0 {
 		respString.WriteString(fmt.Sprintf("Total Estimated Cost: $%.6f\n", totPrice))
@@ -297,7 +297,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
 		for i, m := range e.llmProviders[pIndex].Models() {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `%.4f`/mtokens, output: `%.4f`/mtokens\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice))
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -338,7 +338,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to %s.", s.Model))
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to `%s`.", s.Model))
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}

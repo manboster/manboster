@@ -45,7 +45,7 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 	limit := 4000
 	// check length of the text and slice it
 	if utf8.RuneCountInString(text) < limit {
-		if utf8.RuneCountInString(text) > 500 {
+		if utf8.RuneCountInString(text) > 1000 {
 			text = "<blockquote expandable>" + text + "</blockquote>"
 		}
 		_, err = s.tgInstance.Send(recp, text, opts)

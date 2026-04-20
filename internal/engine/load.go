@@ -23,7 +23,7 @@ func (e *Engine) Load(ctx context.Context) error {
 		e.onboard = onboard.New()
 	}
 
-	e.chatDataService = chatdata.New(e.repo, e.sessionManager)
+	e.chatDataService = chatdata.New(e.repo, e.sessionManager, e.llmProviders)
 	e.safeguardService = safeguard.New(e.repo)
 
 	return nil

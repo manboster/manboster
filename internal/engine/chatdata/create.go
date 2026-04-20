@@ -7,10 +7,10 @@ import (
 	"github.com/manboster/manboster/internal/llm"
 )
 
-// Create creates chat session with system prompt
-func (s *Service) Create(ctx context.Context, sessionId string) error {
+// CreateWithSystemPrompt creates chat session with additional system prompt
+func (s *Service) CreateWithSystemPrompt(ctx context.Context, sessionId string, prompt string) error {
 	textPayload := &llm.MessageTextPayload{
-		Text: config.InitialSystemPrompt, // TODO: prompt engineering
+		Text: config.InitialSystemPrompt + prompt, // TODO: prompt engineering
 	}
 
 	event := llm.Event{
@@ -36,4 +36,9 @@ func (s *Service) Create(ctx context.Context, sessionId string) error {
 	}
 
 	return nil
+}
+
+// Create creates chat session with system prompt
+func (s *Service) Create(ctx context.Context, sessionId string) error {
+	return s.CreateWithSystemPrompt(ctx, sessionId, "")
 }
