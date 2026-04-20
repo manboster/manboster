@@ -55,3 +55,11 @@ func (e *Engine) HandleCommand(ctx context.Context, instance chat.Provider, msg 
 	}
 	return nil
 }
+
+func (e *Engine) handleAdminCommand(ctx context.Context, instance chat.Provider, msg *chat.Message, call func(ctx context.Context, instance chat.Provider, msg *chat.Message) error) error {
+	isAdmin := e.safeguardService.IsAdmin(e.safeguardService.UserType(ctx, instance.Name(), msg.UserID))
+	if isAdmin {
+		return call(ctx, instance, msg)
+	}
+	return e.HandleReject(ctx, instance, msg)
+}

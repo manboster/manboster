@@ -10,7 +10,7 @@ import (
 type SessionRepository interface {
 	CreateSession(ctx context.Context, session types.Session) error
 	GetSession(ctx context.Context, sessionId string) (types.Session, error)
-	GetAllSessions(ctx context.Context) ([]types.Session, error)
+	GetSessions(ctx context.Context) ([]types.Session, error)
 	UpdateSession(ctx context.Context, sid string, updates map[string]interface{}) error
 	DeleteSession(ctx context.Context, sessionId string) error
 }
@@ -31,9 +31,18 @@ func (repo *Repo) GetSession(ctx context.Context, sessionId string) (types.Sessi
 	return types.MapSession(sessDBType), nil
 }
 
-// GetAllSessions return all session data
-func (repo *Repo) GetAllSessions(ctx context.Context) ([]types.Session, error) {
-	return []types.Session{}, nil
+// GetSessions return first 20 session data
+func (repo *Repo) GetSessions(ctx context.Context) ([]types.Session, error) {
+	var dbSessions []dbtypes.Session
+	var s []types.Session
+	resp := repo.db.WithContext(ctx).Order("created_at DESC").Find(&dbSessions).Limit(20)
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+	for _, session := range dbSessions {
+		s = append(s, types.MapSession(session))
+	}
+	return s, nil
 }
 
 // UpdateSession updates session data
