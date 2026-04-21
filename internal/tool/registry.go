@@ -1,4 +1,4 @@
-package chat
+package tool
 
 import (
 	"fmt"
@@ -13,26 +13,24 @@ var (
 	mu               sync.RWMutex
 )
 
-// Register helps chat instance register their services
 func Register(name string, factory ProviderFactory) {
 	mu.Lock()
 	defer mu.Unlock()
 	if _, duplicant := providerRegistry[name]; duplicant {
-		panic(fmt.Sprintf("chat: Register called twice for provider %s", name))
+		panic(fmt.Sprintf("[Manboster Chat Registry] Register called twice for provider %s", name))
 	}
 	providerRegistry[name] = factory
 }
 
-// GetProvider gets providers to users
 func GetProvider(name string) (Provider, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("[Manboster Chat] unknown provider %q (did you forget to import it?)", name)
+		return nil, fmt.Errorf("tool: unknown provider %q (did you forget to import it?)", name)
 	}
 	if _, valid := importedRegistry[name]; valid {
-		return nil, fmt.Errorf("[Manboster Chat] you define 2 times with %q! The second one will be ignored", name)
+		return nil, fmt.Errorf("tool: you define 2 times with %q! The second one will be ignored", name)
 	}
 	return factory(), nil
 }
@@ -44,6 +42,17 @@ func AvailProviders() []string {
 	var list []string
 	for name := range providerRegistry {
 		list = append(list, name)
+	}
+	return list
+}
+
+// Providers gets all available providers in provider type form.
+func Providers() []Provider {
+	mu.RLock()
+	defer mu.RUnlock()
+	var list []Provider
+	for _, p := range providerRegistry {
+		list = append(list, p())
 	}
 	return list
 }

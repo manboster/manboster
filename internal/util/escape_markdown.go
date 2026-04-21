@@ -65,6 +65,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		"<strong>", "<b>", "</strong>", "</b>",
 		"<em>", "<i>", "</em>", "</i>",
 		"<del>", "<s>", "</del>", "</s>",
+		"<br>", "\n", "<br/>", "\n",
 	)
 
 	formatted := replacer.Replace(htmlStr)
