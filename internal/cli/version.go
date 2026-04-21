@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/spf13/cobra"
@@ -17,5 +18,5 @@ func versionCmd() *cobra.Command {
 }
 
 func versionCmdExecutor(cmd *cobra.Command, args []string) {
-	fmt.Println(config.Version)
+	fmt.Printf("Manboster version %s %s, commit %s, build at %s %s/%s\n", config.Version, config.CurrentVersion, config.BuildCommit, config.BuildTime, runtime.GOOS, runtime.GOARCH)
 }

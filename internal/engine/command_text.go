@@ -42,11 +42,11 @@ func (e *Engine) cmdHelp(ctx context.Context, instance chat.Provider, msg *chat.
 	str.WriteString("/save - Save the current session and start a new session. You can change it anytime by using `/session`.\n")
 	str.WriteString("/new - Delete the current session data and start a new session.\n")
 	str.WriteString("/compact - Compact the current session by summarizing context and start a new session. If the context is about to overflow, it will be done automatically.\n")
-	str.WriteString("/model - Get and select current chat's chatting model by `/model [model name]`.\n")
+	str.WriteString("/model - Get and select current chat's chatting model by `/model [model id]`.\n")
 	str.WriteString("/models - Select current chat's chatting model in an interactive way.\n")
 	str.WriteString("/session - Get and select current chat's session by `/session [session id]`\n")
 	str.WriteString("/sessions - Select current chat's session in an interactive way\n")
-	str.WriteString("/provider - Get and select current chat's provider by `/provider [provider name]`\n")
+	str.WriteString("/provider - Get and select current chat's provider by `/provider [provider id]`\n")
 	str.WriteString("/providers - Select current chat's provider in an interactive way\n")
 	str.WriteString("/start - Display the start welcome message\n")
 	str.WriteString("/pair - Use /pair xxxxxx to pair with your Lobster\n")
@@ -63,7 +63,7 @@ func (e *Engine) cmdHelp(ctx context.Context, instance chat.Provider, msg *chat.
 func (e *Engine) cmdVersion(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	msg.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Manboster: Your Personal Manbo Lobster!\nManboster Version %s\nCheckout our latest releases here:\nhttps://github.com/manboster/manboster", config.Version),
+		Text: fmt.Sprintf("Manboster: Your Personal Manbo Lobster!\nManboster version %s %s, commit %s, build at %s\nCheckout our latest releases here:\nhttps://github.com/manboster/manboster", config.Version, config.CurrentVersion, config.BuildCommit, config.BuildTime),
 	}
 	return instance.SendMessage(ctx, msg)
 }

@@ -23,14 +23,8 @@ func Init() error {
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); errors.As(err, &viper.ConfigFileNotFoundError{}) {
-		// if no args, execute guide configuration.
-		if len(os.Args) == 1 {
-			color.Yellow("config.yaml is not found, now guide you to create one...\n")
-			return ErrNoConfig
-		} else if len(os.Args) == 2 && os.Args[1] == "config" {
-			return nil
-		}
-		return err
+		color.Yellow("[Manboster Config] config.yaml is not found, now guide you to create one...\n")
+		return ErrNoConfig
 	} else if err != nil {
 		return err
 	}
