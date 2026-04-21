@@ -1,28 +1,12 @@
 package config
 
-type VersionType int8
+type VersionType string
 
 const (
-	VersionStable VersionType = iota
-	VersionRC
-	VersionBeta
-	VersionAlpha
-	VersionCanary
+	VersionStable  = "stable"
+	VersionRC      = "rc"
+	VersionBeta    = "beta"
+	VersionAlpha   = "alpha"
+	VersionCanary  = "canary"
+	VersionUnknown = "unknown"
 )
-
-func (v VersionType) String() string {
-	switch v {
-	case VersionStable:
-		return "stable"
-	case VersionRC:
-		return "release candidate"
-	case VersionBeta:
-		return "beta"
-	case VersionAlpha:
-		return "alpha"
-	case VersionCanary:
-		return "canary"
-	default:
-		return "unknown"
-	}
-}

@@ -3,8 +3,6 @@ package config
 // Version defines manboster's application version.
 const Version = "0.1.0"
 
-const CurrentVersion = VersionCanary
-
 // APILevel defines the current level(Tool) supported in Manboster.
 const APILevel = 1
 
@@ -12,6 +10,7 @@ const APILevel = 1
 const V = 0
 
 var (
-	BuildCommit string = "unknown"
-	BuildTime   string = "unknown"
+	BuildCommit    string = "unknown"
+	BuildTime      string = "unknown"
+	CurrentVersion        = "unknown"
 )
