@@ -37,15 +37,6 @@ var initialModels = []llm.Model{
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
-		DisplayName:     "StepFun Step 3.5 Flash(Free Model)",
-		Name:            "stepfun/step-3.5-flash:free",
-		Context:         262144,
-		MaxOutputTokens: 66000,
-		InputPrice:      0,
-		OutputPrice:     0,
-		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
-	},
-	{
 		DisplayName:     "Google Gemma 4 26B A4B(Free Model)",
 		Name:            "google/gemma-4-26b-a4b-it:free",
 		Context:         262144,
