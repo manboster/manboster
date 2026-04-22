@@ -14,6 +14,17 @@ const (
 	UserRoot    UserType = iota
 )
 
+func (u UserType) String() string {
+	switch u {
+	case UserAdmin:
+		return "admin"
+	case UserRoot:
+		return "root"
+	default:
+		return "unknown"
+	}
+}
+
 type User struct {
 	ID        uint64
 	UserID    string
