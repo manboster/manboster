@@ -7,15 +7,22 @@ import (
 
 // Args returns args needed in configuration
 type Args struct {
-	Args     []schema.Args
-	Default  any
+	Nodes []ArgsNode
+	Index map[string]*ArgsNode
+}
+
+type ArgsNode struct {
 	IsSecret bool
+	Default  any
+	Arg      *schema.Args
+	Children []ArgsNode
 }
 
 func (args *Args) ToHuhGroup() *huh.Group {
 	return &huh.Group{}
 }
 
+// ArgsFromStruct TODO:
 func ArgsFromStruct(s interface{}) (*Args, error) {
 	return &Args{}, nil
 }

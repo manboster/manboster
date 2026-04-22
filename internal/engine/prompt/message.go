@@ -27,4 +27,7 @@ func (s *Service) ChatMessageToString(msg *chat.Message) (*llm.Message, string) 
 	return &m, respString.String()
 }
 
-// LLMMessageToString converts a LLM message to string format
+// LLMMessageToString TODO: converts a LLM message to string format
+func (s *Service) LLMMessageToString(msg *llm.Message) (*chat.Message, string) {
+	return &chat.Message{}, ""
+}

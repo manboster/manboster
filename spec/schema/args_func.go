@@ -1,24 +1,23 @@
 package schema
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 )
 
 // ArgsFromStruct is a useful function help you convert struct to args
-func ArgsFromStruct(s interface{}) ([]*Args, error) {
+func ArgsFromStruct(s interface{}) []*Args {
 	r := reflect.ValueOf(s)
 	// if it's a pointer, set the value of its pointer assets
 	if r.Kind() == reflect.Ptr {
 		r = r.Elem()
 	}
 	if r.Kind() != reflect.Struct {
-		return nil, fmt.Errorf("s must be a struct")
+		return nil
 	}
 	t := r.Type()
 
-	return parseFields(t), nil
+	return parseFields(t)
 }
 
 func parseFields(t reflect.Type) []*Args {
