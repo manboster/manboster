@@ -51,6 +51,9 @@ func (l *Loader) Load(ctx context.Context) error {
 	// load default model
 	l.loadDefaultModel(ctx)
 
+	// load enabled tool call
+	_, err = LoadToolCallProviders(ctx)
+
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
 	e, err := engine.New(l.cfg, repo, llmProviders)

@@ -51,6 +51,10 @@ func parseFields(t reflect.Type) []*Args {
 			}
 		}
 
+		if exampleTag, ok := f.Tag.Lookup("example"); ok {
+			arg.Example = exampleTag
+		}
+
 		handleKind(arg, f.Type)
 		args = append(args, arg)
 	}

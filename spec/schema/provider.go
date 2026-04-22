@@ -12,6 +12,7 @@ type PluginProvider interface {
 	Requires() []RequirementData                          // get the requirement type of plugin
 	Args() []*Args                                        // get args description from the plugin
 	Init(ctx context.Context) error                       // initialize the plugin
+	Start(ctx context.Context) error                      // if long polling, it would work
 	Run(ctx context.Context, args string) (string, error) // passthrough by JSON
 	Close() error                                         // force stop
 }

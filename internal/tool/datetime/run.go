@@ -11,6 +11,10 @@ func (s *Service) Init(ctx context.Context) error {
 	return nil
 }
 
+func (s *Service) Start(ctx context.Context) error {
+	return nil
+}
+
 func (s *Service) Run(ctx context.Context, args string) (string, error) {
 	arg := RunArgs{}
 	if json.Unmarshal([]byte(args), &arg) != nil {
