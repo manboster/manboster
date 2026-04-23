@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 3; Apr 23, 2026*
+*Rev 3.1; Apr 23, 2026*
 
 ## TL;DR
 
@@ -70,7 +70,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 6.2 Before you commit, you should run `go test ./...` to ensure all tests are passed.
 
-## 7. About the Contribution Roles
+## 7. About the Contribution Roles and Ethics
 
 7.1 A Contributor is any individual who contributes to the project, ranging from minor typo fixes to significant bug resolutions.
 
@@ -120,15 +120,25 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 9.3 Guideline updates are subject to a voting process. A proposed change will be accepted if it receives approval from over 50% of the Core Contributors or over 70% of all Contributors.
 
-9.4 The Owner must be notified of any proposed changes and retains the ultimate right of veto to reject the edit, regardless of the voting outcome.
+9.4 The Owner must be notified of any proposed changes and retains the ultimate right of veto to reject the edit, unless the voting outcome receives approval from over 80% of the TOTAL Core Contributors (not just those who voted) or over 90% of all Contributors participated in the vote. If rejected, the Owner **MUST** write the reason why it is rejected. If the Owner does not exercise the veto within 3 days after the voting period ends, the vote shall be finalized.
 
 9.5 Any accepted updates must be properly recorded via Git. The author of the Pull Request **MUST** update the revision version (`Rev`) at the top of the file and append a brief description of the changes to the `Changelogs` section at the bottom.
 
-9.6 This section is also in effect with modifying `SECURITY.md`.
+9.6 The voting period shall be no shorter than 3 days and no longer than 15 days. Participants may vote Accept, Reject, or Abstain.
+
+9.6.1 A vote is only counted towards the Quorum if the participant actively casts a vote (including an explicit "Abstain"). Passive silence is not counted towards the Quorum.
+
+9.6.2 A vote is only valid if a minimum of 50% of Core Contributors cast a vote.
+
+9.6.3 For the general "Contributors" group, the participation requirement is 50% of those active within the last 6 months. If the number of active contributors is extremely low, a minimum of 5 individuals must participate to ensure diversity of opinion.
+
+9.7 This section is also in effect with modifying `SECURITY.md`.
 
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 3.1: Add limitation to the owner, Updated on 2026.4.23
 
 Rev 3: Update morals and updates of this guideline, Updated on 2026.4.23
 
