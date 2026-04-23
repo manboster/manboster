@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 2.2; Apr 13, 2026*
+*Rev 3; Apr 23, 2026*
 
 ## TL;DR
 
@@ -96,6 +96,12 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 7.6 Core Contributors who have not contributed code or participated in maintenance for more than 6 months will have their repository write permissions suspended for security reasons. If you wish to resume active contribution, please contact the owner to restore your permissions.
 
+7.7 All contributors **MUST** adhere to fundamental professional ethics and the open-source code of conduct. Any behavior that intentionally harms the project, its users, or the community is strictly prohibited.
+
+7.8 While you are welcome to use Manboster for academic projects, hackathons, or competitions, you **MUST** comply with our open-source license and provide proper attribution. Plagiarism or claiming Manboster's code as your own independent work is **STRICTLY PROHIBITED**. We reserve the right to publicly disavow such actions.
+
+7.9 We have a **ZERO-TOLERANCE** policy for malicious contributions. Intentionally introducing backdoors, malware, spyware, or obfuscated malicious code into the repository will result in an **IMMEDIATE AND PERMANENT BAN** from the project. Furthermore, we reserve the right to report such malicious activities to GitHub Trust & Safety and relevant cybersecurity authorities.
+
 ## 8. About the Issues and Discussions
 
 8.1 Issues is the place where people discuss features and bug fixes. 
@@ -106,9 +112,25 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 
 8.4 If you are a security researcher and have found a vulnerability in Manboster, please **DO NOT** open a public issue. Use the GitHub Security Advisory feature or send a detailed report to `security@manboster.dev`. Once verified, we will coordinate a fix as a priority.
 
+## 9. About Updating this Guideline
+
+9.1 We welcome community members to propose improvements to this guideline. If you see a need for an edit or update, please first open an issue to initiate a discussion.
+
+9.2 Once discussed, you may submit a Pull Request. The proposed draft must be reviewed by the Core Contributors and the Owner.
+
+9.3 Guideline updates are subject to a voting process. A proposed change will be accepted if it receives approval from over 50% of the Core Contributors or over 70% of all Contributors.
+
+9.4 The Owner must be notified of any proposed changes and retains the ultimate right of veto to reject the edit, regardless of the voting outcome.
+
+9.5 Any accepted updates must be properly recorded via Git. The author of the Pull Request **MUST** update the revision version (`Rev`) at the top of the file and append a brief description of the changes to the `Changelogs` section at the bottom.
+
+9.6 This section is also in effect with modifying `SECURITY.md`.
+
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 3: Update morals and updates of this guideline, Updated on 2026.4.23
 
 Rev 2.2: Fix typo, Updated on 2026.4.13
 
