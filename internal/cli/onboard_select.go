@@ -12,16 +12,16 @@ import (
 )
 
 func OnboardSelectLLMForm(ctx context.Context, llmProviders []llm.Provider, prompt string) (llm.Provider, error) {
-	var chatOptions []huh.Option[string]
+	var options []huh.Option[string]
 	for _, c := range llmProviders {
-		chatOptions = append(chatOptions, huh.NewOption(c.DisplayName(), c.Name()))
+		options = append(options, huh.NewOption(c.Config().DisplayName(), c.Config().Name()))
 	}
 	var lProvider string
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().Title(prompt).
 				Options(
-					chatOptions...,
+					options...,
 				).Value(&lProvider),
 		),
 	).Run()
@@ -29,7 +29,7 @@ func OnboardSelectLLMForm(ctx context.Context, llmProviders []llm.Provider, prom
 		return nil, err
 	}
 	for _, c := range llmProviders {
-		if c.Name() == lProvider {
+		if c.Config().Name() == lProvider {
 			return c, nil
 		}
 	}
@@ -49,17 +49,18 @@ func OnboardLLMProviderInstanceForm(ctx context.Context, llmConfigs []config.LLM
 			color.Yellow(fmt.Sprintf("[Manboster Configuration Wizard] Failed to init llm provider %q: %q\n", c.Provider, err))
 			continue
 		}
+		llmProviders = append(llmProviders, p)
 	}
-	var chatOptions []huh.Option[string]
+	var llmOptions []huh.Option[string]
 	for _, c := range llmProviders {
-		chatOptions = append(chatOptions, huh.NewOption(c.DisplayName(), c.Name()))
+		llmOptions = append(llmOptions, huh.NewOption(c.DisplayName(), c.Name()))
 	}
 	var lProvider string
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().Title(prompt).
 				Options(
-					chatOptions...,
+					llmOptions...,
 				).Value(&lProvider),
 		),
 	).Run()

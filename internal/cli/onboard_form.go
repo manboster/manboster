@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/charmbracelet/huh"
@@ -16,90 +15,6 @@ import (
 	_ "github.com/manboster/manboster/internal/llm/oai_compat"
 	_ "github.com/manboster/manboster/internal/llm/openrouter"
 )
-
-// OnboardWarningForm provides a warning notice
-func OnboardWarningForm(ctx context.Context) error {
-	agree := false
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewNote().
-				Title("RISK DISCLOSURE & DISCLAIMER").
-				Description(`*PLEASE READ THESE WORDS CAREFULLY:*
-Manboster is an AI agent able to chat and control your computers like OpenClaw and IronClaw and currently in MVP stage. By proceeding, you acknowledge:
-1. WIP means this project is *Work in Progress*, and *it is expected to encounter bugs, crashes, and breaking changes.*
-2. If you run 'manboster start', you open a daemon running in your computer. *The background process has persistent resource access to your computer.*
-3. WASM sandboxing plugins is strong, but *3rd-party code still carries risks*.
-4. *Hachimi scoring reduces decision fatigue, but cannot fully prevent advanced prompt injections or unsafe LLM behaviors.*
-5. *Granting access enables data transmission to LLMs and allows device control. We are not liable for any issues arising from these interactions.*
-6. This software is provided "AS IS" under Apache 2.0. *You are strictly prohibited from using this application for any criminal or illegal purposes. We disclaim all liability and responsibility for any unlawful activities conducted using this software.*
-`).
-				Next(false),
-			huh.NewConfirm().
-				Title("Do you understand the risks and wish to proceed?").
-				Affirmative("I Agree & Continue").
-				Negative("Exit Now").
-				Value(&agree),
-		),
-	)
-
-	err := form.Run()
-	if !agree {
-		os.Exit(0)
-	}
-	return err
-}
-
-func OnboardVersionWarningForm(ctx context.Context) error {
-	agree := false
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewNote().
-				Title("UNSTABLE VERSION WARNING").
-				Description(`*PLEASE READ THESE WORDS CAREFULLY:*
-It seems that you're going to use an unstable version of Manboster. Please note that:
-1. It's normal to encounter bugs, crashes, and breaking changes in unstable versions.
-2. As this is not a stable version, it's not contain ANY security patches and fixes.
-3. This version's configuration may be incompatible with older versions and please aware the configuration changes.
-4. If you encounter bugs, we appreciate you to commit to issues and we will fix it as soon as possible.
-5. PLEASE DO NOT STORAGE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as is.
-`).
-				Next(false),
-			huh.NewConfirm().
-				Title("Do you understand the risks and wish to proceed?").
-				Affirmative("I Understand & Continue").
-				Negative("Exit Now").
-				Value(&agree),
-		),
-	)
-
-	err := form.Run()
-	if !agree {
-		os.Exit(0)
-	}
-	return err
-}
-
-func ContinueConfirm(ctx context.Context, content string) bool {
-	agree := false
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title(fmt.Sprintf("%s\nContinue?", content)).
-				Affirmative("Continue").
-				Negative("Skip").
-				Value(&agree),
-		),
-	)
-
-	err := form.Run()
-	if err != nil {
-		os.Exit(0)
-	}
-	return agree
-}
 
 // OnboardConfigurationForm provides a huh form configuration with TUI.
 func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
@@ -114,7 +29,6 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 		return c, err
 	}
 
-	// TODO: Refactor to single functions
 	// Step 1: choose Chat Providers
 	chatCfg, err := OnboardChatConfigForm(ctx)
 	if err != nil {
@@ -130,7 +44,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 			return c, err
 		}
 		c.LLMs = append(c.LLMs, llmCfg)
-		if !ContinueConfirm(ctx, fmt.Sprintf("You've successfully add %d llm configs!", count)) {
+		if !ContinueConfirm(ctx, fmt.Sprintf("You've successfully add %d llm providers!", count)) {
 			break
 		}
 		count++
@@ -150,10 +64,17 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	confDescription := strings.Builder{}
 	confDescription.WriteString("You need to review what you have entered. \n")
 	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster config'.\n")
-	confDescription.WriteString(fmt.Sprintf("Your Chat Provider: %s\n", c.Chats[0].Provider))
-	confDescription.WriteString(fmt.Sprintf("Your Chat Provider's Configuration:\n %s\n", c.Chats[0].Configuration))
-	confDescription.WriteString(fmt.Sprintf("Your LLM Provider: %s\n", c.LLMs[0].Provider))
-	confDescription.WriteString(fmt.Sprintf("Your LLM Provider's Configuration:\n %s\n", c.LLMs[0].Configuration))
+
+	confDescription.WriteString(fmt.Sprintf("You configured %d chat providers", len(c.Chats)))
+	for i, _ := range c.Chats {
+		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration:\n %s\n", i+1, c.Chats[i].Provider, c.Chats[i].Configuration))
+	}
+
+	confDescription.WriteString(fmt.Sprintf("You configured %d llm providers", len(c.LLMs)))
+	for i, _ := range c.LLMs {
+		confDescription.WriteString(fmt.Sprintf("#%d's Configuration: \n%s \n", i+1, c.LLMs[i].Configuration))
+	}
+
 	confDescription.WriteString("If there is no problem, you can press enter and we will work on it.\n")
 	confDesc := util.EscapeMarkdown(confDescription.String())
 
