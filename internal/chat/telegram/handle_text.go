@@ -81,8 +81,14 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 	// TODO: Passthrough all messages from Group, handle it in handleMessage, check.
 	if ((msg.ChatType == chat.ChatsGroup || msg.ChatType == chat.ChatsChannel) && strings.HasPrefix(c.Text(), "@"+c.Bot().Me.Username)) && msg.MessageType != chat.MessageCommand {
 		msg.MessageType = chat.MessageText
+		text := ""
+		if len("@"+c.Bot().Me.Username) == len(c.Text()) {
+			text = ""
+		} else {
+			text = c.Text()[len("@"+c.Bot().Me.Username)+1:]
+		}
 		msg.Text = &chat.TextPayload{
-			Text: c.Text()[len("@"+c.Bot().Me.Username)+1:],
+			Text: text,
 		}
 	}
 

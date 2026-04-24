@@ -9,9 +9,6 @@ import (
 )
 
 func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.ActionType) error {
-	notifierLock.Lock()
-	defer notifierLock.Unlock()
-
 	switch action {
 	case chat.ActionPending:
 		// mark it reaction

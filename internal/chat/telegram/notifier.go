@@ -31,6 +31,8 @@ func notifierCancel(chatId string) {
 	if !avail {
 		return
 	}
-	n.Cancel()
+	if n.Cancel != nil {
+		n.Cancel()
+	}
 	delete(notifierMap, chatId)
 }
