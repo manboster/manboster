@@ -5,6 +5,24 @@ import "github.com/manboster/manboster/internal/llm"
 // DeepSeekModels defines models from DeepSeek v3.2 (Along with R1) to now
 var DeepSeekModels = []llm.Model{
 	{
+		DisplayName:     "DeepSeek V4 Pro",
+		Name:            "deepseek/deepseek-v4-pro",
+		Context:         1048576,
+		MaxOutputTokens: 384000,
+		InputPrice:      1.74,
+		OutputPrice:     3.48,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
+	},
+	{
+		DisplayName:     "DeepSeek V4 Flash",
+		Name:            "deepseek/deepseek-v4-flash",
+		Context:         1048576,
+		MaxOutputTokens: 384000,
+		InputPrice:      0.14,
+		OutputPrice:     0.28,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "DeepSeek V3.2",
 		Name:            "deepseek/deepseek-v3.2",
 		Context:         163840,
