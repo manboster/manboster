@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/spf13/viper"
 )
 
@@ -23,7 +22,6 @@ func Init() error {
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); errors.As(err, &viper.ConfigFileNotFoundError{}) {
-		color.Yellow("[Manboster Config] config.yaml is not found, now guide you to create one...\n")
 		return ErrNoConfig
 	} else if err != nil {
 		return err

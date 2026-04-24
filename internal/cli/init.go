@@ -20,6 +20,7 @@ func Init() {
 	rootCmd.AddCommand(versionCmd())
 
 	// Add configuration options
+	rootCmd.AddCommand(onboardConfigCmd())
 	rootCmd.AddCommand(configCmd())
 
 	// Add daemon options

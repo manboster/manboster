@@ -16,8 +16,8 @@ import (
 	_ "github.com/manboster/manboster/internal/llm/openrouter"
 )
 
-// ConfigurationForm provides a huh form configuration with TUI.
-func ConfigurationForm(ctx context.Context) (config.Config, error) {
+// OnboardConfigurationForm provides a huh form configuration with TUI.
+func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	// get default configuration's value
 	var c config.Config
 
@@ -31,21 +31,21 @@ func ConfigurationForm(ctx context.Context) (config.Config, error) {
 
 	// TODO: Refactor to single functions
 	// Step 1: choose Chat Providers
-	chatCfg, err := ChatConfigForm(ctx)
+	chatCfg, err := OnboardChatConfigForm(ctx)
 	if err != nil {
 		return c, err
 	}
 	c.Chats = append(c.Chats, chatCfg)
 
 	// Step 2: config LLMs
-	llmCfg, err := LLMConfigForm(ctx)
+	llmCfg, err := OnboardLLMConfigForm(ctx)
 	if err != nil {
 		return c, err
 	}
 	c.LLMs = append(c.LLMs, llmCfg)
 
 	// Step 3: config apps
-	appCfg, err := APPConfigForm(ctx, llmCfg)
+	appCfg, err := OnboardAPPConfigForm(ctx, llmCfg)
 	if err != nil {
 		return c, err
 	}
@@ -76,8 +76,8 @@ func ConfigurationForm(ctx context.Context) (config.Config, error) {
 	return c, nil
 }
 
-// ChatConfigForm returns chats' config data.
-func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
+// OnboardChatConfigForm returns chats' config data.
+func OnboardChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	// get providers to generate options
 	var chatProviders []config.Provider
 	names := chat.AvailProviders()
@@ -115,7 +115,7 @@ func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	}
 
 	provider := cProvider.Config()
-	conf, err := RunConfig(ctx, provider)
+	conf, err := RunOnboardConfig(ctx, provider)
 	if err != nil {
 		return config.ChatConfig{}, err
 	}
@@ -126,8 +126,8 @@ func ChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	}, nil
 }
 
-// LLMConfigForm returns LLMs' config data.
-func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
+// OnboardLLMConfigForm returns LLMs' config data.
+func OnboardLLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	// get providers to generate options
 	var llmProviders []config.Provider
 	names := llm.AvailProviders()
@@ -165,7 +165,7 @@ func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	}
 
 	provider := llmProvider.Config()
-	conf, err := RunConfig(ctx, provider)
+	conf, err := RunOnboardConfig(ctx, provider)
 	if err != nil {
 		return config.LLMConfig{}, err
 	}
@@ -176,7 +176,7 @@ func LLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	}, nil
 }
 
-func APPConfigForm(ctx context.Context, llmConfig config.LLMConfig) (config.AppConfig, error) {
+func OnboardAPPConfigForm(ctx context.Context, llmConfig config.LLMConfig) (config.AppConfig, error) {
 	provider, err := llm.GetProvider(llmConfig.Provider)
 	if err != nil {
 		return config.AppConfig{}, err

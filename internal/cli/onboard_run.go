@@ -7,8 +7,8 @@ import (
 	"github.com/manboster/manboster/internal/config"
 )
 
-// RunConfig runs provider and gets config result
-func RunConfig(ctx context.Context, provider config.Provider) (any, error) {
+// RunOnboardConfig runs provider and gets config result
+func RunOnboardConfig(ctx context.Context, provider config.Provider) (any, error) {
 	err := huh.NewForm(provider.ToHuhGroup()...).Run()
 	if err != nil {
 		return nil, err
