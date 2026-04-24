@@ -32,7 +32,11 @@ func main(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	err = config.Init()
+	mainInner()
+}
+
+func mainInner() {
+	err := config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
 		color.Yellow("[Manboster Client] config.yaml is not found, now guide you to create one...\n")
 		OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])

@@ -23,7 +23,7 @@ func Models() []llm.Model {
 	)
 }
 
-// Default returns a default model defnition
+// Default returns a default model definition
 func Default(m string) llm.Model {
 	return llm.Model{
 		Name:            m, // to be filled

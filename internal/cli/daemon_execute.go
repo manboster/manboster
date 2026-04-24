@@ -49,7 +49,7 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 	} else if err != nil {
 		panic(err)
 	}
-	main(cmd, args)
+	mainInner()
 }
 
 // stopCommandExecutor stops daemon
@@ -59,14 +59,18 @@ func stopCommandExecutor(cmd *cobra.Command, args []string) {
 		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v\n Please be sure that you have started this daemon.", err))
 		return
 	}
+	if d != nil {
+		// stop the daemon
+		err = d.Signal(syscall.SIGTERM)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v", err))
+			return
+		}
+		color.Green("[Manboster Daemon] Manboster daemon stopped, thank you for playing with your Lobster!")
 
-	// stop the daemon
-	err = d.Signal(syscall.SIGTERM)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v", err))
-		return
+	} else {
+		color.Yellow("[Manboster Daemon] Manboster daemon stopped!")
 	}
-	color.Green("Manboster daemon stopped, thank you for playing with your Lobster!")
 }
 
 // restartCommandExecutor restarts the daemon
@@ -84,12 +88,16 @@ func statusCommandExecutor(cmd *cobra.Command, args []string) {
 		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when getting Manboster daemon PID file, error: %v\nMaybe the daemon is not running.", err))
 		return
 	}
-	// get running status
-	err = d.Signal(syscall.Signal(0))
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Daemon] Manboster is not running currently, please delete PID files in %s to reset daemon status or run 'manboster reset' , error: %v", config.Path("manboster.pid"), err))
-		return
-	}
+	if d != nil {
+		// get running status
+		err = d.Signal(syscall.Signal(0))
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Daemon] Manboster is not running currently, please delete PID files in %s to reset daemon status or run 'manboster reset' , error: %v", config.Path("manboster.pid"), err))
+			return
+		}
 
-	color.Green(fmt.Sprintf("[Manboster Daemon] Manboster daemon is running, you can view the log data in %s", config.Path("manboster.log")))
+		color.Green(fmt.Sprintf("[Manboster Daemon] Manboster daemon is running, you can view the log data in %s", config.Path("manboster.log")))
+	} else {
+		color.Red("[Manboster Daemon] Manboster daemon stopped!")
+	}
 }
