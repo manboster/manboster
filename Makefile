@@ -10,10 +10,34 @@ VERSION ?= canary
 
 LDFLAGS := -ldflags "-X '$(CONFIG_PKG).BuildCommit=$(COMMIT)' -X '$(CONFIG_PKG).BuildTime=$(TIME)' -X '$(CONFIG_PKG).CurrentVersion=$(VERSION)'"
 
-.PHONY: run build
+.PHONY: run build build-linux-amd64 build-linux-i386 build-linux-arm64 build-mac build-mac-intel build-win-amd64 build-win-i386 build-win-arm64 build-win build-linux
 run :
 	@echo "=> Running: go run ./cmd/manboster/main.go $(RUN_ARGS)"
 	go run $(LDFLAGS) ./cmd/manboster/main.go $(RUN_ARGS)
 
 build:
-	go build $(LDFLAGS) -o bin/manboster ./cmd/manboster/main.go
+	go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-linux-amd64 build-linux:
+	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-linux-i386:
+	GOOS=linux GOARCH="386" go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-linux-arm64:
+    GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-mac build-mac-arm64:
+	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-mac-intel:
+	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o build/manboster ./cmd/manboster/main.go
+
+build-win-amd64:
+	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o build/manboster.exe ./cmd/manboster/main.go
+
+build-win-i386:
+	GOOS=windows GOARCH="386" go build $(LDFLAGS) -o build/manboster.exe ./cmd/manboster/main.go
+
+build-win-arm64 build-win:
+	GOOS=windows GOARCH=arm64 go build $(LDFLAGS) -o build/manboster.exe ./cmd/manboster/main.go
