@@ -22,8 +22,8 @@ func GetModelWithFallback(ctx context.Context, llmProviders map[string]llm.Provi
 	for _, m := range provider.Models() {
 		if m.Name == targetModel {
 			model = m
+			break
 		}
-		break
 	}
 	return provider, model
 }

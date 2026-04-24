@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -306,7 +305,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		respString.Reset()
 		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
 		for i, m := range p.Models() {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %d` to change.\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, i+1))
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %s` to change.\n", i+1, m.DisplayName, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, m.Name))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -314,28 +313,34 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	id, err := strconv.Atoi(msg.Command.CommandArgs[0])
-	if err != nil || id > len(p.Models())+1 || id < 1 {
+	id := msg.Command.CommandArgs[0]
+	if id == "" {
 		respString.WriteString("Invalid input data!\n")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
-		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when parsing data: %q", err))
+		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when parsing data"))
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	if p.Models()[id-1].Name == s.Model {
-		respString.WriteString("Current model is what you have entered!")
+	flag := false
+	for _, m := range p.Models() {
+		if m.Name == s.Model {
+			flag = true
+			break
+		}
+	}
+	if !flag {
+		respString.WriteString("Could not find model named `" + s.Model + "`")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Model = p.Models()[id-1].Name
-
+	s.Model = id
 	e.sessionManager.SetSession(sid, s)
-	err = e.repo.UpdateSession(ctx, sid, map[string]interface{}{
+	err := e.repo.UpdateSession(ctx, sid, map[string]interface{}{
 		"llm_provider_model": s.Model,
 	})
 	if err != nil {
