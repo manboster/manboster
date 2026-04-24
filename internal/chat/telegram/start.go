@@ -64,7 +64,7 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 	}
 }
 
-func (s *Service) Type(chatId telebot.ChatID, ctx context.Context) {
+func (s *Service) Type(ctx context.Context, chatId telebot.ChatID) {
 	// send immediately
 	_ = s.tgInstance.Notify(chatId, telebot.Typing)
 

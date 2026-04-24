@@ -9,14 +9,12 @@ import (
 )
 
 func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.ActionType) error {
+	notifierLock.Lock()
+	defer notifierLock.Unlock()
+
 	switch action {
-	case chat.ActionTyping:
-		recipient, err := recipientParser(msg.ChatID)
-		if err != nil {
-			return err
-		}
-		return s.tgInstance.Notify(recipient, telebot.ChatAction(action))
 	case chat.ActionPending:
+		// mark it reaction
 		recipient, err := recipientParser(msg.ChatID)
 		chatId := int64(0)
 		_, err = fmt.Sscanf(msg.ChatID, "%d", &chatId)
@@ -29,6 +27,10 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 		if err != nil {
 			return err
 		}
+
+		typingCtx, cancelTyping := context.WithCancel(ctx)
+		notifierWrite(msg.ChatID, cancelTyping)
+		go s.Type(typingCtx, telebot.ChatID(chatId))
 
 		return s.tgInstance.React(recipient, &telebot.Message{
 			ID: msgId,
@@ -44,10 +46,10 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 			},
 		})
 	case chat.ActionSuccess:
-		// TODO
+		notifierCancel(msg.ChatID)
 		return nil
 	case chat.ActionError:
-		// TODO
+		notifierCancel(msg.ChatID)
 		return nil
 	default:
 		return fmt.Errorf("invalid action type: %v", action)

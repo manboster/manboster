@@ -5,7 +5,6 @@ type ActionType string
 
 const (
 	ActionUnknown ActionType = ""
-	ActionTyping  ActionType = "typing"
 	ActionPending ActionType = "pending" // received request
 	ActionSuccess ActionType = "success"
 	ActionError   ActionType = "error"
