@@ -14,7 +14,7 @@ type Loader struct {
 	repo          repository.Repository
 	cfg           *config.Config
 	engine        *engine.Engine
-	llmProviders  []llm.Provider
+	llmProviders  map[string]llm.Provider
 	chatProviders []chat.Provider
 }
 

@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
+	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 )
 
@@ -47,8 +48,12 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while initializing LLM Providers: no llm provider available"))
 		return fmt.Errorf("no llm provider available")
 	}
-	l.llmProviders = llmProviders
 	// load default model
+	llmProvidersMap := make(map[string]llm.Provider)
+	for _, p := range llmProviders {
+		llmProvidersMap[p.Name()] = p
+	}
+	l.llmProviders = llmProvidersMap
 	l.loadDefaultModel(ctx)
 
 	// load enabled tool call
@@ -56,7 +61,7 @@ func (l *Loader) Load(ctx context.Context) error {
 
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
-	e, err := engine.New(l.cfg, repo, llmProviders)
+	e, err := engine.New(l.cfg, repo, llmProvidersMap)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err

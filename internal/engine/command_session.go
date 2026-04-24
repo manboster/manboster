@@ -126,9 +126,9 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	sessData, _ := e.sessionManager.GetSession(sessionId)
-	pIndex, mIndex := util.GetModelIndexWithFallback(ctx, e.llmProviders, sessData.Provider, sessData.Model)
-	provider := e.llmProviders[pIndex]
-	model := provider.Models()[mIndex]
+	p, m := util.GetModelWithFallback(ctx, e.llmProviders, sessData.Provider, sessData.Model)
+	provider := p
+	model := m
 
 	llmCallTimes := 0
 	for _, data := range sessData.Events {
@@ -144,7 +144,7 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	respString.WriteString(fmt.Sprintf("Current usage data: \n"))
 	respString.WriteString(fmt.Sprintf("Current session id: `%s`\n", sessionId))
 	respString.WriteString(fmt.Sprintf("Current chat times: %d(call LLM API %d times)\n", len(sessData.Events), llmCallTimes))
-	respString.WriteString(fmt.Sprintf("Current provider: `%s`(ID:`%d`), model: `%s`(ID:`%d`)\n", provider.DisplayName(), pIndex+1, model.DisplayName, mIndex+1))
+	respString.WriteString(fmt.Sprintf("Current provider: `%s`, model: `%s`\n", provider.DisplayName(), model.DisplayName))
 	respString.WriteString(fmt.Sprintf("Total Tokens Cost: %d tokens\n(input: %d tokens, output: %d tokens, thinking %d tokens)\n", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
 
 	totPrice := 0.0
@@ -237,9 +237,11 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 	if len(msg.Command.CommandArgs) == 0 {
-		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [id]`, we will automatically change the first model of the provider for you):\n")
-		for i, provider := range e.llmProviders {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models\n", i+1, provider.DisplayName(), len(provider.Models())))
+		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [name]`, we will automatically change the first model of the provider for you):\n")
+		i := 0
+		for _, provider := range e.llmProviders {
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models. Run `/provider %s` to change.\n", i+1, provider.DisplayName(), len(provider.Models()), provider.Name()))
+			i += 1
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -247,8 +249,8 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	id, err := strconv.Atoi(msg.Command.CommandArgs[0])
-	if err != nil || id > len(e.llmProviders) || id < 1 {
+	id := msg.Command.CommandArgs[0]
+	if id == "" {
 		respString.WriteString("Invalid input data!\n")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -258,7 +260,7 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 
 	s, _ := e.sessionManager.GetSession(sessionId)
 
-	if e.llmProviders[id-1].Name() == s.Provider {
+	if _, avail := e.llmProviders[id]; !avail {
 		respString.WriteString("Current provider is what you have entered!")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -266,11 +268,11 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Provider = e.llmProviders[id-1].Name()
-	s.Model = e.llmProviders[id-1].Models()[0].Name
+	s.Provider = e.llmProviders[id].Name()
+	s.Model = e.llmProviders[id].Models()[0].Name
 
 	e.sessionManager.SetSession(sessionId, s)
-	err = e.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
+	err := e.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
 		"llm_provider":       s.Provider,
 		"llm_provider_model": s.Model,
 	})
@@ -298,12 +300,13 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 
 	s, _ := e.sessionManager.GetSession(sid)
 
-	pIndex, _ := util.GetModelIndexWithFallback(ctx, e.llmProviders, s.Model, s.Provider)
-
+	p, _ := util.GetModelWithFallback(ctx, e.llmProviders, s.Provider, s.Model)
+	// fmt.Printf("%s %s %s %s", s.Model, s.Provider, p.DisplayName(), sid)
 	if len(msg.Command.CommandArgs) == 0 {
+		respString.Reset()
 		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
-		for i, m := range e.llmProviders[pIndex].Models() {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice))
+		for i, m := range p.Models() {
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %d` to change it.\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, i+1))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -312,7 +315,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 	}
 
 	id, err := strconv.Atoi(msg.Command.CommandArgs[0])
-	if err != nil || id > len(e.llmProviders[pIndex].Models()) || id < 1 {
+	if err != nil || id > len(p.Models())+1 || id < 1 {
 		respString.WriteString("Invalid input data!\n")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -321,7 +324,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	if e.llmProviders[pIndex].Models()[id-1].Name == s.Model {
+	if p.Models()[id-1].Name == s.Model {
 		respString.WriteString("Current model is what you have entered!")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -329,7 +332,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Model = e.llmProviders[pIndex].Models()[id-1].Name
+	s.Model = p.Models()[id-1].Name
 
 	e.sessionManager.SetSession(sid, s)
 	err = e.repo.UpdateSession(ctx, sid, map[string]interface{}{

@@ -13,9 +13,9 @@ func LoadLLMProvider(ctx context.Context, llmConfig config.LLMConfig, provider l
 	newLProvider := provider.New()
 	err := newLProvider.Init(ctx, llmConfig.Configuration)
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Loader] Activate %s LLM API Error! Message: %s", provider.DisplayName()))
+		color.Red(fmt.Sprintf("[Manboster Loader] Activate %q LLM Provider Error! Message: %q", newLProvider.DisplayName(), err))
 	} else {
-		color.Green(fmt.Sprintf("[Manboster Loader] Activate LLM Provider %q successful!", llmConfig.Provider))
+		color.Green(fmt.Sprintf("[Manboster Loader] Activate LLM Provider %q successful!", newLProvider.DisplayName()))
 	}
 	return newLProvider, nil
 }

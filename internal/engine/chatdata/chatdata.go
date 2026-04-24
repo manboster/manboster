@@ -9,10 +9,10 @@ import (
 type Service struct {
 	repo           repository.Repository
 	sessionManager *session.Manager
-	llmProviders   []llm.Provider
+	llmProviders   map[string]llm.Provider
 }
 
-func New(repo repository.Repository, sessionManager *session.Manager, providers []llm.Provider) *Service {
+func New(repo repository.Repository, sessionManager *session.Manager, providers map[string]llm.Provider) *Service {
 	return &Service{
 		repo:           repo,
 		sessionManager: sessionManager,

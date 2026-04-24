@@ -13,7 +13,7 @@ import (
 
 type Engine struct {
 	sessionManager *session.Manager
-	llmProviders   []llm.Provider
+	llmProviders   map[string]llm.Provider
 	config         *config.Config
 	repo           repository.Repository
 
@@ -23,7 +23,7 @@ type Engine struct {
 	promptService    *prompt.Service
 }
 
-func New(cfg *config.Config, repo repository.Repository, llmProviders []llm.Provider) (*Engine, error) {
+func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider) (*Engine, error) {
 	return &Engine{
 		sessionManager: session.NewManager(),
 		llmProviders:   llmProviders,

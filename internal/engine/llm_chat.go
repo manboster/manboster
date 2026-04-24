@@ -9,7 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/llm"
 )
 
-func (e *Engine) LLMChat(ctx context.Context, pIndex int, mIndex int, msgList []llm.Message) (*llm.Event, error) {
+func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgList []llm.Message) (*llm.Event, error) {
 	var err error = nil
 	var event = &llm.Event{}
 	// try 3 times
@@ -17,8 +17,8 @@ func (e *Engine) LLMChat(ctx context.Context, pIndex int, mIndex int, msgList []
 	// tries def
 	tries := 1
 
-	currentProvider := e.llmProviders[pIndex]
-	currentModel := currentProvider.Models()[mIndex]
+	currentProvider := p
+	currentModel := m
 
 	for tries <= times {
 		if ctx.Err() != nil {

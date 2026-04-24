@@ -44,9 +44,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 	provider, model, _ := e.sessionManager.GetModel(sessionId)
 	msgList := e.sessionManager.GetMessages(sessionId)
-	pIndex, mIndex := util.GetModelIndexWithFallback(ctx, e.llmProviders, provider, model)
-	llmProviderDisplayName := e.llmProviders[pIndex].DisplayName()
-	llmModelDisplayName := e.llmProviders[pIndex].Models()[mIndex].DisplayName
+	p, m := util.GetModelWithFallback(ctx, e.llmProviders, provider, model)
+	llmProviderDisplayName := p.DisplayName()
+	llmModelDisplayName := m.DisplayName
 	respMessage := msg.Clone()
 
 	// get total tokens in order to compact
@@ -55,7 +55,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		color.Red(fmt.Sprintf("[Manboster Engine] Error while getting total tokens from repository: %q", err))
 	}
 	// checkout whether a need to compact or not
-	if uint64(totToken) > llm.CalculateCompactTokens(e.llmProviders[pIndex].Models()[mIndex]) {
+	if uint64(totToken) > llm.CalculateCompactTokens(m) {
 		err := e.HandleCompact(ctx, instance, msg, sessionId)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] Error while compacting data: %q", err))
@@ -70,7 +70,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		sessionId = resp.SessionID
 	}
 
-	event, err := e.LLMChat(ctx, pIndex, mIndex, msgList)
+	event, err := e.LLMChat(ctx, p, m, msgList)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %q, model %q, get error: %q", llmProviderDisplayName, llmModelDisplayName, err))
 		// now we have to wrap this into friendly prompt

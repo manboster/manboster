@@ -16,7 +16,7 @@ import (
 func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *chat.Message, sessionId string) error {
 	msg := s.sessionManager.GetMessages(sessionId)
 	provider, model, _ := s.sessionManager.GetModel(sessionId)
-	pIndex, _ := util.GetModelIndexWithFallback(ctx, s.llmProviders, provider, model)
+	p, _ := util.GetModelWithFallback(ctx, s.llmProviders, provider, model)
 
 	count := 0
 	splitIndex := 0
@@ -74,7 +74,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	appendMessages = append(appendMessages, message)
 	appendMessages = append(appendMessages, uMessage)
 
-	event, err := s.llmProviders[pIndex].Chat(ctx, model, appendMessages)
+	event, err := p.Chat(ctx, model, appendMessages)
 	if err != nil {
 		return err
 	}
