@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 )
 
@@ -109,6 +110,15 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		if err != nil {
 			return err
 		}
+	}
+	err = s.repo.CreateSession(ctx, types.Session{
+		SessionID:        newSessionID,
+		LLMProviderModel: model,
+		LLMProvider:      provider,
+	})
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster engine] Failed to create session in repository when compacting: %v", err))
+		return err
 	}
 
 	err = s.repo.ReplaceChatSessions(ctx, sessionId, newSessionID)
