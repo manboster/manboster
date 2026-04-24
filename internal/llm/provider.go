@@ -12,7 +12,8 @@ type Provider interface {
 	ChatStream(ctx context.Context, model string, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
 	Init(ctx context.Context, config any) error
 	Stop() error
-	Name() string
+	Name() string // identifiable name
+	Type() string // OpenAI / anthropic / Gemini etc.
 	DisplayName() string
 	Config() config.Provider
 	Models() []Model

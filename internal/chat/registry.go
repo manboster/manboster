@@ -9,7 +9,6 @@ type ProviderFactory func() Provider
 
 var (
 	providerRegistry = make(map[string]ProviderFactory)
-	importedRegistry = make(map[string]bool)
 	mu               sync.RWMutex
 )
 
@@ -31,9 +30,6 @@ func GetProvider(name string) (Provider, error) {
 	if !ok {
 		return nil, fmt.Errorf("[Manboster Chat] unknown provider %q (did you forget to import it?)", name)
 	}
-	if _, valid := importedRegistry[name]; valid {
-		return nil, fmt.Errorf("[Manboster Chat] you define 2 times with %q! The second one will be ignored", name)
-	}
 	return factory(), nil
 }
 
@@ -44,6 +40,17 @@ func AvailProviders() []string {
 	var list []string
 	for name := range providerRegistry {
 		list = append(list, name)
+	}
+	return list
+}
+
+// AllProviders gets all providers back
+func AllProviders() []Provider {
+	mu.RLock()
+	defer mu.RUnlock()
+	var list []Provider
+	for p := range providerRegistry {
+		list = append(list, providerRegistry[p]())
 	}
 	return list
 }

@@ -16,7 +16,7 @@ func NewService(cli *openai.Client) *Service {
 }
 
 func (s *Service) Name() string {
-	return "oai-compat"
+	return s.cfg.ProviderName
 }
 
 func (s *Service) Models() []llm.Model {
@@ -27,8 +27,12 @@ func (s *Service) New() llm.Provider {
 	return &Service{}
 }
 
-func (s *Service) DisplayName() string { return "OpenAI Compatible API" }
+func (s *Service) DisplayName() string { return s.cfg.ProviderDisplayName }
 
 func (s *Service) Stop() error { return nil }
 
 func (s *Service) Config() config.Provider { return &Config{} }
+
+func (s *Service) Type() string {
+	return "openai"
+}

@@ -38,3 +38,14 @@ func AvailProviders() []string {
 	}
 	return list
 }
+
+// AllProviders gets all providers back
+func AllProviders() []Provider {
+	mu.RLock()
+	defer mu.RUnlock()
+	var list []Provider
+	for p := range providerRegistry {
+		list = append(list, providerRegistry[p]())
+	}
+	return list
+}

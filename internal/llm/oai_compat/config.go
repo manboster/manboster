@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
@@ -15,10 +16,12 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey  string            `yaml:"api_key" mapstructure:"api_key" json:"api_key"`    // your apikey
-	BaseURL string            `yaml:"base_url" mapstructure:"base_url" json:"base_url"` // this is dynamic when you choose oai_compat systems
-	Model   []llm.Model       `yaml:"model" mapstructure:"model" json:"model"`          // your wanted model's information like anthropic/claude-sonnet-4.5
-	Headers map[string]string `json:"headers" mapstructure:"headers" yaml:"headers"`
+	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key"`    // your apikey
+	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url"` // this is dynamic when you choose oai_compat systems
+	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model"`          // your wanted model's information like anthropic/claude-sonnet-4.5
+	Headers             map[string]string `json:"headers" mapstructure:"headers" yaml:"headers"`
+	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name"`
+	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name"`
 }
 
 const CustomModel = "__CustomModel__"
@@ -27,6 +30,8 @@ const CustomModel = "__CustomModel__"
 func (c *Config) ToHuhGroup() []*huh.Group {
 	return []*huh.Group{
 		huh.NewGroup(
+			huh.NewInput().Title("Provider Name").Description("The name of your provider\nYou can enter what you want, but no spaces in your string.").Value(&c.ProviderName),
+			huh.NewInput().Title("Provider Display Name").Description("The name that will display on your application, if you don't know what's this, please leave it empty.").Value(&c.ProviderDisplayName),
 			huh.NewInput().Title("API Site URL").Description("The URL used to call API.\nIf you don't have one, please head to your provider and ask for it.").Value(&c.BaseURL),
 			huh.NewInput().Title("API Key").Description("Your API Key.\nIf you don't have one, please go to your provider's API Key manage page and create one.").EchoMode(huh.EchoModePassword).Value(&c.ApiKey),
 		),
@@ -40,7 +45,11 @@ func (c *Config) GetConfig() any {
 
 // String is used to print sth.
 func (c *Config) String() string {
-	return fmt.Sprintf("API URL: %s, API Key: %s, Model: %+v", c.BaseURL, util.MaskSecret(c.ApiKey), c.Model)
+	var b strings.Builder
+	for _, m := range c.Model {
+		b.WriteString(m.DisplayName + " ")
+	}
+	return fmt.Sprintf("Name: %s, API URL: %s, API Key: %s\nmodels(%d): %s", c.ProviderDisplayName, c.BaseURL, util.MaskSecret(c.ApiKey), len(c.Model), b.String())
 }
 
 func (c *Config) Name() string {
@@ -52,6 +61,14 @@ func (c *Config) DisplayName() string {
 }
 
 func (c *Config) VerifyAndConvert(ctx context.Context) error {
+	if c.ProviderDisplayName == "" {
+		c.ProviderDisplayName = c.ProviderName
+	}
+	if c.ProviderName == "" {
+		c.ProviderName = c.Name()
+		c.ProviderDisplayName = c.DisplayName()
+	}
+
 	svc := NewService(&openai.Client{})
 	err := svc.Init(ctx, c)
 	models, err := svc.FetchModels(ctx)

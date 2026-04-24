@@ -48,6 +48,7 @@ func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 		return
 	}
+
 	err = config.Write(cfg)
 	if err != nil {
 		os.Exit(1)

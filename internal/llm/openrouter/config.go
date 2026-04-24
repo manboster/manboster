@@ -17,6 +17,7 @@ type Config struct {
 	ApiKey string `yaml:"api_key" json:"api_key" mapstructure:"api_key"` // your openrouter system's apikey
 	// BaseURL string `yaml:"base_url"` // this is fixed so you don't need to enter it.
 	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
+	ID             int         `yaml:"id" json:"id" mapstructure:"id"`          // if duplicate, what id it is?
 	inputModelData []string    // internal input keys
 }
 
