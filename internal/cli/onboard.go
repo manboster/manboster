@@ -29,6 +29,12 @@ func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 	)
 	defer stop()
 
+	err := OnboardWarningForm(ctx)
+	if err != nil {
+		os.Exit(1)
+		return
+	}
+
 	cfg, err := OnboardConfigurationForm(ctx)
 	if err != nil {
 		os.Exit(1)
