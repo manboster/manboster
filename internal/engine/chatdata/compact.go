@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
@@ -108,6 +109,12 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		if err != nil {
 			return err
 		}
+	}
+
+	err = s.repo.ReplaceChatSessions(ctx, sessionId, newSessionID)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster engine] Failed to replace session in repository when compacting: %v", err))
+		return err
 	}
 
 	respMessage := mesg.Clone()
