@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
@@ -20,10 +19,8 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	err := instance.Notify(ctx, msg, chat.ActionPending)
 	color.Blue("[Manboster Engine] Notified provider pending status")
 	if err != nil {
-		color.Yellow(fmt.Sprintf("[Manboster Engine] Error while notifying provider %s: %q", instance.DisplayName(), err))
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Error while notifying provider %q: %q", instance.DisplayName(), err))
 	}
-
-	respMessage := msg.Clone()
 
 	if err := ctx.Err(); err != nil {
 		return err
@@ -45,20 +42,19 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
 	}
 
-	var event *llm.Event
-
 	provider, model, _ := e.sessionManager.GetModel(sessionId)
 	msgList := e.sessionManager.GetMessages(sessionId)
 	pIndex, mIndex := util.GetModelIndexWithFallback(ctx, e.llmProviders, provider, model)
 	llmProviderDisplayName := e.llmProviders[pIndex].DisplayName()
 	llmModelDisplayName := e.llmProviders[pIndex].Models()[mIndex].DisplayName
-	llmModelName := e.llmProviders[pIndex].Models()[mIndex].Name
+	respMessage := msg.Clone()
 
+	// get total tokens in order to compact
 	totToken, err := e.repo.GetTotalToken(ctx, sessionId)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Error while getting total tokens from repository: %q", err))
 	}
-
+	// checkout whether a need to compact or not
 	if uint64(totToken) > llm.CalculateCompactTokens(e.llmProviders[pIndex].Models()[mIndex]) {
 		err := e.HandleCompact(ctx, instance, msg, sessionId)
 		if err != nil {
@@ -73,40 +69,13 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 		sessionId = resp.SessionID
 	}
-	// fmt.Printf("%+q \n%+q", data.Events, msgList)
 
-	var errTrying error = nil
-	// try 3 times
-	times := 3
-	// tries def
-	tries := 1
-	for tries <= times {
-		if ctx.Err() != nil {
-			return ctx.Err()
-		}
-
-		color.Blue(fmt.Sprintf("[Manboster Engine] Fetching message response from LLMProvider %s, model %s, try %d times", llmProviderDisplayName, llmModelDisplayName, tries))
-		// we make timeout requests.
-		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
-
-		event, errTrying = e.llmProviders[pIndex].Chat(timeoutCtx, llmModelName, msgList)
-
-		cancel()
-
-		if errTrying != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s after %d tries, get error: %s", llmProviderDisplayName, llmModelDisplayName, tries, errTrying))
-			time.Sleep(time.Second * time.Duration(tries+1))
-			tries++
-		} else {
-			color.Blue(fmt.Sprintf("[Manboster Engine] Got message feedback from LLMProvider %s, model %s", llmProviderDisplayName, llmModelDisplayName))
-			break
-		}
-	}
-	if errTrying != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s, after %d tries, get error: %q", llmProviderDisplayName, llmModelDisplayName, times, errTrying))
+	event, err := e.LLMChat(ctx, pIndex, mIndex, msgList)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %q, model %q, get error: %q", llmProviderDisplayName, llmModelDisplayName, err))
 		// now we have to wrap this into friendly prompt
 		tips := fmt.Sprintf("%+v", err)
-		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s, model %s after trying %d times, get error: %s\nYou can resend your message or check the API's availability.", llmProviderDisplayName, llmModelDisplayName, times, errTrying)
+		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %q, model %q, get error: %s\nYou can resend your message or check the API's availability.", llmProviderDisplayName, llmModelDisplayName, err)
 		if strings.Contains(tips, "429") {
 			text = fmt.Sprintf("[Manboster] Provider %s, Model %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", llmProviderDisplayName, llmModelDisplayName)
 		} else if strings.Contains(tips, "500") || strings.Contains(tips, "502") || strings.Contains(tips, "503") || strings.Contains(tips, "501") {
@@ -121,59 +90,37 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		respMessage.Text = &chat.TextPayload{
 			Text: text,
 		}
-	} else {
-		if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
-			text := event.Message.Parts[0].Text.Text
-			// fmt.Println(text)
-			textWithoutThinking := util.StripThink(text)
-			// fmt.Println(textWithoutThinking)
-			e.sessionManager.AppendEvent(sessionId, *event)
-			err := e.chatDataService.Write(ctx, *event, sessionId)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
-			}
-
-			if util.ExtractThinkContent(text) != "" {
-				respMessage.MessageType = chat.MessageThinkingText
-				respMessage.Text = &chat.TextPayload{
-					Text: util.ExtractThinkContent(text),
-				}
-				err := instance.SendMessage(ctx, respMessage)
-				if err != nil {
-					return err
-				}
-			}
-
-			respMessage.MessageType = chat.MessageText
-			respMessage.Text = &chat.TextPayload{
-				Text: textWithoutThinking,
-			}
-		}
+		return e.SendMessage(ctx, instance, respMessage)
 	}
 
-	tries = 1
-	for tries <= 5 {
-		if ctx.Err() != nil {
-			return ctx.Err()
+	if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
+		text := event.Message.Parts[0].Text.Text
+		// fmt.Println(text)
+		textWithoutThinking := util.StripThink(text)
+		// fmt.Println(textWithoutThinking)
+		e.sessionManager.AppendEvent(sessionId, *event)
+		err := e.chatDataService.Write(ctx, *event, sessionId)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
 		}
 
-		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
-		err = instance.SendMessage(timeoutCtx, respMessage)
-		cancel()
-
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Tried %d times sending via %s, got error: %q", tries, instance.Name(), err))
-			time.Sleep(time.Second * time.Duration(tries+1))
-			tries++
-			continue
-		} else {
-			color.Green(fmt.Sprintf("[Manboster Engine] Tried %d times sending via %s, success.", tries, instance.Name()))
-			err := instance.Notify(ctx, msg, chat.ActionSuccess)
+		// If there is a thinking context
+		if util.ExtractThinkContent(text) != "" {
+			respMessage.MessageType = chat.MessageThinkingText
+			respMessage.Text = &chat.TextPayload{
+				Text: util.ExtractThinkContent(text),
+			}
+			err := e.SendMessage(ctx, instance, respMessage)
 			if err != nil {
 				return err
 			}
-			return nil
+		}
+
+		respMessage.MessageType = chat.MessageText
+		respMessage.Text = &chat.TextPayload{
+			Text: textWithoutThinking,
 		}
 	}
-	return err
+
+	return e.SendMessage(ctx, instance, respMessage)
 }
