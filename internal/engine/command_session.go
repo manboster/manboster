@@ -306,7 +306,7 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		respString.Reset()
 		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
 		for i, m := range p.Models() {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %d` to change it.\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, i+1))
+			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %d` to change.\n", i+1, m.Name, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, i+1))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
