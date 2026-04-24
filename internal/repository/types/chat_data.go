@@ -16,6 +16,9 @@ type ChatData struct {
 	CompletionTokens int
 	TotalTokens      int
 	MessagePayload   string // json encoded
+	InputCost        float64
+	OutputCost       float64
+	TotalCost        float64
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -30,6 +33,9 @@ func MapCD(chatData ChatData) types.ChatData {
 		CompletionTokens: chatData.CompletionTokens,
 		TotalTokens:      chatData.TotalTokens,
 		MessagePayload:   chatData.MessagePayload,
+		InputCost:        chatData.InputCost,
+		OutputCost:       chatData.OutputCost,
+		TotalCost:        chatData.TotalCost,
 		CreatedAt:        chatData.CreatedAt,
 		UpdatedAt:        chatData.UpdatedAt,
 	}
@@ -45,6 +51,9 @@ func MapChatData(chatData types.ChatData) ChatData {
 		CompletionTokens: chatData.CompletionTokens,
 		TotalTokens:      chatData.TotalTokens,
 		MessagePayload:   chatData.MessagePayload,
+		InputCost:        chatData.InputCost,
+		OutputCost:       chatData.OutputCost,
+		TotalCost:        chatData.TotalCost,
 		CreatedAt:        chatData.CreatedAt,
 		UpdatedAt:        chatData.UpdatedAt,
 	}

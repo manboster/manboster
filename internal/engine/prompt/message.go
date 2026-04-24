@@ -8,23 +8,14 @@ import (
 )
 
 // ChatMessageToString converts a chat's message to string
-func (s *Service) ChatMessageToString(msg *chat.Message) (*llm.Message, string) {
-	var m llm.Message
+func (s *Service) ChatMessageToString(msg *chat.Message) string {
 	var respString strings.Builder
-
 	if msg.MessageType&chat.MessageText != 0 && msg.Text != nil {
-		m.Type |= llm.MessageText
-		m.Parts = append(m.Parts, llm.MessageParts{
-			PartsType: llm.MessagePartsText,
-			Text: &llm.MessageTextPayload{
-				Text: msg.Text.Text,
-			},
-		})
 		respString.WriteString(msg.Text.Text)
 	}
 
 	// TODO: images, files, and more...
-	return &m, respString.String()
+	return respString.String()
 }
 
 // LLMMessageToString TODO: converts a LLM message to string format

@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -31,51 +32,50 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 	if c.Message().ReplyTo != nil {
 		msg.Reply = &chat.Message{}
 		msg.Reply.Username = c.Message().ReplyTo.Sender.FirstName + " " + c.Message().ReplyTo.Sender.LastName
+		if s.tgInstance.Me.ID == c.Message().ReplyTo.Sender.ID {
+			msg.Reply.Username = "Assistant"
+		}
 		msg.Reply.MessageID = fmt.Sprintf("%d", c.Message().ReplyTo.ID)
 		msg.Reply.UserID = fmt.Sprintf("%d", c.Message().ReplyTo.Sender.ID)
 		msg.Reply.ChatID = fmt.Sprintf("%d", c.Message().ReplyTo.Chat.ID)
+		err := s.msgParser(msg.Reply, c.Message().ReplyTo)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to parse message data: %q", err.Error()))
+			return err
+		}
 	}
 
-	// define chat type
-	var chatType chat.ChatsType
-	switch c.Chat().Type {
-	case telebot.ChatGroup:
-		chatType = chat.ChatsGroup
-	case telebot.ChatSuperGroup:
-		chatType = chat.ChatsGroup
-	case telebot.ChatChannel:
-		chatType = chat.ChatsChannel
-	case telebot.ChatPrivate:
-		chatType = chat.ChatsPersonal
-	default:
-		chatType = chat.ChatsUnknown
-	}
-	msg.ChatType = chatType
-
-	// commands, help to process commands which prefixes started with "/".
-	if strings.HasPrefix(c.Text(), "/") {
-		// process "/xxxxxx xxxx" and "/xxxx@xxxxbot xxxxxxx"
-		var command string
-		var args []string
-		if len(strings.Split(c.Text(), "@"+c.Bot().Me.Username)) > 1 {
-			command = strings.ToLower(strings.Split(c.Text(), "@"+c.Bot().Me.Username)[0][1:])
-			args = strings.Split(c.Text(), " ")[1:]
-		} else {
-			command = strings.ToLower(strings.Split(c.Text(), " ")[0][1:])
-			if len(strings.Split(c.Text(), " ")) > 1 {
-				args = strings.Split(c.Text(), " ")[1:]
+	// check whether message forward available or not
+	if c.Message().IsForwarded() {
+		msg.Forward = &chat.Message{}
+		if c.Message().Origin != nil {
+			msg.Forward.Username = c.Message().Origin.SenderUsername
+			if c.Message().Origin.Sender != nil {
+				msg.Forward.Username = c.Message().Origin.Sender.FirstName + " " + c.Message().Origin.Sender.LastName
+				if s.tgInstance.Me.ID == c.Message().Origin.Sender.ID {
+					msg.Forward.Username = "Assistant"
+				}
+				msg.Forward.UserID = fmt.Sprintf("%d", c.Message().Origin.Sender.ID)
+			}
+			if c.Message().Origin.Chat != nil {
+				msg.Forward.ChatName = c.Message().Origin.Chat.Title
 			}
 		}
-		msg.MessageType = chat.MessageCommand
-		msg.Command = &chat.CommandPayload{
-			CommandType: chat.CommandType(command),
-			CommandArgs: args,
+	}
+	if c.Message().Origin != nil && c.Message().Origin.SenderUsername != "" {
+		if msg.Forward == nil {
+			msg.Forward = &chat.Message{}
 		}
-	} else {
-		msg.MessageType = chat.MessageText
-		msg.Text = &chat.TextPayload{
-			Text: c.Text(),
-		}
+		msg.Forward.Username = c.Message().Origin.SenderUsername
+	}
+
+	j, _ := json.MarshalIndent(c.Message(), "", " ")
+	fmt.Println(string(j))
+
+	err := s.msgParser(msg, c.Message())
+	if err != nil {
+		color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to parse message data: %q", err.Error()))
+		return err
 	}
 
 	// TODO: Passthrough all messages from Group, handle it in handleMessage, check.

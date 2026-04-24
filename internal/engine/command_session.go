@@ -283,7 +283,7 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to %s, model %s.", s.Provider, s.Model))
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to `%s`, model `%s`.", s.Provider, s.Model))
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}

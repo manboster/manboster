@@ -93,8 +93,8 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 
 		cancel()
 
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s after %d tries, get error: %s", llmProviderDisplayName, llmModelDisplayName, tries, err.Error()))
+		if errTrying != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s after %d tries, get error: %s", llmProviderDisplayName, llmModelDisplayName, tries, errTrying))
 			time.Sleep(time.Second * time.Duration(tries+1))
 			tries++
 		} else {
@@ -103,10 +103,10 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 	}
 	if errTrying != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s, after %d tries, get error: %s", llmProviderDisplayName, llmModelDisplayName, times, err.Error()))
+		color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %s, model %s, after %d tries, get error: %q", llmProviderDisplayName, llmModelDisplayName, times, errTrying))
 		// now we have to wrap this into friendly prompt
 		tips := fmt.Sprintf("%+v", err)
-		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s, model %s after trying %d times, get error: %s\nYou can resend your message or check the API's availability.", llmProviderDisplayName, llmModelDisplayName, times, err.Error())
+		text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %s, model %s after trying %d times, get error: %s\nYou can resend your message or check the API's availability.", llmProviderDisplayName, llmModelDisplayName, times, errTrying)
 		if strings.Contains(tips, "429") {
 			text = fmt.Sprintf("[Manboster] Provider %s, Model %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.", llmProviderDisplayName, llmModelDisplayName)
 		} else if strings.Contains(tips, "500") || strings.Contains(tips, "502") || strings.Contains(tips, "503") || strings.Contains(tips, "501") {
