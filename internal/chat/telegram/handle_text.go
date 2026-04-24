@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -38,6 +37,7 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 		msg.Reply.MessageID = fmt.Sprintf("%d", c.Message().ReplyTo.ID)
 		msg.Reply.UserID = fmt.Sprintf("%d", c.Message().ReplyTo.Sender.ID)
 		msg.Reply.ChatID = fmt.Sprintf("%d", c.Message().ReplyTo.Chat.ID)
+		msg.Reply.CreatedAt = c.Message().ReplyTo.Time()
 		err := s.msgParser(msg.Reply, c.Message().ReplyTo)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to parse message data: %q", err.Error()))
@@ -69,8 +69,8 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 		msg.Forward.Username = c.Message().Origin.SenderUsername
 	}
 
-	j, _ := json.MarshalIndent(c.Message(), "", " ")
-	fmt.Println(string(j))
+	// j, _ := json.MarshalIndent(c.Message(), "", " ")
+	// fmt.Println(string(j))
 
 	err := s.msgParser(msg, c.Message())
 	if err != nil {

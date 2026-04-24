@@ -35,6 +35,9 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 	}
 
 	htmlStr := buf.String()
+
+	htmlStr = TableToMarkdown(htmlStr)
+
 	reList := regexp.MustCompile(`(?i)<(ul|ol)[^>]*>`)
 	htmlStr = reList.ReplaceAllString(htmlStr, "")
 
