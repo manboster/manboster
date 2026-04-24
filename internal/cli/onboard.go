@@ -35,6 +35,14 @@ func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	if config.VersionType(config.CurrentVersion) != config.VersionStable {
+		err := OnboardVersionWarningForm(ctx)
+		if err != nil {
+			os.Exit(1)
+			return
+		}
+	}
+
 	cfg, err := OnboardConfigurationForm(ctx)
 	if err != nil {
 		os.Exit(1)

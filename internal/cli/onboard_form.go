@@ -50,6 +50,37 @@ Manboster is an AI agent able to chat and control your computers like OpenClaw a
 	return err
 }
 
+func OnboardVersionWarningForm(ctx context.Context) error {
+	agree := false
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewNote().
+				Title("UNSTABLE VERSION WARNING").
+				Description(`*PLEASE READ THESE WORDS CAREFULLY:*
+It seems that you're going to use an unstable version of Manboster. Please note that:
+1. It's normal to encounter bugs, crashes, and breaking changes in unstable versions.
+2. As this is not a stable version, it's not contain ANY security patches and fixes.
+3. This version's configuration may be incompatible with older versions and please aware the configuration changes.
+4. If you encounter bugs, we appreciate you to commit to issues and we will fix it as soon as possible.
+5. PLEASE DO NOT STORAGE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as is.
+`).
+				Next(false),
+			huh.NewConfirm().
+				Title("Do you understand the risks and wish to proceed?").
+				Affirmative("I Understand & Continue").
+				Negative("Exit Now").
+				Value(&agree),
+		),
+	)
+
+	err := form.Run()
+	if !agree {
+		os.Exit(0)
+	}
+	return err
+}
+
 // OnboardConfigurationForm provides a huh form configuration with TUI.
 func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	// get default configuration's value

@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -26,8 +25,9 @@ func LoadToolCallProviders(ctx context.Context) ([]tool.Provider, error) {
 				color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while polling tool call provider %q: %q", provider.DisplayName(), err))
 			}
 		}()
-		str, _ := json.MarshalIndent(provider.Args(), "", " ")
-		fmt.Printf("%s", string(str))
+
+		// str, _ := json.MarshalIndent(provider.Args(), "", " ")
+		// fmt.Printf("%s", string(str))
 	}
 	return toolCallProviders, nil
 }
