@@ -2,7 +2,6 @@ package oai_compat
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/tool"
@@ -40,7 +39,7 @@ func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider,
 
 			// get there is a request or not
 			if msg.Type&(llm.MessageToolCallRequest) != 0 {
-				fmt.Printf("run!")
+				// fmt.Printf("run!")
 				for _, req := range msg.ToolCallRequest {
 					ccMsg.ToolCalls = append(ccMsg.ToolCalls, openai.ToolCall{
 						ID:   req.ID,
