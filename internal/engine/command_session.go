@@ -41,6 +41,13 @@ func (e *Engine) cmdCancel(ctx context.Context, instance chat.Provider, msg *cha
 func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
+	if sessionId == "" {
+		respMessage.Text = &chat.TextPayload{
+			Text: "Session is not active, there is nothing to do!",
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
 	_, avail := e.sessionManager.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
@@ -86,6 +93,14 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
+
+	if sessionId == "" {
+		respMessage.Text = &chat.TextPayload{
+			Text: "Session is not active, there is nothing to do!",
+		}
+		return instance.SendMessage(ctx, respMessage)
+	}
+
 	_, avail := e.sessionManager.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
@@ -188,7 +203,7 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 		}
 		respString.WriteString(fmt.Sprintf("Session List(for short, we only list 20 latest sessions, if you want to get current session id, please run `/status`.):\n"))
 		for _, data := range sessionData {
-			respString.WriteString(fmt.Sprintf("Session ID: `%s`(Create Time: `%s`, Provider: `%s`, Model: `%s`) Run `/session %s` to change.\n", data.SessionID, data.CreatedAt, data.LLMProvider, data.LLMProviderModel, data.SessionID))
+			respString.WriteString(fmt.Sprintf("Session ID: `%s`(Create Time: `%s`, Provider: `%s`, Model: `%s`) Run `/session %s` to change.\n", data.SessionID, data.CreatedAt.Format("2006-01-02T15:04:05 -07"), data.LLMProvider, data.LLMProviderModel, data.SessionID))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),

@@ -64,5 +64,5 @@ func (repo *Repo) UpdateSession(ctx context.Context, sid string, updates map[str
 
 // DeleteSession deletes session data
 func (repo *Repo) DeleteSession(ctx context.Context, sessionId string) error {
-	return repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Delete(&types.Session{}).Error
+	return repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Delete(&dbtypes.Session{}).Error
 }

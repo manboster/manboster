@@ -2,6 +2,7 @@ package engine
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -69,6 +70,24 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		}
 		sessionId = resp.SessionID
 	}
+
+	var souls []string
+	s, avail := e.sessionManager.GetSoul(sessionId)
+	if !avail {
+		souls = []string{
+			"system",
+		}
+	} else {
+		souls = s
+	}
+	soulLLMMsg, err := e.soulService.BuildSystemMessage(ctx, souls)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Engine] Error while building system message: %q", err))
+	}
+	msgList = append([]llm.Message{soulLLMMsg}, msgList...)
+
+	jsonify, _ := json.MarshalIndent(msgList, "", "  ")
+	fmt.Printf(string(jsonify))
 
 	event, err := e.LLMChat(ctx, p, m, msgList)
 	if err != nil {

@@ -27,7 +27,12 @@ func (e *Engine) Load(ctx context.Context) error {
 
 	e.chatDataService = chatdata.New(e.repo, e.sessionManager, e.llmProviders)
 	e.safeguardService = safeguard.New(e.repo)
+
 	e.soulService = soul.New(e.repo)
+	err = e.soulService.Init(ctx)
+	if err != nil {
+		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to initialize soul service: %q", err))
+	}
 
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
 		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")

@@ -13,8 +13,8 @@ import (
 
 var re = regexp.MustCompile(`(?s)<tone_and_formatting>.*?</tone_and_formatting>`)
 
-// BuildSystem returns system prompt message
-func (s *Service) BuildSystem(ctx context.Context, souls []string) (llm.Message, error) {
+// BuildSystemMessage returns system prompt message
+func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.Message, error) {
 	var text strings.Builder
 	for _, soul := range souls {
 		// system soul is automatically global!

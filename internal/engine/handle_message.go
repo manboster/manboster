@@ -96,12 +96,13 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	e.sessionManager.Activate(sessionId, cancel)
 
 	// we need to read model and provider.
-	chatInfo, err := e.repo.GetSession(ctx, sessionId)
+	sessInfo, err := e.repo.GetSession(ctx, sessionId)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
 		return
 	}
-	e.sessionManager.SetModel(chatInfo.SessionID, chatInfo.LLMProvider, chatInfo.LLMProviderModel)
+	e.sessionManager.SetModel(sessInfo.SessionID, sessInfo.LLMProvider, sessInfo.LLMProviderModel)
+	e.sessionManager.SetSoul(sessionId, sessInfo.ActivatedSouls)
 
 	// then we begin to read latest messages database storages
 	chatDataInfo, err := e.repo.GetChatData(ctx, sessionId)
