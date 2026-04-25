@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-// NewManager creates an session manager instance.
+// NewManager creates a session manager instance.
 func NewManager() *Manager {
 	return &Manager{
 		Sessions:         make(map[string]Session),

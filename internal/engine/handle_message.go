@@ -105,19 +105,12 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// then we begin to read latest messages database storages
 	chatDataInfo, err := e.repo.GetChatData(ctx, sessionId)
-	if len(chatDataInfo) == 0 {
-		err := e.chatDataService.Create(ctx, sessionId)
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while creating chat data, error: %q", err))
-			return
-		}
-	} else if err == nil {
-		err := e.chatDataService.Merge(ctx, chatDataInfo, sessionId)
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
-			return
-		}
-	} else {
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
+		return
+	}
+	err = e.chatDataService.Merge(ctx, chatDataInfo, sessionId)
+	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
 		return
 	}

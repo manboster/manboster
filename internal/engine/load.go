@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
+	"github.com/manboster/manboster/internal/engine/soul"
 )
 
 func (e *Engine) Load(ctx context.Context) error {
@@ -26,6 +27,7 @@ func (e *Engine) Load(ctx context.Context) error {
 
 	e.chatDataService = chatdata.New(e.repo, e.sessionManager, e.llmProviders)
 	e.safeguardService = safeguard.New(e.repo)
+	e.soulService = soul.New(e.repo)
 
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
 		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")

@@ -98,10 +98,18 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 
 	compactedMessage := event.Message.Parts[0].Text.Text
 	newSessionID := util.RandomString(32)
-	err = s.CreateWithSystemPrompt(ctx, newSessionID, "<previous_chat>"+compactedMessage+"</previous_chat>")
+	err = s.repo.CreateSoul(ctx, types.Soul{
+		Priority: 1,
+		Name:     "previous-message-" + newSessionID,
+		Content:  "<previous_chat>" + compactedMessage + "</previous_chat>",
+		Scope: []string{
+			"session:" + newSessionID,
+		},
+	})
 	if err != nil {
 		return err
 	}
+
 	for _, m := range recentMessages {
 		err := s.Write(ctx, llm.Event{
 			EventType: llm.EventMessage,
@@ -115,6 +123,9 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		SessionID:        newSessionID,
 		LLMProviderModel: model,
 		LLMProvider:      provider,
+		ActivatedSouls: []string{
+			"system", "previous-message-" + newSessionID,
+		},
 	})
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster engine] Failed to create session in repository when compacting: %v", err))

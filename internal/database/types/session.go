@@ -7,6 +7,7 @@ type Session struct {
 	SessionID        string    `gorm:"uniqueIndex;column:session_id;uniqueIndex"` // identifiable session id (maybe 16 keys?)
 	LLMProviderModel string    `gorm:"column:llm_provider_model"`                 //
 	LLMProvider      string    `gorm:"column:llm_provider"`
+	ActivatedSouls   string    `gorm:"column:activated_souls"`
 	CreatedAt        time.Time `gorm:"autoCreateTime"`
 	UpdatedAt        time.Time `gorm:"autoUpdateTime"`
 }

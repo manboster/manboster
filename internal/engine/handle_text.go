@@ -26,7 +26,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		return err
 	}
 
-	message, err := e.promptService.BuildLLMMessage(ctx, msg, sessionId, e.safeguardService.UserType(ctx, instance.Name(), msg.UserID))
+	message, err := e.soulService.BuildLLMMessage(ctx, msg, sessionId, e.safeguardService.UserType(ctx, instance.Name(), msg.UserID))
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Error while building LLM message: %q", err))
 		return err

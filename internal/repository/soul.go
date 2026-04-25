@@ -13,6 +13,7 @@ type SoulRepository interface {
 	ReadSoulsByScope(ctx context.Context, scope string) ([]types.Soul, error)
 	ReadSoulsByCreator(ctx context.Context, creator string) ([]types.Soul, error)
 	GetSoul(ctx context.Context, name string) (types.Soul, error)
+	GetAllSouls(ctx context.Context) ([]types.Soul, error)
 	UpdateSoulScope(ctx context.Context, name string, scope []string) error
 	UpdateSoulContent(ctx context.Context, name string, content string) error
 	AppendSoulScope(ctx context.Context, name string, scope string) error
@@ -69,6 +70,20 @@ func (repo *Repo) GetSoul(ctx context.Context, name string) (types.Soul, error) 
 		return types.Soul{}, err
 	}
 	return types.MapSoul(soul), nil
+}
+
+// GetAllSouls gets all souls data by getting its map
+func (repo *Repo) GetAllSouls(ctx context.Context) ([]types.Soul, error) {
+	var allSoul []dbtypes.Soul
+	err := repo.db.WithContext(ctx).Find(&allSoul).Error
+	if err != nil {
+		return nil, err
+	}
+	var souls []types.Soul
+	for _, soul := range allSoul {
+		souls = append(souls, types.MapSoul(soul))
+	}
+	return souls, nil
 }
 
 // UpdateSoulScope helps you to update soul scope data of a soul.

@@ -4,8 +4,8 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/onboard"
-	"github.com/manboster/manboster/internal/engine/prompt"
 	"github.com/manboster/manboster/internal/engine/safeguard"
+	"github.com/manboster/manboster/internal/engine/soul"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
@@ -20,7 +20,7 @@ type Engine struct {
 	onboard          *onboard.Service
 	safeguardService *safeguard.Service
 	chatDataService  *chatdata.Service
-	promptService    *prompt.Service
+	soulService      *soul.Service
 }
 
 func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider) (*Engine, error) {
