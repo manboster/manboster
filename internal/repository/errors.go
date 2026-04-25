@@ -1,5 +1,10 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"gorm.io/gorm"
+)
 
 var ErrNotFound = gorm.ErrRecordNotFound
+var ErrDuplicateSoulScope = errors.New("duplicate soul scope")

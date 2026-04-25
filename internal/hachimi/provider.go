@@ -10,6 +10,7 @@ import (
 type Provider interface {
 	Chat(ctx context.Context, sysMsg string, evaMsg string) (string, error)
 	Init(ctx context.Context, config any) error
+	Start(ctx context.Context) error
 	Stop() error
 	Name() string
 	DisplayName() string
