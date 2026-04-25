@@ -21,8 +21,8 @@ func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessio
 	}
 
 	// generate nonce
-	nonceMetadata := util.RandomString(16)
-	nonceInput := util.RandomString(16)
+	nonceMetadata := util.RandomString(8)
+	nonceInput := util.RandomString(8)
 
 	forwardPrompt := ""
 	if msg.Forward != nil {

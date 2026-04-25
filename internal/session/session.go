@@ -11,6 +11,7 @@ import (
 // Session gives, stores and writes users session storages.
 type Session struct {
 	Events      []llm.Event
+	Souls       []string
 	Provider    string
 	Model       string
 	Command     chat.CommandType // if command is triggered, it would not be empty

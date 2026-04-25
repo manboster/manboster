@@ -188,7 +188,7 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 		}
 		respString.WriteString(fmt.Sprintf("Session List(for short, we only list 20 latest sessions, if you want to get current session id, please run `/status`.):\n"))
 		for _, data := range sessionData {
-			respString.WriteString(fmt.Sprintf("Session ID: `%s`(Create Time: `%s`, Provider: `%s`, Model: `%s`)\n", data.SessionID, data.CreatedAt, data.LLMProvider, data.LLMProviderModel))
+			respString.WriteString(fmt.Sprintf("Session ID: `%s`(Create Time: `%s`, Provider: `%s`, Model: `%s`) Run `/session %s` to change.\n", data.SessionID, data.CreatedAt, data.LLMProvider, data.LLMProviderModel, data.SessionID))
 		}
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),

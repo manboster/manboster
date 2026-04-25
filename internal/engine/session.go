@@ -15,11 +15,13 @@ import (
 )
 
 func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider string) (string, error) {
-	sessionId := util.RandomString(32)
+	sessionId := util.RandomString(16)
+	soulsList := e.soulService.GetSoulsList(ctx, msg.ChatID)
 	err := e.repo.CreateSession(ctx, types.Session{
 		SessionID:        sessionId,
 		LLMProvider:      e.config.App.DefaultLLMProvider,
 		LLMProviderModel: e.config.App.DefaultLLMModel,
+		ActivatedSouls:   soulsList,
 	})
 	if err != nil {
 		return "", err
@@ -29,6 +31,7 @@ func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider str
 		Model:    e.config.App.DefaultLLMModel,
 		Provider: e.config.App.DefaultLLMProvider,
 		Events:   []llm.Event{},
+		Souls:    soulsList,
 		Active:   false,
 		Cancel:   nil,
 	})
