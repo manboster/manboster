@@ -9,11 +9,14 @@ import (
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
+	"github.com/manboster/manboster/internal/tool"
 )
 
 type Engine struct {
 	sessionManager *session.Manager
 	llmProviders   map[string]llm.Provider
+	toolProviders  []tool.Provider
+	toolMaps       map[string]tool.Provider
 	config         *config.Config
 	repo           repository.Repository
 
@@ -23,10 +26,12 @@ type Engine struct {
 	soulService      *soul.Service
 }
 
-func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider) (*Engine, error) {
+func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, toolProviders []tool.Provider) (*Engine, error) {
 	return &Engine{
 		sessionManager: session.NewManager(),
 		llmProviders:   llmProviders,
+		toolProviders:  toolProviders,
+		toolMaps:       make(map[string]tool.Provider),
 		config:         cfg,
 		repo:           repo,
 		onboard:        nil,

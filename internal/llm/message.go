@@ -7,8 +7,10 @@ type Message struct {
 
 	Parts []MessageParts // Optional. Required when MessageType = MessageText || MessageImage || MessageFile send text
 
-	ToolRequest  *MessageToolRequestPayload  // Optional. Required when MessageType = MessageToolCallRequest
-	ToolResponse *MessageToolResponsePayload // Optional. Required when MessageType = MessageToolCallResponse
+	ToolCallRequest  []MessageToolCallRequestPayload  // Optional. Required when MessageType = MessageToolCallRequest
+	ToolCallResponse []MessageToolCallResponsePayload // Optional. Required when MessageType = MessageToolCallResponse
+
+	Thinking *MessageThinkingPayload // Optional. Required when Message & MessageThinking != 0. Model's Thinking Content.
 }
 
 // MessageType defines Message's type.
@@ -22,6 +24,7 @@ const (
 	MessageFile
 	MessageToolCallRequest
 	MessageToolCallResponse
+	MessageThinking
 )
 
 // RoleType is an enum defines role used by oai-compatible APIs.

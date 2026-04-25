@@ -56,7 +56,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
-			event.Message.ToolRequest = msg.ToolRequest
+			event.Message.ToolCallRequest = msg.ToolCallRequest
 		}
 		if info.MessageType&llm.MessageToolCallResponse != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
@@ -64,7 +64,17 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
-			event.Message.ToolResponse = msg.ToolResponse
+			event.Message.ToolCallResponse = msg.ToolCallResponse
+		}
+		if info.MessageType&llm.MessageThinking != 0 {
+			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
+			}
+			event.EventType |= llm.EventMessage
+			event.Message.Thinking = &llm.MessageThinkingPayload{
+				Thinking: msg.Thinking.Thinking,
+			}
 		}
 
 		s.sessionManager.AppendEvent(sid, event)

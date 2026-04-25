@@ -34,6 +34,15 @@ func (e *Engine) Load(ctx context.Context) error {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to initialize soul service: %q", err))
 	}
 
+	for _, tool := range e.toolProviders {
+		_, avail := e.toolMaps[tool.Name()]
+		if !avail {
+			e.toolMaps[tool.Name()] = tool
+		} else {
+			fmt.Printf("[Manboster Engine] Duplicate tool '%s'! The next one will be ignored.\n", tool.Name())
+		}
+	}
+
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
 		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")
 		switch config.VersionType(config.CurrentVersion) {

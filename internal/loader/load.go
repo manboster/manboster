@@ -57,11 +57,15 @@ func (l *Loader) Load(ctx context.Context) error {
 	l.loadDefaultModel(ctx)
 
 	// load enabled tool call
-	_, err = LoadToolCallProviders(ctx)
+	color.Blue("[Manboster Loader] Loaded Tool Call Providers...")
+	tool, err := LoadToolCallProviders(ctx)
+	if err != nil {
+		color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to load Tool Call Providers: %q", err))
+	}
 
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
-	e, err := engine.New(l.cfg, repo, llmProvidersMap)
+	e, err := engine.New(l.cfg, repo, llmProvidersMap, tool)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err

@@ -29,7 +29,7 @@ func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgLi
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
 
-		event, err = currentProvider.Chat(timeoutCtx, currentModel.Name, msgList)
+		event, err = currentProvider.Chat(timeoutCtx, currentModel.Name, e.toolProviders, msgList)
 
 		cancel()
 

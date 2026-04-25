@@ -17,7 +17,7 @@ func (s *Service) Start(ctx context.Context) error {
 
 func (s *Service) Run(ctx context.Context, args string) (string, error) {
 	arg := RunArgs{}
-	if json.Unmarshal([]byte(args), &arg) != nil {
+	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
 		case "date":
 			return time.Now().Format("2006-01-02"), nil

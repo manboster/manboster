@@ -75,7 +75,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	appendMessages = append(appendMessages, message)
 	appendMessages = append(appendMessages, uMessage)
 
-	event, err := p.Chat(ctx, model, appendMessages)
+	event, err := p.Chat(ctx, model, nil, appendMessages)
 	if err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/manboster/manboster/internal/engine"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
+	"github.com/manboster/manboster/internal/tool"
 )
 
 type Loader struct {
@@ -15,6 +16,7 @@ type Loader struct {
 	cfg           *config.Config
 	engine        *engine.Engine
 	llmProviders  map[string]llm.Provider
+	toolProviders map[string]tool.Provider
 	chatProviders []chat.Provider
 }
 
