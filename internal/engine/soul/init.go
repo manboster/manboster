@@ -1,6 +1,8 @@
 package soul
 
-import "context"
+import (
+	"context"
+)
 
 func (s *Service) Init(ctx context.Context) error {
 	if s.repo == nil {
