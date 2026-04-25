@@ -2,7 +2,6 @@ package engine
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -86,8 +85,8 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	}
 	msgList = append([]llm.Message{soulLLMMsg}, msgList...)
 
-	jsonify, _ := json.MarshalIndent(msgList, "", "  ")
-	fmt.Printf(string(jsonify))
+	// jsonify, _ := json.MarshalIndent(msgList, "", "  ")
+	// fmt.Printf(string(jsonify))
 
 	event, err := e.LLMChat(ctx, p, m, msgList)
 	if err != nil {
@@ -113,6 +112,9 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	}
 
 	if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
+		// add model cost
+		util.CalculateCost(event, m)
+
 		text := event.Message.Parts[0].Text.Text
 		// fmt.Println(text)
 		textWithoutThinking := util.StripThink(text)

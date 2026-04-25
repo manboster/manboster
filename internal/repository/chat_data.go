@@ -56,21 +56,33 @@ func (repo *Repo) CountChatDataTokenBySession(ctx context.Context, sessionId str
 	usage.TotalTokens = 0
 	usage.CompletionTokens = 0
 	usage.PromptTokens = 0
+	usage.InputCost = 0
+	usage.OutputCost = 0
+	usage.TotalCost = 0
 
 	for _, dbChatData := range data {
 		usage.PromptTokens += dbChatData.PromptTokens
 		usage.CompletionTokens += dbChatData.CompletionTokens
 		usage.TotalTokens += dbChatData.TotalTokens
+		usage.InputCost += dbChatData.InputCost
+		usage.OutputCost += dbChatData.OutputCost
+		usage.TotalCost += dbChatData.TotalCost
 	}
 	return usage, nil
 }
 
 // GetTotalToken gets latest token used in this chat session
 func (repo *Repo) GetTotalToken(ctx context.Context, sessionId string) (int, error) {
-	var dbChatData dbtypes.ChatData
-	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Order("created_at DESC").First(&dbChatData)
+	var dbChatData []dbtypes.ChatData
+	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Order("created_at DESC").Find(&dbChatData)
 	if resp.Error != nil {
 		return -1, resp.Error
 	}
-	return dbChatData.TotalTokens, nil
+
+	for _, chatData := range dbChatData {
+		if chatData.TotalTokens > 0 {
+			return chatData.TotalTokens, nil
+		}
+	}
+	return 0, nil
 }

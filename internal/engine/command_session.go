@@ -160,24 +160,43 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	respString.WriteString(fmt.Sprintf("Current chat times: %d(call LLM API %d times)\n", len(sessData.Events), llmCallTimes))
 	respString.WriteString(fmt.Sprintf("Current provider: `%s`, model: `%s`\n", provider.DisplayName(), model.DisplayName))
 	respString.WriteString(fmt.Sprintf("Current using souls(%d): `%s`\n", len(sessData.Souls), sessData.Souls))
-	respString.WriteString(fmt.Sprintf("Total Tokens Cost: %d tokens\n(input: %d tokens, output: %d tokens, thinking %d tokens)\n", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
+	respString.WriteString(fmt.Sprintf("Total Tokens Cost: %d tokens\n(input: %d, output: %d, thinking %d)\n", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
 
-	totPrice := 0.0
-	if model.InputPrice != 0 {
-		inputPrice := model.InputPrice * float64(usage.PromptTokens) / 1000000
-		totPrice += inputPrice
-		respString.WriteString(fmt.Sprintf("Input Price: $%.6f/mtokens, Current Estimated Input Cost: $%.6f\n", model.InputPrice, inputPrice))
+	if usage.InputCost > 0 {
+		respString.WriteString(fmt.Sprintf("Input price: `$%.6f`/mtokens, estimated cost: `$%.6f`\n", model.InputPrice, usage.InputCost))
 	}
-	if model.OutputPrice != 0 {
-		outputPrice := model.OutputPrice * float64(usage.TotalTokens-usage.PromptTokens) / 1000000
-		totPrice += outputPrice
-		respString.WriteString(fmt.Sprintf("Output Price: $%.6f/mtokens, Current Estimated Output Cost: $%.6f\n", model.OutputPrice, outputPrice))
+	if usage.OutputCost > 0 {
+		respString.WriteString(fmt.Sprintf("Output price: `$%.6f`/mtokens, estimated cost: `$%.6f`\n", model.OutputPrice, usage.OutputCost))
 	}
-	if totPrice > 0 {
-		respString.WriteString(fmt.Sprintf("Total Estimated Cost: $%.6f\n", totPrice))
+	if usage.TotalCost > 0 {
+		respString.WriteString(fmt.Sprintf("Total estimated cost: `$%.6f`\n", usage.TotalCost))
 	}
 
-	respString.WriteString(fmt.Sprintf("Current Context length: %d / %d, now occupied %.2f%%", totTokens, model.Context, float64(totTokens*100)/float64(model.Context)))
+	modelMaps := map[string]int{}
+	for _, data := range sessData.Events {
+		if data.EventType&llm.EventMessage != 0 {
+			if data.Model != "" {
+				if data.Provider == "" {
+					data.Provider = "unknown"
+				}
+				_, avail := modelMaps[data.Provider+":"+data.Model]
+				if !avail {
+					modelMaps[data.Provider+":"+data.Model] = 1
+				} else {
+					modelMaps[data.Provider+":"+data.Model] += 1
+				}
+			}
+		}
+	}
+	if len(modelMaps) > 0 {
+		respString.WriteString(fmt.Sprintf("Model Usage Data:\n"))
+		for modelStr, count := range modelMaps {
+			respString.WriteString(fmt.Sprintf("`%s`:%d times ", modelStr, count))
+		}
+		respString.WriteString(fmt.Sprintf("\n"))
+	}
+
+	respString.WriteString(fmt.Sprintf("Current Context length: `%d / %d`(`%.2f%%`)", totTokens, model.Context, float64(totTokens*100)/float64(model.Context)))
 
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),

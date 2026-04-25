@@ -12,6 +12,8 @@ type ChatData struct {
 	SessionID        string
 	Role             llm.RoleType
 	MessageType      llm.MessageType
+	Model            string
+	Provider         string
 	PromptTokens     int
 	CompletionTokens int
 	TotalTokens      int
@@ -29,6 +31,8 @@ func MapCD(chatData ChatData) types.ChatData {
 		SessionID:        chatData.SessionID,
 		Role:             string(chatData.Role),
 		MessageType:      int16(chatData.MessageType),
+		Model:            chatData.Model,
+		Provider:         chatData.Provider,
 		PromptTokens:     chatData.PromptTokens,
 		CompletionTokens: chatData.CompletionTokens,
 		TotalTokens:      chatData.TotalTokens,
@@ -47,6 +51,8 @@ func MapChatData(chatData types.ChatData) ChatData {
 		SessionID:        chatData.SessionID,
 		Role:             llm.RoleType(chatData.Role),
 		MessageType:      llm.MessageType(chatData.MessageType),
+		Model:            chatData.Model,
+		Provider:         chatData.Provider,
 		PromptTokens:     chatData.PromptTokens,
 		CompletionTokens: chatData.CompletionTokens,
 		TotalTokens:      chatData.TotalTokens,

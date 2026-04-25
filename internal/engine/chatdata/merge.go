@@ -34,6 +34,18 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 
 		var msg llm.Message
 
+		if info.TotalTokens > 0 || info.PromptTokens > 0 || info.CompletionTokens > 0 || info.TotalCost > 0 || info.PromptTokens > 0 || info.CompletionTokens > 0 {
+			event.EventType |= llm.EventUsage
+			event.Usage = &llm.Usage{
+				TotalTokens:      info.TotalTokens,
+				PromptTokens:     info.PromptTokens,
+				CompletionTokens: info.CompletionTokens,
+				InputCost:        info.InputCost,
+				OutputCost:       info.OutputCost,
+				TotalCost:        info.TotalCost,
+			}
+		}
+
 		if info.MessageType&(llm.MessageText|llm.MessageImage|llm.MessageFile) != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
 			if err != nil {

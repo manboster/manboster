@@ -7,6 +7,8 @@ type ChatData struct {
 	ID               uint64    `gorm:"primary_key;auto_increment;column:id"`
 	SessionID        string    `gorm:"column:session_id;index;not null"`
 	Role             string    `gorm:"column:role"`
+	Model            string    `gorm:"column:model"`
+	Provider         string    `gorm:"column:provider"`
 	MessageType      int16     `gorm:"column:message_type"`
 	PromptTokens     int       `gorm:"column:prompt_tokens;default:0"`
 	CompletionTokens int       `gorm:"column:completion_tokens;default:0"`

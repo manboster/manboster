@@ -45,6 +45,8 @@ func (s *Service) Chat(ctx context.Context, model string, messages []llm.Message
 	// then return its message
 	return &llm.Event{
 		EventType: llm.EventMessage | llm.EventUsage,
+		Model:     model,
+		Provider:  s.Name(),
 		Message: &llm.Message{
 			Parts: []llm.MessageParts{
 				{

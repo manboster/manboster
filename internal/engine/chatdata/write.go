@@ -23,6 +23,8 @@ func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) 
 		}
 
 		chatData.MessageType = event.Message.Type
+		chatData.Model = event.Model
+		chatData.Provider = event.Provider
 		chatData.MessagePayload = string(jsonify)
 		chatData.Role = event.Message.Role
 	}
@@ -31,6 +33,9 @@ func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) 
 		chatData.PromptTokens = event.Usage.PromptTokens
 		chatData.CompletionTokens = event.Usage.CompletionTokens
 		chatData.TotalTokens = event.Usage.TotalTokens
+		chatData.InputCost = event.Usage.InputCost
+		chatData.OutputCost = event.Usage.OutputCost
+		chatData.TotalCost = event.Usage.TotalCost
 	}
 
 	return s.repo.CreateChatData(ctx, chatData)

@@ -5,4 +5,7 @@ type Usage struct {
 	PromptTokens     int // Prompt & input tokens, get from app
 	CompletionTokens int // The Completion API's output tokens
 	TotalTokens      int // Total Tokens
+	InputCost        float64
+	OutputCost       float64
+	TotalCost        float64
 }
