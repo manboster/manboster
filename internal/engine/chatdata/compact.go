@@ -97,7 +97,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	}
 
 	compactedMessage := event.Message.Parts[0].Text.Text
-	newSessionID := util.RandomString(16)
+	newSessionID := util.RandomString(8)
 	err = s.repo.CreateSoul(ctx, types.Soul{
 		Priority: 1,
 		Name:     "previous-message-" + newSessionID,

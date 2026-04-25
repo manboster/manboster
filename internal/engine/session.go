@@ -15,7 +15,7 @@ import (
 )
 
 func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider string) (string, error) {
-	sessionId := util.RandomString(16)
+	sessionId := util.RandomString(8)
 	soulsList := e.soulService.GetSoulsList(ctx, msg.ChatID)
 	err := e.repo.CreateSession(ctx, types.Session{
 		SessionID:        sessionId,

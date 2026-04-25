@@ -159,6 +159,7 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 	respString.WriteString(fmt.Sprintf("Current session id: `%s`\n", sessionId))
 	respString.WriteString(fmt.Sprintf("Current chat times: %d(call LLM API %d times)\n", len(sessData.Events), llmCallTimes))
 	respString.WriteString(fmt.Sprintf("Current provider: `%s`, model: `%s`\n", provider.DisplayName(), model.DisplayName))
+	respString.WriteString(fmt.Sprintf("Current using souls(%d): `%s`\n", len(sessData.Souls), sessData.Souls))
 	respString.WriteString(fmt.Sprintf("Total Tokens Cost: %d tokens\n(input: %d tokens, output: %d tokens, thinking %d tokens)\n", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
 
 	totPrice := 0.0
