@@ -18,14 +18,9 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 
 	for _, info := range chatDataInfo {
 		var event llm.Event
-		if info.TotalTokens != 0 || info.PromptTokens != 0 || info.CompletionTokens != 0 {
-			event.EventType |= llm.EventUsage
-			event.Usage = &llm.Usage{
-				TotalTokens:      info.TotalTokens,
-				PromptTokens:     info.PromptTokens,
-				CompletionTokens: info.CompletionTokens,
-			}
-		}
+
+		event.Model = info.Model
+		event.Provider = info.Provider
 
 		event.Message = &llm.Message{
 			Type: info.MessageType,
