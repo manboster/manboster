@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid string) error {

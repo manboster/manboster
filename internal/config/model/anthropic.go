@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // AnthropicModels defines data from Claude Sonnet/Haiku/Opus 4.5 to now
 var AnthropicModels = []llm.Model{

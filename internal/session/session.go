@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // Session gives, stores and writes users session storages.

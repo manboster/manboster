@@ -1,6 +1,8 @@
 package session
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // Usage returns in, out and tot tokens
 func (m *Manager) Usage(sid string) (int, int, int) {

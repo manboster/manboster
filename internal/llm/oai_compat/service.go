@@ -2,7 +2,7 @@ package oai_compat
 
 import (
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 	"github.com/sashabaranov/go-openai"
 )
 

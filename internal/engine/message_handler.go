@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {

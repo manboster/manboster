@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) error {

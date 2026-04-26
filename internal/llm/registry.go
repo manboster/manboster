@@ -3,9 +3,11 @@ package llm
 import (
 	"fmt"
 	"sync"
+
+	"github.com/manboster/manboster/spec/llm"
 )
 
-type ProviderFactory func() Provider
+type ProviderFactory func() llm.Provider
 
 var (
 	providerRegistry = make(map[string]ProviderFactory)
@@ -18,7 +20,7 @@ func Register(name string, factory ProviderFactory) {
 	providerRegistry[name] = factory
 }
 
-func GetProvider(name string) (Provider, error) {
+func GetProvider(name string) (llm.Provider, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
@@ -40,10 +42,10 @@ func AvailProviders() []string {
 }
 
 // AllProviders gets all providers back
-func AllProviders() []Provider {
+func AllProviders() []llm.Provider {
 	mu.RLock()
 	defer mu.RUnlock()
-	var list []Provider
+	var list []llm.Provider
 	for p := range providerRegistry {
 		list = append(list, providerRegistry[p]())
 	}

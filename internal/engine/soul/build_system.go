@@ -8,7 +8,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 var re = regexp.MustCompile(`(?s)<tone_and_formatting>.*?</tone_and_formatting>`)

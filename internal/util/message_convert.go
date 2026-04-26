@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 var (

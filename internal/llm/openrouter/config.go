@@ -7,9 +7,9 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // Config contains what you should enter in application configuration.

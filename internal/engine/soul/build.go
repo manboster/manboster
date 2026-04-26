@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // BuildLLMMessage build from a chat message to a llm message, make it easier to handle in engine

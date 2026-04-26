@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // XAIModels defines models from elon mu$k's xAI.
 var XAIModels = []llm.Model{

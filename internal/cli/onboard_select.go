@@ -9,9 +9,10 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/spec/chat"
+	llmType "github.com/manboster/manboster/spec/llm"
 )
 
-func OnboardSelectLLMForm(ctx context.Context, llmProviders []llm.Provider, prompt string) (llm.Provider, error) {
+func OnboardSelectLLMForm(ctx context.Context, llmProviders []llmType.Provider, prompt string) (llmType.Provider, error) {
 	var options []huh.Option[string]
 	for _, c := range llmProviders {
 		options = append(options, huh.NewOption(c.Config().DisplayName(), c.Config().Name()))
@@ -36,8 +37,8 @@ func OnboardSelectLLMForm(ctx context.Context, llmProviders []llm.Provider, prom
 	return nil, fmt.Errorf("no such provider %s", lProvider)
 }
 
-func OnboardLLMProviderInstanceForm(ctx context.Context, llmConfigs []config.LLMConfig, prompt string) (llm.Provider, error) {
-	var llmProviders []llm.Provider
+func OnboardLLMProviderInstanceForm(ctx context.Context, llmConfigs []config.LLMConfig, prompt string) (llmType.Provider, error) {
+	var llmProviders []llmType.Provider
 	for _, c := range llmConfigs {
 		p, err := llm.GetProvider(c.Provider)
 		if err != nil {
@@ -102,7 +103,7 @@ func OnboardSelectChatForm(ctx context.Context, chatProviders []chat.Provider, p
 	return nil, fmt.Errorf("no such provider %s", chatProvider)
 }
 
-func OnboardSelectModelForm(ctx context.Context, models []llm.Model, prompt string) (llm.Model, error) {
+func OnboardSelectModelForm(ctx context.Context, models []llmType.Model, prompt string) (llmType.Model, error) {
 	var options []huh.Option[string]
 	for i, modelData := range models {
 		option := huh.NewOption(modelData.DisplayName, modelData.Name)
@@ -122,12 +123,12 @@ func OnboardSelectModelForm(ctx context.Context, models []llm.Model, prompt stri
 		),
 	).Run()
 	if err != nil || model == "" {
-		return llm.Model{}, err
+		return llmType.Model{}, err
 	}
 	for _, m := range models {
 		if m.Name == model {
 			return m, nil
 		}
 	}
-	return llm.Model{}, fmt.Errorf("no such model %s", model)
+	return llmType.Model{}, fmt.Errorf("no such model %s", model)
 }

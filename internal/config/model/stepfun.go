@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 var StepFunModels = []llm.Model{
 	//	"stepfun/step-3.5-flash:free",

@@ -6,10 +6,10 @@ import (
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 type Engine struct {

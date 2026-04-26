@@ -3,8 +3,8 @@ package openrouter
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // Chat allows you to chat with your model

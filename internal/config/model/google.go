@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // GoogleModels defines Gemini 3 & Gemma 4 to now
 var GoogleModels = []llm.Model{

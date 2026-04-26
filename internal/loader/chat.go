@@ -19,7 +19,7 @@ func (l *Loader) LoadChat(ctx context.Context, chatConfig config.ChatConfig) err
 }
 
 func (l *Loader) LoadChats(ctx context.Context, chatConfigs []config.ChatConfig) error {
-	color.Blue("[Manboster Engine] Loading chat providers...")
+	color.Blue("[Manboster Loader] Loading chat providers...")
 	for _, chatConfig := range chatConfigs {
 		err := l.LoadChat(ctx, chatConfig)
 		if err != nil {

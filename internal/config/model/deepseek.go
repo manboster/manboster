@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // DeepSeekModels defines models from DeepSeek v3.2 (Along with R1) to now
 var DeepSeekModels = []llm.Model{

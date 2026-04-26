@@ -3,8 +3,8 @@ package oai_compat
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/spec/llm"
 	"github.com/sashabaranov/go-openai"
 )
 

@@ -3,7 +3,7 @@ package util
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // GetModelWithFallback gets provider and model's data with fallback provided

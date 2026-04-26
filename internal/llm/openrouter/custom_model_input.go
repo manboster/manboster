@@ -1,8 +1,8 @@
 package openrouter
 
 import (
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (c *Config) InputCustomModel() (llm.Model, error) {

@@ -2,7 +2,7 @@ package openrouter
 
 import (
 	"github.com/manboster/manboster/internal/config/model"
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // models' information from openrouter.ai

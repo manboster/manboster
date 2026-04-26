@@ -3,8 +3,8 @@ package soul
 import (
 	"strings"
 
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // ChatMessageToString converts a chat's message to string

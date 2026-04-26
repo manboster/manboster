@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // GlmModels defines Models from bigmodel.cn / z.ai
 var GlmModels = []llm.Model{

@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // HandleText handles text messages.

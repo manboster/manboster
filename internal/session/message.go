@@ -1,12 +1,14 @@
 package session
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // GetMessages return messages from sid
 func (m *Manager) GetMessages(sid string) []llm.Message {
 	m.Lock.RLock()
 	defer m.Lock.RUnlock()
-	
+
 	s, avail := m.Sessions[sid]
 	if !avail {
 		return nil

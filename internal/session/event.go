@@ -1,7 +1,7 @@
 package session
 
 import (
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (m *Manager) AppendEvent(sid string, event llm.Event) {

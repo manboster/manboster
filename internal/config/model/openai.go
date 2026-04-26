@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 // OpenAIModels defines models from GPT 5.3 series to now.
 var OpenAIModels = []llm.Model{

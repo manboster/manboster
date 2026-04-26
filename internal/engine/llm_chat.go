@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgList []llm.Message) (*llm.Event, error) {

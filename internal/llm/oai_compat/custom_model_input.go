@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/charmbracelet/huh"
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func InputModel() (llm.Model, error) {

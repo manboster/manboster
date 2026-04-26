@@ -1,9 +1,9 @@
 package chatdata
 
 import (
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 type Service struct {

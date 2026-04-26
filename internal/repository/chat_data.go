@@ -4,8 +4,8 @@ import (
 	"context"
 
 	dbtypes "github.com/manboster/manboster/internal/database/types"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 type ChatDataRepository interface {

@@ -7,10 +7,10 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 // Compact compacts chat data and then open a new session.

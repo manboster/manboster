@@ -4,7 +4,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/llm"
 )
 
 func Models() []llm.Model {

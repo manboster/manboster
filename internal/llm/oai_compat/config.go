@@ -9,8 +9,8 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config/model"
-	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/llm"
 	"github.com/sashabaranov/go-openai"
 )
 

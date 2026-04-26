@@ -1,6 +1,8 @@
 package model
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 var MoonshotModels = []llm.Model{
 	//	"moonshotai/kimi-k2.6",

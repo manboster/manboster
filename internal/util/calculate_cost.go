@@ -1,6 +1,8 @@
 package util
 
-import "github.com/manboster/manboster/internal/llm"
+import (
+	"github.com/manboster/manboster/spec/llm"
+)
 
 func CalculateCost(e *llm.Event, m llm.Model) {
 	if e.EventType&llm.EventUsage != 0 && e.Usage != nil {

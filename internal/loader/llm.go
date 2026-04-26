@@ -7,9 +7,10 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
+	llmType "github.com/manboster/manboster/spec/llm"
 )
 
-func LoadLLMProvider(ctx context.Context, llmConfig config.LLMConfig, provider llm.Provider) (llm.Provider, error) {
+func LoadLLMProvider(ctx context.Context, llmConfig config.LLMConfig, provider llmType.Provider) (llmType.Provider, error) {
 	newLProvider := provider.New()
 	err := newLProvider.Init(ctx, llmConfig.Configuration)
 	if err != nil {
@@ -20,8 +21,8 @@ func LoadLLMProvider(ctx context.Context, llmConfig config.LLMConfig, provider l
 	return newLProvider, nil
 }
 
-func LoadLLMProviders(ctx context.Context, llmConf []config.LLMConfig) ([]llm.Provider, error) {
-	llmProviders := make([]llm.Provider, 0, len(llmConf))
+func LoadLLMProviders(ctx context.Context, llmConf []config.LLMConfig) ([]llmType.Provider, error) {
+	llmProviders := make([]llmType.Provider, 0, len(llmConf))
 	color.Cyan("[Manboster Loader] Loading LLM Providers...")
 	// configure and init LLM providers
 	for _, llmConfig := range llmConf {
