@@ -12,6 +12,7 @@ type Provider interface {
 	Start(ctx context.Context, handlerFunc func(msg *Message)) error
 	SendMessage(ctx context.Context, msg *Message) error
 	EditMessage(ctx context.Context, msg *Message) error
+	DeleteMessage(ctx context.Context, msg *Message) error
 	Select(ctx context.Context, sessionId string, msg *Message) error // returned session id, If AbilityType & AbilitySelect == 0, this function is null and unable to send it.
 	Stop() error
 	Notify(ctx context.Context, msg *Message, action ActionType) error

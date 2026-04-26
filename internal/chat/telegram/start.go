@@ -80,3 +80,8 @@ func (s *Service) Type(ctx context.Context, chatId telebot.ChatID) {
 		}
 	}
 }
+
+// DeleteMessage TODO:
+func (s *Service) DeleteMessage(ctx context.Context, msg *chat.Message) error {
+	return nil
+}
