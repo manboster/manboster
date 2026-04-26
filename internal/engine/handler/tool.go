@@ -2,10 +2,12 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -43,8 +45,21 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			}
 		} else {
 			if successExecution {
+				txt := fmt.Sprintf("Model called tool `%s`(`%s`) ", toolProvider.DisplayName(), safeName)
+
+				var result map[string]interface{}
+				err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
+				if err != nil {
+					color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
+				}
+				params := util.JSONParse(result)
+				if params != "" {
+					txt += fmt.Sprintf("with params: %s", params)
+				}
+				txt += "."
+
 				callMsg.Text = &chat.TextPayload{
-					Text: fmt.Sprintf("Model called tool `%s`(`%s`).", toolProvider.DisplayName(), safeName),
+					Text: txt,
 				}
 			} else {
 				callMsg.Text = &chat.TextPayload{
