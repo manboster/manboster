@@ -116,6 +116,11 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
+	if msg.MessageType == chat.MessageCommand {
+		err = e.HandleCommand(ctx, instance, msg, sessionId)
+		return
+	}
+
 	err = e.MessageHandler(cancelCtx, instance, msg, sessionId)
 	//switch msg.MessageType {
 	//case chat.MessageText:
