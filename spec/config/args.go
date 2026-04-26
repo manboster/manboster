@@ -24,22 +24,21 @@ type ArgsNode struct {
 }
 
 // ToHuhGroup is written by Manboster, powered by DeepSeek V4 Pro.
-func (args *Args) ToHuhGroup() *[]huh.Group {
-	groups := make([]huh.Group, 0)
+func (args *Args) ToHuhGroup() []*huh.Group {
+	groups := make([]*huh.Group, 0)
 	if args == nil {
-		return &groups
+		return groups
 	}
 	collectGroups(args.Nodes, &groups)
-	return &groups
+	return groups
 }
 
-func collectGroups(nodes []ArgsNode, groups *[]huh.Group) {
+func collectGroups(nodes []ArgsNode, groups *[]*huh.Group) {
 	fields := make([]huh.Field, 0)
 	for _, node := range nodes {
 		if node.Arg == nil {
 			continue
 		}
-		// Object 有子节点时递归处理，子节点自成一组
 		if node.Arg.Type == schema.ArgsTypeObject && len(node.Children) > 0 {
 			collectGroups(node.Children, groups)
 			continue
@@ -49,7 +48,7 @@ func collectGroups(nodes []ArgsNode, groups *[]huh.Group) {
 		}
 	}
 	if len(fields) > 0 {
-		*groups = append(*groups, *huh.NewGroup(fields...))
+		*groups = append(*groups, huh.NewGroup(fields...))
 	}
 }
 

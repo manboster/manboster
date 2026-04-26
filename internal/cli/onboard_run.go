@@ -14,9 +14,12 @@ func RunOnboardConfig(ctx context.Context, provider config.Provider) (any, error
 		return nil, err
 	}
 
-	err = provider.VerifyAndConvert(ctx)
-	if err != nil {
-		return nil, err
+	p, ok := provider.(config.ProviderWithSetup)
+	if ok {
+		err = p.Setup(ctx)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return provider.GetConfig(), nil
