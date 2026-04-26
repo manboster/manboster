@@ -23,7 +23,7 @@ func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg
 	for _, req := range event.Message.ToolCallRequest {
 		resp := ""
 		safeName := strings.ReplaceAll(req.ToolName, "_", ".")
-		resp, err := e.HandleToolExec(ctx, safeName, req.ToolArgs.(string))
+		resp, err := e.HandleToolExec(ctx, safeName, fmt.Sprintf("%v", req.ToolArgs))
 		if err != nil {
 			resp = err.Error()
 		} else {

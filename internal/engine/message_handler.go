@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
@@ -10,8 +11,8 @@ import (
 	"github.com/manboster/manboster/internal/util"
 )
 
-func (e *Engine) Handler(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
-	color.Blue("[Manboster Engine] Now handling text message...")
+func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+	color.Blue("[Manboster Engine] Now handling message...")
 
 	// now, notify process!
 	err := instance.Notify(ctx, msg, chat.ActionPending)
@@ -84,16 +85,28 @@ func (e *Engine) Handler(ctx context.Context, instance chat.Provider, msg *chat.
 	// jsonify, _ := json.MarshalIndent(msgList, "", "  ")
 	// fmt.Printf(string(jsonify))
 
-	maxCount := 5
+	maxCount := 3
+	maxRepeatCount := 5
 	count := 0
+	repeatCount := 0
+	repeatFingerPrint := ""
+
 	for {
 		event, err := e.LLMChat(ctx, p, m, msgList)
 		errChat := e.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
 		if errChat != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", errChat))
 		}
-		if err != nil || count >= maxCount {
+		if err != nil {
 			break
+		}
+		if count >= maxCount || repeatCount >= maxRepeatCount {
+			respMsg := msg.Clone()
+			respMsg.MessageType = chat.MessageText
+			respMsg.Text = &chat.TextPayload{
+				Text: "Models tried the same tool call too much times or model calls return failed too much times, we broke it out in order to avoid consuming useless tokens and time.",
+			}
+			return e.SendMessage(ctx, instance, respMsg)
 		}
 
 		// write the whole event immediately
@@ -121,6 +134,17 @@ func (e *Engine) Handler(ctx context.Context, instance chat.Provider, msg *chat.
 
 		// handling tool call request
 		if event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest != 0 {
+			var toolNameArgs []string
+			for _, req := range event.Message.ToolCallRequest {
+				toolNameArgs = append(toolNameArgs, fmt.Sprintf("%s:%v", req.ToolName, req.ToolArgs))
+			}
+			if repeatFingerPrint == strings.Join(toolNameArgs, "%") {
+				repeatCount++
+			} else {
+				repeatCount = 0
+				repeatFingerPrint = strings.Join(toolNameArgs, "%")
+			}
+
 			respEvent, successExecution, err := e.HandleToolCall(ctx, instance, msg, *event)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))

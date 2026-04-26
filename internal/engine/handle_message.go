@@ -116,7 +116,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
-	err = e.Handler(cancelCtx, instance, msg, sessionId)
+	err = e.MessageHandler(cancelCtx, instance, msg, sessionId)
 	//switch msg.MessageType {
 	//case chat.MessageText:
 	//	err = e.HandleText(cancelCtx, instance, msg, sessionId)
