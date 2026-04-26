@@ -9,6 +9,10 @@ import (
 
 // HandleOnBoard handles onboard start
 func (s *Service) HandleOnBoard() {
+	if !s.active {
+		return
+	}
+
 	s.lock.Lock()
 	defer s.lock.Unlock()
 

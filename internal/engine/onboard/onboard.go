@@ -11,6 +11,7 @@ type Service struct {
 	lock    sync.Mutex
 	pairKey int64
 	retry   int
+	active  bool
 }
 
 // New creates a onboard service
@@ -19,5 +20,6 @@ func New() *Service {
 		lock:    sync.Mutex{},
 		pairKey: util.RandomNumber(100000, 999999),
 		retry:   0,
+		active:  true,
 	}
 }

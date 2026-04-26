@@ -10,6 +10,10 @@ import (
 )
 
 func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, code int64) error {
+	if !s.active {
+		return nil
+	}
+
 	s.lock.Lock()
 	defer s.lock.Unlock()
 

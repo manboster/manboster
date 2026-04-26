@@ -1,4 +1,4 @@
-package engine
+package command
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 // cmdPair executes pair command
-func (e *Engine) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {
@@ -34,13 +34,13 @@ func (e *Engine) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, msg)
 	}
 
-	if e.onboard != nil {
-		err = e.onboard.Pair(ctx, instance, msg, e.repo, num)
+	if h.onboard != nil {
+		err = h.onboard.Pair(ctx, instance, msg, h.repo, num)
 		if err != nil {
 			text = err.Error()
 		} else {
 			text = "Successfully paired!"
-			e.onboard = nil
+			h.onboard = nil
 		}
 	} else {
 		text = "There is no need to pair!"

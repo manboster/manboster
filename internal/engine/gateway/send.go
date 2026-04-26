@@ -1,4 +1,4 @@
-package engine
+package gateway
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 )
 
 // SendMessage builtin retries and wrapped in a single function.
-func (e *Engine) SendMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (s *Service) SendMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	times := 5
 	tries := 1
 	var err error = nil

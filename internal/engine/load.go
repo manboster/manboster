@@ -7,6 +7,9 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/chatdata"
+	"github.com/manboster/manboster/internal/engine/command"
+	"github.com/manboster/manboster/internal/engine/gateway"
+	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
@@ -42,6 +45,10 @@ func (e *Engine) Load(ctx context.Context) error {
 			fmt.Printf("[Manboster Engine] Duplicate tool '%s'! The next one will be ignored.\n", tool.Name())
 		}
 	}
+	e.gateway = gateway.NewService(e.toolProviders)
+
+	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway)
+	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionManager, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
 		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")

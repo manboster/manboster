@@ -3,6 +3,9 @@ package engine
 import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/chatdata"
+	"github.com/manboster/manboster/internal/engine/command"
+	"github.com/manboster/manboster/internal/engine/gateway"
+	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
@@ -19,6 +22,9 @@ type Engine struct {
 	toolMaps       map[string]tool.Provider
 	config         *config.Config
 	repo           repository.Repository
+	commandHandler *command.Handler
+	handler        *handler.Handler
+	gateway        *gateway.Service
 
 	onboard          *onboard.Service
 	safeguardService *safeguard.Service

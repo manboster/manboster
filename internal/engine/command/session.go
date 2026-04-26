@@ -1,4 +1,4 @@
-package engine
+package command
 
 import (
 	"context"
@@ -8,15 +8,17 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository"
+	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
 // cmdCancel enables user to cancel their request
-func (e *Engine) cmdCancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (h *Handler) cmdCancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	msg.MessageType = chat.MessageText
-	sessData, avail := e.sessionManager.GetSession(sessionId)
+	sessData, avail := h.sessionManager.GetSession(sessionId)
 
 	var text string
 	if avail {
@@ -38,7 +40,7 @@ func (e *Engine) cmdCancel(ctx context.Context, instance chat.Provider, msg *cha
 }
 
 // cmdNew deletes old session and creates a new session
-func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	if sessionId == "" {
@@ -48,7 +50,7 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := e.sessionManager.GetSession(sessionId)
+	_, avail := h.sessionManager.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
 			Text: "Session is not active, there is nothing to do!",
@@ -56,29 +58,29 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	e.sessionManager.DeleteSession(sessionId)
-	err := e.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
+	h.sessionManager.DeleteSession(sessionId)
+	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
 		return err
 	}
 
 	// delete chat data and session data
-	err = e.repo.DeleteChatData(ctx, sessionId)
+	err = h.repo.DeleteChatData(ctx, sessionId)
 	if err != nil {
 		return err
 	}
-	err = e.repo.DeleteSession(ctx, sessionId)
+	err = h.repo.DeleteSession(ctx, sessionId)
 	if err != nil {
 		return err
 	}
 
-	sid, err := e.loadSession(ctx, instance, msg, true)
+	sid, err := h.newSession(ctx, instance, msg)
 	if err != nil {
 		return err
 	}
 
 	// auto migration
-	err = e.repo.ReplaceChatSessions(ctx, sessionId, sid)
+	err = h.repo.ReplaceChatSessions(ctx, sessionId, sid)
 	if err != nil {
 		return err
 	}
@@ -90,7 +92,7 @@ func (e *Engine) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.M
 }
 
 // cmdSave saves old session and create a new session
-func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 
@@ -101,7 +103,7 @@ func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := e.sessionManager.GetSession(sessionId)
+	_, avail := h.sessionManager.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
 			Text: "Session is not active, there is nothing to do!",
@@ -109,13 +111,13 @@ func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	e.sessionManager.DeleteSession(sessionId)
-	err := e.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
+	h.sessionManager.DeleteSession(sessionId)
+	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
 		return err
 	}
 
-	sid, err := e.loadSession(ctx, instance, msg, true)
+	sid, err := h.newSession(ctx, instance, msg)
 	if err != nil {
 		return err
 	}
@@ -126,21 +128,21 @@ func (e *Engine) cmdSave(ctx context.Context, instance chat.Provider, msg *chat.
 	return instance.SendMessage(ctx, respMessage)
 }
 
-func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
-	usage, err := e.repo.CountChatDataTokenBySession(ctx, sessionId)
+func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+	usage, err := h.repo.CountChatDataTokenBySession(ctx, sessionId)
 	if err != nil {
 		return err
 	}
 
-	totTokens, err := e.repo.GetTotalToken(ctx, sessionId)
+	totTokens, err := h.repo.GetTotalToken(ctx, sessionId)
 	if err != nil {
 		return err
 	}
 
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
-	sessData, _ := e.sessionManager.GetSession(sessionId)
-	p, m := util.GetModelWithFallback(ctx, e.llmProviders, sessData.Provider, sessData.Model)
+	sessData, _ := h.sessionManager.GetSession(sessionId)
+	p, m := util.GetModelWithFallback(ctx, h.llmProviders, sessData.Provider, sessData.Model)
 	provider := p
 	model := m
 
@@ -217,14 +219,14 @@ func (e *Engine) cmdStatus(ctx context.Context, instance chat.Provider, msg *cha
 }
 
 // cmdSession return and modify session if args is empty, it would display the list of sessions. if args is not empty, it would change session to given session id by modifying database
-func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 
 	// return session ids
 	if len(msg.Command.CommandArgs) == 0 {
-		sessionData, err := e.repo.GetSessions(ctx)
+		sessionData, err := h.repo.GetSessions(ctx)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] we encountered an error when handling session data: %q", err))
 			respString.WriteString("An error was occurred when handling session data!")
@@ -245,7 +247,7 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 
 	// checkout session
 	sid := msg.Command.CommandArgs[0]
-	_, err := e.repo.GetSession(ctx, sid)
+	_, err := h.repo.GetSession(ctx, sid)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] we could not found any session id"))
@@ -260,7 +262,7 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	err = e.repo.UpdateChat(ctx, msg.ChatID, instance.Name(), sid)
+	err = h.repo.UpdateChat(ctx, msg.ChatID, instance.Name(), sid)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] we encountered an error when handling updating chat's session data: %q", err))
 		respString.WriteString("An error was occurred when changing session id for this chat!")
@@ -278,14 +280,14 @@ func (e *Engine) cmdSession(ctx context.Context, instance chat.Provider, msg *ch
 }
 
 // cmdProvider returns current available providers, if args is empty, it would display the list of providers. if args is not empty, it would change providers to given provider id by modifying database
-func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [name]`, we will automatically change the first model of the provider for you):\n")
 		i := 0
-		for _, provider := range e.llmProviders {
+		for _, provider := range h.llmProviders {
 			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models. Run `/provider %s` to change.\n", i+1, provider.DisplayName(), len(provider.Models()), provider.Name()))
 			i += 1
 		}
@@ -304,9 +306,9 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s, _ := e.sessionManager.GetSession(sessionId)
+	s, _ := h.sessionManager.GetSession(sessionId)
 
-	if _, avail := e.llmProviders[id]; !avail {
+	if _, avail := h.llmProviders[id]; !avail {
 		respString.WriteString("Current provider is what you have entered!")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -314,11 +316,11 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Provider = e.llmProviders[id].Name()
-	s.Model = e.llmProviders[id].Models()[0].Name
+	s.Provider = h.llmProviders[id].Name()
+	s.Model = h.llmProviders[id].Models()[0].Name
 
-	e.sessionManager.SetSession(sessionId, s)
-	err := e.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
+	h.sessionManager.SetSession(sessionId, s)
+	err := h.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
 		"llm_provider":       s.Provider,
 		"llm_provider_model": s.Model,
 	})
@@ -339,14 +341,14 @@ func (e *Engine) cmdProvider(ctx context.Context, instance chat.Provider, msg *c
 }
 
 // cmdModel if args is empty, it would display the list of models. if args is not empty, is would change models to given provider id by modifying database
-func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string) error {
+func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 
-	s, _ := e.sessionManager.GetSession(sid)
+	s, _ := h.sessionManager.GetSession(sid)
 
-	p, _ := util.GetModelWithFallback(ctx, e.llmProviders, s.Provider, s.Model)
+	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, s.Provider, s.Model)
 	// fmt.Printf("%s %s %s %s", s.Model, s.Provider, p.DisplayName(), sid)
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.Reset()
@@ -386,8 +388,8 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 	}
 
 	s.Model = id
-	e.sessionManager.SetSession(sid, s)
-	err := e.repo.UpdateSession(ctx, sid, map[string]interface{}{
+	h.sessionManager.SetSession(sid, s)
+	err := h.repo.UpdateSession(ctx, sid, map[string]interface{}{
 		"llm_provider_model": s.Model,
 	})
 	if err != nil {
@@ -404,4 +406,46 @@ func (e *Engine) cmdModel(ctx context.Context, instance chat.Provider, msg *chat
 		Text: respString.String(),
 	}
 	return instance.SendMessage(ctx, respMessage)
+}
+
+func (h *Handler) newSession(ctx context.Context, instance chat.Provider, msg *chat.Message) (string, error) {
+	lockerID := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
+	provider := instance.Name()
+	chatLock := h.sessionManager.GetSessionChatLocks(lockerID)
+
+	chatLock.Lock()
+	defer chatLock.Unlock()
+
+	sessionId := util.RandomString(8)
+	soulsList := h.soulService.GetSoulsList(ctx, msg.ChatID)
+	err := h.repo.CreateSession(ctx, types.Session{
+		SessionID:        sessionId,
+		LLMProvider:      h.config.App.DefaultLLMProvider,
+		LLMProviderModel: h.config.App.DefaultLLMModel,
+		ActivatedSouls:   soulsList,
+	})
+	if err != nil {
+		return "", err
+	}
+	// set a new session
+	h.sessionManager.SetSession(sessionId, session.Session{
+		Model:    h.config.App.DefaultLLMModel,
+		Provider: h.config.App.DefaultLLMProvider,
+		Events:   []llm.Event{},
+		Souls:    soulsList,
+		Active:   false,
+		Cancel:   nil,
+	})
+
+	err = h.repo.CreateChat(ctx, types.Chat{
+		ChatID:         msg.ChatID,
+		SessionID:      sessionId,
+		ChatProvider:   provider,
+		ChatPermission: 1,
+	})
+
+	if err != nil {
+		return "", err
+	}
+	return sessionId, nil
 }

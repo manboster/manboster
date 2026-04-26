@@ -53,7 +53,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	}
 	// checkout whether a need to compact or not
 	if uint64(totToken) > llm.CalculateCompactTokens(m) {
-		err := e.HandleCompact(ctx, instance, msg, sessionId)
+		err := e.handler.HandleCompact(ctx, instance, msg, sessionId)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] Error while compacting data: %q", err))
 			return err
@@ -92,8 +92,8 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	repeatFingerPrint := ""
 
 	for {
-		event, err := e.LLMChat(ctx, p, m, msgList)
-		errChat := e.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
+		event, err := e.gateway.LLMChat(ctx, p, m, msgList)
+		errChat := e.gateway.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
 		if errChat != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", errChat))
 		}
@@ -106,7 +106,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 			respMsg.Text = &chat.TextPayload{
 				Text: "Models tried the same tool call too much times or model calls return failed too much times, we broke it out in order to avoid consuming useless tokens and time.",
 			}
-			return e.SendMessage(ctx, instance, respMsg)
+			return e.gateway.SendMessage(ctx, instance, respMsg)
 		}
 
 		// write the whole event immediately
@@ -122,7 +122,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 
 		// handle text message
 		if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
-			err = e.HandleText(ctx, instance, msg, *event)
+			err = e.handler.HandleText(ctx, instance, msg, *event)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
 			}
@@ -145,7 +145,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				repeatFingerPrint = strings.Join(toolNameArgs, "%")
 			}
 
-			respEvent, successExecution, err := e.HandleToolCall(ctx, instance, msg, *event)
+			respEvent, successExecution, err := e.handler.HandleToolCall(ctx, instance, msg, *event)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
 			}

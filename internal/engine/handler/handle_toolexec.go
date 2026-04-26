@@ -1,4 +1,4 @@
-package engine
+package handler
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"github.com/fatih/color"
 )
 
-func (e *Engine) HandleToolExec(ctx context.Context, name string, args string) (string, error) {
-	toolProvider, avail := e.toolMaps[name]
+func (h *Handler) HandleToolExec(ctx context.Context, name string, args string) (string, error) {
+	toolProvider, avail := h.toolMaps[name]
 	if !avail {
 		return "", fmt.Errorf("there is no tool named %s", name)
 	}

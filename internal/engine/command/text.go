@@ -1,4 +1,4 @@
-package engine
+package command
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 )
 
 // cmdId displays id information of current chat
-func (e *Engine) cmdId(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdId(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	respText := strings.Builder{}
 	respText.WriteString(fmt.Sprintf("Message ID: %s\n", msg.MessageID))
@@ -30,7 +30,7 @@ func (e *Engine) cmdId(ctx context.Context, instance chat.Provider, msg *chat.Me
 }
 
 // cmdHelp is the helper command of manboster
-func (e *Engine) cmdHelp(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdHelp(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	var str strings.Builder
 	str.WriteString("Manboster Help Commands:\n\n")
 	str.WriteString("/version - Get current version information of this Manboster instance\n")
@@ -60,7 +60,7 @@ func (e *Engine) cmdHelp(ctx context.Context, instance chat.Provider, msg *chat.
 }
 
 // cmdVersion when user execute version commands, it will run.
-func (e *Engine) cmdVersion(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdVersion(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	msg.Text = &chat.TextPayload{
 		Text: fmt.Sprintf("Manboster: Your Personal Manbo Lobster!\nManboster version `%s %s@%s`, build at `%s`\nCheckout our latest releases here:\nhttps://github.com/manboster/manboster", config.Version, config.CurrentVersion, config.BuildCommit, config.BuildTime),
@@ -68,7 +68,7 @@ func (e *Engine) cmdVersion(ctx context.Context, instance chat.Provider, msg *ch
 	return instance.SendMessage(ctx, msg)
 }
 
-func (e *Engine) cmdDefault(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdDefault(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	msg.Text = &chat.TextPayload{
 		Text: "We are sorry but this is an Invalid Command. Please check your grammatical mistakes.",
@@ -76,7 +76,7 @@ func (e *Engine) cmdDefault(ctx context.Context, instance chat.Provider, msg *ch
 	return instance.SendMessage(ctx, msg)
 }
 
-func (e *Engine) cmdStart(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+func (h *Handler) cmdStart(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	var txt strings.Builder
 	txt.WriteString("Welcome to use Manboster!\n")

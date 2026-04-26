@@ -15,7 +15,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
 	if msg.MessageType == chat.MessageCommand && chat.IsPublicCommand(msg.Command.CommandType) {
-		err := e.HandleCommand(ctx, instance, msg, "")
+		err := e.commandHandler.Handle(ctx, instance, msg, "")
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling commands message via %s, error: %q", displayName, err))
 		}
@@ -24,7 +24,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	if e.onboard != nil {
 		if msg.ChatType == chat.ChatsPersonal {
-			err := e.HandleOnBoard(ctx, instance, msg)
+			err := e.handler.HandleOnBoard(ctx, instance, msg)
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling onboard via %s, error: %q", displayName, err))
 			}
@@ -38,7 +38,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	if !e.safeguardService.IsAdmin(uType) && msg.ChatType == chat.ChatsPersonal {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to talk with your lobster in person!"))
-		err := e.HandleReject(ctx, instance, msg)
+		err := e.handler.HandleReject(ctx, instance, msg)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
 		}
@@ -46,7 +46,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	if msg.MessageType == chat.MessageCommand && !chat.IsSessionRequiredCommand(msg.Command.CommandType) {
-		err := e.HandleCommand(ctx, instance, msg, "")
+		err := e.commandHandler.Handle(ctx, instance, msg, "")
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", displayName, err))
 			return
@@ -60,7 +60,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to start a new chat!"))
-		err := e.HandleReject(ctx, instance, msg)
+		err := e.handler.HandleReject(ctx, instance, msg)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling reject guardrail via %s, error: %q", displayName, err))
 		}
@@ -74,7 +74,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	// cancel command, passthrough session lock
 	if msg.MessageType == chat.MessageCommand && msg.Command.CommandType == chat.CommandCancel {
 		color.Blue(fmt.Sprintf("[Manboster Engine] Handling cancel command via %s, sessionId: %s", displayName, sessionId))
-		err := e.HandleCommand(ctx, instance, msg, sessionId)
+		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", displayName, err))
 			return
@@ -117,7 +117,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	if msg.MessageType == chat.MessageCommand {
-		err = e.HandleCommand(ctx, instance, msg, sessionId)
+		err = e.commandHandler.Handle(ctx, instance, msg, sessionId)
 		return
 	}
 

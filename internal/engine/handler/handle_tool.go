@@ -1,4 +1,4 @@
-package engine
+package handler
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) (llm.Event, bool, error) {
+func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) (llm.Event, bool, error) {
 	successExecution := false
 
 	var respEvent llm.Event
@@ -23,7 +23,7 @@ func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg
 	for _, req := range event.Message.ToolCallRequest {
 		resp := ""
 		safeName := strings.ReplaceAll(req.ToolName, "_", ".")
-		resp, err := e.HandleToolExec(ctx, safeName, fmt.Sprintf("%v", req.ToolArgs))
+		resp, err := h.HandleToolExec(ctx, safeName, fmt.Sprintf("%v", req.ToolArgs))
 		if err != nil {
 			resp = err.Error()
 		} else {
@@ -36,7 +36,7 @@ func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg
 		callMsg.MessageType = chat.MessageText
 		callMsg.Reply = nil
 
-		toolProvider, av := e.toolMaps[safeName]
+		toolProvider, av := h.toolMaps[safeName]
 		if !av {
 			callMsg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("Model called tool `%s` but not found.", safeName),
@@ -53,7 +53,7 @@ func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg
 			}
 		}
 
-		err = e.SendMessage(ctx, instance, callMsg)
+		err = h.gateway.SendMessage(ctx, instance, callMsg)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error sending message: %s", err))
 		}

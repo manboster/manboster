@@ -1,4 +1,4 @@
-package engine
+package handler
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 // HandleText handles text messages.
-func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) error {
+func (h *Handler) HandleText(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	text := event.Message.Parts[0].Text.Text
@@ -25,7 +25,7 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 		respMessage.Text = &chat.TextPayload{
 			Text: util.ExtractThinkContent(text),
 		}
-		err := e.SendMessage(ctx, instance, respMessage)
+		err := h.gateway.SendMessage(ctx, instance, respMessage)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
 		}
@@ -35,5 +35,5 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 	respMessage.Text = &chat.TextPayload{
 		Text: textWithoutThinking,
 	}
-	return e.SendMessage(ctx, instance, respMessage)
+	return h.gateway.SendMessage(ctx, instance, respMessage)
 }

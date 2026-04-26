@@ -1,4 +1,4 @@
-package engine
+package gateway
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgList []llm.Message) (*llm.Event, error) {
+func (s *Service) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgList []llm.Message) (*llm.Event, error) {
 	var err error = nil
 	var event = &llm.Event{}
 	// try 3 times
@@ -31,7 +31,7 @@ func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgLi
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
 
-		event, err = currentProvider.Chat(timeoutCtx, currentModel.Name, e.toolProviders, msgList)
+		event, err = currentProvider.Chat(timeoutCtx, currentModel.Name, s.toolProviders, msgList)
 
 		cancel()
 
@@ -50,7 +50,7 @@ func (e *Engine) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgLi
 	return event, err
 }
 
-func (e *Engine) HandleLLMChatError(ctx context.Context, instance chat.Provider, msg *chat.Message, pName string, mName string, err error) error {
+func (s *Service) HandleLLMChatError(ctx context.Context, instance chat.Provider, msg *chat.Message, pName string, mName string, err error) error {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	if err == nil {
@@ -77,5 +77,5 @@ func (e *Engine) HandleLLMChatError(ctx context.Context, instance chat.Provider,
 	respMessage.Text = &chat.TextPayload{
 		Text: text,
 	}
-	return e.SendMessage(ctx, instance, respMessage)
+	return s.SendMessage(ctx, instance, respMessage)
 }
