@@ -1,8 +1,8 @@
 package openrouter
 
 import (
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
+	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/llm"
 )
 

@@ -3,8 +3,8 @@ package telegram
 import (
 	"sync"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/config"
 	"gopkg.in/telebot.v3"
 )
 

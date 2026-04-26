@@ -3,8 +3,8 @@ package llm
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/spec/config"
 )
 
 // Provider defines which functions should LLM provides give.

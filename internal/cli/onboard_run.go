@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/charmbracelet/huh"
-	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/spec/config"
 )
 
 // RunOnboardConfig runs provider and gets config result

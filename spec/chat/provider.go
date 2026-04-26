@@ -3,7 +3,7 @@ package chat
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/spec/config"
 )
 
 // Provider defines which you want to implement, you can use Telegram, slack, even webserver api to chat with.
