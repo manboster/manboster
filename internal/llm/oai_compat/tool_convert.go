@@ -29,24 +29,17 @@ func (s *Service) ConvertTools(tools []tool.Provider) []openai.Tool {
 	return oaiTools
 }
 
-func buildParameters(args []*schema.Args) map[string]any {
+// buildParameters converts args to JSON Schema.
+func buildParameters(root *schema.Args) map[string]any {
 	properties := make(map[string]any)
 	var required []string
 
-	for _, arg := range args {
-		paramDef := map[string]any{
-			"type":        arg.Type,
-			"description": arg.Description,
-		}
+	for _, prop := range root.Properties {
+		paramDef := buildParamDef(prop)
+		properties[prop.Name] = paramDef
 
-		if arg.IsEnum && len(arg.Enum) > 0 {
-			paramDef["enum"] = arg.Enum
-		}
-
-		properties[arg.Name] = paramDef
-
-		if arg.Required {
-			required = append(required, arg.Name)
+		if prop.Required {
+			required = append(required, prop.Name)
 		}
 	}
 
@@ -58,4 +51,36 @@ func buildParameters(args []*schema.Args) map[string]any {
 		res["required"] = required
 	}
 	return res
+}
+
+func buildParamDef(arg *schema.Args) map[string]any {
+	def := map[string]any{
+		"type":        arg.Type,
+		"description": arg.Description,
+	}
+
+	if arg.IsEnum && len(arg.Enum) > 0 {
+		def["enum"] = arg.Enum
+	}
+
+	if arg.Type == schema.ArgsTypeObject && len(arg.Properties) > 0 {
+		subProps := make(map[string]any)
+		var subRequired []string
+		for _, p := range arg.Properties {
+			subProps[p.Name] = buildParamDef(p)
+			if p.Required {
+				subRequired = append(subRequired, p.Name)
+			}
+		}
+		def["properties"] = subProps
+		if len(subRequired) > 0 {
+			def["required"] = subRequired
+		}
+	}
+
+	if arg.Type == schema.ArgsTypeArray && arg.Items != nil {
+		def["items"] = buildParamDef(arg.Items)
+	}
+
+	return def
 }

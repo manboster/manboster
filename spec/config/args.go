@@ -1,6 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"reflect"
+	"strings"
+
 	"github.com/charmbracelet/huh"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -24,5 +28,104 @@ func (args *Args) ToHuhGroup() *huh.Group {
 
 // ArgsFromStruct TODO:
 func ArgsFromStruct(s interface{}) (*Args, error) {
-	return &Args{}, nil
+	v := reflect.ValueOf(s)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("expected struct, got %s", v.Kind())
+	}
+
+	t := v.Type()
+	var nodes []ArgsNode
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		if !field.IsExported() {
+			continue
+		}
+
+		tag := parseTag(field.Tag.Get("mbt"))
+		name := jsonName(field)
+
+		arg := &schema.Args{
+			Name:        name,
+			Type:        goKindToArgsType(field.Type.Kind()),
+			Description: tag["desc"],
+			Required:    tag["required"] == "true",
+		}
+
+		node := ArgsNode{
+			Arg:      arg,
+			IsSecret: tag["secret"] == "true",
+		}
+
+		if d := tag["default"]; d != "" {
+			node.Default = d
+		}
+
+		if field.Type.Kind() == reflect.Struct {
+			child, _ := ArgsFromStruct(v.Field(i).Interface())
+			node.Children = child.Nodes
+		}
+
+		nodes = append(nodes, node)
+	}
+
+	return &Args{Nodes: nodes, Index: buildIndex(nodes)}, nil
+}
+
+func parseTag(tag string) map[string]string {
+	result := make(map[string]string)
+	for _, part := range strings.Split(tag, ",") {
+		if kv := strings.SplitN(part, ":", 2); len(kv) == 2 {
+			result[kv[0]] = kv[1]
+		} else {
+			result[part] = "true"
+		}
+	}
+	return result
+}
+
+func jsonName(field reflect.StructField) string {
+	name := field.Tag.Get("json")
+	if idx := strings.Index(name, ","); idx != -1 {
+		name = name[:idx]
+	}
+	if name == "" {
+		name = field.Name
+	}
+	return name
+}
+
+func goKindToArgsType(k reflect.Kind) schema.ArgsType {
+	switch k {
+	case reflect.String:
+		return schema.ArgsTypeString
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return schema.ArgsTypeInt64
+	case reflect.Bool:
+		return schema.ArgsTypeBool
+	case reflect.Slice, reflect.Array:
+		return schema.ArgsTypeArray
+	case reflect.Map, reflect.Struct:
+		return schema.ArgsTypeObject
+	default:
+		return schema.ArgsTypeUnknown
+	}
+}
+
+func buildIndex(nodes []ArgsNode) map[string]*ArgsNode {
+	index := make(map[string]*ArgsNode)
+	for i := range nodes {
+		node := &nodes[i]
+		if node.Arg != nil && node.Arg.Name != "" {
+			index[node.Arg.Name] = node
+		}
+		for k, v := range buildIndex(node.Children) {
+			index[k] = v
+		}
+	}
+	return index
 }

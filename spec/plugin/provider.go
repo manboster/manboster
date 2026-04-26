@@ -12,7 +12,7 @@ type Provider interface {
 	DisplayName() string                                                // get the display name of the provider
 	MetaData() schema.MetaData                                          // get the metadata of the plugin
 	Requires() []schema.RequirementData                                 // get the requirement type of plugin
-	Args() []*schema.Args                                               // get args description from the plugin
+	Args() *schema.Args                                                 // get args description from the plugin
 	Init(ctx context.Context) error                                     // initialize the plugin
 	Start(ctx context.Context) error                                    // if long polling, it would work
 	Run(ctx context.Context, args string) (*RunResponse, error)         // passthrough by JSON

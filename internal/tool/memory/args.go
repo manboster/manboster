@@ -8,6 +8,6 @@ type RunArgs struct {
 	Value string `json:"value" description:"The value to use to set, get or delete. On valid when 'name' is 'set'." example:"value"`
 }
 
-func (s *Service) Args() []*schema.Args {
+func (s *Service) Args() *schema.Args {
 	return schema.ArgsFromStruct(RunArgs{})
 }

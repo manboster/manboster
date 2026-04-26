@@ -6,7 +6,7 @@ import (
 )
 
 // ArgsFromStruct is a useful function help you convert struct to args
-func ArgsFromStruct(s interface{}) []*Args {
+func ArgsFromStruct(s interface{}) *Args {
 	r := reflect.ValueOf(s)
 	// if it's a pointer, set the value of its pointer assets
 	if r.Kind() == reflect.Ptr {
@@ -17,7 +17,11 @@ func ArgsFromStruct(s interface{}) []*Args {
 	}
 	t := r.Type()
 
-	return parseFields(t)
+	return &Args{
+		Type:       ArgsTypeObject,
+		Name:       t.Name(),
+		Properties: parseFields(t),
+	}
 }
 
 func parseFields(t reflect.Type) []*Args {
