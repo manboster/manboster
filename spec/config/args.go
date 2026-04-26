@@ -19,6 +19,7 @@ type ArgsNode struct {
 	IsSecret            bool
 	Default             any
 	SingleOrMultiSelect bool // true is multi, false is single, only valid in array mode.
+	DisplayName         string
 	Arg                 *schema.Args
 	Children            []ArgsNode
 }
@@ -69,7 +70,8 @@ func setNested(m map[string]any, key string, val any) {
 	m[parts[len(parts)-1]] = val
 }
 
-// ToHuhGroup converts the args tree into a Form with huh groups.(Written by Manboster, powered by DeepSeek V4 Pro)
+// ToHuhGroup converts the args tree into a Form with huh groups.
+// (Partly written by Manboster, powered by DeepSeek V4 Pro)
 func (args *Args) ToHuhGroup() *Form {
 	form := &Form{
 		Groups: make([]*huh.Group, 0),
@@ -113,6 +115,10 @@ func collectGroups(nodes []ArgsNode, groups *[]*huh.Group, refs *[]valueRef, pre
 
 func toField(node ArgsNode, key string) (huh.Field, *valueRef) {
 	name := node.Arg.Name
+	displayName := node.DisplayName
+	if displayName == "" {
+		displayName = name
+	}
 	desc := node.Arg.Description
 
 	switch node.Arg.Type {
@@ -121,7 +127,7 @@ func toField(node ArgsNode, key string) (huh.Field, *valueRef) {
 		if s, ok := node.Default.(string); ok {
 			val = s
 		}
-		inp := huh.NewInput().Title(name).Description(desc).Value(&val)
+		inp := huh.NewInput().Title(displayName).Description(desc).Value(&val)
 		if node.IsSecret {
 			inp.EchoMode(huh.EchoModePassword)
 		}
@@ -207,8 +213,9 @@ func ArgsFromStruct(s interface{}) *Args {
 		}
 
 		node := ArgsNode{
-			Arg:      arg,
-			IsSecret: tag["secret"] == "true",
+			Arg:         arg,
+			IsSecret:    tag["secret"] == "true",
+			DisplayName: tag["name"],
 		}
 
 		if d := tag["default"]; d != "" {

@@ -10,7 +10,7 @@ import (
 
 // Config configures their Telegram bot.
 type Config struct {
-	BotToken string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required,secret,desc:Your Telegram Bot Token"` // Telegram requires your bot token to authenticate their server.
+	BotToken string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required,secret,name:Telegram Bot Token,desc:Your Telegram Bot Token"` // Telegram requires your bot token to authenticate their server.
 }
 
 // Args return args to write

@@ -15,9 +15,9 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey         string      `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required,secret,desc:Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one."` // your openrouter system's apikey
-	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model" manboconfig:"skip"`                                                                                                                                                 // your wanted model like anthropic/claude-sonnet-4.5
-	ID             int         `yaml:"id" json:"id" mapstructure:"id" manboconfig:"skip"`                                                                                                                                                          // if duplicate, what id it is?
+	ApiKey         string      `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required,secret,name:Your OpenRouter APIKey,desc:Your OpenRouter API Key.\nIf you don't have one please open https://openrouter.ai/workspaces/default/keys to create one."` // your openrouter system's apikey
+	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model" manboconfig:"skip"`                                                                                                                                                                            // your wanted model like anthropic/claude-sonnet-4.5
+	ID             int         `yaml:"id" json:"id" mapstructure:"id" manboconfig:"skip"`                                                                                                                                                                                     // if duplicate, what id it is?
 	inputModelData []string    // internal input keys
 }
 
