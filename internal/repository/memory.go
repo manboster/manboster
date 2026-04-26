@@ -81,7 +81,11 @@ func (repo *MemoryRepo) DeleteMemoryScope(ctx context.Context, key string, scope
 }
 
 func (repo *MemoryRepo) EditMemoryValue(ctx context.Context, key string, value string) error {
-	return repo.db.WithContext(ctx).Model(&dbtypes.Memory{}).Where("key = ?", key).Update("value", value).Error
+	resp := repo.db.WithContext(ctx).Model(&dbtypes.Memory{}).Where("key = ?", key).Update("value", value)
+	if resp.RowsAffected == 0 {
+		return ErrNotFound
+	}
+	return resp.Error
 }
 
 func (repo *MemoryRepo) DeleteMemory(ctx context.Context, key string) error {

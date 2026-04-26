@@ -15,7 +15,7 @@ func (c *Client) Instance() *gorm.DB {
 
 func (c *Client) Init(path string) error {
 	dbi, err := gorm.Open(sqlite.Open(path), &gorm.Config{
-		// Logger: logger.Default.LogMode(logger.Silent), // shut up, sir
+		//Logger: logger.Default.LogMode(logger.Silent), // shut up, sir
 	})
 	c.db = dbi
 	if err != nil {

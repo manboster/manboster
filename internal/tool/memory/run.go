@@ -1,4 +1,4 @@
-package datetime
+package memory
 
 import (
 	"context"
@@ -18,7 +18,12 @@ import (
 
 func (s *Service) Init(ctx context.Context) error {
 	if database.DBInstance != nil {
-		s.memDB = repository.NewMemoryRepo(database.DBInstance.Instance())
+		dbi := database.DBInstance.Instance()
+		err := dbi.AutoMigrate(dbtypes.Memory{})
+		if err != nil {
+			return err
+		}
+		s.memDB = repository.NewMemoryRepo(dbi)
 	} else {
 		// downgrade to memory storage
 		color.Yellow(fmt.Sprintf("[Manboster Tool] dev.manboster.memory downgraded to memory repository, this session's storage is not persistent!"))
@@ -43,7 +48,7 @@ func (s *Service) Start(ctx context.Context) error {
 
 func (s *Service) Run(ctx context.Context, args string) (string, error) {
 	arg := RunArgs{}
-	fmt.Println(args)
+	// fmt.Println(args)
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
 		case "get":

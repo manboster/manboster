@@ -1,4 +1,4 @@
-package datetime
+package memory
 
 import (
 	"github.com/manboster/manboster/internal/config"
