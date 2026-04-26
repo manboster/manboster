@@ -28,7 +28,7 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 		if errors.Is(err, chatdata.ErrNoNeedToCompact) {
 			text = "The context is too small now and there is no need to compact."
 		} else {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error when compacting message: %q", err))
+			color.Yellow(fmt.Sprintf("[Manboster Handler] We encountered an error when compacting message: %q", err))
 			text = "We encountered an error when compacting this session's message."
 		}
 		respMessage.MessageType = chat.MessageText

@@ -22,10 +22,10 @@ type Engine struct {
 	toolMaps       map[string]tool.Provider
 	config         *config.Config
 	repo           repository.Repository
-	commandHandler *command.Handler
-	handler        *handler.Handler
-	gateway        *gateway.Service
 
+	commandHandler   *command.Handler
+	handler          *handler.Handler
+	gateway          *gateway.Service
 	onboard          *onboard.Service
 	safeguardService *safeguard.Service
 	chatDataService  *chatdata.Service

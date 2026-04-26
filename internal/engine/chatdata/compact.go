@@ -128,13 +128,13 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		},
 	})
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster engine] Failed to create session in repository when compacting: %v", err))
+		color.Red(fmt.Sprintf("[Manboster ChatData] Failed to create session in repository when compacting: %v", err))
 		return err
 	}
 
 	err = s.repo.ReplaceChatSessions(ctx, sessionId, newSessionID)
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster engine] Failed to replace session in repository when compacting: %v", err))
+		color.Red(fmt.Sprintf("[Manboster ChatData] Failed to replace session in repository when compacting: %v", err))
 		return err
 	}
 

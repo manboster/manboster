@@ -50,6 +50,7 @@ func (e *Engine) Load(ctx context.Context) error {
 	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway)
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionManager, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
+	// version tips
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
 		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")
 		switch config.VersionType(config.CurrentVersion) {

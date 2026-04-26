@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -11,39 +12,24 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) LLMChat(ctx context.Context, p llm.Provider, m llm.Model, msgList []llm.Message) (*llm.Event, error) {
-	var err error = nil
+func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, currentModel llm.Model, msgList []llm.Message) (*llm.Event, error) {
 	var event = &llm.Event{}
-	// try 3 times
-	times := 3
-	// tries def
-	tries := 1
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
 
-	currentProvider := p
-	currentModel := m
-
-	for tries <= times {
-		if ctx.Err() != nil {
-			return nil, ctx.Err()
-		}
-
-		color.Blue(fmt.Sprintf("[Manboster Engine] Fetching message response from LLMProvider %q, model %q, try %d times", currentProvider.DisplayName(), currentModel.DisplayName, tries))
+	name := "llmChat_" + currentProvider.Name() + "_" + currentModel.Name + "_" + strconv.FormatInt(time.Now().Unix(), 10)
+	err := withRetry(ctx, name, 3, func(ctx context.Context) error {
+		color.Blue(fmt.Sprintf("[Manboster Gateway] Fetching message response from LLMProvider %q, model %q", currentProvider.DisplayName(), currentModel.DisplayName))
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+		defer cancel()
 
-		event, err = currentProvider.Chat(timeoutCtx, currentModel.Name, s.toolProviders, msgList)
+		var errChat error = nil
+		event, errChat = currentProvider.Chat(timeoutCtx, currentModel.Name, s.toolProviders, msgList)
 
-		cancel()
-
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %q, model %q after %d tries, get error: %q", currentProvider.DisplayName(), currentModel.DisplayName, tries, err))
-			time.Sleep(time.Second * time.Duration(tries+1))
-			tries++
-		} else {
-			color.Blue(fmt.Sprintf("[Manboster Engine] Got message feedback from LLMProvider %q, model %q", currentProvider.DisplayName(), currentModel.DisplayName))
-			break
-		}
-	}
+		return errChat
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +45,7 @@ func (s *Service) HandleLLMChatError(ctx context.Context, instance chat.Provider
 	llmProviderDisplayName := pName
 	llmModelDisplayName := mName
 
-	color.Red(fmt.Sprintf("[Manboster Engine] Failed to get message from LLMProvider %q, model %q, get error: %q", llmProviderDisplayName, llmModelDisplayName, err))
+	color.Red(fmt.Sprintf("[Manboster Gateway] Failed to get message from LLMProvider %q, model %q, get error: %q", llmProviderDisplayName, llmModelDisplayName, err))
 	// now we have to wrap this into friendly prompt
 	tips := fmt.Sprintf("%+v", err)
 	text := fmt.Sprintf("[Manboster] Failed to get message from LLMProvider %q, model %q, get error: %s\nYou can resend your message or check the API's availability.", llmProviderDisplayName, llmModelDisplayName, err)

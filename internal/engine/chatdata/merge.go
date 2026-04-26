@@ -44,7 +44,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 		if info.MessageType&(llm.MessageText|llm.MessageImage|llm.MessageFile) != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
 			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
+				color.Yellow(fmt.Sprintf("[Manboster ChatData] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
 			event.Message.Parts = msg.Parts
@@ -53,7 +53,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 		if info.MessageType&llm.MessageToolCallRequest != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
 			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
+				color.Yellow(fmt.Sprintf("[Manboster ChatData] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
 			event.Message.ToolCallRequest = msg.ToolCallRequest
@@ -61,7 +61,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 		if info.MessageType&llm.MessageToolCallResponse != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
 			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
+				color.Yellow(fmt.Sprintf("[Manboster ChatData] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
 			event.Message.ToolCallResponse = msg.ToolCallResponse
@@ -69,7 +69,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 		if info.MessageType&llm.MessageThinking != 0 {
 			err := json.Unmarshal([]byte(info.MessagePayload), &msg)
 			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while reading chat data payload from repository, error: %q", err))
+				color.Yellow(fmt.Sprintf("[Manboster ChatData] We encountered an error while reading chat data payload from repository, error: %q", err))
 			}
 			event.EventType |= llm.EventMessage
 			event.Message.Thinking = &llm.MessageThinkingPayload{

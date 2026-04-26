@@ -28,7 +28,7 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 		} else {
 			so, avail := s.soulMap[soul]
 			if !avail {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] soul %s not available", soul))
+				color.Yellow(fmt.Sprintf("[Manboster Soul] soul %s not available", soul))
 				continue
 			}
 			text.WriteString(so.Content + "\n")

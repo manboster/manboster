@@ -16,7 +16,7 @@ func (s *Service) UserType(ctx context.Context, name string, userId string) type
 	if err != nil {
 		// cause error!
 		if !errors.Is(err, repository.ErrNotFound) {
-			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while fetching user data from repository, error: %q", err))
+			color.Red(fmt.Sprintf("[Manboster Safeguard] We encountered an error while fetching user data from repository, error: %q", err))
 		}
 		return types.UserUnknown
 	}

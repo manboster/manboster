@@ -27,7 +27,7 @@ func (h *Handler) HandleText(ctx context.Context, instance chat.Provider, msg *c
 		}
 		err := h.gateway.SendMessage(ctx, instance, respMessage)
 		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
+			color.Yellow(fmt.Sprintf("[Manboster Handler] Error while sending message: %q\n", err))
 		}
 	}
 

@@ -228,7 +228,7 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 	if len(msg.Command.CommandArgs) == 0 {
 		sessionData, err := h.repo.GetSessions(ctx)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] we encountered an error when handling session data: %q", err))
+			color.Red(fmt.Sprintf("[Manboster Command Handler] we encountered an error when handling session data: %q", err))
 			respString.WriteString("An error was occurred when handling session data!")
 			respMessage.Text = &chat.TextPayload{
 				Text: respString.String(),
@@ -250,10 +250,10 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 	_, err := h.repo.GetSession(ctx, sid)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] we could not found any session id"))
+			color.Yellow(fmt.Sprintf("[Manboster Command Handler] we could not found any session id"))
 			respString.WriteString("The session id you entered does not exist!")
 		} else {
-			color.Red(fmt.Sprintf("[Manboster Engine] we encountered an error when getting session: %s", err))
+			color.Red(fmt.Sprintf("[Manboster Command Handler] we encountered an error when getting session: %s", err))
 			respString.WriteString("An error was occurred when getting session id you entered!")
 		}
 		respMessage.Text = &chat.TextPayload{
@@ -264,7 +264,7 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 
 	err = h.repo.UpdateChat(ctx, msg.ChatID, instance.Name(), sid)
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] we encountered an error when handling updating chat's session data: %q", err))
+		color.Red(fmt.Sprintf("[Manboster Command Handler] we encountered an error when handling updating chat's session data: %q", err))
 		respString.WriteString("An error was occurred when changing session id for this chat!")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
@@ -326,7 +326,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 	})
 	if err != nil {
 		respString.WriteString("An error was occurred when updating provider name for this session!")
-		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when updating provider name for this session: %q", err))
+		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when updating provider name for this session: %q", err))
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
@@ -368,7 +368,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
-		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when parsing data"))
+		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when parsing data"))
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -397,7 +397,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
-		color.Red(fmt.Sprintf("[Manboster Engine] An error was occurred when updating model name for this session: %q", err))
+		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when updating model name for this session: %q", err))
 		return instance.SendMessage(ctx, respMessage)
 	}
 

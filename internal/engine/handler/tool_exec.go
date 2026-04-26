@@ -12,7 +12,7 @@ func (h *Handler) HandleToolExec(ctx context.Context, name string, args string) 
 	if !avail {
 		return "", fmt.Errorf("there is no tool named %s", name)
 	}
-	color.Yellow(fmt.Sprintf("[Manboster Engine] Model called tool %q", toolProvider.DisplayName()))
+	color.Yellow(fmt.Sprintf("[Manboster Handler] Model called tool %q", toolProvider.DisplayName()))
 	respData, err := toolProvider.Run(ctx, args)
 	if err != nil {
 		return "", err

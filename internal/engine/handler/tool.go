@@ -30,7 +30,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			successExecution = true
 		}
 
-		color.Blue(fmt.Sprintf("[Manboster Engine] Tool call %s responded with response: %q", safeName, resp))
+		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded with response: %q", safeName, resp))
 
 		callMsg := msg.Clone()
 		callMsg.MessageType = chat.MessageText
@@ -55,7 +55,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 
 		err = h.gateway.SendMessage(ctx, instance, callMsg)
 		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] Error sending message: %s", err))
+			color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
 		}
 
 		respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{

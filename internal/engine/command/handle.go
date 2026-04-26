@@ -14,7 +14,7 @@ func (h *Handler) Handle(ctx context.Context, instance chat.Provider, msg *chat.
 	if msg.Command == nil {
 		return ErrInvalidParams
 	}
-	color.Blue(fmt.Sprintf("[Manboster Engine] Handling command... Received command: %s, args: %s", msg.Command.CommandType, msg.Command.CommandArgs))
+	color.Blue(fmt.Sprintf("[Manboster Command Handler] Handling command... Received command: %s, args: %s", msg.Command.CommandType, msg.Command.CommandArgs))
 
 	switch msg.Command.CommandType {
 	case chat.CommandVersion:
