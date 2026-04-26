@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/chat"
 	"gorm.io/gorm"
 )
 

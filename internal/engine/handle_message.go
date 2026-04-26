@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {

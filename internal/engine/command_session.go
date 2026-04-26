@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // cmdCancel enables user to cancel their request

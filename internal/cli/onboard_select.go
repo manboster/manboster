@@ -6,9 +6,9 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 func OnboardSelectLLMForm(ctx context.Context, llmProviders []llm.Provider, prompt string) (llm.Provider, error) {

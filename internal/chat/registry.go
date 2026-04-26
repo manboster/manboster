@@ -3,9 +3,11 @@ package chat
 import (
 	"fmt"
 	"sync"
+
+	chatType "github.com/manboster/manboster/spec/chat"
 )
 
-type ProviderFactory func() Provider
+type ProviderFactory func() chatType.Provider
 
 var (
 	providerRegistry = make(map[string]ProviderFactory)
@@ -23,7 +25,7 @@ func Register(name string, factory ProviderFactory) {
 }
 
 // GetProvider gets providers to users
-func GetProvider(name string) (Provider, error) {
+func GetProvider(name string) (chatType.Provider, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
@@ -45,10 +47,10 @@ func AvailProviders() []string {
 }
 
 // AllProviders gets all providers back
-func AllProviders() []Provider {
+func AllProviders() []chatType.Provider {
 	mu.RLock()
 	defer mu.RUnlock()
-	var list []Provider
+	var list []chatType.Provider
 	for p := range providerRegistry {
 		list = append(list, providerRegistry[p]())
 	}

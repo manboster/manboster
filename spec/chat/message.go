@@ -1,6 +1,8 @@
 package chat
 
-import "time"
+import (
+	"time"
+)
 
 // Message defines the universal definition of a provider's message standard.
 type Message struct {

@@ -1,13 +1,13 @@
 package loader
 
 import (
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 type Loader struct {

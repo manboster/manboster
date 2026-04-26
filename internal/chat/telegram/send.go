@@ -7,8 +7,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
 )
 

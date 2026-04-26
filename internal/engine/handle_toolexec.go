@@ -13,5 +13,13 @@ func (e *Engine) HandleToolExec(ctx context.Context, name string, args string) (
 		return "", fmt.Errorf("there is no tool named %s", name)
 	}
 	color.Yellow(fmt.Sprintf("[Manboster Engine] Model called tool %q", toolProvider.DisplayName()))
-	return toolProvider.Run(ctx, args)
+	respData, err := toolProvider.Run(ctx, args)
+	if err != nil {
+		return "", err
+	}
+	if !respData.Hangup {
+		return respData.Response, nil
+	}
+	// hangup process...
+	return "", nil
 }

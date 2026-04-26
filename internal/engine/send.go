@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // SendMessage builtin retries and wrapped in a single function.

@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, code int64) error {

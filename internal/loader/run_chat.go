@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // RunChat is a separate goroutine running for polling chats.

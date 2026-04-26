@@ -12,6 +12,7 @@ import (
 	dbtypes "github.com/manboster/manboster/internal/database/types"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/spec/plugin"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -46,18 +47,21 @@ func (s *Service) Start(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) Run(ctx context.Context, args string) (string, error) {
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
 	arg := RunArgs{}
 	// fmt.Println(args)
+	resp := &plugin.RunResponse{
+		Hangup: false,
+	}
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
 		case "get":
 			if arg.Key != "" {
 				memory, err := s.memDB.GetMemory(ctx, arg.Key)
 				if err != nil {
-					return "", fmt.Errorf("failed to get %q", arg.Key)
+					return nil, fmt.Errorf("failed to get %q", arg.Key)
 				}
-				return memory.Value, nil
+				resp.Response = memory.Value
 			}
 		case "set":
 			if arg.Key != "" && arg.Value != "" {
@@ -69,33 +73,38 @@ func (s *Service) Run(ctx context.Context, args string) (string, error) {
 					})
 				}
 				if err != nil {
-					return "", fmt.Errorf("failed to storage %q", arg.Key)
+					return nil, fmt.Errorf("failed to storage %q", arg.Key)
 				}
-				return "success", nil
+				resp.Response = "success"
 			}
 		case "delete":
 			if arg.Key != "" {
 				err := s.memDB.DeleteMemory(ctx, arg.Key)
 				if err != nil {
-					return "", fmt.Errorf("failed to delete %q", arg.Key)
+					return nil, fmt.Errorf("failed to delete %q", arg.Key)
 				}
-				return "success", nil
+				resp.Response = "success"
 			}
 		case "list":
 			keys, err := s.memDB.ListMemoryKeys(ctx)
 			if err != nil {
-				return "", fmt.Errorf("failed to list keys")
+				return nil, fmt.Errorf("failed to list keys")
 			}
 			jsonify, err := json.Marshal(keys)
 			if err != nil {
-				return "", fmt.Errorf("failed to marshal keys")
+				return nil, fmt.Errorf("failed to marshal keys")
 			}
-			return string(jsonify), nil
+			resp.Response = string(jsonify)
 		default:
-			return "", fmt.Errorf("unknown argument %q", arg.Name)
+			return nil, fmt.Errorf("unknown argument %q", arg.Name)
 		}
+		return resp, nil
 	}
-	return "", fmt.Errorf("invalid arguments")
+	return nil, fmt.Errorf("invalid arguments")
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
 }
 
 func (s *Service) Close() error {

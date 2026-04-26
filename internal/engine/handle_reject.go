@@ -3,7 +3,7 @@ package engine
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // HandleReject plays a reject role of the application

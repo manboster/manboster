@@ -6,12 +6,12 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider string) (string, error) {

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
 )
 

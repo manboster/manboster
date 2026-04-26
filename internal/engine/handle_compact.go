@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/engine/chatdata"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // HandleCompact compacts data

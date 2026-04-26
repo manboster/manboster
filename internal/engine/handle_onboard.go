@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // HandleOnBoard helps user tackle onboarding problems

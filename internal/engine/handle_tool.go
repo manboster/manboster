@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 func (e *Engine) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) (llm.Event, bool, error) {

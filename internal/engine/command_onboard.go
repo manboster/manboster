@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/manboster/manboster/internal/chat"
+	"github.com/manboster/manboster/spec/chat"
 )
 
 // cmdPair executes pair command

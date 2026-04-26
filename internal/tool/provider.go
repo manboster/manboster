@@ -1,7 +1,9 @@
 package tool
 
-import "github.com/manboster/manboster/spec/schema"
+import (
+	"github.com/manboster/manboster/spec/plugin"
+)
 
 type Provider interface {
-	schema.PluginProvider
+	plugin.Provider
 }
