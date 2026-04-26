@@ -23,28 +23,87 @@ type ArgsNode struct {
 	Children            []ArgsNode
 }
 
-// ToHuhGroup is written by Manboster, powered by DeepSeek V4 Pro.
-func (args *Args) ToHuhGroup() []*huh.Group {
-	groups := make([]*huh.Group, 0)
-	if args == nil {
-		return groups
-	}
-	collectGroups(args.Nodes, &groups)
-	return groups
+// Form holds the huh groups and a Collect function to retrieve filled values.
+type Form struct {
+	Groups []*huh.Group
+	refs   []valueRef
 }
 
-func collectGroups(nodes []ArgsNode, groups *[]*huh.Group) {
+type valueRef struct {
+	key string
+	ptr any // *string, *bool, *[]string
+}
+
+// Collect returns all filled values as a nested map, suitable for mapstructure.
+func (f *Form) Collect() map[string]any {
+	result := make(map[string]any)
+	for _, ref := range f.refs {
+		var v any
+		switch p := ref.ptr.(type) {
+		case *string:
+			v = *p
+		case *bool:
+			v = *p
+		case *[]string:
+			v = *p
+		}
+		setNested(result, ref.key, v)
+	}
+	return result
+}
+
+func setNested(m map[string]any, key string, val any) {
+	parts := strings.Split(key, ".")
+	for i := 0; i < len(parts)-1; i++ {
+		existing, ok := m[parts[i]]
+		if ok {
+			if nested, ok := existing.(map[string]any); ok {
+				m = nested
+				continue
+			}
+		}
+		newMap := make(map[string]any)
+		m[parts[i]] = newMap
+		m = newMap
+	}
+	m[parts[len(parts)-1]] = val
+}
+
+// ToHuhGroup converts the args tree into a Form with huh groups.(Written by Manboster, powered by DeepSeek V4 Pro)
+func (args *Args) ToHuhGroup() *Form {
+	form := &Form{
+		Groups: make([]*huh.Group, 0),
+		refs:   make([]valueRef, 0),
+	}
+	if args == nil {
+		return form
+	}
+	collectGroups(args.Nodes, &form.Groups, &form.refs, "")
+	return form
+}
+
+func collectGroups(nodes []ArgsNode, groups *[]*huh.Group, refs *[]valueRef, prefix string) {
 	fields := make([]huh.Field, 0)
 	for _, node := range nodes {
 		if node.Arg == nil {
 			continue
 		}
+		key := node.Arg.Name
+		if prefix != "" {
+			key = prefix + "." + key
+		}
+
 		if node.Arg.Type == schema.ArgsTypeObject && len(node.Children) > 0 {
-			collectGroups(node.Children, groups)
+			collectGroups(node.Children, groups, refs, key)
 			continue
 		}
-		if f := toField(node); f != nil {
+
+		f, ref := toField(node, key)
+		if f != nil {
 			fields = append(fields, f)
+		}
+		if ref != nil {
+			*refs = append(*refs, *ref)
 		}
 	}
 	if len(fields) > 0 {
@@ -52,13 +111,13 @@ func collectGroups(nodes []ArgsNode, groups *[]*huh.Group) {
 	}
 }
 
-func toField(node ArgsNode) huh.Field {
+func toField(node ArgsNode, key string) (huh.Field, *valueRef) {
 	name := node.Arg.Name
 	desc := node.Arg.Description
 
 	switch node.Arg.Type {
 	case schema.ArgsTypeString:
-		var val string
+		val := ""
 		if s, ok := node.Default.(string); ok {
 			val = s
 		}
@@ -66,23 +125,25 @@ func toField(node ArgsNode) huh.Field {
 		if node.IsSecret {
 			inp.EchoMode(huh.EchoModePassword)
 		}
-		return inp
+		return inp, &valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeInt32, schema.ArgsTypeUInt32,
 		schema.ArgsTypeInt64, schema.ArgsTypeUInt64,
 		schema.ArgsTypeFloat:
-		var val string
+		val := ""
 		if node.Default != nil {
 			val = fmt.Sprintf("%v", node.Default)
 		}
-		return huh.NewInput().Title(name).Description(desc).Value(&val)
+		return huh.NewInput().Title(name).Description(desc).Value(&val),
+			&valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeBool:
-		var val bool
+		val := false
 		if b, ok := node.Default.(bool); ok {
 			val = b
 		}
-		return huh.NewConfirm().Title(name).Description(desc).Value(&val)
+		return huh.NewConfirm().Title(name).Description(desc).Value(&val),
+			&valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeArray:
 		if node.Arg.IsEnum && len(node.Arg.Enum) > 0 {
@@ -91,22 +152,25 @@ func toField(node ArgsNode) huh.Field {
 				opts[i] = huh.NewOption(fmt.Sprintf("%v", v), fmt.Sprintf("%v", v))
 			}
 			if node.SingleOrMultiSelect {
-				var vals []string
+				vals := make([]string, 0)
 				return huh.NewMultiSelect[string]().
-					Title(name).Description(desc).Options(opts...).Value(&vals)
+						Title(name).Description(desc).Options(opts...).Value(&vals),
+					&valueRef{key: key, ptr: &vals}
 			}
-			var val string
+			val := ""
 			return huh.NewSelect[string]().
-				Title(name).Description(desc).Options(opts...).Value(&val)
+					Title(name).Description(desc).Options(opts...).Value(&val),
+				&valueRef{key: key, ptr: &val}
 		}
-		var val string
+		val := ""
 		if node.Default != nil {
 			val = fmt.Sprintf("%v", node.Default)
 		}
-		return huh.NewInput().Title(name).Description(desc).Value(&val)
+		return huh.NewInput().Title(name).Description(desc).Value(&val),
+			&valueRef{key: key, ptr: &val}
 
 	default:
-		return nil
+		return nil, nil
 	}
 }
 
