@@ -36,6 +36,7 @@ func (l *Loader) Load(ctx context.Context) error {
 	}
 	l.db = dbi
 	repo := repository.New(dbi.Instance())
+	database.DBInstance = dbi
 	l.repo = repo
 
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing LLM Providers..."))

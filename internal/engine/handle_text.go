@@ -99,20 +99,23 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			break
 		}
 
-		// handle text message
-		if event != nil && event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
-			// add model cost
-			util.CalculateCost(event, m)
+		// write the whole event immediately
+		e.sessionManager.AppendEvent(sessionId, *event)
+		msgList = append(msgList, *event.Message)
 
+		// add model cost
+		util.CalculateCost(event, m)
+		err = e.chatDataService.Write(ctx, *event, sessionId)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
+		}
+
+		// handle text message
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil && len(event.Message.Parts) > 0 {
 			text := event.Message.Parts[0].Text.Text
 			// fmt.Println(text)
 			textWithoutThinking := util.StripThink(text)
 			// fmt.Println(textWithoutThinking)
-			e.sessionManager.AppendEvent(sessionId, *event)
-			err := e.chatDataService.Write(ctx, *event, sessionId)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
-			}
 
 			// If there is a thinking context
 			if util.ExtractThinkContent(text) != "" {
@@ -136,14 +139,12 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			}
 		}
 
-		if event != nil && event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest == 0 {
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest == 0 {
 			break
 		}
 
 		// handling tool call request
-		if event != nil && event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest != 0 {
-			e.sessionManager.AppendEvent(sessionId, *event)
-			msgList = append(msgList, *event.Message)
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest != 0 {
 			var respEvent llm.Event
 			respEvent.EventType = llm.EventMessage
 			respEvent.Message = &llm.Message{
@@ -152,23 +153,23 @@ func (e *Engine) HandleText(ctx context.Context, instance chat.Provider, msg *ch
 			}
 			for _, req := range event.Message.ToolCallRequest {
 				resp := ""
-				unsafeName := strings.ReplaceAll(req.ToolName, "_", ".")
-				resp, err = e.HandleToolExec(ctx, unsafeName, req.ToolArgs.(string))
+				safeName := strings.ReplaceAll(req.ToolName, "_", ".")
+				resp, err = e.HandleToolExec(ctx, safeName, req.ToolArgs.(string))
 				if err != nil {
 					resp = err.Error()
 				}
-
+				color.Blue(fmt.Sprintf("[Manboster Engine] Tool call %s responded with response: %q", safeName, resp))
 				callMsg := msg.Clone()
 				callMsg.MessageType = chat.MessageText
-
-				toolProvider, av := e.toolMaps[unsafeName]
+				toolProvider, av := e.toolMaps[safeName]
+				callMsg.Reply = nil
 				if !av {
 					callMsg.Text = &chat.TextPayload{
-						Text: fmt.Sprintf("Model called `%s`, but not found.", unsafeName),
+						Text: fmt.Sprintf("Model called tool `%s` but not found.", safeName),
 					}
 				} else {
 					callMsg.Text = &chat.TextPayload{
-						Text: fmt.Sprintf("Model called %s(`%s`)!", toolProvider.DisplayName(), unsafeName),
+						Text: fmt.Sprintf("Model called tool `%s`(`%s`)!", toolProvider.DisplayName(), safeName),
 					}
 				}
 				err = e.SendMessage(ctx, instance, callMsg)

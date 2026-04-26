@@ -3,7 +3,6 @@ package database
 import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 type Client struct {
@@ -16,7 +15,7 @@ func (c *Client) Instance() *gorm.DB {
 
 func (c *Client) Init(path string) error {
 	dbi, err := gorm.Open(sqlite.Open(path), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent), // shut up, sir
+		// Logger: logger.Default.LogMode(logger.Silent), // shut up, sir
 	})
 	c.db = dbi
 	if err != nil {
@@ -30,3 +29,5 @@ func (c *Client) Init(path string) error {
 
 	return nil
 }
+
+var DBInstance *Client
