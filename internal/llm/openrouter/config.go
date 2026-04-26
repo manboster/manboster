@@ -9,34 +9,21 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/llm"
 )
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey string `yaml:"api_key" json:"api_key" mapstructure:"api_key"` // your openrouter system's apikey
-	// BaseURL string `yaml:"base_url"` // this is fixed so you don't need to enter it.
-	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model"` // your wanted model like anthropic/claude-sonnet-4.5
-	ID             int         `yaml:"id" json:"id" mapstructure:"id"`          // if duplicate, what id it is?
+	ApiKey         string      `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required,secret,desc:Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one."` // your openrouter system's apikey
+	Model          []llm.Model `yaml:"model" json:"model" mapstructure:"model" manboconfig:"skip"`                                                                                                                                                 // your wanted model like anthropic/claude-sonnet-4.5
+	ID             int         `yaml:"id" json:"id" mapstructure:"id" manboconfig:"skip"`                                                                                                                                                          // if duplicate, what id it is?
 	inputModelData []string    // internal input keys
 }
 
-// ToHuhGroup enables configuration go ahead.
-func (c *Config) ToHuhGroup() []*huh.Group {
-	var modelOptions []huh.Option[string]
-	for _, m := range Models() {
-		modelOptions = append(modelOptions, huh.NewOption(m.DisplayName, m.Name))
-	}
-	modelOptions = append(modelOptions, huh.NewOption("Other Model", "_CustomModel_"))
-
-	return []*huh.Group{
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
-				modelOptions...,
-			).Value(&c.inputModelData),
-			huh.NewInput().Title("Your OpenRouter API Key").Description("Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.").EchoMode(huh.EchoModePassword).Value(&c.ApiKey),
-		),
-	}
+// Args returns args from struct Config
+func (c *Config) Args() *config.Args {
+	return config.ArgsFromStruct(Config{})
 }
 
 // GetConfig returns its own struct.
@@ -44,8 +31,23 @@ func (c *Config) GetConfig() any {
 	return c
 }
 
-// VerifyAndConvert ensures configuration is valid.
-func (c *Config) VerifyAndConvert(ctx context.Context) error {
+// Setup runs its first run
+func (c *Config) Setup(ctx context.Context) error {
+	var modelOptions []huh.Option[string]
+	for _, m := range Models() {
+		modelOptions = append(modelOptions, huh.NewOption(m.DisplayName, m.Name))
+	}
+	modelOptions = append(modelOptions, huh.NewOption("Other Model", "_CustomModel_"))
+
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
+				modelOptions...,
+			).Value(&c.inputModelData))).Run()
+	if err != nil {
+		return err
+	}
+
 	if len(c.inputModelData) == 0 {
 		return ErrModelNameRequired
 	}

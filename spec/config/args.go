@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -16,24 +15,25 @@ type Args struct {
 }
 
 type ArgsNode struct {
-	IsSecret bool
-	Default  any
-	Arg      *schema.Args
-	Children []ArgsNode
+	IsSecret            bool
+	Default             any
+	SingleOrMultiSelect bool // true is multi, false is single, only valid in array mode.
+	Arg                 *schema.Args
+	Children            []ArgsNode
 }
 
 func (args *Args) ToHuhGroup() *huh.Group {
 	return &huh.Group{}
 }
 
-// ArgsFromStruct TODO:
-func ArgsFromStruct(s interface{}) (*Args, error) {
+// ArgsFromStruct builds args from a struct
+func ArgsFromStruct(s interface{}) *Args {
 	v := reflect.ValueOf(s)
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
 	if v.Kind() != reflect.Struct {
-		return nil, fmt.Errorf("expected struct, got %s", v.Kind())
+		return nil
 	}
 
 	t := v.Type()
@@ -45,8 +45,11 @@ func ArgsFromStruct(s interface{}) (*Args, error) {
 			continue
 		}
 
-		tag := parseTag(field.Tag.Get("mbt"))
+		tag := parseTag(field.Tag.Get("manboconfig"))
 		name := jsonName(field)
+		if tag["skip"] == "true" {
+			continue
+		}
 
 		arg := &schema.Args{
 			Name:        name,
@@ -65,14 +68,16 @@ func ArgsFromStruct(s interface{}) (*Args, error) {
 		}
 
 		if field.Type.Kind() == reflect.Struct {
-			child, _ := ArgsFromStruct(v.Field(i).Interface())
-			node.Children = child.Nodes
+			child := ArgsFromStruct(v.Field(i).Interface())
+			if child != nil {
+				node.Children = child.Nodes
+			}
 		}
 
 		nodes = append(nodes, node)
 	}
 
-	return &Args{Nodes: nodes, Index: buildIndex(nodes)}, nil
+	return &Args{Nodes: nodes, Index: buildIndex(nodes)}
 }
 
 func parseTag(tag string) map[string]string {

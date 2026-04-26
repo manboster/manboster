@@ -10,32 +10,26 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config/model"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/llm"
 	"github.com/sashabaranov/go-openai"
 )
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key"`    // your apikey
-	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url"` // this is dynamic when you choose oai_compat systems
-	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model"`          // your wanted model's information like anthropic/claude-sonnet-4.5
-	Headers             map[string]string `json:"headers" mapstructure:"headers" yaml:"headers"`
-	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name"`
-	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name"`
+	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key" manboconfig:"required,secret,desc:Your API Key.\nIf you don't have one, please go to your provider's API Key manage page and create one."` // your apikey
+	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url" manboconfig:"required,desc:The URL used to call API.\nIf you don't have one, please head to your provider and ask for it."`             // this is dynamic when you choose oai_compat systems
+	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model" manboconfig:"skip"`                                                                                                                              // your wanted model's information like anthropic/claude-sonnet-4.5
+	Headers             map[string]string `json:"headers" mapstructure:"headers" yaml:"headers" manboconfig:"skip"`
+	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name" manboconfig:"required,desc:The name of your provider\nYou can enter what you want, but no spaces in your string."`
+	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name" manboconfig:"required,desc:The name that will display on your application, if you don't know what's this, please leave it empty."`
 }
 
 const CustomModel = "__CustomModel__"
 
-// ToHuhGroup enables configuration go ahead.
-func (c *Config) ToHuhGroup() []*huh.Group {
-	return []*huh.Group{
-		huh.NewGroup(
-			huh.NewInput().Title("Provider Name").Description("The name of your provider\nYou can enter what you want, but no spaces in your string.").Value(&c.ProviderName),
-			huh.NewInput().Title("Provider Display Name").Description("The name that will display on your application, if you don't know what's this, please leave it empty.").Value(&c.ProviderDisplayName),
-			huh.NewInput().Title("API Site URL").Description("The URL used to call API.\nIf you don't have one, please head to your provider and ask for it.").Value(&c.BaseURL),
-			huh.NewInput().Title("API Key").Description("Your API Key.\nIf you don't have one, please go to your provider's API Key manage page and create one.").EchoMode(huh.EchoModePassword).Value(&c.ApiKey),
-		),
-	}
+// Args returns args which configuration go ahead.
+func (c *Config) Args() *config.Args {
+	return config.ArgsFromStruct(Config{})
 }
 
 // GetConfig returns itself directly to the app.
@@ -60,7 +54,7 @@ func (c *Config) DisplayName() string {
 	return "OpenAI compatible API"
 }
 
-func (c *Config) VerifyAndConvert(ctx context.Context) error {
+func (c *Config) Setup(ctx context.Context) error {
 	if c.ProviderDisplayName == "" {
 		c.ProviderDisplayName = c.ProviderName
 	}

@@ -1,33 +1,21 @@
 package telegram
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
-	"github.com/charmbracelet/huh"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/config"
 )
 
 // Config configures their Telegram bot.
 type Config struct {
-	BotToken string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token"` // Telegram requires your bot token to authenticate their server.
+	BotToken string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required,secret,desc:Your Telegram Bot Token"` // Telegram requires your bot token to authenticate their server.
 }
 
-// ToHuhGroup enables configuration go ahead.
-func (c *Config) ToHuhGroup() []*huh.Group {
-	return []*huh.Group{
-		huh.NewGroup(
-			huh.NewInput().Title("Telegram Bot Token").Description("Your Telegram Bot's token.\nIf you don't have any, please open your Telegram, search @BotFather and create one.").EchoMode(huh.EchoModePassword).Value(&c.BotToken)),
-	}
-}
-
-// VerifyAndConvert helps to convert internal string ru to RootUser int64 type.
-func (c *Config) VerifyAndConvert(ctx context.Context) error {
-	if c.BotToken == "" {
-		return errors.New("bot token is required")
-	}
-	return nil
+// Args return args to write
+func (c *Config) Args() *config.Args {
+	return config.ArgsFromStruct(Config{})
 }
 
 // Validate validates configuration data
