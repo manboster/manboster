@@ -23,7 +23,7 @@ func GetProvider(name string) (Provider, error) {
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("llm: unknown provider %q (did you forget to import it?)", name)
+		return nil, fmt.Errorf("hachimi: unknown provider %q (did you forget to import it?)", name)
 	}
 	return factory(), nil
 }

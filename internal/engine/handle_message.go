@@ -116,15 +116,15 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
-	err = nil
-	switch msg.MessageType {
-	case chat.MessageText:
-		err = e.HandleText(cancelCtx, instance, msg, sessionId)
-	case chat.MessageCommand:
-		err = e.HandleCommand(cancelCtx, instance, msg, sessionId)
-	default:
-		color.Yellow("[Manboster Engine] Ignoring message from unknown type.")
-	}
+	err = e.Handler(cancelCtx, instance, msg, sessionId)
+	//switch msg.MessageType {
+	//case chat.MessageText:
+	//	err = e.HandleText(cancelCtx, instance, msg, sessionId)
+	//case chat.MessageCommand:
+	//	err = e.HandleCommand(cancelCtx, instance, msg, sessionId)
+	//default:
+	//	color.Yellow("[Manboster Engine] Ignoring message from unknown type.")
+	//}
 
 	if err != nil {
 		err := instance.Notify(ctx, msg, chat.ActionError)
