@@ -9,7 +9,7 @@ import (
 
 // RunOnboardConfig runs provider and gets config result
 func RunOnboardConfig(ctx context.Context, provider config.Provider) (any, error) {
-	err := huh.NewForm(provider.ToHuhGroup()...).Run()
+	err := huh.NewForm(provider.Args().ToHuhGroup()...).Run()
 	if err != nil {
 		return nil, err
 	}

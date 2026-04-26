@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -22,8 +23,92 @@ type ArgsNode struct {
 	Children            []ArgsNode
 }
 
-func (args *Args) ToHuhGroup() *huh.Group {
-	return &huh.Group{}
+// ToHuhGroup is written by Manboster, powered by DeepSeek V4 Pro.
+func (args *Args) ToHuhGroup() *[]huh.Group {
+	groups := make([]huh.Group, 0)
+	if args == nil {
+		return &groups
+	}
+	collectGroups(args.Nodes, &groups)
+	return &groups
+}
+
+func collectGroups(nodes []ArgsNode, groups *[]huh.Group) {
+	fields := make([]huh.Field, 0)
+	for _, node := range nodes {
+		if node.Arg == nil {
+			continue
+		}
+		// Object 有子节点时递归处理，子节点自成一组
+		if node.Arg.Type == schema.ArgsTypeObject && len(node.Children) > 0 {
+			collectGroups(node.Children, groups)
+			continue
+		}
+		if f := toField(node); f != nil {
+			fields = append(fields, f)
+		}
+	}
+	if len(fields) > 0 {
+		*groups = append(*groups, *huh.NewGroup(fields...))
+	}
+}
+
+func toField(node ArgsNode) huh.Field {
+	name := node.Arg.Name
+	desc := node.Arg.Description
+
+	switch node.Arg.Type {
+	case schema.ArgsTypeString:
+		var val string
+		if s, ok := node.Default.(string); ok {
+			val = s
+		}
+		inp := huh.NewInput().Title(name).Description(desc).Value(&val)
+		if node.IsSecret {
+			inp.EchoMode(huh.EchoModePassword)
+		}
+		return inp
+
+	case schema.ArgsTypeInt32, schema.ArgsTypeUInt32,
+		schema.ArgsTypeInt64, schema.ArgsTypeUInt64,
+		schema.ArgsTypeFloat:
+		var val string
+		if node.Default != nil {
+			val = fmt.Sprintf("%v", node.Default)
+		}
+		return huh.NewInput().Title(name).Description(desc).Value(&val)
+
+	case schema.ArgsTypeBool:
+		var val bool
+		if b, ok := node.Default.(bool); ok {
+			val = b
+		}
+		return huh.NewConfirm().Title(name).Description(desc).Value(&val)
+
+	case schema.ArgsTypeArray:
+		if node.Arg.IsEnum && len(node.Arg.Enum) > 0 {
+			opts := make([]huh.Option[string], len(node.Arg.Enum))
+			for i, v := range node.Arg.Enum {
+				opts[i] = huh.NewOption(fmt.Sprintf("%v", v), fmt.Sprintf("%v", v))
+			}
+			if node.SingleOrMultiSelect {
+				var vals []string
+				return huh.NewMultiSelect[string]().
+					Title(name).Description(desc).Options(opts...).Value(&vals)
+			}
+			var val string
+			return huh.NewSelect[string]().
+				Title(name).Description(desc).Options(opts...).Value(&val)
+		}
+		var val string
+		if node.Default != nil {
+			val = fmt.Sprintf("%v", node.Default)
+		}
+		return huh.NewInput().Title(name).Description(desc).Value(&val)
+
+	default:
+		return nil
+	}
 }
 
 // ArgsFromStruct builds args from a struct
