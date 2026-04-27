@@ -14,9 +14,8 @@ import (
 	"github.com/manboster/manboster/internal/loader"
 	"github.com/spf13/cobra"
 
-	_ "github.com/manboster/manboster/internal/chat/telegram"
-	_ "github.com/manboster/manboster/internal/llm/oai_compat"
-	_ "github.com/manboster/manboster/internal/llm/openrouter"
+	_ "github.com/manboster/manboster/internal/chat/all"
+	_ "github.com/manboster/manboster/internal/llm/all"
 )
 
 // main is the entrypoint function that when user runs 'manboster'.

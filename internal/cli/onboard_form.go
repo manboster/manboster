@@ -8,11 +8,10 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
-	_ "github.com/manboster/manboster/internal/chat/telegram"
+	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
-	_ "github.com/manboster/manboster/internal/llm/oai_compat"
-	_ "github.com/manboster/manboster/internal/llm/openrouter"
+	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/tool"
 	_ "github.com/manboster/manboster/internal/tool/all"
 )
