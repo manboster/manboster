@@ -8,8 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/tool"
 
-	_ "github.com/manboster/manboster/internal/tool/datetime"
-	_ "github.com/manboster/manboster/internal/tool/memory"
+	_ "github.com/manboster/manboster/internal/tool/all"
 )
 
 func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Provider, error) {
