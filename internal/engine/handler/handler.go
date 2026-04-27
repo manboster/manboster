@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/manboster/manboster/internal/engine/chatdata"
+	"github.com/manboster/manboster/internal/engine/gatekeeper"
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/repository"
@@ -18,9 +19,10 @@ type Handler struct {
 	toolMaps                map[string]tool.Provider
 	gateway                 *gateway.Service
 	selectionSessionManager *selection.Manager
+	gatekeeperService       *gatekeeper.Service
 }
 
-func NewHandler(repo repository.Repository, llmProviders map[string]llm.Provider, chatDataService *chatdata.Service, onboardService *onboard.Service, toolMaps map[string]tool.Provider, gatewayService *gateway.Service, selectionSessionManager *selection.Manager) *Handler {
+func NewHandler(repo repository.Repository, llmProviders map[string]llm.Provider, chatDataService *chatdata.Service, onboardService *onboard.Service, toolMaps map[string]tool.Provider, gatewayService *gateway.Service, selectionSessionManager *selection.Manager, gatekeeperService *gatekeeper.Service) *Handler {
 	return &Handler{
 		repo:                    repo,
 		llmProviders:            llmProviders,
@@ -29,5 +31,6 @@ func NewHandler(repo repository.Repository, llmProviders map[string]llm.Provider
 		toolMaps:                toolMaps,
 		gateway:                 gatewayService,
 		selectionSessionManager: selectionSessionManager,
+		gatekeeperService:       gatekeeperService,
 	}
 }

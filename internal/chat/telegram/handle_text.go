@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/spec/chat"
@@ -18,14 +17,7 @@ func (s *Service) HandleText(ctx context.Context, c telebot.Context, onMsg func(
 
 	color.Cyan("[Manboster Telegram Provider] Got a text message.")
 
-	// define things all we know.
-	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)
-	msg.Username = c.Sender().FirstName + " " + c.Sender().LastName
-	msg.ChatName = c.Chat().Title // Only Group available
-	msg.UserID = fmt.Sprintf("%d", c.Sender().ID)
-	msg.ChatID = fmt.Sprintf("%d", c.Chat().ID)
-	msg.CreatedAt = time.Now()
-	msg.Provider = s.Name()
+	s.msgBaseParser(msg, c)
 
 	// check whether replies available or not
 	if c.Message().ReplyTo != nil {

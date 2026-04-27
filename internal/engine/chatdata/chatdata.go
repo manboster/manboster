@@ -12,7 +12,7 @@ type Service struct {
 	llmProviders   map[string]llm.Provider
 }
 
-func New(repo repository.Repository, sessionManager *chat_session.Manager, providers map[string]llm.Provider) *Service {
+func NewService(repo repository.Repository, sessionManager *chat_session.Manager, providers map[string]llm.Provider) *Service {
 	return &Service{
 		repo:           repo,
 		sessionManager: sessionManager,

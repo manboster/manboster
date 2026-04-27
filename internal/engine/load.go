@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/command"
+	"github.com/manboster/manboster/internal/engine/gatekeeper"
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
@@ -28,10 +29,10 @@ func (e *Engine) Load(ctx context.Context) error {
 		e.onboard = onboard.New()
 	}
 
-	e.chatDataService = chatdata.New(e.repo, e.sessionManager.ChatSession, e.llmProviders)
-	e.safeguardService = safeguard.New(e.repo)
+	e.chatDataService = chatdata.NewService(e.repo, e.sessionManager.ChatSession, e.llmProviders)
+	e.safeguardService = safeguard.NewService(e.repo)
 
-	e.soulService = soul.New(e.repo)
+	e.soulService = soul.NewService(e.repo)
 	err = e.soulService.Init(ctx)
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to initialize soul service: %q", err))
@@ -45,9 +46,9 @@ func (e *Engine) Load(ctx context.Context) error {
 			fmt.Printf("[Manboster Engine] Duplicate tool '%s'! The next one will be ignored.\n", tool.Name())
 		}
 	}
-	e.gateway = gateway.NewService(e.toolProviders)
-
-	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway)
+	e.gateway = gateway.NewService(e.toolProviders, e.sessionManager.SelectionManager)
+	e.gatekeeperService = gatekeeper.NewService(e.gateway)
+	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionManager.SelectionManager, e.gatekeeperService)
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionManager, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
 	// version tips

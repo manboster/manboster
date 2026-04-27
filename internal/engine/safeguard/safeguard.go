@@ -6,8 +6,8 @@ type Service struct {
 	repo repository.Repository
 }
 
-// New create a safeguard instance
-func New(repo repository.Repository) *Service {
+// NewService create a safeguard instance
+func NewService(repo repository.Repository) *Service {
 	return &Service{
 		repo: repo,
 	}

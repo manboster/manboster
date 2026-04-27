@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
@@ -72,4 +73,15 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 		}
 	}
 	return nil
+}
+
+func (s *Service) msgBaseParser(msg *chat.Message, c telebot.Context) {
+	// define things all we know.
+	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)
+	msg.Username = c.Sender().FirstName + " " + c.Sender().LastName
+	msg.ChatName = c.Chat().Title // Only Group available
+	msg.UserID = fmt.Sprintf("%d", c.Sender().ID)
+	msg.ChatID = fmt.Sprintf("%d", c.Chat().ID)
+	msg.CreatedAt = time.Now()
+	msg.Provider = s.Name()
 }

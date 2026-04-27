@@ -10,7 +10,7 @@ type Service struct {
 	soulMap map[string]types.Soul
 }
 
-func New(repo repository.Repository) *Service {
+func NewService(repo repository.Repository) *Service {
 	return &Service{
 		repo:    repo,
 		soulMap: make(map[string]types.Soul),

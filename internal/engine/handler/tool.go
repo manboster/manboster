@@ -23,48 +23,80 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 	}
 
 	for _, req := range event.Message.ToolCallRequest {
-		resp := ""
+		originalName := req.ToolName
 		safeName := strings.ReplaceAll(req.ToolName, "_", ".")
-		resp, err := h.HandleToolExec(ctx, safeName, fmt.Sprintf("%v", req.ToolArgs))
-		if err != nil {
-			resp = err.Error()
-		} else {
-			successExecution = true
-		}
-
-		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded with response: %q", safeName, resp))
+		req.ToolName = safeName
 
 		callMsg := msg.Clone()
 		callMsg.MessageType = chat.MessageText
 		callMsg.Reply = nil
 
-		toolProvider, av := h.toolMaps[safeName]
-		if !av {
+		toolProvider, avail := h.toolMaps[req.ToolName]
+		if !avail {
+			color.Red(fmt.Sprintf("[Manboster Engine] There is no tool named %q", req.ToolName))
 			callMsg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("Model called tool `%s` but not found.", safeName),
 			}
+			err := h.gateway.SendMessage(ctx, instance, callMsg)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
+			}
+
+			respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{
+				ID:       req.ID,
+				ToolName: req.ToolName,
+				Result:   fmt.Sprintf("there is no tool named %q", originalName),
+			})
+			continue
+		}
+		isOK, err := h.gatekeeperService.HachimiGuard(ctx, instance, msg, toolProvider, req)
+		if !isOK {
+			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
+			callMsg.Text = &chat.TextPayload{
+				Text: fmt.Sprintf("Gatekeeper Rejected the call `%s`.", req.ToolName),
+			}
+			e := h.gateway.SendMessage(ctx, instance, callMsg)
+			if e != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
+			}
+
+			respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{
+				ID:       req.ID,
+				ToolName: req.ToolName,
+				Result:   fmt.Sprintf("Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err),
+			})
+			continue
+		}
+
+		resp := ""
+		resp, err = h.HandleToolExec(ctx, toolProvider, fmt.Sprintf("%v", req.ToolArgs))
+		if err != nil {
+			resp = err.Error()
 		} else {
-			if successExecution {
-				txt := fmt.Sprintf("Model called tool `%s`(`%s`) ", toolProvider.DisplayName(), safeName)
+			successExecution = true
+		}
+		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded with response: %q", safeName, resp))
 
-				var result map[string]interface{}
-				err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
-				if err != nil {
-					color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
-				}
-				params := util.JSONParse(result)
-				if params != "" {
-					txt += fmt.Sprintf("with params: %s", params)
-				}
-				txt += "."
+		if successExecution {
+			txt := fmt.Sprintf("Model called tool `%s`(`%s`) ", toolProvider.DisplayName(), safeName)
 
-				callMsg.Text = &chat.TextPayload{
-					Text: txt,
-				}
-			} else {
-				callMsg.Text = &chat.TextPayload{
-					Text: fmt.Sprintf("Model called tool `%s`(`%s`) but returned error: %q.", toolProvider.DisplayName(), safeName, err),
-				}
+			var result map[string]interface{}
+			err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
+			if err != nil {
+				color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
+			}
+			params := util.JSONParse(result)
+			if params != "" {
+				txt += fmt.Sprintf("with params: %s", params)
+			}
+			txt += "."
+
+			callMsg.Text = &chat.TextPayload{
+				Text: txt,
+			}
+		} else {
+			callMsg.Text = &chat.TextPayload{
+				Text: fmt.Sprintf("Model called tool `%s`(`%s`) but returned error: %q.", toolProvider.DisplayName(), safeName, err),
 			}
 		}
 
