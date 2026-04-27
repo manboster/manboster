@@ -109,7 +109,9 @@ func collectGroups(nodes []ArgsNode, groups *[]*huh.Group, refs *[]valueRef, pre
 		}
 	}
 	if len(fields) > 0 {
-		*groups = append(*groups, huh.NewGroup(fields...))
+		for _, field := range fields {
+			*groups = append(*groups, huh.NewGroup(field))
+		}
 	}
 }
 

@@ -8,14 +8,12 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
+	_ "github.com/manboster/manboster/internal/chat/telegram"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
-	"github.com/manboster/manboster/internal/tool"
-	"github.com/manboster/manboster/internal/util"
-
-	_ "github.com/manboster/manboster/internal/chat/telegram"
 	_ "github.com/manboster/manboster/internal/llm/oai_compat"
 	_ "github.com/manboster/manboster/internal/llm/openrouter"
+	"github.com/manboster/manboster/internal/tool"
 	_ "github.com/manboster/manboster/internal/tool/datetime"
 	_ "github.com/manboster/manboster/internal/tool/memory"
 )
@@ -82,31 +80,28 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 
 	// Step 4: See what's entered and start to write configuration.
 	confDescription := strings.Builder{}
-	confDescription.WriteString("You need to review what you have entered. \n")
-	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster config'.\n")
+	confDescription.WriteString("# Before you proceed, you need to review what you have entered. \n")
+	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster onboard'.\n")
 
-	confDescription.WriteString(fmt.Sprintf("You configured %d chat providers\n", len(c.Chats)))
+	confDescription.WriteString(fmt.Sprintf("You configured %d chat providers\n\n", len(c.Chats)))
 	for i, _ := range c.Chats {
-		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration:\n %s\n", i+1, c.Chats[i].Provider, c.Chats[i].Configuration))
+		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration:\n\n %s\n\n", i+1, c.Chats[i].Provider, c.Chats[i].Configuration))
 	}
 
-	confDescription.WriteString(fmt.Sprintf("You configured %d llm providers\n", len(c.LLMs)))
+	confDescription.WriteString(fmt.Sprintf("You configured %d llm providers\n\n", len(c.LLMs)))
 	for i, _ := range c.LLMs {
-		confDescription.WriteString(fmt.Sprintf("#%d's Configuration: \n%s \n", i+1, c.LLMs[i].Configuration))
+		confDescription.WriteString(fmt.Sprintf("#%d's Configuration: \n\n%s \n\n", i+1, c.LLMs[i].Configuration))
 	}
 
-	confDescription.WriteString(fmt.Sprintf("You configured %d tool providers\n", len(c.Tools)))
+	confDescription.WriteString(fmt.Sprintf("You configured %d tool providers\n\n", len(c.Tools)))
 	for i, _ := range c.Tools {
-		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration: \n%s \n", i+1, c.Tools[i].Name, c.Tools[i].Configuration))
+		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration: \n\n%s \n\n", i+1, c.Tools[i].Name, c.Tools[i].Configuration))
 	}
 
-	confDescription.WriteString("If there is no problem, you can press enter and we will work on it.\n")
-	confDesc := util.EscapeMarkdown(confDescription.String())
+	confDescription.WriteString("If there is no problem, you can continue writing the configuration.\n\n")
+	confDesc := confDescription.String()
 
-	err = huh.NewNote().
-		Title("Before you proceed...").
-		Description(confDesc).
-		Next(true).Run()
+	err = OnboardConfirmForm(ctx, confDesc, "Do you want to continue?", "Continue")
 	if err != nil {
 		return c, err
 	}
