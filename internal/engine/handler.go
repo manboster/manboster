@@ -14,6 +14,14 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	color.Blue("[Manboster Engine] Handling message")
 	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
+	if msg.MessageType == chat.MessageSelectionCallback {
+		err := e.handler.HandleSelectionCallback(ctx, instance, msg)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling selection callback message via %s, error: %q", displayName, err))
+		}
+		return
+	}
+
 	if msg.MessageType == chat.MessageCommand && chat.IsPublicCommand(msg.Command.CommandType) {
 		err := e.commandHandler.Handle(ctx, instance, msg, "")
 		if err != nil {

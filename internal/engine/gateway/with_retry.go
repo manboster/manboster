@@ -10,6 +10,7 @@ import (
 
 func withRetry(ctx context.Context, name string, times int, action func(ctx context.Context) error) error {
 	var err error
+
 	for tries := 1; tries <= times; tries++ {
 		if ctx.Err() != nil {
 			return ctx.Err()

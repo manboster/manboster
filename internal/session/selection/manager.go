@@ -7,13 +7,15 @@ import (
 )
 
 type Manager struct {
-	SelectionLocks map[string]*sync.Mutex
-	Selection      map[string]*chat.Message
+	SelectionLock *sync.Mutex
+	Selection     map[string]*chat.Message
+	SelectionChan map[string]chan *chat.Message
 }
 
 func New() *Manager {
 	return &Manager{
-		SelectionLocks: make(map[string]*sync.Mutex),
-		Selection:      make(map[string]*chat.Message),
+		SelectionLock: &sync.Mutex{},
+		Selection:     make(map[string]*chat.Message),
+		SelectionChan: make(map[string]chan *chat.Message),
 	}
 }

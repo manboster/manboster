@@ -4,6 +4,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/command"
+	"github.com/manboster/manboster/internal/engine/gatekeeper"
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
@@ -23,13 +24,14 @@ type Engine struct {
 	config         *config.Config
 	repo           repository.Repository
 
-	commandHandler   *command.Handler
-	handler          *handler.Handler
-	gateway          *gateway.Service
-	onboard          *onboard.Service
-	safeguardService *safeguard.Service
-	chatDataService  *chatdata.Service
-	soulService      *soul.Service
+	commandHandler    *command.Handler
+	handler           *handler.Handler
+	gateway           *gateway.Service
+	onboard           *onboard.Service
+	safeguardService  *safeguard.Service
+	chatDataService   *chatdata.Service
+	soulService       *soul.Service
+	gatekeeperService *gatekeeper.Service
 }
 
 func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, toolProviders []tool.Provider) (*Engine, error) {
