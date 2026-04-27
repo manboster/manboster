@@ -28,7 +28,7 @@ func (e *Engine) Load(ctx context.Context) error {
 		e.onboard = onboard.New()
 	}
 
-	e.chatDataService = chatdata.New(e.repo, e.sessionManager, e.llmProviders)
+	e.chatDataService = chatdata.New(e.repo, e.sessionManager.ChatSession, e.llmProviders)
 	e.safeguardService = safeguard.New(e.repo)
 
 	e.soulService = soul.New(e.repo)

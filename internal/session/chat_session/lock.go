@@ -1,6 +1,8 @@
-package session
+package chat_session
 
-import "sync"
+import (
+	"sync"
+)
 
 func (m *Manager) GetSessionLocks(sid string) *sync.Mutex {
 	m.Lock.Lock()

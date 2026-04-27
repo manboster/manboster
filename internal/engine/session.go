@@ -8,7 +8,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
-	"github.com/manboster/manboster/internal/session"
+	"github.com/manboster/manboster/internal/session/chat_session"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -27,7 +27,7 @@ func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider str
 		return "", err
 	}
 	// set a new session
-	e.sessionManager.SetSession(sessionId, session.Session{
+	e.sessionManager.ChatSession.SetSession(sessionId, chat_session.Session{
 		Model:    e.config.App.DefaultLLMModel,
 		Provider: e.config.App.DefaultLLMProvider,
 		Events:   []llm.Event{},
@@ -51,7 +51,7 @@ func (e *Engine) newSession(ctx context.Context, msg *chat.Message, provider str
 // loadSession helps Manboster Engine get sessionId, preparing for the message handler
 func (e *Engine) loadSession(ctx context.Context, instance chat.Provider, msg *chat.Message, isAdmin bool) (string, error) {
 	lockerID := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
-	chatLock := e.sessionManager.GetSessionChatLocks(lockerID)
+	chatLock := e.sessionManager.Chat.GetSessionChatLocks(lockerID)
 
 	var sessionId string
 	chatLock.Lock()

@@ -83,7 +83,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	// TODO: replace it to channel queue
-	lock := e.sessionManager.GetSessionLocks(sessionId)
+	lock := e.sessionManager.ChatSession.GetSessionLocks(sessionId)
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -91,9 +91,9 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	cancelCtx, cancel := context.WithCancel(ctx)
 	defer func(sid string) {
 		cancel()
-		e.sessionManager.Deactivate(sid)
+		e.sessionManager.ChatSession.Deactivate(sid)
 	}(sessionId)
-	e.sessionManager.Activate(sessionId, cancel)
+	e.sessionManager.ChatSession.Activate(sessionId, cancel)
 
 	// we need to read model and provider.
 	sessInfo, err := e.repo.GetSession(ctx, sessionId)
@@ -101,8 +101,8 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
 		return
 	}
-	e.sessionManager.SetModel(sessInfo.SessionID, sessInfo.LLMProvider, sessInfo.LLMProviderModel)
-	e.sessionManager.SetSoul(sessionId, sessInfo.ActivatedSouls)
+	e.sessionManager.ChatSession.SetModel(sessInfo.SessionID, sessInfo.LLMProvider, sessInfo.LLMProviderModel)
+	e.sessionManager.ChatSession.SetSoul(sessionId, sessInfo.ActivatedSouls)
 
 	// then we begin to read latest messages database storages
 	chatDataInfo, err := e.repo.GetChatData(ctx, sessionId)

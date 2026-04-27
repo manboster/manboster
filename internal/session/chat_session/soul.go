@@ -1,4 +1,4 @@
-package session
+package chat_session
 
 func (m *Manager) SetSoul(sid string, soul []string) {
 	m.Lock.Lock()

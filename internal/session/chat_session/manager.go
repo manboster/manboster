@@ -1,12 +1,12 @@
-package session
+package chat_session
 
 import (
 	"fmt"
 	"sync"
 )
 
-// NewManager creates a session manager instance.
-func NewManager() *Manager {
+// New creates a session manager instance.
+func New() *Manager {
 	return &Manager{
 		Sessions:     make(map[string]Session),
 		Lock:         sync.RWMutex{},

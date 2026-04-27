@@ -1,4 +1,4 @@
-package session
+package chat_session
 
 // SetModel sets model information of a session
 func (m *Manager) SetModel(sid string, provider string, model string) {
