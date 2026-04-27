@@ -17,7 +17,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func (s *Service) Init(ctx context.Context) error {
+func (s *Service) Init(ctx context.Context, cfg any) error {
 	if database.DBInstance != nil {
 		dbi := database.DBInstance.Instance()
 		err := dbi.AutoMigrate(dbtypes.Memory{})

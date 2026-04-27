@@ -8,6 +8,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
+	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/chat"
 	llmType "github.com/manboster/manboster/spec/llm"
 )
@@ -131,4 +132,35 @@ func OnboardSelectModelForm(ctx context.Context, models []llmType.Model, prompt 
 		}
 	}
 	return llmType.Model{}, fmt.Errorf("no such model %s", model)
+}
+
+func OnboardSelectToolForm(ctx context.Context, toolProviders []tool.Provider, title string, prompt string) ([]tool.Provider, error) {
+	var toolOptions []huh.Option[string]
+	toolsMap := map[string]tool.Provider{}
+
+	for _, toolData := range toolProviders {
+		toolsMap[toolData.Name()] = toolData
+
+		display := fmt.Sprintf("%s\n%s", toolData.DisplayName(), toolData.Name())
+		option := huh.NewOption(display, toolData.Name())
+		toolOptions = append(toolOptions, option)
+	}
+	var tools []string
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().Title(title).Description(prompt).
+				Options(toolOptions...).Value(&tools),
+		)).Run()
+	if err != nil || tools == nil {
+		return nil, err
+	}
+
+	var respTool []tool.Provider
+	for _, toolName := range tools {
+		if t, ok := toolsMap[toolName]; ok {
+			respTool = append(respTool, t)
+		}
+	}
+
+	return respTool, nil
 }

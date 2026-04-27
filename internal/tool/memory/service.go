@@ -3,6 +3,7 @@ package memory
 import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/repository"
+	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -34,4 +35,8 @@ func (s *Service) MetaData() schema.MetaData {
 
 func (s *Service) Requires() []schema.RequirementData {
 	return metadata.Requires
+}
+
+func (s *Service) Config() configType.Provider {
+	return nil
 }

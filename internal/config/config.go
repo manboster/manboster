@@ -5,6 +5,7 @@ type Config struct {
 	Version int16        `yaml:"version" mapstructure:"version" json:"version"` // version data, used for migration.
 	Chats   []ChatConfig `yaml:"chats" mapstructure:"chats" json:"chats"`       // chat configurations
 	LLMs    []LLMConfig  `yaml:"llms" mapstructure:"llms" json:"llms"`          // LLM configurations
+	Tools   []ToolConfig `yaml:"tools" mapstructure:"tools" json:"tools"`       // Tool configurations
 	App     AppConfig    `yaml:"app" mapstructure:"app" json:"app"`             // APP specific configurations
 }
 
@@ -25,4 +26,10 @@ type AppConfig struct {
 	DBPath             string `yaml:"dbpath" mapstructure:"dbpath" json:"dbpath"`                                           // SQLite's path
 	DefaultLLMProvider string `yaml:"default_llm_provider" mapstructure:"default_llm_provider" json:"default_llm_provider"` // default llm provider
 	DefaultLLMModel    string `yaml:"default_llm_model" mapstructure:"default_llm_model" json:"default_llm_model"`          // default model
+}
+
+// ToolConfig is configuration available to tool(local), plugin(external).
+type ToolConfig struct {
+	Name          string `yaml:"name" mapstructure:"name" json:"name"`
+	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration"`
 }

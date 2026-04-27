@@ -45,14 +45,3 @@ func AvailProviders() []string {
 	}
 	return list
 }
-
-// Providers gets all available providers in provider type form.
-func Providers() []Provider {
-	mu.RLock()
-	defer mu.RUnlock()
-	var list []Provider
-	for _, p := range providerRegistry {
-		list = append(list, p())
-	}
-	return list
-}

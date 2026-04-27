@@ -5,17 +5,23 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/tool"
 
 	_ "github.com/manboster/manboster/internal/tool/datetime"
 	_ "github.com/manboster/manboster/internal/tool/memory"
 )
 
-func LoadToolCallProviders(ctx context.Context) ([]tool.Provider, error) {
-	toolCallProviders := tool.Providers()
-	for _, provider := range toolCallProviders {
+func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Provider, error) {
+	var toolCallProviders []tool.Provider
+	for _, conf := range cfg.Tools {
+		provider, err := tool.GetProvider(conf.Name)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while loading tool call provider %q: %q", provider.DisplayName(), err))
+			continue
+		}
 		color.Blue(fmt.Sprintf("[Manboster Loader] Loading tool call provider %q...", provider.DisplayName()))
-		err := provider.Init(ctx)
+		err = provider.Init(ctx, conf.Configuration)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while loading tool call provider %q: %q", provider.DisplayName(), err))
 			continue
@@ -26,7 +32,7 @@ func LoadToolCallProviders(ctx context.Context) ([]tool.Provider, error) {
 				color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while polling tool call provider %q: %q", provider.DisplayName(), err))
 			}
 		}()
-
+		toolCallProviders = append(toolCallProviders, provider)
 		// str, _ := json.MarshalIndent(provider.Args(), "", " ")
 		// fmt.Printf("%s", string(str))
 	}

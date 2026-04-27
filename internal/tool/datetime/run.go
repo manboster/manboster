@@ -9,7 +9,7 @@ import (
 	"github.com/manboster/manboster/spec/plugin"
 )
 
-func (s *Service) Init(ctx context.Context) error {
+func (s *Service) Init(ctx context.Context, cfg any) error {
 	return nil
 }
 

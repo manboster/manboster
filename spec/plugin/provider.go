@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 
+	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -13,9 +14,10 @@ type Provider interface {
 	MetaData() schema.MetaData                                          // get the metadata of the plugin
 	Requires() []schema.RequirementData                                 // get the requirement type of plugin
 	Args() *schema.Args                                                 // get args description from the plugin
-	Init(ctx context.Context) error                                     // initialize the plugin
+	Init(ctx context.Context, conf any) error                           // initialize the plugin
 	Start(ctx context.Context) error                                    // if long polling, it would work
 	Run(ctx context.Context, args string) (*RunResponse, error)         // passthrough by JSON
 	Continue(ctx context.Context, session string) (*RunResponse, error) // continue to do, avoid to interrupt
+	Config() config.Provider                                            // if config.Provider is nil, it means there is no need to configure.
 	Close() error                                                       // force stop
 }

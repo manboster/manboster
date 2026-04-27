@@ -59,7 +59,7 @@ func (l *Loader) Load(ctx context.Context) error {
 
 	// load enabled tool call
 	color.Blue("[Manboster Loader] Loaded Tool Call Providers...")
-	tool, err := LoadToolCallProviders(ctx)
+	tool, err := LoadToolCallProviders(ctx, l.cfg)
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to load Tool Call Providers: %q", err))
 	}
