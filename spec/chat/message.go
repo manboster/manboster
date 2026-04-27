@@ -42,6 +42,9 @@ const (
 	MessageSelection
 )
 
+const MessageTextAndImage = MessageText | MessageImage
+const MessageTextImageAndFile = MessageTextAndImage | MessageFile
+
 // Build gives a builder of Message
 func (*Message) Build(provider Provider) *Message {
 	return &Message{

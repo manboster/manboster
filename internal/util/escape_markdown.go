@@ -55,6 +55,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		// hr
 		"<hr />", "\n—————\n",
 		"<hr>", "\n—————\n",
+		"<hr/>", "\n—————\n",
 		// titles
 		"<h1>", "<b>", "</h1>", "</b>",
 		"<h2>", "<b>", "</h2>", "</b>",

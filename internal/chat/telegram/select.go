@@ -10,6 +10,9 @@ import (
 
 // Select give user a plenty of selections and wait for them to reply.
 func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Message) error {
+	if message.MessageType&(chat.MessageSelection|chat.MessageTextImageAndFile) == 0 {
+		return ErrInvalidMessageType
+	}
 	menu := &telebot.ReplyMarkup{}
 
 	recp, err := recipientParser(message.ChatID)

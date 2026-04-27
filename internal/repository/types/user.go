@@ -25,6 +25,17 @@ func (u UserType) String() string {
 	}
 }
 
+func UserTypeFromString(s string) UserType {
+	switch s {
+	case "admin":
+		return UserAdmin
+	case "root":
+		return UserRoot
+	default:
+		return UserUnknown
+	}
+}
+
 type User struct {
 	ID        uint64
 	UserID    string
