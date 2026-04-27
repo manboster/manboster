@@ -15,29 +15,9 @@ func (m *Manager) GetSessionLocks(sid string) *sync.Mutex {
 	return s
 }
 
-func (m *Manager) GetSessionChatLocks(sid string) *sync.Mutex {
-	m.Lock.Lock()
-	defer m.Lock.Unlock()
-
-	s, avail := m.SessionChatLocks[sid]
-	if !avail || s == nil {
-		m.SessionChatLocks[sid] = &sync.Mutex{}
-		return m.SessionChatLocks[sid]
-	}
-
-	return s
-}
-
 func (m *Manager) DeleteSessionLocks(sid string) {
 	m.Lock.Lock()
 	defer m.Lock.Unlock()
 
 	delete(m.SessionLocks, sid)
-}
-
-func (m *Manager) DeleteSessionChatLocks(sid string) {
-	m.Lock.Lock()
-	defer m.Lock.Unlock()
-
-	delete(m.SessionChatLocks, sid)
 }
