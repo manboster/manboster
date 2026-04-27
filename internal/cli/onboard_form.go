@@ -143,16 +143,17 @@ func OnboardToolConfigForm(ctx context.Context, tools []tool.Provider) ([]config
 
 	var toolConfigs []config.ToolConfig
 	for _, provider := range providers {
+		var conf any
 		if provider.Config() != nil {
-			conf, err := RunOnboardConfig(ctx, provider.Config())
+			conf, err = RunOnboardConfig(ctx, provider.Config())
 			if err != nil {
 				return nil, err
 			}
-			toolConfigs = append(toolConfigs, config.ToolConfig{
-				Name:          provider.Name(),
-				Configuration: conf,
-			})
 		}
+		toolConfigs = append(toolConfigs, config.ToolConfig{
+			Name:          provider.Name(),
+			Configuration: conf,
+		})
 	}
 
 	return toolConfigs, nil

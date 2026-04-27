@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
@@ -80,7 +81,12 @@ func (c *Config) Setup(ctx context.Context) error {
 
 // String is used to print sth.
 func (c *Config) String() string {
-	return fmt.Sprintf("API Key: %s, Model: %+v", util.MaskSecret(c.ApiKey), c.Model)
+	var b strings.Builder
+	for _, m := range c.Model {
+		b.WriteString(m.DisplayName + " ")
+	}
+	return fmt.Sprintf("API Key: %s\nmodels(%d): %s", util.MaskSecret(c.ApiKey), len(c.Model), b.String())
+
 }
 
 func (c *Config) Name() string {

@@ -141,7 +141,9 @@ func OnboardSelectToolForm(ctx context.Context, toolProviders []tool.Provider, t
 	for _, toolData := range toolProviders {
 		toolsMap[toolData.Name()] = toolData
 
-		display := fmt.Sprintf("%s\n%s", toolData.DisplayName(), toolData.Name())
+		display := fmt.Sprintf("*%s*\n%s", toolData.DisplayName(), toolData.MetaData().Description)
+		// to check the compatibility...
+
 		option := huh.NewOption(display, toolData.Name())
 		toolOptions = append(toolOptions, option)
 	}
