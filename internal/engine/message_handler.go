@@ -115,9 +115,11 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 
 		// add model cost
 		util.CalculateCost(event, m)
-		err = e.chatDataService.Write(ctx, *event, sessionId)
-		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
+		if event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest == 0 {
+			err = e.chatDataService.Write(ctx, *event, sessionId)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
+			}
 		}
 
 		// handle text message
@@ -158,6 +160,11 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 			e.sessionManager.ChatSession.AppendEvent(sessionId, respEvent)
 			msgList = append(msgList, *respEvent.Message)
 
+			// it should be written with tool req and tool resp.
+			err = e.chatDataService.Write(ctx, *event, sessionId)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, respMessage.ChatID, instance.Name(), err))
+			}
 			// in order to avoid complexity?
 			err = e.chatDataService.Write(ctx, respEvent, sessionId)
 			if err != nil {
