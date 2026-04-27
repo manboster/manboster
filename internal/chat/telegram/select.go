@@ -30,7 +30,7 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 		btn := menu.Data(slc.Name, slc.Value, sessionId)
 		btns = append(btns, btn)
 	}
-	menu.Inline(menu.Split(1, btns)...)
+	menu.Inline(menu.Split(2, btns)...)
 
 	// send menu selection
 	send, err := s.tgInstance.Send(recp, message.Text.Text, &telebot.SendOptions{

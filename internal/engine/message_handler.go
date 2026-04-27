@@ -147,7 +147,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				repeatFingerPrint = strings.Join(toolNameArgs, "%")
 			}
 
-			respEvent, successExecution, err := e.handler.HandleToolCall(ctx, instance, msg, *event)
+			respEvent, successExecution, err := e.handler.HandleToolCall(ctx, instance, msg, *event, sessionId)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
 			}

@@ -13,8 +13,13 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-// HachimiGuard is core component of Manboster gatekeeper service.
-func (s *Service) HachimiGuard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload) (bool, error) {
+// Guard is core component of Manboster gatekeeper service.
+func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
+	ud := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.UserID, sid)
+	if s.ignoranceSessionManager.GetIgnoreMark(ud) {
+		// run hachimi here...
+		return true, nil
+	}
 	txt := fmt.Sprintf("Model want to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
@@ -37,7 +42,7 @@ func (s *Service) HachimiGuard(ctx context.Context, instance chat.Provider, msg 
 			Value: "cancel",
 		},
 		{
-			Name:  "Don't disturb me in this session",
+			Name:  "Continue and don't disturb me in this session",
 			Value: "hachimi",
 		},
 	}
@@ -56,6 +61,14 @@ func (s *Service) HachimiGuard(ctx context.Context, instance chat.Provider, msg 
 		return false, fmt.Errorf("failed to get select result: %v", err)
 	}
 	if resp.SelectionCallback != nil {
+		id := fmt.Sprintf("%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid)
+		fmt.Println(id)
+		fmt.Println(s.ignoranceSessionManager.GetIgnoreMark(id))
+		if s.ignoranceSessionManager.GetIgnoreMark(id) {
+			// run hachimi here...
+			return true, nil
+		}
+
 		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
 		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
 		fmt.Printf("%s %s", minPermission, uPermission)
@@ -65,7 +78,9 @@ func (s *Service) HachimiGuard(ctx context.Context, instance chat.Provider, msg 
 
 		switch resp.SelectionCallback.SelectionValue {
 		case "hachimi":
-		// TODO: hachimi automatically score
+			// TODO: hachimi automatically score
+			s.ignoranceSessionManager.SetIgnoreMark(id, true)
+			return true, nil
 		case "continue":
 			return true, nil
 		case "cancel":

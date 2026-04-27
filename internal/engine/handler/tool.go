@@ -12,7 +12,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event) (llm.Event, bool, error) {
+func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string) (llm.Event, bool, error) {
 	successExecution := false
 
 	var respEvent llm.Event
@@ -49,7 +49,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			})
 			continue
 		}
-		isOK, err := h.gatekeeperService.HachimiGuard(ctx, instance, msg, toolProvider, req)
+		isOK, err := h.gatekeeperService.Guard(ctx, instance, msg, toolProvider, req, sid)
 		if !isOK {
 			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
 			callMsg.Text = &chat.TextPayload{
