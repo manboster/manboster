@@ -53,7 +53,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		if !isOK {
 			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
 			callMsg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("Gatekeeper Rejected the call `%s`.", req.ToolName),
+				Text: fmt.Sprintf("Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err.Error()),
 			}
 			e := h.gateway.SendMessage(ctx, instance, callMsg)
 			if e != nil {

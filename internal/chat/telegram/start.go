@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/fatih/color"
@@ -18,15 +17,12 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 		return ErrBotTokenRequired
 	}
 
-	stopDone := make(chan struct{}, 1) // make a channel to align with
-
 	// set the bot and start it.
 	settings := telebot.Settings{
 		Token:  s.cfg.BotToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, c telebot.Context) {
 			color.Red("[Manboster Telegram Provider] We encountered an error: %q", err)
-			stopDone <- struct{}{}
 		},
 	}
 
@@ -41,8 +37,6 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 		select {
 		case <-ctx.Done():
 			color.Yellow("[Manboster Telegram Provider] Context cancelled, shutting down...")
-			s.tgInstance.Stop()
-		case <-stopDone:
 			s.tgInstance.Stop()
 		}
 	}()
@@ -60,8 +54,6 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 	select {
 	case <-ctx.Done():
 		return nil
-	case <-stopDone:
-		return errors.New("telegram provider is facing an problem")
 	}
 }
 

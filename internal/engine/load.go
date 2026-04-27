@@ -47,7 +47,7 @@ func (e *Engine) Load(ctx context.Context) error {
 		}
 	}
 	e.gateway = gateway.NewService(e.toolProviders, e.sessionManager.SelectionManager)
-	e.gatekeeperService = gatekeeper.NewService(e.gateway)
+	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService)
 	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionManager.SelectionManager, e.gatekeeperService)
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionManager, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
@@ -55,6 +56,13 @@ func (s *Service) HachimiGuard(ctx context.Context, instance chat.Provider, msg 
 		return false, fmt.Errorf("failed to get select result: %v", err)
 	}
 	if resp.SelectionCallback != nil {
+		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
+		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
+		fmt.Printf("%s %s", minPermission, uPermission)
+		if uPermission < minPermission {
+			return false, fmt.Errorf("user access denied")
+		}
+
 		switch resp.SelectionCallback.SelectionValue {
 		case "hachimi":
 		// TODO: hachimi automatically score

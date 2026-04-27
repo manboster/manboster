@@ -7,6 +7,7 @@ type TextPayload struct {
 type SelectionCallbackPayload struct {
 	SelectionSessionId string // Optional. Required when MessageType = MessageSelectionCallback, it should have a value.
 	SelectionValue     string // Optional. Required when MessageType = MessageSelectionCallback, it should be the value of the selection.
+	SelectionBy        string // Optional. Required when MessageType = MessageSelectionCallback, it should be the actor of the callback.
 }
 
 type SelectionPayload struct {
