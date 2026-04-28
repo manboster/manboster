@@ -86,7 +86,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Deleted session `%s` and created session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid),
+		Text: fmt.Sprintf("Deleted session `%s` and created session: `%s` with default provider `%s` and model `%s`.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid, h.config.App.DefaultLLMProvider, h.config.App.DefaultLLMModel),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
