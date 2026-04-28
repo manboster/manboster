@@ -1,4 +1,4 @@
-package search
+package browser
 
 import "github.com/manboster/manboster/spec/config"
 

@@ -2,6 +2,7 @@ package datetime
 
 import (
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/engine/hook"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -39,3 +40,5 @@ func (s *Service) Requires() []schema.RequirementData {
 func (s *Service) Config() configType.Provider {
 	return nil
 }
+
+func (s *Service) RegisterHook(registry *hook.Registry) {}

@@ -1,4 +1,4 @@
-package template
+package system
 
 import (
 	"github.com/manboster/manboster/internal/config"
@@ -8,12 +8,12 @@ import (
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.template",
-	DisplayName:      "Tool Template",
-	Description:      "This is a template of tool call, you can copy and paste its code.",
+	Name:             "dev.manboster.system",
+	DisplayName:      "System Info Tool",
+	Description:      "System Info Tool can get system information and current running status.",
 	MinEngineVersion: config.APILevel,
-	AppVersion:       "0.0.0",
-	APIVersion:       -1,
+	AppVersion:       "0.0.1",
+	APIVersion:       1,
 	Requires:         nil,
 	MinUserType:      "",
 }
