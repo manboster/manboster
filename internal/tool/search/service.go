@@ -1,26 +1,23 @@
-package memory_md
+package search
 
 import (
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.memory.md",
-	DisplayName:      "Memory Markdown Tools",
-	Description:      "Memory Markdown Tools allows you to read and write user-specific markdown file in maximum of 16KB, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
+	Name:             "dev.manboster.browser",
+	DisplayName:      "Manboster Web Browser Tool",
+	Description:      "Manboster Web Browser Tool gives unlimited ability for models to search for the Internet, capture webpages, surfing the Internet or download files. Also, you can use CloudFlare's browser use to proxy in order to hide real IP.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,
-	MinUserType:      "admin",
+	MinUserType:      "",
 }
 
-type Service struct {
-	memDB repository.MemoryRepository
-}
+type Service struct{}
 
 func (s *Service) Name() string {
 	return metadata.Name
@@ -39,5 +36,5 @@ func (s *Service) Requires() []schema.RequirementData {
 }
 
 func (s *Service) Config() configType.Provider {
-	return nil
+	return &Config{}
 }

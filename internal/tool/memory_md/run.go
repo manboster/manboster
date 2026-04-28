@@ -48,6 +48,9 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 			}
 			resp.Response = string(data)
 		case "set":
+			if len([]byte(arg.Value)) > 16384 {
+				return nil, fmt.Errorf("failed to write: markdown entity too large")
+			}
 			err := os.WriteFile(path, []byte(arg.Value), 0644)
 			if err != nil {
 				return nil, fmt.Errorf("failed to write file %s: %w", path, err)
