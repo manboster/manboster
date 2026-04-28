@@ -62,8 +62,8 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	}
 	if resp.SelectionCallback != nil {
 		id := fmt.Sprintf("%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid)
-		fmt.Println(id)
-		fmt.Println(s.ignoranceSessionManager.GetIgnoreMark(id))
+		// fmt.Println(id)
+		// fmt.Println(s.ignoranceSessionManager.GetIgnoreMark(id))
 		if s.ignoranceSessionManager.GetIgnoreMark(id) {
 			// run hachimi here...
 			return true, nil
@@ -71,7 +71,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
 		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
-		fmt.Printf("%s %s", minPermission, uPermission)
+		// fmt.Printf("%s %s", minPermission, uPermission)
 		if uPermission < minPermission {
 			return false, fmt.Errorf("user access denied")
 		}

@@ -72,6 +72,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		valueCtx := context.WithValue(ctx, "chat_id", msg.ChatID)
 		valueCtx = context.WithValue(valueCtx, "user_id", msg.UserID)
 		valueCtx = context.WithValue(valueCtx, "chat_provider", instance.Name())
+		valueCtx = context.WithValue(valueCtx, "session_id", sid)
 
 		resp, err = h.HandleToolExec(valueCtx, toolProvider, fmt.Sprintf("%v", req.ToolArgs))
 		if err != nil {

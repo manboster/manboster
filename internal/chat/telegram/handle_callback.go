@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -17,8 +16,8 @@ func (s *Service) HandleCallback(ctx context.Context, c telebot.Context, onMsg f
 	msg = msg.Build(&Service{})
 	color.Blue("[Manboster Telegram Provider] Received a callback")
 	s.msgBaseParser(msg, c)
-	jsonify, _ := json.MarshalIndent(c.Callback(), "", " ")
-	fmt.Println(string(jsonify))
+	//jsonify, _ := json.MarshalIndent(c.Callback(), "", " ")
+	//fmt.Println(string(jsonify))
 
 	d := c.Callback().Data
 	if strings.Contains(d, "\f") {
@@ -37,6 +36,13 @@ func (s *Service) HandleCallback(ctx context.Context, c telebot.Context, onMsg f
 				color.Yellow("[Manboster Telegram Provider] Failed to delete reply message")
 			}
 			// c.DeleteAfter(30 * time.Second)
+			err = s.tgInstance.Respond(c.Callback(), &telebot.CallbackResponse{
+				CallbackID: c.Callback().ID,
+				Text:       "Manboster Processing...",
+			})
+			if err != nil {
+				return err
+			}
 			onMsg(msg)
 		} else {
 			color.Yellow("[Manboster Telegram Provider] Could not parse callback data message")

@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/manboster/manboster/spec/chat"
@@ -40,7 +39,7 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 		return err
 	}
 	message.MessageID = fmt.Sprintf("%d", send.ID)
-	jsonify, _ := json.MarshalIndent(message, "", " ")
-	fmt.Println(string(jsonify))
+	// jsonify, _ := json.MarshalIndent(message, "", " ")
+	// fmt.Println(string(jsonify))
 	return nil
 }
