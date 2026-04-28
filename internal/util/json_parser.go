@@ -52,11 +52,13 @@ func JSONParse(j map[string]interface{}) string {
 			valStr = fmt.Sprintf("%v", v)
 		}
 
-		runeValStr := []rune(valStr)
-		if len(runeValStr) > 50 {
-			runeValStr = append(append(runeValStr[:25], []rune("......")...), runeValStr[len(runeValStr)-5:]...)
+		if k != "shell" {
+			runeValStr := []rune(valStr)
+			if len(runeValStr) > 50 {
+				runeValStr = append(append(runeValStr[:25], []rune("......")...), runeValStr[len(runeValStr)-5:]...)
+			}
+			valStr = string(runeValStr)
 		}
-		valStr = string(runeValStr)
 
 		respStr.WriteString(fmt.Sprintf("`%s`: `%s`", k, valStr))
 		if l != c {
