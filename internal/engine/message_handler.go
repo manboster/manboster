@@ -87,9 +87,13 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 
 	maxCount := 3
 	maxRepeatCount := 5
+
 	count := 0
+
 	repeatCount := 0
 	repeatFingerPrint := ""
+
+	repeatSingleCount := map[string]int{}
 
 	for {
 		event, err := e.gateway.LLMChat(ctx, p, m, msgList)
@@ -100,7 +104,16 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		if err != nil {
 			break
 		}
-		if count >= maxCount || repeatCount >= maxRepeatCount {
+
+		isOverflow := false
+		for _, co := range repeatSingleCount {
+			if co > repeatCount {
+				isOverflow = true
+				break
+			}
+		}
+
+		if count >= maxCount || repeatCount >= maxRepeatCount || isOverflow {
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
@@ -137,8 +150,15 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		// handling tool call request
 		if event.EventType&llm.EventMessage != 0 && event.Message != nil && event.Message.Type&llm.MessageToolCallRequest != 0 {
 			var toolNameArgs []string
+
 			for _, req := range event.Message.ToolCallRequest {
-				toolNameArgs = append(toolNameArgs, fmt.Sprintf("%s:%v", req.ToolName, req.ToolArgs))
+				a := fmt.Sprintf("%s:%v", req.ToolName, req.ToolArgs)
+				toolNameArgs = append(toolNameArgs, a)
+				_, avail := repeatSingleCount[a]
+				if !avail {
+					repeatSingleCount[a] = 1
+				}
+				repeatSingleCount[a]++
 			}
 			if repeatFingerPrint == strings.Join(toolNameArgs, "%") {
 				repeatCount++
