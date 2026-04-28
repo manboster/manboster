@@ -16,10 +16,16 @@ import (
 // Guard is core component of Manboster gatekeeper service.
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	ud := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.UserID, sid)
+	uc := ud + ":" + toolProvider.Name()
 	if s.ignoranceSessionManager.GetIgnoreMark(ud) && types.UserTypeFromString(toolProvider.MetaData().MinUserType) <= s.safeguardService.UserType(ctx, instance.Name(), msg.UserID) {
 		// run hachimi here...
 		return true, nil
 	}
+
+	if s.ignoranceSessionManager.GetCancelMark(uc) {
+		return false, fmt.Errorf("this user rejected all calls of this tool in 15 minutes")
+	}
+
 	txt := fmt.Sprintf("Model want to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
@@ -44,6 +50,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		{
 			Name:  "Continue and don't disturb me in this session",
 			Value: "hachimi",
+		},
+		{
+			Name:  "Cancel and reject this tool's request in 15 minutes",
+			Value: "cAnCel",
 		},
 	}
 	selectMsg := msg.Clone()
@@ -84,6 +94,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		case "continue":
 			return true, nil
 		case "cancel":
+			return false, fmt.Errorf("user select cancel")
+		case "cAnCel":
+			cid := id + ":" + toolProvider.Name()
+			s.ignoranceSessionManager.SetCancelMark(cid, true)
 			return false, fmt.Errorf("user select cancel")
 		default:
 			return false, fmt.Errorf("invalid selection value: %v", resp.SelectionCallback.SelectionValue)

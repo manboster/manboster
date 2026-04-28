@@ -30,7 +30,7 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 		btn := menu.Data(slc.Name, slc.Value, sessionId)
 		btns = append(btns, btn)
 	}
-	menu.Inline(menu.Split(2, btns)...)
+	menu.Inline(menu.Split(1, btns)...)
 
 	text, err := util.EscapeMarkdownToTelegramHTML(message.Text.Text)
 	// send menu selection
