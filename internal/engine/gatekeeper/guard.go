@@ -16,7 +16,7 @@ import (
 // Guard is core component of Manboster gatekeeper service.
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	ud := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.UserID, sid)
-	if s.ignoranceSessionManager.GetIgnoreMark(ud) {
+	if s.ignoranceSessionManager.GetIgnoreMark(ud) && types.UserTypeFromString(toolProvider.MetaData().MinUserType) <= s.safeguardService.UserType(ctx, instance.Name(), msg.UserID) {
 		// run hachimi here...
 		return true, nil
 	}
