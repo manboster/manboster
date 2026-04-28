@@ -112,6 +112,8 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				break
 			}
 		}
+		// renew the map
+		repeatSingleCount = map[string]int{}
 
 		if count >= maxCount || repeatCount >= maxRepeatCount || isOverflow {
 			respMsg := msg.Clone()
@@ -160,6 +162,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				}
 				repeatSingleCount[a]++
 			}
+
 			if repeatFingerPrint == strings.Join(toolNameArgs, "%") {
 				repeatCount++
 			} else {
