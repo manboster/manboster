@@ -17,13 +17,13 @@ import (
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	ud := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.UserID, sid)
 	uc := ud + ":" + toolProvider.Name()
+	if s.ignoranceSessionManager.GetCancelMark(uc) {
+		return false, fmt.Errorf("this user rejected all calls of this tool and please try again after 15 minutes")
+	}
+
 	if s.ignoranceSessionManager.GetIgnoreMark(ud) && types.UserTypeFromString(toolProvider.MetaData().MinUserType) <= s.safeguardService.UserType(ctx, instance.Name(), msg.UserID) {
 		// run hachimi here...
 		return true, nil
-	}
-
-	if s.ignoranceSessionManager.GetCancelMark(uc) {
-		return false, fmt.Errorf("this user rejected all calls of this tool in 15 minutes")
 	}
 
 	txt := fmt.Sprintf("Model want to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)

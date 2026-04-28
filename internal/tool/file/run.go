@@ -111,6 +111,8 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to jsonify dir %s: %w", arg.FileName, err)
 			}
 			resp.Response = string(jsonify)
+		case "dir":
+			resp.Response = pwd
 		default:
 			return nil, fmt.Errorf("unknown argument %q", arg.Name)
 		}
