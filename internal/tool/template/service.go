@@ -2,7 +2,6 @@ package template
 
 import (
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -18,9 +17,7 @@ var metadata = schema.MetaData{
 	MinUserType:      "",
 }
 
-type Service struct {
-	memDB repository.MemoryRepository
-}
+type Service struct{}
 
 func (s *Service) Name() string {
 	return metadata.Name

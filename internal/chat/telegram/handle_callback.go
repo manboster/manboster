@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -23,7 +22,7 @@ func (s *Service) HandleCallback(ctx context.Context, c telebot.Context, onMsg f
 	if strings.Contains(d, "\f") {
 		d = strings.Replace(d, "\f", "", -1)
 		dList := strings.Split(d, "|")
-		fmt.Println(c.Callback().Sender.ID)
+		// fmt.Println(c.Callback().Sender.ID)
 		if len(dList) == 2 {
 			msg.MessageType = chat.MessageSelectionCallback
 			msg.SelectionCallback = &chat.SelectionCallbackPayload{

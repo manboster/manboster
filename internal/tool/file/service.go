@@ -1,16 +1,15 @@
-package memory_md
+package file
 
 import (
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.memory.md",
-	DisplayName:      "Memory Markdown Tools",
-	Description:      "Memory Markdown Tools allows you to read and write user-specific markdown file, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
+	Name:             "dev.manboster.file",
+	DisplayName:      "Manboster File Helper",
+	Description:      "You can use this tool to read, write, list files, or get info about file. However, it can only read/write/getinfo within session's workspace directory.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
@@ -19,7 +18,6 @@ var metadata = schema.MetaData{
 }
 
 type Service struct {
-	memDB repository.MemoryRepository
 }
 
 func (s *Service) Name() string {

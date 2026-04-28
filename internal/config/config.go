@@ -31,5 +31,5 @@ type AppConfig struct {
 // ToolConfig is configuration available to tool(local), plugin(external).
 type ToolConfig struct {
 	Name          string `yaml:"name" mapstructure:"name" json:"name"`
-	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration"`
+	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration,omitempty"`
 }

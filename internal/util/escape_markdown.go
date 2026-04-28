@@ -29,6 +29,9 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		),
 	)
 
+	ltRp := strings.NewReplacer("<", "&lt;", ">", "&gt;")
+	md = ltRp.Replace(md)
+
 	var buf bytes.Buffer
 	if err := gm.Convert([]byte(md), &buf); err != nil {
 		return "", err
