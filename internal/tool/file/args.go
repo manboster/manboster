@@ -8,6 +8,7 @@ type RunArgs struct {
 	FileName string   `json:"file_name" description:"The filename to use to read, write, get info or delete. If 'name' is 'list', it is not allowed to have any name." example:"example_file.md"`
 	FilePath []string `json:"file_path" description:"The filepath to use, like ['dir1'] means this file is in the cmd directory, if there is no such filepath, we will create one for you." example:"['directory1']"`
 	Content  string   `json:"content" description:"The content to use to write. Only valid when name='write'."`
+	IsPublic bool     `json:"is_public" description:"Whether or not the file written is public or not, if this is true, it means your will be read/write in a session-shared public directory. If it's false, your data will be written or read in session-related file.'" example:"false"`
 }
 
 func (s *Service) Args() *schema.Args {

@@ -17,6 +17,10 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 	if err != nil {
 		return err
 	}
+	err = os.MkdirAll(config.Path(filepath.Join("workspace", "public")), 0755)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -41,6 +45,9 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 	}
 
 	if json.Unmarshal([]byte(args), &arg) == nil {
+		if arg.IsPublic {
+			pwd = config.Path(filepath.Join("workspace", "public"))
+		}
 		switch arg.Name {
 		case "read":
 			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
