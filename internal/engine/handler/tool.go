@@ -80,7 +80,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		} else {
 			successExecution = true
 		}
-		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded with response: %q", safeName, resp))
+		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded successfully.", safeName)) // with response resp.
 
 		if successExecution {
 			txt := fmt.Sprintf("Model called tool `%s`(`%s`) ", toolProvider.DisplayName(), safeName)

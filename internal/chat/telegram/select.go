@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
 )
@@ -31,9 +32,11 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 	}
 	menu.Inline(menu.Split(2, btns)...)
 
+	text, err := util.EscapeMarkdownToTelegramHTML(message.Text.Text)
 	// send menu selection
-	send, err := s.tgInstance.Send(recp, message.Text.Text, &telebot.SendOptions{
+	send, err := s.tgInstance.Send(recp, text, &telebot.SendOptions{
 		ReplyMarkup: menu,
+		ParseMode:   telebot.ModeHTML,
 	})
 	if err != nil {
 		return err

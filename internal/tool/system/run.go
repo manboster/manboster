@@ -2,6 +2,8 @@ package system
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/manboster/manboster/spec/plugin"
 )
@@ -15,7 +17,60 @@ func (s *Service) Start(ctx context.Context) error {
 }
 
 func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	return nil, nil
+	arg := RunArgs{}
+	resp := &plugin.RunResponse{
+		Hangup: false,
+	}
+	if json.Unmarshal([]byte(args), &arg) == nil {
+		switch arg.Name {
+		case "os_info":
+			sys, err := getSystemInfo(ctx)
+			if err != nil {
+				return resp, fmt.Errorf("failed to get system info: %w", err)
+			}
+			jsonify, err := json.Marshal(sys)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal system info: %w", err)
+			}
+			resp.Response = string(jsonify)
+		case "process":
+			switch arg.Action {
+			case "list":
+				sys, err := listProcesses(ctx)
+				if err != nil {
+					return resp, fmt.Errorf("failed to get process list: %w", err)
+				}
+				jsonify, err := json.Marshal(sys)
+				if err != nil {
+					return nil, fmt.Errorf("failed to marshal process: %w", err)
+				}
+				resp.Response = string(jsonify)
+			case "info":
+				sys, err := getProcessInfo(ctx, int32(arg.PID))
+				if err != nil {
+					return resp, fmt.Errorf("failed to get process list: %w", err)
+				}
+				jsonify, err := json.Marshal(sys)
+				if err != nil {
+					return nil, fmt.Errorf("failed to marshal process: %w", err)
+				}
+				resp.Response = string(jsonify)
+			case "kill":
+				err := killProcess(ctx, int32(arg.PID))
+				if err != nil {
+					return resp, fmt.Errorf("failed to kill process: %w", err)
+				}
+				resp.Response = "OK"
+			default:
+				return resp, fmt.Errorf("unknown action: %s", arg.Action)
+			}
+		default:
+			return nil, fmt.Errorf("unknown argument %q", arg.Name)
+		}
+	} else {
+		return nil, fmt.Errorf("invalid arguments")
+	}
+	return resp, nil
 }
 
 func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
