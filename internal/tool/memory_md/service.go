@@ -1,4 +1,4 @@
-package memory
+package memory_md
 
 import (
 	"github.com/manboster/manboster/internal/config"
@@ -8,9 +8,9 @@ import (
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.memory",
-	DisplayName:      "Memory Tools",
-	Description:      "Memory allows you to storage the memory into database and read or write it anytime.",
+	Name:             "dev.manboster.memory.md",
+	DisplayName:      "Memory Markdown Tools",
+	Description:      "Memory Markdown Tools allows you to read and write user-specific markdown file, if it's valid, you can call it as need before getting the response, or write it after the response.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

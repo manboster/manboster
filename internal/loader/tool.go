@@ -16,7 +16,7 @@ func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Prov
 	for _, conf := range cfg.Tools {
 		provider, err := tool.GetProvider(conf.Name)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while loading tool call provider %q: %q", provider.DisplayName(), err))
+			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while loading tool call provider %q: %q", conf.Name, err))
 			continue
 		}
 		color.Blue(fmt.Sprintf("[Manboster Loader] Loading tool call provider %q...", provider.DisplayName()))

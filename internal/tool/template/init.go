@@ -1,4 +1,4 @@
-package memory
+package template
 
 import "github.com/manboster/manboster/internal/tool"
 
