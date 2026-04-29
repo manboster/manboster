@@ -20,6 +20,12 @@ func (h *Handler) cmdOp(ctx context.Context, instance chat.Provider, msg *chat.M
 	msg.MessageType = chat.MessageText
 
 	grantUserID, err := getTargetUserID(msg, args)
+	if err != nil {
+		msg.Text = &chat.TextPayload{
+			Text: "The one you want to grant permission is not found in database.",
+		}
+		return instance.SendMessage(ctx, msg)
+	}
 
 	err = validateUser(ctx, instance, msg, h.repo)
 	if err != nil {
@@ -54,7 +60,7 @@ func (h *Handler) cmdOp(ctx context.Context, instance chat.Provider, msg *chat.M
 
 	color.Red(fmt.Sprintf("[Manboster Engine] Successfully make %s operator. If this is not your action, please user /deop %s to revert it.", grantUserID, grantUserID))
 	msg.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Successfully created a user with ID(%s).", grantUserID),
+		Text: fmt.Sprintf("Successfully created make (%s) as an Administrator.", grantUserID),
 	}
 	return instance.SendMessage(ctx, msg)
 }
@@ -99,12 +105,13 @@ func (h *Handler) cmdDeOp(ctx context.Context, instance chat.Provider, msg *chat
 			Text: "The one you want to degrade permission is not found in database.",
 		}
 		return instance.SendMessage(ctx, msg)
-	} else {
-		msg.Text = &chat.TextPayload{
-			Text: "We entountered an error while trying to find the user.",
-		}
-		return instance.SendMessage(ctx, msg)
 	}
+
+	msg.Text = &chat.TextPayload{
+		Text: "We entountered an error while trying to find the user.",
+	}
+	return instance.SendMessage(ctx, msg)
+
 }
 
 func getTargetUserID(msg *chat.Message, args []string) (string, error) {
