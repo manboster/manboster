@@ -49,6 +49,12 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 			text = "<blockquote expandable>" + text + "</blockquote>"
 		}
 		_, err = s.tgInstance.Send(recp, text, opts)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %q", err))
+			_, err = s.tgInstance.Send(recp, text, &telebot.SendOptions{
+				ParseMode: telebot.ModeDefault,
+			})
+		}
 		color.Green(fmt.Sprintf("[Manboster Telegram Provider] Finally successfully sending message"))
 	} else {
 		caption := "We are sorry but the message is too long to send, please open message.txt above to read it.\n"
