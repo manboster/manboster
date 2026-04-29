@@ -36,7 +36,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 
 	htmlStr := buf.String()
 
-	// Convert tables to <pre> blocks (same approach as before)
+	// Convert tables to <pre> blocks
 	htmlStr = TableToMarkdown(htmlStr)
 
 	// Parse with goquery for structural processing
@@ -61,7 +61,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		}
 	})
 
-	// 2. Clean <a> tags: remove extraneous attributes (title, rel, etc.)
+	// 2. Clean <a> tags: remove extraneous attributes
 	doc.Find("a").Each(func(_ int, a *goquery.Selection) {
 		href, exists := a.Attr("href")
 		if !exists || href == "" {
@@ -72,42 +72,61 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		a.ReplaceWithHtml(fmt.Sprintf(`<a href="%s">%s</a>`, href, inner))
 	})
 
-	// 3. Convert lists with proper numbering and indentation
-	doc.Find("ul, ol").Each(func(_ int, list *goquery.Selection) {
-		isOrdered := list.Is("ol")
-		depth := listDepth(list)
-		indent := strings.Repeat("  ", depth)
-
-		var items []string
-		list.Find("> li").Each(func(idx int, li *goquery.Selection) {
-			// Strip nested lists from text (already processed separately)
-			li.Find("ul, ol").Remove()
-			text := strings.TrimSpace(li.Text())
-			if text == "" {
-				return
-			}
-			if isOrdered {
-				items = append(items, indent+fmt.Sprintf("%d. ", idx+1)+text)
-			} else {
-				items = append(items, indent+"• "+text)
-			}
-		})
-
-		list.ReplaceWithHtml(strings.Join(items, "\n"))
+	// 3. Fix <pre><code class="language-xxx"> — Telegram HTML doesn't accept class on <code>
+	doc.Find("pre code").Each(func(_ int, code *goquery.Selection) {
+		// Remove the class attribute entirely
+		code.RemoveAttr("class")
 	})
 
-	// 4. Convert <sub>/<sup>: Telegram doesn't support them, keep text
+	// 4. Fix standalone <code> (inline code) — also strip attributes
+	doc.Find("code").Each(func(_ int, code *goquery.Selection) {
+		code.RemoveAttr("class")
+	})
+
+	// 5. Convert lists — process from innermost to outermost
+	for {
+		nested := doc.Find("ul, ol")
+		if nested.Length() == 0 {
+			break
+		}
+		nested.Each(func(_ int, list *goquery.Selection) {
+			if list.Find("ul, ol").Length() > 0 {
+				return
+			}
+
+			isOrdered := list.Is("ol")
+			depth := listDepth(list)
+			indent := strings.Repeat("  ", depth)
+			var items []string
+
+			list.ChildrenFiltered("li").Each(func(idx int, li *goquery.Selection) {
+				text := strings.TrimSpace(li.Text())
+				if text == "" {
+					return
+				}
+				if isOrdered {
+					items = append(items, indent+fmt.Sprintf("%d. ", idx+1)+text)
+				} else {
+					items = append(items, indent+"• "+text)
+				}
+			})
+
+			list.ReplaceWithHtml(strings.Join(items, "\n"))
+		})
+	}
+
+	// 6. Convert <sub>/<sup>: Telegram doesn't support them, keep text
 	doc.Find("sub, sup").Each(func(_ int, el *goquery.Selection) {
 		el.ReplaceWithHtml(el.Text())
 	})
 
-	// 5. Convert <p> to newline separation
+	// 7. Convert <p> to newline separation
 	doc.Find("p").Each(func(_ int, p *goquery.Selection) {
 		inner, _ := p.Html()
 		p.ReplaceWithHtml(inner + "\n\n")
 	})
 
-	// 6. Rename tags to Telegram-compatible versions
+	// 8. Rename tags to Telegram-compatible versions
 	doc.Find("strong").Each(func(_ int, el *goquery.Selection) {
 		inner, _ := el.Html()
 		el.ReplaceWithHtml("<b>" + inner + "</b>")
@@ -125,7 +144,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		el.ReplaceWithHtml("<b>" + inner + "</b>")
 	})
 
-	// 7. Convert <hr> to line separator
+	// 9. Convert <hr> to line separator
 	doc.Find("hr").Each(func(_ int, el *goquery.Selection) {
 		el.ReplaceWithHtml("\n—————\n")
 	})
