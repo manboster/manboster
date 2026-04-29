@@ -82,7 +82,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
 		// fmt.Printf("%s %s", minPermission, uPermission)
 		if uPermission < minPermission {
-			return false, fmt.Errorf("user access denied")
+			return false, fmt.Errorf("the permission user who performs the action is too low, please contact the owner")
 		}
 
 		switch resp.SelectionCallback.SelectionValue {
