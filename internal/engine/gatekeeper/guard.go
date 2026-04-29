@@ -26,7 +26,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return true, nil
 	}
 
-	txt := fmt.Sprintf("Model want to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
+	txt := fmt.Sprintf("Model wants to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
 	if err != nil {

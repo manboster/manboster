@@ -51,7 +51,7 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		_, err = s.tgInstance.Send(recp, text, opts)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %q", err))
-			_, err = s.tgInstance.Send(recp, text, &telebot.SendOptions{
+			_, err = s.tgInstance.Send(recp, msg.Text.Text, &telebot.SendOptions{
 				ParseMode: telebot.ModeDefault,
 			})
 		}

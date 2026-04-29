@@ -2,9 +2,10 @@ package util
 
 import (
 	"bytes"
-	"regexp"
+	"fmt"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
@@ -19,18 +20,14 @@ func EscapeMarkdown(text string) string {
 	return text
 }
 
-// EscapeMarkdownToTelegramHTML allows Markdown text to send messages in Telegram by using HTML mode. (With help of Gemini)
+// EscapeMarkdownToTelegramHTML converts Markdown to Telegram HTML format.
 func EscapeMarkdownToTelegramHTML(md string) (string, error) {
-	// configure goldmark
 	gm := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 		goldmark.WithRendererOptions(
-			html.WithUnsafe(), // basic HTML is allowed
+			html.WithUnsafe(),
 		),
 	)
-
-	// ltRp := strings.NewReplacer("<", "&lt;", ">", "&gt;")
-	// md = ltRp.Replace(md)
 
 	var buf bytes.Buffer
 	if err := gm.Convert([]byte(md), &buf); err != nil {
@@ -39,45 +36,138 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 
 	htmlStr := buf.String()
 
+	// Convert tables to <pre> blocks (same approach as before)
 	htmlStr = TableToMarkdown(htmlStr)
 
-	reList := regexp.MustCompile(`(?i)<(ul|ol)[^>]*>`)
-	htmlStr = reList.ReplaceAllString(htmlStr, "")
+	// Parse with goquery for structural processing
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlStr))
+	if err != nil {
+		return fallbackClean(htmlStr), nil
+	}
 
-	reListEnd := regexp.MustCompile(`(?i)</(ul|ol)>`)
-	htmlStr = reListEnd.ReplaceAllString(htmlStr, "")
+	// 1. Handle images: Telegram HTML doesn't support <img>
+	doc.Find("img").Each(func(_ int, img *goquery.Selection) {
+		src, _ := img.Attr("src")
+		alt, _ := img.Attr("alt")
+		switch {
+		case src == "" && alt == "":
+			img.ReplaceWithHtml("[image]")
+		case src == "":
+			img.ReplaceWithHtml(alt)
+		case alt == "":
+			img.ReplaceWithHtml(src)
+		default:
+			img.ReplaceWithHtml(fmt.Sprintf("[%s](%s)", alt, src))
+		}
+	})
 
-	reLi := regexp.MustCompile(`(?i)<li[^>]*>`)
-	htmlStr = reLi.ReplaceAllString(htmlStr, "• ")
+	// 2. Clean <a> tags: remove extraneous attributes (title, rel, etc.)
+	doc.Find("a").Each(func(_ int, a *goquery.Selection) {
+		href, exists := a.Attr("href")
+		if !exists || href == "" {
+			a.ReplaceWithHtml(a.Text())
+			return
+		}
+		inner, _ := a.Html()
+		a.ReplaceWithHtml(fmt.Sprintf(`<a href="%s">%s</a>`, href, inner))
+	})
 
-	reLiEnd := regexp.MustCompile(`(?i)</li>`)
-	htmlStr = reLiEnd.ReplaceAllString(htmlStr, "")
+	// 3. Convert lists with proper numbering and indentation
+	doc.Find("ul, ol").Each(func(_ int, list *goquery.Selection) {
+		isOrdered := list.Is("ol")
+		depth := listDepth(list)
+		indent := strings.Repeat("  ", depth)
 
-	// change tags
+		var items []string
+		list.Find("> li").Each(func(idx int, li *goquery.Selection) {
+			// Strip nested lists from text (already processed separately)
+			li.Find("ul, ol").Remove()
+			text := strings.TrimSpace(li.Text())
+			if text == "" {
+				return
+			}
+			if isOrdered {
+				items = append(items, indent+fmt.Sprintf("%d. ", idx+1)+text)
+			} else {
+				items = append(items, indent+"• "+text)
+			}
+		})
+
+		list.ReplaceWithHtml(strings.Join(items, "\n"))
+	})
+
+	// 4. Convert <sub>/<sup>: Telegram doesn't support them, keep text
+	doc.Find("sub, sup").Each(func(_ int, el *goquery.Selection) {
+		el.ReplaceWithHtml(el.Text())
+	})
+
+	// 5. Convert <p> to newline separation
+	doc.Find("p").Each(func(_ int, p *goquery.Selection) {
+		inner, _ := p.Html()
+		p.ReplaceWithHtml(inner + "\n\n")
+	})
+
+	// 6. Rename tags to Telegram-compatible versions
+	doc.Find("strong").Each(func(_ int, el *goquery.Selection) {
+		inner, _ := el.Html()
+		el.ReplaceWithHtml("<b>" + inner + "</b>")
+	})
+	doc.Find("em").Each(func(_ int, el *goquery.Selection) {
+		inner, _ := el.Html()
+		el.ReplaceWithHtml("<i>" + inner + "</i>")
+	})
+	doc.Find("del").Each(func(_ int, el *goquery.Selection) {
+		inner, _ := el.Html()
+		el.ReplaceWithHtml("<s>" + inner + "</s>")
+	})
+	doc.Find("h1, h2, h3, h4, h5, h6").Each(func(_ int, el *goquery.Selection) {
+		inner, _ := el.Html()
+		el.ReplaceWithHtml("<b>" + inner + "</b>")
+	})
+
+	// 7. Convert <hr> to line separator
+	doc.Find("hr").Each(func(_ int, el *goquery.Selection) {
+		el.ReplaceWithHtml("\n—————\n")
+	})
+
+	result, err := doc.Find("body").Html()
+	if err != nil {
+		return fallbackClean(htmlStr), nil
+	}
+
+	return strings.TrimSpace(result), nil
+}
+
+// listDepth calculates nesting depth of a list element
+func listDepth(sel *goquery.Selection) int {
+	depth := 0
+	for parent := sel.Parent(); parent.Length() > 0; parent = parent.Parent() {
+		if parent.Is("li") {
+			depth++
+		}
+	}
+	return depth
+}
+
+// fallbackClean does basic tag replacement if goquery fails
+func fallbackClean(htmlStr string) string {
 	replacer := strings.NewReplacer(
-		// hr
 		"<hr />", "\n—————\n",
 		"<hr>", "\n—————\n",
 		"<hr/>", "\n—————\n",
-		// titles
 		"<h1>", "<b>", "</h1>", "</b>",
 		"<h2>", "<b>", "</h2>", "</b>",
 		"<h3>", "<b>", "</h3>", "</b>",
 		"<h4>", "<b>", "</h4>", "</b>",
 		"<h5>", "<b>", "</h5>", "</b>",
 		"<h6>", "<b>", "</h6>", "</b>",
-		// p
-		"<p>", "", "</p>", "\u200B",
-		// bold & italic
+		"<sub>", "", "</sub>", "",
+		"<sup>", "", "</sup>", "",
+		"<p>", "", "</p>", "\n\n",
 		"<strong>", "<b>", "</strong>", "</b>",
 		"<em>", "<i>", "</em>", "</i>",
 		"<del>", "<s>", "</del>", "</s>",
 		"<br>", "\n", "<br/>", "\n",
-		"<nil>", "[No Response, Go: nil]",
 	)
-
-	formatted := replacer.Replace(htmlStr)
-
-	// trim and delete it
-	return strings.TrimSpace(formatted), nil
+	return strings.TrimSpace(replacer.Replace(htmlStr))
 }
