@@ -1,10 +1,16 @@
 package ignorance
 
-func (m *Manager) SetIgnoreMark(id string, mark bool) {
+import "time"
+
+func (m *Manager) SetIgnoreMark(id string, mk bool, ttl int) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	m.ignoreMark[id] = mark
+	m.ignoreMark[id] = mark{
+		m:          mk,
+		ttl:        ttl,
+		actionTime: time.Now(),
+	}
 }
 
 func (m *Manager) GetIgnoreMark(id string) bool {
@@ -15,5 +21,9 @@ func (m *Manager) GetIgnoreMark(id string) bool {
 	if !ok {
 		return false
 	}
-	return im
+
+	if time.Now().Unix()-im.actionTime.Unix() > int64(im.ttl) {
+		return false
+	}
+	return im.m
 }

@@ -4,13 +4,14 @@ import (
 	"time"
 )
 
-func (m *Manager) SetCancelMark(id string, mark bool) {
+func (m *Manager) SetCancelMark(id string, mk bool) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	m.cAnCelMark[id] = cAnCel{
+	m.cAnCelMark[id] = mark{
 		actionTime: time.Now(),
-		isCancel:   mark,
+		m:          mk,
+		ttl:        60 * 15,
 	}
 }
 
@@ -23,8 +24,8 @@ func (m *Manager) GetCancelMark(id string) bool {
 		return false
 	}
 
-	if time.Now().Unix()-c.actionTime.Unix() > 15*60 {
+	if time.Now().Unix()-c.actionTime.Unix() > int64(c.ttl) {
 		return false
 	}
-	return c.isCancel
+	return c.m
 }

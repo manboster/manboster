@@ -15,9 +15,8 @@ import (
 
 // Guard is core component of Manboster gatekeeper service.
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
-	ud := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.UserID, sid)
-	uc := ud + ":" + toolProvider.Name()
-	if s.ignoranceSessionManager.GetCancelMark(uc) {
+	ud := fmt.Sprintf("%s:%s:%s:%s", instance.Name(), msg.UserID, sid, toolProvider.Name())
+	if s.ignoranceSessionManager.GetCancelMark(ud) {
 		return false, fmt.Errorf("this user rejected all calls of this tool and please try again after 15 minutes")
 	}
 
@@ -48,11 +47,11 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			Value: "cancel",
 		},
 		{
-			Name:  "Continue and don't disturb me in this session",
+			Name:  "Continue and shut up, handled by hachimi",
 			Value: "hachimi",
 		},
 		{
-			Name:  "Cancel and reject this tool's request in 15 minutes",
+			Name:  "Cancel and silence in 15 minutes",
 			Value: "cAnCel",
 		},
 	}
@@ -71,7 +70,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return false, fmt.Errorf("failed to get select result: %v", err)
 	}
 	if resp.SelectionCallback != nil {
-		id := fmt.Sprintf("%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid)
+		id := fmt.Sprintf("%s:%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid, toolProvider.Name())
 		// fmt.Println(id)
 		// fmt.Println(s.ignoranceSessionManager.GetIgnoreMark(id))
 		if s.ignoranceSessionManager.GetIgnoreMark(id) {
@@ -88,16 +87,24 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 		switch resp.SelectionCallback.SelectionValue {
 		case "hachimi":
-			// TODO: hachimi automatically score
-			s.ignoranceSessionManager.SetIgnoreMark(id, true)
+			ttl := 0
+			switch minPermission {
+			case types.UserUnknown:
+				ttl = 60 * 60
+			case types.UserAdmin:
+				ttl = 60 * 30
+			case types.UserRoot:
+				ttl = 60 * 15
+			default:
+			}
+			s.ignoranceSessionManager.SetIgnoreMark(id, true, ttl)
 			return true, nil
 		case "continue":
 			return true, nil
 		case "cancel":
 			return false, fmt.Errorf("user select cancel")
 		case "cAnCel":
-			cid := id + ":" + toolProvider.Name()
-			s.ignoranceSessionManager.SetCancelMark(cid, true)
+			s.ignoranceSessionManager.SetCancelMark(id, true)
 			return false, fmt.Errorf("user select cancel")
 		default:
 			return false, fmt.Errorf("invalid selection value: %v", resp.SelectionCallback.SelectionValue)

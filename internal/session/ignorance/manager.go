@@ -6,20 +6,21 @@ import (
 )
 
 type Manager struct {
-	ignoreMark map[string]bool
-	cAnCelMark map[string]cAnCel
+	ignoreMark map[string]mark
+	cAnCelMark map[string]mark
 	lock       *sync.RWMutex
 }
 
-type cAnCel struct {
-	isCancel   bool
+type mark struct {
+	m          bool
 	actionTime time.Time
+	ttl        int
 }
 
 func New() *Manager {
 	return &Manager{
-		ignoreMark: make(map[string]bool),
-		cAnCelMark: make(map[string]cAnCel),
+		ignoreMark: make(map[string]mark),
+		cAnCelMark: make(map[string]mark),
 		lock:       &sync.RWMutex{},
 	}
 }
