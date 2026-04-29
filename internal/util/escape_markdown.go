@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -154,6 +155,32 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		return fallbackClean(htmlStr), nil
 	}
 
+	// 10. Strip any HTML tags not supported by Telegram
+	allowedTags := map[string]bool{
+		"b": true, "strong": true,
+		"i": true, "em": true,
+		"u": true, "ins": true,
+		"s": true, "strike": true, "del": true,
+		"span":       true, // tg-spoiler
+		"tg-spoiler": true,
+		"a":          true,
+		"tg-emoji":   true,
+		"tg-time":    true,
+		"code":       true,
+		"pre":        true,
+		"blockquote": true,
+	}
+	reStrip := regexp.MustCompile(`</?(\w+)[^>]*>`)
+	result = reStrip.ReplaceAllStringFunc(result, func(match string) string {
+		reTag := regexp.MustCompile(`</?(\w+)`)
+		matches := reTag.FindStringSubmatch(match)
+		if len(matches) > 1 && allowedTags[strings.ToLower(matches[1])] {
+			return match // keep allowed tags
+		}
+		// Escape unknown tags so they show as plain text
+		return strings.ReplaceAll(strings.ReplaceAll(match, "<", "&lt;"), ">", "&gt;")
+	})
+
 	return strings.TrimSpace(result), nil
 }
 
@@ -182,7 +209,7 @@ func fallbackClean(htmlStr string) string {
 		"<h6>", "<b>", "</h6>", "</b>",
 		"<sub>", "", "</sub>", "",
 		"<sup>", "", "</sup>", "",
-		"<p>", "", "</p>", "\n\n",
+		"<p>", "", "</p>", "",
 		"<strong>", "<b>", "</strong>", "</b>",
 		"<em>", "<i>", "</em>", "</i>",
 		"<del>", "<s>", "</del>", "</s>",
