@@ -9,64 +9,77 @@ import (
 )
 
 func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.ActionType) error {
+	isEnable := false
+	isClean := false
 	switch s.cfg.ReactionNotifyStatus {
 	case "disabled":
-		return nil
-	case "enabled", "clean":
+	case "enabled":
+		isEnable = true
+	case "clean":
+		isClean = true
+		isEnable = true
 	default:
-		return nil
 	}
+
+	// mark it reaction
+	recipient, err := recipientParser(msg.ChatID)
+	if err != nil {
+		return err
+	}
+
+	chatId := int64(0)
+	_, err = fmt.Sscanf(msg.ChatID, "%d", &chatId)
+	if err != nil {
+		return err
+	}
+
+	msgId := 0
+	_, err = fmt.Sscanf(msg.MessageID, "%d", &msgId)
+
+	if err != nil {
+		return err
+	}
+
 	switch action {
 	case chat.ActionPending:
-		// mark it reaction
-		recipient, err := recipientParser(msg.ChatID)
-		if err != nil {
-			return err
-		}
-
-		chatId := int64(0)
-		_, err = fmt.Sscanf(msg.ChatID, "%d", &chatId)
-		if err != nil {
-			return err
-		}
-
-		msgId := 0
-		_, err = fmt.Sscanf(msg.MessageID, "%d", &msgId)
-
-		if err != nil {
-			return err
-		}
 
 		typingCtx, cancelTyping := context.WithCancel(ctx)
 		notifierWrite(chatId, msgId, cancelTyping)
 		go s.Type(typingCtx, telebot.ChatID(chatId))
 
-		return s.tgInstance.React(recipient, &telebot.Message{
-			ID: msgId,
-			Chat: &telebot.Chat{
-				ID: chatId,
-			},
-		}, telebot.ReactionOptions{
-			Reactions: []telebot.Reaction{
-				{
-					Type:  "emoji",
-					Emoji: "✍️",
+		if isEnable {
+			return s.tgInstance.React(recipient, &telebot.Message{
+				ID: msgId,
+				Chat: &telebot.Chat{
+					ID: chatId,
 				},
-			},
-		})
+			}, telebot.ReactionOptions{
+				Reactions: []telebot.Reaction{
+					{
+						Type:  "emoji",
+						Emoji: "✍️",
+					},
+				},
+			})
+		}
+		return nil
+
 	case chat.ActionSuccess:
-		recipient, err := recipientParser(msg.ChatID)
-		if err != nil {
+		_, _ = notifierCancel(msg.ChatID)
+
+		if isClean {
+			// fmt.Println(mid, cid)
+			params := map[string]interface{}{
+				"chat_id":    chatId,
+				"message_id": msgId,
+				"reaction":   []telebot.Reaction{}, // 强制 JSON 序列化为 []
+			}
+
+			_, err = s.tgInstance.Raw("setMessageReaction", params)
 			return err
 		}
+		return nil
 
-		cid, mid := notifierCancel(msg.ChatID)
-		return s.tgInstance.React(recipient, &telebot.Message{
-			ID: mid,
-			Chat: &telebot.Chat{
-				ID: cid,
-			},
-		}, telebot.ReactionOptions{})
 	case chat.ActionError:
 		notifierCancel(msg.ChatID)
 		return nil
