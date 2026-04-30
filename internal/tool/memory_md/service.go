@@ -11,7 +11,7 @@ import (
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.memory.md",
 	DisplayName:      "Memory Markdown Tools",
-	Description:      "Memory Markdown Tools allows you to read and write chat-specific markdown file in maximum of 16KB, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
+	Description:      "Memory Markdown Tools allows you to read and write chat-specific markdown file in maximum of 64KB, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
