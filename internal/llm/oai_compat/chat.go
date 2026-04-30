@@ -2,6 +2,8 @@ package oai_compat
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/llm"
@@ -90,6 +92,9 @@ func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider,
 		return nil, ErrNoResponse
 	}
 	m := resp.Choices[0].Message
+
+	jsonify, _ := json.Marshal(m)
+	fmt.Println(string(jsonify))
 
 	msg := &llm.Message{
 		Role: llm.RoleAssistant,
