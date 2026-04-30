@@ -47,11 +47,26 @@ func ArgsFromStruct(s interface{}) *Args {
 			continue
 		}
 
+		var enums []any
+		isEnum := false
+		enum, avail := field.Tag.Lookup("enum")
+		if avail {
+			enumList := strings.Split(enum, ",")
+			if len(enumList) != 0 {
+				isEnum = true
+				for _, en := range enumList {
+					enums = append(enums, en)
+				}
+			}
+		}
+
 		arg := &schema.Args{
 			Name:        name,
 			Type:        goKindToArgsType(field.Type.Kind()),
 			Description: tag["desc"],
 			Required:    tag["required"] == "true",
+			Enum:        enums,
+			IsEnum:      isEnum,
 		}
 
 		node := ArgsNode{
@@ -79,7 +94,7 @@ func ArgsFromStruct(s interface{}) *Args {
 
 func parseTag(tag string) map[string]string {
 	result := make(map[string]string)
-	for _, part := range strings.Split(tag, ",") {
+	for _, part := range strings.Split(tag, ";") {
 		if kv := strings.SplitN(part, ":", 2); len(kv) == 2 {
 			result[kv[0]] = kv[1]
 		} else {

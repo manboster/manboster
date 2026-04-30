@@ -44,7 +44,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 			return c, err
 		}
 		c.LLMs = append(c.LLMs, llmCfg)
-		if !ContinueConfirm(ctx, fmt.Sprintf("You've successfully add %d llm providers!", count)) {
+		if !ContinueConfirm(ctx, fmt.Sprintf("You've successfully added %d llm providers!", count)) {
 			break
 		}
 		count++
@@ -79,7 +79,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	// Step 4: See what's entered and start to write configuration.
 	confDescription := strings.Builder{}
 	confDescription.WriteString("# Before you proceed, you need to review what you have entered. \n")
-	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster onboard'.\n")
+	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster onboard'.\n\n")
 
 	confDescription.WriteString(fmt.Sprintf("You configured %d chat providers\n\n", len(c.Chats)))
 	for i, _ := range c.Chats {
