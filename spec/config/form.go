@@ -1,6 +1,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/charmbracelet/huh"
@@ -38,15 +40,28 @@ func (f *Form) Collect() map[string]any {
 
 // Build rebuilds the form with the given initial values pre-filled.
 // Clears any previous groups and refs.
-func (f *Form) Build(initialValues map[string]any) error {
-	f.Groups = make([]*huh.Group, 0)
-	f.refs = make([]valueRef, 0)
-	// We need access to args here. If Form stores a reference to the source Args,
-	// use it; otherwise pass it in. Assuming Form holds the original args pointer:
-	if f.args == nil {
-		return nil
+func (f *Form) Build(config any) error {
+	var values map[string]any
+
+	switch v := config.(type) {
+	case map[string]any:
+		values = v
+	case nil:
+		// default vault
+	default:
+		// from JSON marshal to map
+		data, err := json.Marshal(v)
+		if err != nil {
+			return fmt.Errorf("build: marshal config: %w", err)
+		}
+		if err := json.Unmarshal(data, &values); err != nil {
+			return fmt.Errorf("build: unmarshal config: %w", err)
+		}
 	}
-	collectGroups(f.args.Nodes, &f.Groups, &f.refs, "", initialValues)
+
+	f.Groups = f.Groups[:0]
+	f.refs = f.refs[:0]
+	collectGroups(f.args.Nodes, &f.Groups, &f.refs, "", values)
 	return nil
 }
 
