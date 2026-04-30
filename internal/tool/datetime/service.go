@@ -1,6 +1,8 @@
 package datetime
 
 import (
+	"context"
+
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
 	configType "github.com/manboster/manboster/spec/config"
@@ -42,3 +44,7 @@ func (s *Service) Config() configType.Provider {
 }
 
 func (s *Service) RegisterHook(registry *hook.Registry) {}
+
+func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
+	return nil, nil
+}

@@ -1,6 +1,8 @@
 package file
 
 import (
+	"context"
+
 	"github.com/manboster/manboster/internal/config"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
@@ -38,4 +40,8 @@ func (s *Service) Requires() []schema.RequirementData {
 
 func (s *Service) Config() configType.Provider {
 	return nil
+}
+
+func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
+	return nil, nil
 }
