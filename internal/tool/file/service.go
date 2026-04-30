@@ -11,7 +11,7 @@ import (
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.file",
 	DisplayName:      "Manboster File Helper",
-	Description:      "You can use this tool to read, write, list files, or get info about file. However, it can only read/write/getinfo within session's workspace directory.",
+	Description:      "This tool can read, write, list files, or get info about file. However, it can only read/write/getinfo within session's workspace or a shared public directory in workspace.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
