@@ -125,15 +125,30 @@ func toField(node ArgsNode, key string) (huh.Field, *valueRef) {
 
 	switch node.Arg.Type {
 	case schema.ArgsTypeString:
+		var f huh.Field
 		val := ""
 		if s, ok := node.Default.(string); ok {
 			val = s
+		}
+		if node.Arg.IsEnum {
+			var options []huh.Option[string]
+			for _, enum := range node.Arg.Enum {
+				en, ok := enum.(string)
+				if ok {
+					options = append(options, huh.NewOption[string](en, en))
+				}
+			}
+			if len(options) > 0 {
+				f = huh.NewSelect[string]().Options(options...).Title(displayName).Description(desc).Value(&val)
+				return f, &valueRef{key: val, ptr: f}
+			}
 		}
 		inp := huh.NewInput().Title(displayName).Description(desc).Value(&val)
 		if node.IsSecret {
 			inp.EchoMode(huh.EchoModePassword)
 		}
-		return inp, &valueRef{key: key, ptr: &val}
+		f = inp
+		return f, &valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeInt32, schema.ArgsTypeUInt32,
 		schema.ArgsTypeInt64, schema.ArgsTypeUInt64,
@@ -150,7 +165,7 @@ func toField(node ArgsNode, key string) (huh.Field, *valueRef) {
 		if b, ok := node.Default.(bool); ok {
 			val = b
 		}
-		return huh.NewConfirm().Title(name).Description(desc).Value(&val),
+		return huh.NewConfirm().Title(name).Description(desc).Value(&val).Negative("false").Affirmative("true"),
 			&valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeArray:
