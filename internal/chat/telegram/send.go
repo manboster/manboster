@@ -42,10 +42,11 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 	if msg.MessageType == chat.MessageThinkingText {
 		text = "Model Thinking: \n<blockquote expandable>" + text + "</blockquote>"
 	}
+
 	limit := 4000
 	// check length of the text and slice it
 	if utf8.RuneCountInString(text) < limit {
-		if utf8.RuneCountInString(text) > 1000 {
+		if utf8.RuneCountInString(text) > int(s.cfg.CollapseMsgLength) {
 			text = "<blockquote expandable>" + text + "</blockquote>"
 		}
 		_, err = s.tgInstance.Send(recp, text, opts)

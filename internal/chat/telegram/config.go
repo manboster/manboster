@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/config"
 )
@@ -24,6 +25,18 @@ func (c *Config) Args() *config.Args {
 func (c *Config) Validate() error {
 	if c.BotToken == "" {
 		return errors.New("bot token is required")
+	}
+	if c.CollapseMsgLength == 0 {
+		c.CollapseMsgLength = 500
+		color.Yellow("[Manboster Telegram Provider] could not read collapse message length, setting it to default value 500.")
+	}
+	if c.CollapseMsgLength > 3500 {
+		c.CollapseMsgLength = 3500
+		color.Yellow("[Manboster Telegram Provider] the length is too long for configuration! Setting it to maximum value 3500")
+	}
+	if c.ReactionNotifyStatus != "enabled" && c.ReactionNotifyStatus != "clean" && c.ReactionNotifyStatus != "disabled" {
+		c.ReactionNotifyStatus = "enabled"
+		color.Yellow("[Manboster Telegram Provider] could not read reaction notify status, setting it to default value 'enabled'.")
 	}
 	return nil
 }

@@ -105,7 +105,7 @@ func toField(node ArgsNode, key string, initialValues map[string]any) (huh.Field
 		if v := getInitial(); v != nil {
 			val = fmt.Sprintf("%v", v)
 		}
-		return huh.NewInput().Title(name).Description(desc).Value(&val),
+		return huh.NewInput().Title(displayName).Description(desc).Value(&val),
 			&valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeBool:
@@ -113,7 +113,7 @@ func toField(node ArgsNode, key string, initialValues map[string]any) (huh.Field
 		if b, ok := getInitial().(bool); ok {
 			val = b
 		}
-		return huh.NewConfirm().Title(name).Description(desc).Value(&val).Negative("false").Affirmative("true"),
+		return huh.NewConfirm().Title(displayName).Description(desc).Value(&val).Negative("false").Affirmative("true"),
 			&valueRef{key: key, ptr: &val}
 
 	case schema.ArgsTypeArray:
@@ -138,7 +138,7 @@ func toField(node ArgsNode, key string, initialValues map[string]any) (huh.Field
 					}
 				}
 				return huh.NewMultiSelect[string]().
-						Title(name).Description(desc).Options(opts...).Value(&vals),
+						Title(displayName).Description(desc).Options(opts...).Value(&vals),
 					&valueRef{key: key, ptr: &vals}
 			}
 			val := ""
@@ -146,14 +146,14 @@ func toField(node ArgsNode, key string, initialValues map[string]any) (huh.Field
 				val = s
 			}
 			return huh.NewSelect[string]().
-					Title(name).Description(desc).Options(opts...).Value(&val),
+					Title(displayName).Description(desc).Options(opts...).Value(&val),
 				&valueRef{key: key, ptr: &val}
 		}
 		val := ""
 		if v := getInitial(); v != nil {
 			val = fmt.Sprintf("%v", v)
 		}
-		return huh.NewInput().Title(name).Description(desc).Value(&val),
+		return huh.NewInput().Title(displayName).Description(desc).Value(&val),
 			&valueRef{key: key, ptr: &val}
 
 	default:

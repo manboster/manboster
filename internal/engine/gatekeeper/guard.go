@@ -102,10 +102,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		case "continue":
 			return true, nil
 		case "cancel":
-			return false, fmt.Errorf("user select cancel")
+			return false, fmt.Errorf("user manually canceled your request")
 		case "cAnCel":
 			s.ignoranceSessionManager.SetCancelMark(id, true)
-			return false, fmt.Errorf("user select cancel")
+			return false, fmt.Errorf("user manually canceled your request")
 		default:
 			return false, fmt.Errorf("invalid selection value: %v", resp.SelectionCallback.SelectionValue)
 		}
