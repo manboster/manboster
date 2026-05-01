@@ -3,6 +3,7 @@ package browser
 import "github.com/manboster/manboster/spec/config"
 
 type Config struct {
+	Mode string `json:"mode" yaml:"mode" mapstructure:"mode" manboconfig:"name:browser mode;default:headless" enum:"headful,headless"`
 }
 
 func (c *Config) Name() string {

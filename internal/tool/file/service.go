@@ -20,6 +20,7 @@ var metadata = schema.MetaData{
 }
 
 type Service struct {
+	cfg *Config
 }
 
 func (s *Service) Name() string {
@@ -39,7 +40,7 @@ func (s *Service) Requires() []schema.RequirementData {
 }
 
 func (s *Service) Config() configType.Provider {
-	return nil
+	return &Config{}
 }
 
 func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {

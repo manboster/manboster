@@ -8,11 +8,12 @@ import (
 	"path/filepath"
 
 	"github.com/fatih/color"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/spec/plugin"
 )
 
-func (s *Service) Init(ctx context.Context, cfg any) error {
+func (s *Service) Init(ctx context.Context, conf any) error {
 	err := os.MkdirAll(config.Path("workspace"), 0755)
 	if err != nil {
 		return err
@@ -21,6 +22,19 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 	if err != nil {
 		return err
 	}
+
+	var cfg Config
+	err = mapstructure.Decode(conf, &cfg)
+	if err != nil {
+		return err
+	}
+
+	s.cfg = &cfg
+	err = s.cfg.Validate()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -59,17 +73,6 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to read file %s: %w", sPath, err)
 			}
 			resp.Response = string(data)
-		case "write":
-			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
-			if err != nil {
-				return nil, err
-			}
-			err = os.WriteFile(sPath, []byte(arg.Content), 0644)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Tool Provider] dev.manboster.file failed to write file: %q", err))
-				return nil, fmt.Errorf("failed to write file %s:%w", sPath, err)
-			}
-			resp.Response = "Success"
 		case "info":
 			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 			if err != nil {
@@ -84,16 +87,6 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to jsonify file info %s: %w", arg.Name, err)
 			}
 			resp.Response = string(jsonify)
-		case "delete":
-			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
-			if err != nil {
-				return nil, err
-			}
-			err = os.Remove(sPath)
-			if err != nil {
-				return nil, fmt.Errorf("failed to delete file %s: %w", sPath, err)
-			}
-			resp.Response = "success"
 		case "list":
 			if arg.FileName != "" {
 				return nil, fmt.Errorf("filename is not allowed to give while name is list")
@@ -113,6 +106,33 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 			resp.Response = string(jsonify)
 		case "dir":
 			resp.Response = pwd
+		case "delete":
+			if s.cfg.Mode == "readonly" {
+				return nil, fmt.Errorf("failed to delete: read-only mode set by user")
+			}
+			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
+			if err != nil {
+				return nil, err
+			}
+			err = os.Remove(sPath)
+			if err != nil {
+				return nil, fmt.Errorf("failed to delete file %s: %w", sPath, err)
+			}
+			resp.Response = "success"
+		case "write":
+			if s.cfg.Mode == "readonly" {
+				return nil, fmt.Errorf("failed to write: read-only mode set by user")
+			}
+			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
+			if err != nil {
+				return nil, err
+			}
+			err = os.WriteFile(sPath, []byte(arg.Content), 0644)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Tool Provider] dev.manboster.file failed to write file: %q", err))
+				return nil, fmt.Errorf("failed to write file %s:%w", sPath, err)
+			}
+			resp.Response = "Success"
 		default:
 			return nil, fmt.Errorf("unknown argument %q", arg.Name)
 		}
