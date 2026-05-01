@@ -1,7 +1,6 @@
 package browser
 
 import (
-	"github.com/go-rod/rod"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
 	configType "github.com/manboster/manboster/spec/config"
@@ -20,8 +19,8 @@ var metadata = schema.MetaData{
 }
 
 type Service struct {
-	browserInstances map[string]*rod.Browser
-	isReady          bool
+	Manager *Manager
+	isReady bool
 }
 
 func (s *Service) Name() string {

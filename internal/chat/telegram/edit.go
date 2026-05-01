@@ -33,7 +33,7 @@ func (s *Service) EditMessage(ctx context.Context, msg *chat.Message) error {
 	}
 
 	if msg.MessageType&chat.MessageText != 0 {
-		_, err = s.tgInstance.Edit(m, s.Converter(msg.Text.Text, false), &telebot.SendOptions{
+		_, err = s.tgInstance.Edit(m, s.Converter(msg.Text.Text, false, false), &telebot.SendOptions{
 			ParseMode: telebot.ModeHTML,
 		})
 	}

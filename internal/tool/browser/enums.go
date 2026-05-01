@@ -4,7 +4,7 @@ type NameType string
 
 const (
 	NameTypeSearch  NameType = "search"
-	NameTypeBrowser NameType = "browser"
+	NameTypeWebpage NameType = "webpage"
 )
 
 type EngineType string

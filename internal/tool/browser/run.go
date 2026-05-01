@@ -19,18 +19,18 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case "read":
-
-		case "info":
-
-		case "list":
-
-		case "dir":
-
-		case "delete":
-
-		case "write":
-
+		case NameTypeWebpage:
+			res, err := s.ScrapWebpage(ctx, arg.URL, arg.ScrapType, arg.ResponseType)
+			if err != nil {
+				return nil, err
+			}
+			resp.Response = res
+		case NameTypeSearch:
+			res, err := s.doWebSearch(ctx, arg.Keywords, arg.Engine, arg.ResponseType)
+			if err != nil {
+				return nil, err
+			}
+			resp.Response = res
 		default:
 			return nil, fmt.Errorf("unknown argument %q", arg.Name)
 		}
