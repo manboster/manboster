@@ -46,7 +46,7 @@ It seems that you're going to use an unstable version of Manboster. Please note 
 2. As this is not a stable version, it's not contain ANY security patches and fixes.
 3. This version's configuration may be incompatible with older versions and please aware the configuration changes.
 4. If you encounter bugs, we appreciate you to commit to issues and we will fix it as soon as possible.
-5. PLEASE DO NOT STORAGE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as is.
+5. PLEASE DO NOT STORE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as is.
 `, "Do you understand the risks and wish to proceed?", "I Understand & Continue")
 
 }

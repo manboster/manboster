@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
@@ -27,22 +28,20 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 		return err
 	}
 
+	msgId := 0
 	chatId := int64(0)
-	_, err = fmt.Sscanf(msg.ChatID, "%d", &chatId)
+	msgId, err = strconv.Atoi(msg.MessageID)
 	if err != nil {
-		return err
+		msgId = 0
 	}
 
-	msgId := 0
-	_, err = fmt.Sscanf(msg.MessageID, "%d", &msgId)
-
+	chatId, err = strconv.ParseInt(msg.ChatID, 10, 64)
 	if err != nil {
 		return err
 	}
 
 	switch action {
 	case chat.ActionPending:
-
 		typingCtx, cancelTyping := context.WithCancel(ctx)
 		notifierWrite(chatId, msgId, cancelTyping)
 		go s.Type(typingCtx, telebot.ChatID(chatId))
@@ -65,18 +64,17 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 		return nil
 
 	case chat.ActionSuccess:
-		_, _ = notifierCancel(msg.ChatID)
+		chatId, msgId = notifierCancel(msg.ChatID)
 
 		if isClean {
-			// fmt.Println(mid, cid)
-			params := map[string]interface{}{
-				"chat_id":    chatId,
-				"message_id": msgId,
-				"reaction":   []telebot.Reaction{}, // 强制 JSON 序列化为 []
-			}
-
-			_, err = s.tgInstance.Raw("setMessageReaction", params)
-			return err
+			return s.tgInstance.React(recipient, &telebot.Message{
+				ID: msgId,
+				Chat: &telebot.Chat{
+					ID: chatId,
+				},
+			}, telebot.ReactionOptions{
+				Reactions: []telebot.Reaction{},
+			})
 		}
 		return nil
 

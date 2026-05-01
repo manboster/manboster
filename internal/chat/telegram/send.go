@@ -7,7 +7,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
 )
@@ -38,17 +37,10 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		}
 	}
 
-	text, err := util.EscapeMarkdownToTelegramHTML(msg.Text.Text)
-	if msg.MessageType == chat.MessageThinkingText {
-		text = "Model Thinking: \n<blockquote expandable>" + text + "</blockquote>"
-	}
-
+	text := s.Converter(msg.Text.Text, msg.MessageType&chat.MessageThinkingText != 0)
 	limit := 4000
 	// check length of the text and slice it
 	if utf8.RuneCountInString(text) < limit {
-		if utf8.RuneCountInString(text) > int(s.cfg.CollapseMsgLength) {
-			text = "<blockquote expandable>" + text + "</blockquote>"
-		}
 		_, err = s.tgInstance.Send(recp, text, opts)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %q", err))

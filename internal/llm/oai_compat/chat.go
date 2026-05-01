@@ -2,8 +2,6 @@ package oai_compat
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/llm"
@@ -13,9 +11,6 @@ import (
 // Chat allows you to chat with your model
 func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider, messages []llm.Message) (*llm.Event, error) {
 	apiMsgs := make([]openai.ChatCompletionMessage, 0, len(messages))
-
-	//j, _ := json.MarshalIndent(messages, "", "  ")
-	//fmt.Println(string(j))
 
 	for _, msg := range messages {
 		if msg.Type&(llm.MessageToolCallResponse) != 0 {
@@ -72,9 +67,6 @@ func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider,
 
 	}
 
-	//jsonify, _ := json.MarshalIndent(apiMsgs, "", " ")
-	//fmt.Println(string(jsonify))
-
 	req := openai.ChatCompletionRequest{
 		Model:       model,
 		Messages:    apiMsgs,
@@ -92,9 +84,6 @@ func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider,
 		return nil, ErrNoResponse
 	}
 	m := resp.Choices[0].Message
-
-	jsonify, _ := json.Marshal(m)
-	fmt.Println(string(jsonify))
 
 	msg := &llm.Message{
 		Role: llm.RoleAssistant,

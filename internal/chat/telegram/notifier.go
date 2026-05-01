@@ -29,6 +29,7 @@ func notifierWrite(chatID int64, msgId int, cancel context.CancelFunc) {
 	n.Cancel = cancel
 	n.MessageId = msgId
 	n.ChatId = chatID
+	notifierMap[chatId] = n
 }
 
 func notifierCancel(chatId string) (int64, int) {
