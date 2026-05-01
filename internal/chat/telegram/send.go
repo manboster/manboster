@@ -37,16 +37,22 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		}
 	}
 
-	text := s.Converter(msg.Text.Text, msg.MessageType&chat.MessageThinkingText != 0)
+	isToolCall := strings.HasPrefix(msg.Text.Text, "Model called")
+	text := s.Converter(msg.Text.Text, msg.MessageType&chat.MessageThinkingText != 0, isToolCall)
 	limit := 4000
 	// check length of the text and slice it
 	if utf8.RuneCountInString(text) < limit {
-		_, err = s.tgInstance.Send(recp, text, opts)
-		if err != nil {
+		m, sendErr := s.tgInstance.Send(recp, text, opts)
+		if sendErr != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %q", err))
-			_, err = s.tgInstance.Send(recp, msg.Text.Text, &telebot.SendOptions{
-				ParseMode: telebot.ModeDefault,
+			m, err = s.tgInstance.Send(recp, msg.Text.Text, &telebot.SendOptions{
+				ParseMode:             telebot.ModeDefault,
+				DisableWebPagePreview: true,
+				DisableNotification:   isToolCall,
 			})
+		}
+		if m != nil {
+			msg.MessageID = fmt.Sprintf("%d", m.ID)
 		}
 		color.Green(fmt.Sprintf("[Manboster Telegram Provider] Finally successfully sending message"))
 	} else {
@@ -56,17 +62,20 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		} else {
 			caption += "This is the response of this model."
 		}
-		_, err = s.tgInstance.Send(recp, &telebot.Document{
+		m, sendErr := s.tgInstance.Send(recp, &telebot.Document{
 			Caption:  caption,
 			FileName: "message.txt",
 			File:     telebot.FromReader(strings.NewReader(msg.Text.Text)),
 		}, opts)
+		if sendErr != nil {
+			color.Red(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %s", err))
+			return err
+		}
+		if m != nil {
+			msg.MessageID = fmt.Sprintf("%d", m.ID)
+		}
 		color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Message is too long! We can't send it via text, however, we sent it via file."))
 	}
 
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Telegram Provider] Error sending message: %s", err))
-		return err
-	}
 	return nil
 }

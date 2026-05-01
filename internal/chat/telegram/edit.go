@@ -15,12 +15,12 @@ func (s *Service) EditMessage(ctx context.Context, msg *chat.Message) error {
 	}
 
 	msgId := 0
-	_, err := strconv.Atoi(msg.MessageID)
+	msgId, err := strconv.Atoi(msg.MessageID)
 	if err != nil {
 		return err
 	}
 	chatId := int64(0)
-	_, err = strconv.ParseInt(msg.MessageID, 10, 64)
+	chatId, err = strconv.ParseInt(msg.ChatID, 10, 64)
 	if err != nil {
 		return err
 	}

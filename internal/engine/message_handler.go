@@ -82,9 +82,6 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	}
 	msgList = append([]llm.Message{soulLLMMsg}, msgList...)
 
-	// jsonify, _ := json.MarshalIndent(msgList, "", "  ")
-	// fmt.Printf(string(jsonify))
-
 	maxCount := 3
 	maxRepeatCount := 5
 

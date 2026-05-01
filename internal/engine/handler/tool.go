@@ -22,6 +22,10 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		Type: llm.MessageToolCallResponse,
 	}
 
+	toolCallReqCount := 0
+	toolCallMsgId := ""
+	var txt strings.Builder
+
 	for _, req := range event.Message.ToolCallRequest {
 		originalName := req.ToolName
 		safeName := strings.ReplaceAll(req.ToolName, "_", ".")
@@ -73,6 +77,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		valueCtx = context.WithValue(valueCtx, "user_id", msg.UserID)
 		valueCtx = context.WithValue(valueCtx, "chat_provider", instance.Name())
 		valueCtx = context.WithValue(valueCtx, "session_id", sid)
+		valueCtx = context.WithValue(valueCtx, "user_type", h.safeguardService.UserType(ctx, instance.Name(), msg.UserID).String())
 
 		resp, err = h.HandleToolExec(valueCtx, toolProvider, fmt.Sprintf("%v", req.ToolArgs))
 		if err != nil {
@@ -83,7 +88,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded successfully.", safeName)) // with response resp.
 
 		if successExecution {
-			txt := fmt.Sprintf("Model called tool `%s`(`%s`) ", toolProvider.DisplayName(), safeName)
+			txt.WriteString(fmt.Sprintf("Model called `%s`(`%s`) ", toolProvider.DisplayName(), safeName))
 
 			var result map[string]interface{}
 			err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
@@ -92,24 +97,40 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			}
 			params := util.JSONParse(result)
 			if params != "" {
-				txt += fmt.Sprintf("with params: %s", params)
+				txt.WriteString(fmt.Sprintf("with params: %s", params))
 			}
-			txt += "."
+			txt.WriteString(".\n")
 
 			callMsg.Text = &chat.TextPayload{
-				Text: txt,
+				Text: txt.String(),
 			}
 		} else {
 			callMsg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("Model called tool `%s`(`%s`) but returned error: %q.", toolProvider.DisplayName(), safeName, err),
+				Text: fmt.Sprintf("Model called `%s`(`%s`) but returned error: %q.", toolProvider.DisplayName(), safeName, err),
 			}
 		}
 
-		err = h.gateway.SendMessage(ctx, instance, callMsg)
+		if toolCallReqCount%5 == 0 {
+			err = h.gateway.SendMessage(ctx, instance, callMsg)
+			toolCallMsgId = callMsg.MessageID
+			if toolCallReqCount != 0 {
+				txt.Reset()
+			}
+		} else {
+			cMsg := callMsg.Clone()
+			cMsg.MessageID = toolCallMsgId
+			cMsg.MessageType = callMsg.MessageType | chat.MessageUnknown
+			cMsg.Text = &chat.TextPayload{
+				Text: txt.String(),
+			}
+			err = h.gateway.EditMessage(ctx, instance, cMsg)
+		}
+
+		toolCallReqCount++
+
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
 		}
-
 		respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{
 			ID:       req.ID,
 			ToolName: req.ToolName,
