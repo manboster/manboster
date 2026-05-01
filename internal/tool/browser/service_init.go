@@ -9,18 +9,18 @@ import (
 )
 
 func (s *Service) Init(ctx context.Context, cfg any) error {
-	browserManager := launcher.NewBrowser()
-	_, err := browserManager.Get()
-	if err != nil {
-		go func() {
+	go func() {
+		browserManager := launcher.NewBrowser()
+		_, err := browserManager.Get()
+		if err != nil {
 			err := s.DownloadBrowser(browserManager)
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Tool Provider] Failed to download browser: %v", err))
 			}
-		}()
-	} else {
-		s.isReady = true
-	}
+		} else {
+			s.isReady = true
+		}
+	}()
 	s.Manager = NewManager()
 	return nil
 }

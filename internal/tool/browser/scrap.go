@@ -4,8 +4,11 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/fatih/color"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/stealth"
 )
 
 func (s *Service) BasicScrap(ctx context.Context, url string, respType ResponseType) (string, error) {
@@ -36,5 +39,36 @@ func (s *Service) BasicScrap(ctx context.Context, url string, respType ResponseT
 }
 
 func (s *Service) BrowserScrap(ctx context.Context, url string, respType ResponseType, sid string) (string, error) {
+	browserInstance, err := s.Manager.getBrowserInstance(ctx, sid)
+	if err != nil {
+		return "", err
+	}
 
+	p, err := stealth.Page(browserInstance.browser)
+	if err != nil {
+		return "", err
+	}
+	defer func(p *rod.Page) {
+		err := p.Close()
+		if err != nil {
+			color.Yellow("[Manboster Tool Provider] We could not close the page")
+		}
+	}(p)
+
+	err = p.Navigate(url)
+	if err != nil {
+		return "", err
+	}
+
+	err = p.WaitIdle(2 * time.Minute)
+	if err != nil {
+		return "", err
+	}
+
+	str, err := p.HTML()
+	if err != nil {
+		return "", err
+	}
+
+	return s.purgeData(str, respType), nil
 }

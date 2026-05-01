@@ -18,10 +18,12 @@ func (s *Service) DownloadBrowser(m *launcher.Browser) error {
 	return nil
 }
 
-func (s *Service) ScrapWebpage(ctx context.Context, url string, effort ScrapType, respType ResponseType) (string, error) {
+func (s *Service) ScrapWebpage(ctx context.Context, url string, effort ScrapType, respType ResponseType, sid string) (string, error) {
 	switch effort {
 	case ScrapTypeText:
 		return s.BasicScrap(ctx, url, respType)
+	case ScrapTypeBrowser:
+		return s.BrowserScrap(ctx, url, respType, sid)
 	default:
 		return "", errors.New("unsupported scrap type")
 	}

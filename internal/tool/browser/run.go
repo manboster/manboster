@@ -17,10 +17,15 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 		return nil, fmt.Errorf("the browser is not ready, please wait for a while or check out whether there is an error or not")
 	}
 
+	sessID, ok := ctx.Value("session_id").(string)
+	if !ok {
+		return nil, fmt.Errorf("session_id not found in context")
+	}
+
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
 		case NameTypeWebpage:
-			res, err := s.ScrapWebpage(ctx, arg.URL, arg.ScrapType, arg.ResponseType)
+			res, err := s.ScrapWebpage(ctx, arg.URL, arg.ScrapType, arg.ResponseType, sessID)
 			if err != nil {
 				return nil, err
 			}
