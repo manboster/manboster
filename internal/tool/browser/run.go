@@ -2,12 +2,42 @@ package browser
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/manboster/manboster/spec/plugin"
 )
 
 func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	return nil, nil
+	arg := RunArgs{}
+	resp := &plugin.RunResponse{
+		Hangup: false,
+	}
+	if !s.isReady {
+		return nil, fmt.Errorf("the browser is not ready, please wait for a while or check out whether there is an error or not")
+	}
+
+	if json.Unmarshal([]byte(args), &arg) == nil {
+		switch arg.Name {
+		case "read":
+
+		case "info":
+
+		case "list":
+
+		case "dir":
+
+		case "delete":
+
+		case "write":
+
+		default:
+			return nil, fmt.Errorf("unknown argument %q", arg.Name)
+		}
+	} else {
+		return nil, fmt.Errorf("invalid arguments")
+	}
+	return resp, nil
 }
 
 func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
