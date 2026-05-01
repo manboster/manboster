@@ -16,6 +16,7 @@ import (
 type Manager struct {
 	lock             sync.Mutex
 	browserInstances map[string]*Instance
+	cfg              *Config
 }
 
 type Instance struct {
@@ -25,10 +26,11 @@ type Instance struct {
 	active   bool
 }
 
-func NewManager() *Manager {
+func NewManager(cfg *Config) *Manager {
 	return &Manager{
 		browserInstances: make(map[string]*Instance),
 		lock:             sync.Mutex{},
+		cfg:              cfg,
 	}
 }
 
@@ -42,9 +44,15 @@ func (m *Manager) getBrowserInstance(ctx context.Context, id string) (*Instance,
 		return i, nil
 	}
 	i = &Instance{}
+
+	isHeadless := true
+	if m.cfg.Mode == "headful" {
+		isHeadless = false
+	}
+
 	l := launcher.New().
 		UserDataDir(config.Path(filepath.Join("browser", fmt.Sprintf("session-%s", id)))).
-		Headless(false).
+		Headless(isHeadless).
 		Devtools(true)
 
 	url, err := l.Launch()
@@ -53,7 +61,7 @@ func (m *Manager) getBrowserInstance(ctx context.Context, id string) (*Instance,
 		return nil, err
 	}
 
-	cancelCtx, cancel := context.WithCancel(ctx)
+	cancelCtx, cancel := context.WithCancel(context.Background())
 	browser := rod.New().ControlURL(url).Context(cancelCtx)
 	go func(la *launcher.Launcher, cAnCel context.CancelFunc) {
 		err := m.timeCheckRunner(ctx, id)
@@ -92,9 +100,16 @@ func (m *Manager) timeCheckRunner(ctx context.Context, id string) error {
 						return err
 					}
 					delete(m.browserInstances, id)
+					m.lock.Unlock()
+					return nil
+				}
+				m.lock.Unlock()
+			} else {
+				m.lock.Unlock()
+				if !found {
+					return nil
 				}
 			}
-			m.lock.Unlock()
 		case <-ctx.Done():
 			return ctx.Err()
 		}

@@ -6,9 +6,22 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-viper/mapstructure/v2"
 )
 
-func (s *Service) Init(ctx context.Context, cfg any) error {
+func (s *Service) Init(ctx context.Context, conf any) error {
+	var cfg Config
+	err := mapstructure.Decode(conf, &cfg)
+	if err != nil {
+		return err
+	}
+
+	s.cfg = &cfg
+	err = s.cfg.Validate()
+	if err != nil {
+		return err
+	}
+
 	go func() {
 		browserManager := launcher.NewBrowser()
 		_, err := browserManager.Get()
@@ -21,6 +34,7 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 			s.isReady = true
 		}
 	}()
-	s.Manager = NewManager()
+
+	s.Manager = NewManager(s.cfg)
 	return nil
 }

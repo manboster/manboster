@@ -15,6 +15,8 @@ const (
 	EngineTypeBing       EngineType = "bing"
 	EngineTypeCNBing     EngineType = "cnbing"
 	EngineTypeBaidu      EngineType = "baidu"
+	EngineTypeGitHub     EngineType = "github"
+	EngineTypeWikipedia  EngineType = "wikipedia"
 )
 
 type ResponseType string

@@ -31,7 +31,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 			}
 			resp.Response = res
 		case NameTypeSearch:
-			res, err := s.doWebSearch(ctx, arg.Keywords, arg.Engine, arg.ResponseType)
+			res, err := s.doWebSearch(ctx, arg.Keywords, arg.Engine, ResponseTypeRaw, sessID)
 			if err != nil {
 				return nil, err
 			}

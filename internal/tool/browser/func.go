@@ -3,6 +3,7 @@ package browser
 import (
 	"context"
 	"errors"
+	"net/url"
 
 	"github.com/fatih/color"
 	"github.com/go-rod/rod/lib/launcher"
@@ -29,6 +30,30 @@ func (s *Service) ScrapWebpage(ctx context.Context, url string, effort ScrapType
 	}
 }
 
-func (s *Service) doWebSearch(ctx context.Context, keyword string, searchEngine EngineType, respType ResponseType) (string, error) {
-	return "", nil
+func (s *Service) doWebSearch(ctx context.Context, keyword string, searchEngine EngineType, respType ResponseType, sid string) (string, error) {
+	u := ""
+	switch searchEngine {
+	case EngineTypeGoogle:
+		u = "https://www.google.com/search?q=" + url.QueryEscape(keyword)
+	case EngineTypeBaidu:
+		u = "https://www.baidu.com/s?ie=utf-8&wd=" + url.QueryEscape(keyword)
+	case EngineTypeBing:
+		u = "https://www.bing.com/search?q=" + url.QueryEscape(keyword)
+	case EngineTypeCNBing:
+		u = "https://cn.bing.com/search?q=" + url.QueryEscape(keyword)
+	case EngineTypeDuckDuckGo:
+		u = "https://duckduckgo.com/search?q=" + url.QueryEscape(keyword)
+	case EngineTypeGitHub:
+		u = "https://github.com/search?q=" + url.QueryEscape(keyword)
+	case EngineTypeWikipedia:
+		u = "https://wikipedia.org/w/index.php?title=Special:Search&fulltext=1&ns0=1&search=" + url.QueryEscape(keyword)
+	default:
+		return "", errors.New("unsupported engine type")
+	}
+	str, err := s.BasicScrap(ctx, u, respType)
+	if err != nil {
+		color.Yellow("[Manboster Tool Provider] We could not get content directly, opening the browser...")
+		return "", err
+	}
+	return str, nil
 }

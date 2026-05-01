@@ -43,12 +43,12 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			Value: "continue",
 		},
 		{
-			Name:  "Cancel",
-			Value: "cancel",
-		},
-		{
 			Name:  "Continue and shut up, handled by hachimi",
 			Value: "hachimi",
+		},
+		{
+			Name:  "Cancel",
+			Value: "cancel",
 		},
 		{
 			Name:  "Cancel and silence in 15 minutes",

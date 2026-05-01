@@ -21,6 +21,7 @@ var metadata = schema.MetaData{
 type Service struct {
 	Manager *Manager
 	isReady bool
+	cfg     *Config
 }
 
 func (s *Service) Name() string {
