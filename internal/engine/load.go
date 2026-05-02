@@ -14,6 +14,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
+	"github.com/manboster/manboster/internal/session"
 )
 
 func (e *Engine) Load(ctx context.Context) error {
@@ -29,10 +30,12 @@ func (e *Engine) Load(ctx context.Context) error {
 		e.onboard = onboard.New()
 	}
 
-	e.chatDataService = chatdata.NewService(e.repo, e.sessionManager.ChatSession, e.llmProviders)
+	e.soulService = soul.NewService(e.repo)
+	e.sessionService = session.NewService(e.repo, e.soulService, e.config)
+
+	e.chatDataService = chatdata.NewService(e.repo, e.sessionService.Manager.ChatSession, e.llmProviders)
 	e.safeguardService = safeguard.NewService(e.repo)
 
-	e.soulService = soul.NewService(e.repo)
 	err = e.soulService.Init(ctx)
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to initialize soul service: %q", err))
@@ -46,10 +49,10 @@ func (e *Engine) Load(ctx context.Context) error {
 			fmt.Printf("[Manboster Engine] Duplicate tool '%s'! The next one will be ignored.\n", tool.Name())
 		}
 	}
-	e.gateway = gateway.NewService(e.toolProviders, e.sessionManager.SelectionManager)
-	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService, e.sessionManager.Ignorance)
-	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionManager.SelectionManager, e.gatekeeperService, e.safeguardService)
-	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionManager, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
+	e.gateway = gateway.NewService(e.toolProviders, e.sessionService.Manager.SelectionManager)
+	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService, e.sessionService.Manager.Ignorance)
+	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionService.Manager.SelectionManager, e.gatekeeperService, e.safeguardService)
+	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
 	// version tips
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {

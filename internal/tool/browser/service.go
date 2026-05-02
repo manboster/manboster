@@ -9,7 +9,7 @@ import (
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.browser",
 	DisplayName:      "Manboster Web Browser Tool",
-	Description:      "Manboster Web Browser Tool gives unlimited ability for models to search for the Internet, capture webpages, surfing the Internet or download files. Also, you can use CloudFlare's browser use to proxy in order to hide real IP.",
+	Description:      "Manboster Web Browser Tool gives unlimited ability for models to search for the Internet, capture webpages, surfing the Internet or download files. Also, you can use CloudFlare's browser use to proxy in order to hide real IP. If there is something you don't know, please use search to search for it.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

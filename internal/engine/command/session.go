@@ -8,8 +8,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository"
-	"github.com/manboster/manboster/internal/repository/types"
-	"github.com/manboster/manboster/internal/session/chat_session"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -18,7 +16,7 @@ import (
 // cmdCancel enables user to cancel their request
 func (h *Handler) cmdCancel(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	msg.MessageType = chat.MessageText
-	sessData, avail := h.sessionManager.ChatSession.GetSession(sessionId)
+	sessData, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 
 	var text string
 	if avail {
@@ -50,7 +48,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := h.sessionManager.ChatSession.GetSession(sessionId)
+	_, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
 			Text: "Session is not active, there is nothing to do!",
@@ -58,7 +56,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	h.sessionManager.ChatSession.DeleteSession(sessionId)
+	h.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
 		return err
@@ -74,7 +72,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return err
 	}
 
-	sid, err := h.newSession(ctx, instance, msg)
+	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), msg)
 	if err != nil {
 		return err
 	}
@@ -103,7 +101,7 @@ func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := h.sessionManager.ChatSession.GetSession(sessionId)
+	_, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{
 			Text: "Session is not active, there is nothing to do!",
@@ -111,13 +109,13 @@ func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	h.sessionManager.ChatSession.DeleteSession(sessionId)
+	h.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
 		return err
 	}
 
-	sid, err := h.newSession(ctx, instance, msg)
+	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), msg)
 	if err != nil {
 		return err
 	}
@@ -141,7 +139,7 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
-	sessData, _ := h.sessionManager.ChatSession.GetSession(sessionId)
+	sessData, _ := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 	p, m := util.GetModelWithFallback(ctx, h.llmProviders, sessData.Provider, sessData.Model)
 	provider := p
 	model := m
@@ -306,7 +304,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s, _ := h.sessionManager.ChatSession.GetSession(sessionId)
+	s, _ := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 
 	if _, avail := h.llmProviders[id]; !avail {
 		respString.WriteString("Current provider is what you have entered!")
@@ -319,7 +317,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 	s.Provider = h.llmProviders[id].Name()
 	s.Model = h.llmProviders[id].Models()[0].Name
 
-	h.sessionManager.ChatSession.SetSession(sessionId, s)
+	h.sessionService.Manager.ChatSession.SetSession(sessionId, s)
 	err := h.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
 		"llm_provider":       s.Provider,
 		"llm_provider_model": s.Model,
@@ -346,7 +344,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 
-	s, _ := h.sessionManager.ChatSession.GetSession(sid)
+	s, _ := h.sessionService.Manager.ChatSession.GetSession(sid)
 
 	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, s.Provider, s.Model)
 	// fmt.Printf("%s %s %s %s", s.Model, s.Provider, p.DisplayName(), sid)
@@ -388,7 +386,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	}
 
 	s.Model = id
-	h.sessionManager.ChatSession.SetSession(sid, s)
+	h.sessionService.Manager.ChatSession.SetSession(sid, s)
 	err := h.repo.UpdateSession(ctx, sid, map[string]interface{}{
 		"llm_provider_model": s.Model,
 	})
@@ -406,46 +404,4 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		Text: respString.String(),
 	}
 	return instance.SendMessage(ctx, respMessage)
-}
-
-func (h *Handler) newSession(ctx context.Context, instance chat.Provider, msg *chat.Message) (string, error) {
-	lockerID := fmt.Sprintf("%s:%s", instance.Name(), msg.ChatID)
-	provider := instance.Name()
-	chatLock := h.sessionManager.Chat.GetSessionChatLocks(lockerID)
-
-	chatLock.Lock()
-	defer chatLock.Unlock()
-
-	sessionId := util.RandomString(8)
-	soulsList := h.soulService.GetSoulsList(ctx, msg.ChatID)
-	err := h.repo.CreateSession(ctx, types.Session{
-		SessionID:        sessionId,
-		LLMProvider:      h.config.App.DefaultLLMProvider,
-		LLMProviderModel: h.config.App.DefaultLLMModel,
-		ActivatedSouls:   soulsList,
-	})
-	if err != nil {
-		return "", err
-	}
-	// set a new session
-	h.sessionManager.ChatSession.SetSession(sessionId, chat_session.Session{
-		Model:    h.config.App.DefaultLLMModel,
-		Provider: h.config.App.DefaultLLMProvider,
-		Events:   []llm.Event{},
-		Souls:    soulsList,
-		Active:   false,
-		Cancel:   nil,
-	})
-
-	err = h.repo.CreateChat(ctx, types.Chat{
-		ChatID:         msg.ChatID,
-		SessionID:      sessionId,
-		ChatProvider:   provider,
-		ChatPermission: 1,
-	})
-
-	if err != nil {
-		return "", err
-	}
-	return sessionId, nil
 }

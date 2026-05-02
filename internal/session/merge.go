@@ -1,4 +1,4 @@
-package chatdata
+package session
 
 import (
 	"context"
@@ -6,12 +6,18 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid string) error {
-	sess, avail := s.sessionManager.GetSession(sid)
+// MergeChatSession merges chat from repository
+func (s *Service) MergeChatSession(ctx context.Context, sessionId string) error {
+	// then we begin to read latest messages database storages
+	chatDataInfo, err := s.repo.GetChatData(ctx, sessionId)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
+		return nil
+	}
+	sess, avail := s.Manager.ChatSession.GetSession(sessionId)
 	if avail && len(sess.Events) > 0 {
 		return nil
 	}
@@ -77,7 +83,7 @@ func (s *Service) Merge(ctx context.Context, chatDataInfo []types.ChatData, sid 
 			}
 		}
 
-		s.sessionManager.AppendEvent(sid, event)
+		s.Manager.ChatSession.AppendEvent(sessionId, event)
 	}
 
 	return nil

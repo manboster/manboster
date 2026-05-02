@@ -17,7 +17,7 @@ import (
 )
 
 type Engine struct {
-	sessionManager *session.Manager
+	sessionService *session.Service
 	llmProviders   map[string]llm.Provider
 	toolProviders  []tool.Provider
 	toolMaps       map[string]tool.Provider
@@ -36,12 +36,11 @@ type Engine struct {
 
 func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, toolProviders []tool.Provider) (*Engine, error) {
 	return &Engine{
-		sessionManager: session.NewManager(),
-		llmProviders:   llmProviders,
-		toolProviders:  toolProviders,
-		toolMaps:       make(map[string]tool.Provider),
-		config:         cfg,
-		repo:           repo,
-		onboard:        nil,
+		llmProviders:  llmProviders,
+		toolProviders: toolProviders,
+		toolMaps:      make(map[string]tool.Provider),
+		config:        cfg,
+		repo:          repo,
+		onboard:       nil,
 	}, nil
 }

@@ -15,18 +15,18 @@ type Handler struct {
 	repo             repository.Repository
 	onboard          *onboard.Service
 	safeguardService *safeguard.Service
-	sessionManager   *session.Manager
+	sessionService   *session.Service
 	llmProviders     map[string]llm.Provider
 	config           *config.Config
 	soulService      *soul.Service
 	handler          *handler.Handler
 }
 
-func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessionManager *session.Manager, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
+func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
 	return &Handler{
 		repo:             repo,
 		safeguardService: safeguard,
-		sessionManager:   sessionManager,
+		sessionService:   sessionService,
 		llmProviders:     llmProviders,
 		config:           config,
 		soulService:      soul,

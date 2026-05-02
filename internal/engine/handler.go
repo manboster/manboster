@@ -64,7 +64,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// get message types
 	// sessionId := e.sessionManager.ID(displayName, msg.ChatID)
-	sessionId, err := e.loadSession(ctx, instance, msg, e.safeguardService.IsAdmin(uType))
+	sessionId, err := e.sessionService.LoadChatSession(ctx, instance, msg, e.safeguardService.IsAdmin(uType))
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {
 		color.Yellow(fmt.Sprintf("[Manboster Engine] We detected an unknown user wants to start a new chat!"))
@@ -90,61 +90,29 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
-	// TODO: replace it to channel queue
-	lock := e.sessionManager.ChatSession.GetSessionLocks(sessionId)
-	lock.Lock()
-	defer lock.Unlock()
-
-	// make a cancelable context
-	cancelCtx, cancel := context.WithCancel(ctx)
-	defer func(sid string) {
-		cancel()
-		e.sessionManager.ChatSession.Deactivate(sid)
-	}(sessionId)
-	e.sessionManager.ChatSession.Activate(sessionId, cancel)
-
-	// we need to read model and provider.
-	sessInfo, err := e.repo.GetSession(ctx, sessionId)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
-		return
-	}
-	e.sessionManager.ChatSession.SetModel(sessInfo.SessionID, sessInfo.LLMProvider, sessInfo.LLMProviderModel)
-	e.sessionManager.ChatSession.SetSoul(sessionId, sessInfo.ActivatedSouls)
-
-	// then we begin to read latest messages database storages
-	chatDataInfo, err := e.repo.GetChatData(ctx, sessionId)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
-		return
-	}
-	err = e.chatDataService.Merge(ctx, chatDataInfo, sessionId)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
-		return
+	// if there is no valid thing, we will handle it via creating channel.
+	if !e.sessionService.Manager.ChatSession.AvailChan(sessionId) {
+		color.Blue("[Manboster Engine] This session is not available in memory storage, now loading from database")
+		cancelCtx, cancelFunc := context.WithCancel(context.Background())
+		e.sessionService.Manager.ChatSession.SetSessionCancel(sessionId, cancelFunc)
+		e.sessionService.Manager.ChatSession.CreateChan(sessionId, make(chan *chat.Message, 10))
+		go func() {
+			err := e.MessageRunner(cancelCtx, instance, sessionId)
+			if err != nil {
+				color.Yellow("[Manboster Engine] We encountered an error while handling runner via %s, error: %q", displayName, err)
+			}
+		}()
 	}
 
 	if msg.MessageType == chat.MessageCommand {
-		err = e.commandHandler.Handle(ctx, instance, msg, sessionId)
+		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command: %q", err))
+		}
 		return
 	}
 
-	err = e.MessageHandler(cancelCtx, instance, msg, sessionId)
-	//switch msg.MessageType {
-	//case chat.MessageText:
-	//	err = e.HandleText(cancelCtx, instance, msg, sessionId)
-	//case chat.MessageCommand:
-	//	err = e.HandleCommand(cancelCtx, instance, msg, sessionId)
-	//default:
-	//	color.Yellow("[Manboster Engine] Ignoring message from unknown type.")
-	//}
-
-	if err != nil {
-		err := instance.Notify(ctx, msg, chat.ActionError)
-		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while notifying chat provider %s, error: %q", displayName, err))
-			return
-		}
-		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling message type(%d) message via %s, error: %q", msg.MessageType, displayName, err))
-	}
+	color.Blue("[Manboster Engine] Getting channel...")
+	ch := e.sessionService.Manager.ChatSession.GetChan(sessionId)
+	ch <- msg
 }

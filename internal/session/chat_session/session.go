@@ -18,11 +18,11 @@ type Session struct {
 	CommandStep int8             // the current step command is executing
 	Active      bool
 	Cancel      context.CancelFunc
+	SessCancel  context.CancelFunc
+	Ch          chan *chat.Message
 }
 
 type Manager struct {
-	Lock sync.RWMutex
-
-	SessionLocks map[string]*sync.Mutex
-	Sessions     map[string]Session
+	Lock     sync.RWMutex
+	Sessions map[string]Session
 }
