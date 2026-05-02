@@ -1,4 +1,4 @@
-package file
+package browser
 
 import (
 	"context"
@@ -11,10 +11,16 @@ import (
 )
 
 func (s *Service) RegisterHook(registry *hook.Registry) {
+	registry.Register(hook.EngineBeforeCompact, hook.EngineBeforeCompactHookProvider{
+		PolyfillFunc: func(ctx context.Context, before string) error {
+			return s.Manager.cancelBrowserInstance(before)
+		},
+	})
+
 	registry.Register(hook.EngineAfterCompact, hook.EngineAfterCompactHookProvider{
 		PolyfillFunc: func(ctx context.Context, before string, after string) error {
-			oldPath := config.Path(filepath.Join("workspace", "session-"+before))
-			newPath := config.Path(filepath.Join("workspace", "session-"+after))
+			oldPath := config.Path(filepath.Join("browser", "session-"+before))
+			newPath := config.Path(filepath.Join("browser", "session-"+after))
 
 			if _, err := os.Stat(oldPath); os.IsNotExist(err) {
 				return nil
@@ -37,4 +43,5 @@ func (s *Service) RegisterHook(registry *hook.Registry) {
 			return nil
 		},
 	})
+
 }

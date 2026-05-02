@@ -6,6 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/engine/hook"
 	"github.com/manboster/manboster/internal/tool"
 
 	_ "github.com/manboster/manboster/internal/tool/all"
@@ -25,6 +26,7 @@ func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Prov
 			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while loading tool call provider %q: %q", provider.DisplayName(), err))
 			continue
 		}
+		provider.RegisterHook(hook.Reg)
 		go func() {
 			err := provider.Start(ctx)
 			if err != nil {

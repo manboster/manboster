@@ -86,6 +86,20 @@ func (m *Manager) getBrowserInstance(ctx context.Context, id string) (*Instance,
 	return i, nil
 }
 
+func (m *Manager) cancelBrowserInstance(id string) error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+	i, avail := m.browserInstances[id]
+	if !avail {
+		return nil
+	}
+	if i.cAnCel != nil {
+		i.cAnCel()
+	}
+	delete(m.browserInstances, id)
+	return nil
+}
+
 func (m *Manager) timeCheckRunner(ctx context.Context, id string) error {
 	ticker := time.NewTicker(1 * time.Minute)
 	for {

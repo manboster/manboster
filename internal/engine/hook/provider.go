@@ -6,11 +6,6 @@ import (
 	"github.com/manboster/manboster/spec/chat"
 )
 
-type Provider interface {
-	HookType() EngineHookType
-	PolyfillProvider() interface{}
-}
-
 type EngineHookType string
 
 const (
@@ -19,14 +14,14 @@ const (
 	EngineAfterCompact   EngineHookType = "engine_after_compact"
 )
 
-type EngineBeforeToolCallHookProvider interface {
-	PolyfillFunc(ctx context.Context, msg *chat.Message) (*chat.Message, error)
+type EngineBeforeToolCallHookProvider struct {
+	PolyfillFunc func(ctx context.Context, msg *chat.Message) (*chat.Message, error)
 }
 
-type EngineBeforeCompactHookProvider interface {
-	PolyfillFunc(ctx context.Context, before string) error
+type EngineBeforeCompactHookProvider struct {
+	PolyfillFunc func(ctx context.Context, before string) error
 }
 
-type EngineAfterCompactHookProvider interface {
-	PolyfillFunc(ctx context.Context, before string, after string) error
+type EngineAfterCompactHookProvider struct {
+	PolyfillFunc func(ctx context.Context, before string, after string) error
 }

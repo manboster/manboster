@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/engine/hook"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
@@ -38,6 +39,19 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	}
 	if count < 5 || splitIndex == 0 {
 		return ErrNoNeedToCompact
+	}
+
+	hookProviders := hook.Reg.GetProviders(hook.EngineBeforeCompact)
+	for _, hookP := range hookProviders {
+		ho, ok := hookP.(hook.EngineBeforeCompactHookProvider)
+		if !ok {
+			color.Yellow(fmt.Sprintf("[Manboster ChatData] Failed to assert in before compact hook provider, please check function is valid or not."))
+			continue
+		}
+		err := ho.PolyfillFunc(ctx, sessionId)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster ChatData] Failed to polyfill session in before compact hook: %v", err))
+		}
 	}
 
 	messagesToCompact := msg[:splitIndex] // compact data
@@ -119,6 +133,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 			return err
 		}
 	}
+	s.sessionManager.DeleteSession(sessionId)
 	err = s.repo.CreateSession(ctx, types.Session{
 		SessionID:        newSessionID,
 		LLMProviderModel: model,
@@ -130,6 +145,19 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster ChatData] Failed to create session in repository when compacting: %v", err))
 		return err
+	}
+
+	hookProviders = hook.Reg.GetProviders(hook.EngineAfterCompact)
+	for _, hookP := range hookProviders {
+		ho, ok := hookP.(hook.EngineAfterCompactHookProvider)
+		if !ok {
+			color.Yellow(fmt.Sprintf("[Manboster ChatData] Failed to assert in hook provider, please check function is valid or not."))
+			continue
+		}
+		err := ho.PolyfillFunc(ctx, sessionId, newSessionID)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster ChatData] Failed to polyfill session in hook: %v", err))
+		}
 	}
 
 	err = s.repo.ReplaceChatSessions(ctx, sessionId, newSessionID)
