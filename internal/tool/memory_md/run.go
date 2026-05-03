@@ -41,13 +41,13 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case "get":
+		case NameGet:
 			data, err := os.ReadFile(path)
 			if err != nil {
 				return nil, fmt.Errorf("failed to read file %s: %w", path, err)
 			}
 			resp.Response = string(data)
-		case "set":
+		case NameSet:
 			if len([]byte(arg.Value)) > 65536 {
 				return nil, fmt.Errorf("failed to write: markdown entity too large")
 			}

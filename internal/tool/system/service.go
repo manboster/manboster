@@ -54,7 +54,7 @@ func (s *Service) CacheGroup(args string) string {
 	arg := RunArgs{}
 	var respStr strings.Builder
 	if json.Unmarshal([]byte(args), &arg) == nil {
-		respStr.WriteString(arg.Name)
+		respStr.WriteString(string(arg.Name))
 	}
 	return respStr.String()
 }

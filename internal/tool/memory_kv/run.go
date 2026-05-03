@@ -55,7 +55,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 	}
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case "get":
+		case NameGet:
 			if arg.Key != "" {
 				memory, err := s.memDB.GetMemory(ctx, arg.Key)
 				if err != nil {
@@ -63,7 +63,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				}
 				resp.Response = memory.Value
 			}
-		case "set":
+		case NameSet:
 			if arg.Key != "" && arg.Value != "" {
 				err := s.memDB.EditMemoryValue(ctx, arg.Key, arg.Value)
 				if errors.Is(err, repository.ErrNotFound) {
@@ -77,7 +77,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				}
 				resp.Response = "success"
 			}
-		case "delete":
+		case NameDelete:
 			if arg.Key != "" {
 				err := s.memDB.DeleteMemory(ctx, arg.Key)
 				if err != nil {
@@ -85,7 +85,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				}
 				resp.Response = "success"
 			}
-		case "list":
+		case NameList:
 			keys, err := s.memDB.ListMemoryKeys(ctx)
 			if err != nil {
 				return nil, fmt.Errorf("failed to list keys")

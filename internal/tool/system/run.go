@@ -23,7 +23,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 	}
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case "os_info":
+		case NameOSInfo:
 			sys, err := getSystemInfo(ctx)
 			if err != nil {
 				return resp, fmt.Errorf("failed to get system info: %w", err)
@@ -33,9 +33,9 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to marshal system info: %w", err)
 			}
 			resp.Response = string(jsonify)
-		case "process":
+		case NameProcess:
 			switch arg.Action {
-			case "list":
+			case ActionList:
 				sys, err := listProcesses(ctx)
 				if err != nil {
 					return resp, fmt.Errorf("failed to get process list: %w", err)
@@ -45,7 +45,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 					return nil, fmt.Errorf("failed to marshal process: %w", err)
 				}
 				resp.Response = string(jsonify)
-			case "info":
+			case ActionInfo:
 				sys, err := getProcessInfo(ctx, int32(arg.PID))
 				if err != nil {
 					return resp, fmt.Errorf("failed to get process list: %w", err)
@@ -55,7 +55,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 					return nil, fmt.Errorf("failed to marshal process: %w", err)
 				}
 				resp.Response = string(jsonify)
-			case "kill":
+			case ActionKill:
 				err := killProcess(ctx, int32(arg.PID))
 				if err != nil {
 					return resp, fmt.Errorf("failed to kill process: %w", err)
