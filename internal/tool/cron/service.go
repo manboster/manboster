@@ -1,20 +1,19 @@
-package system
+package cron
 
 import (
 	"context"
-	"encoding/json"
-	"strings"
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.system",
-	DisplayName:      "System Info Tool",
-	Description:      "System Info Tool can get system information and current running status.",
+	Name:             "dev.manboster.cron",
+	DisplayName:      "Cronjob",
+	Description:      "Cronjob allows you to execute command at a constant time or delay, you can even use crontab expressions.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
@@ -22,7 +21,9 @@ var metadata = schema.MetaData{
 	MinUserType:      "admin",
 }
 
-type Service struct{}
+type Service struct {
+	cronRepo repository.CronRepository
+}
 
 func (s *Service) Name() string {
 	return metadata.Name
@@ -51,10 +52,5 @@ func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) 
 }
 
 func (s *Service) CacheGroup(args string) string {
-	arg := RunArgs{}
-	var respStr strings.Builder
-	if json.Unmarshal([]byte(args), &arg) == nil {
-		respStr.WriteString(arg.Name)
-	}
-	return respStr.String()
+	return ""
 }

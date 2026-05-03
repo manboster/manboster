@@ -15,7 +15,8 @@ import (
 
 // Guard is core component of Manboster gatekeeper service.
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
-	ud := fmt.Sprintf("%s:%s:%s:%s", instance.Name(), msg.UserID, sid, toolProvider.Name())
+	executeGroup := toolProvider.CacheGroup(fmt.Sprintf("%s", req.ToolArgs))
+	ud := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), msg.UserID, sid, toolProvider.Name(), executeGroup)
 	if s.ignoranceSessionManager.GetCancelMark(ud) {
 		return false, fmt.Errorf("this user rejected all calls of this tool and please try again after 15 minutes")
 	}
@@ -70,31 +71,31 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return false, fmt.Errorf("failed to get select result: %v", err)
 	}
 	if resp.SelectionCallback != nil {
-		id := fmt.Sprintf("%s:%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid, toolProvider.Name())
-		// fmt.Println(id)
-		// fmt.Println(s.ignoranceSessionManager.GetIgnoreMark(id))
+		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid, toolProvider.Name(), executeGroup)
+
 		if s.ignoranceSessionManager.GetIgnoreMark(id) {
 			// run hachimi here...
 			return true, nil
 		}
 
+		// get tool's min permission and compare it with current user's
 		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
 		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
-		// fmt.Printf("%s %s", minPermission, uPermission)
 		if uPermission < minPermission {
 			return false, fmt.Errorf("the permission user who performs the action is too low, please contact the owner")
 		}
 
+		// get resp based on
 		switch resp.SelectionCallback.SelectionValue {
 		case "hachimi":
 			ttl := 0
 			switch minPermission {
 			case types.UserUnknown:
-				ttl = 60 * 60
+				ttl = 60 * 120 // 2 hours
 			case types.UserAdmin:
-				ttl = 60 * 30
+				ttl = 60 * 60 // 1 hour
 			case types.UserRoot:
-				ttl = 60 * 15
+				ttl = 60 * 30 // 30 minutes
 			default:
 			}
 			s.ignoranceSessionManager.SetIgnoreMark(id, true, ttl)

@@ -2,6 +2,8 @@ package shell
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
@@ -46,4 +48,18 @@ func (s *Service) RegisterHook(registry *hook.Registry) {}
 
 func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
 	return nil, nil
+}
+
+func (s *Service) CacheGroup(args string) string {
+	arg := RunArgs{}
+	var respStr strings.Builder
+	if json.Unmarshal([]byte(args), &arg) == nil {
+		str := strings.Split(arg.Shell, " ")
+		if len(str) < 2 {
+			respStr.WriteString(strings.Join(str, " "))
+		} else {
+			respStr.WriteString(strings.Join(str[:2], " "))
+		}
+	}
+	return respStr.String()
 }

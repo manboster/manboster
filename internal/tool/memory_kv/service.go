@@ -44,3 +44,7 @@ func (s *Service) Config() configType.Provider {
 }
 
 func (s *Service) RegisterHook(registry *hook.Registry) {}
+
+func (s *Service) CacheGroup(args string) string {
+	return ""
+}

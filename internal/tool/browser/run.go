@@ -24,13 +24,13 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case NameTypeWebpage:
+		case NameWebpage:
 			res, err := s.ScrapWebpage(ctx, arg.URL, arg.ScrapType, arg.ResponseType, sessID)
 			if err != nil {
 				return nil, err
 			}
 			resp.Response = res
-		case NameTypeSearch:
+		case NameSearch:
 			res, err := s.doWebSearch(ctx, arg.Keywords, arg.Engine, ResponseTypeRaw, sessID)
 			if err != nil {
 				return nil, err

@@ -2,6 +2,8 @@ package file
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/manboster/manboster/internal/config"
 	configType "github.com/manboster/manboster/spec/config"
@@ -45,4 +47,23 @@ func (s *Service) Config() configType.Provider {
 
 func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
 	return nil, nil
+}
+
+func (s *Service) CacheGroup(args string) string {
+	arg := RunArgs{}
+	var respStr strings.Builder
+	if json.Unmarshal([]byte(args), &arg) == nil {
+		switch arg.Name {
+		case NameInfo, NameList, NameDir:
+			respStr.WriteString("list")
+		case NameRead:
+			respStr.WriteString("read")
+		case NameWrite, NameDelete:
+			respStr.WriteString("write")
+		}
+		respStr.WriteString(":")
+		jsonify, _ := json.Marshal(arg.FilePath)
+		respStr.WriteString(string(jsonify))
+	}
+	return respStr.String()
 }

@@ -33,19 +33,19 @@ func (s *Service) ScrapWebpage(ctx context.Context, url string, effort ScrapType
 func (s *Service) doWebSearch(ctx context.Context, keyword string, searchEngine EngineType, respType ResponseType, sid string) (string, error) {
 	u := ""
 	switch searchEngine {
-	case EngineTypeGoogle:
+	case EngineGoogle:
 		u = "https://www.google.com/search?q=" + url.QueryEscape(keyword)
-	case EngineTypeBaidu:
+	case EngineBaidu:
 		u = "https://www.baidu.com/s?ie=utf-8&wd=" + url.QueryEscape(keyword)
-	case EngineTypeBing:
+	case EngineBing:
 		u = "https://www.bing.com/search?q=" + url.QueryEscape(keyword)
-	case EngineTypeCNBing:
+	case EngineCNBing:
 		u = "https://cn.bing.com/search?q=" + url.QueryEscape(keyword)
-	case EngineTypeDuckDuckGo:
+	case EngineDuckDuckGo:
 		u = "https://duckduckgo.com/search?q=" + url.QueryEscape(keyword)
-	case EngineTypeGitHub:
+	case EngineGitHub:
 		u = "https://github.com/search?q=" + url.QueryEscape(keyword)
-	case EngineTypeWikipedia:
+	case EngineWikipedia:
 		u = "https://wikipedia.org/w/index.php?title=Special:Search&fulltext=1&ns0=1&search=" + url.QueryEscape(keyword)
 	default:
 		return "", errors.New("unsupported engine type")

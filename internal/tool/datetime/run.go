@@ -24,9 +24,9 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 	}
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
-		case "date":
+		case NameDate:
 			resp.Response = time.Now().Format("2006-01-02")
-		case "time":
+		case NameTime:
 			resp.Response = time.Now().Format("15:04:05")
 		default:
 			return nil, fmt.Errorf("unknown argument %q", arg.Name)

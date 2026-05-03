@@ -50,3 +50,7 @@ func (s *Service) RegisterHook(registry *hook.Registry) {}
 func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
 	return nil, nil
 }
+
+func (s *Service) CacheGroup(args string) string {
+	return ""
+}

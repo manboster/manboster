@@ -3,20 +3,20 @@ package browser
 type NameType string
 
 const (
-	NameTypeSearch  NameType = "search"
-	NameTypeWebpage NameType = "webpage"
+	NameSearch  NameType = "search"
+	NameWebpage NameType = "webpage"
 )
 
 type EngineType string
 
 const (
-	EngineTypeGoogle     EngineType = "google"
-	EngineTypeDuckDuckGo EngineType = "duckduckgo"
-	EngineTypeBing       EngineType = "bing"
-	EngineTypeCNBing     EngineType = "cnbing"
-	EngineTypeBaidu      EngineType = "baidu"
-	EngineTypeGitHub     EngineType = "github"
-	EngineTypeWikipedia  EngineType = "wikipedia"
+	EngineGoogle     EngineType = "google"
+	EngineDuckDuckGo EngineType = "duckduckgo"
+	EngineBing       EngineType = "bing"
+	EngineCNBing     EngineType = "cnbing"
+	EngineBaidu      EngineType = "baidu"
+	EngineGitHub     EngineType = "github"
+	EngineWikipedia  EngineType = "wikipedia"
 )
 
 type ResponseType string

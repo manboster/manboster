@@ -63,7 +63,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 			pwd = config.Path(filepath.Join("workspace", "public"))
 		}
 		switch arg.Name {
-		case "read":
+		case NameRead:
 			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 			if err != nil {
 				return nil, err
@@ -73,7 +73,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to read file %s: %w", sPath, err)
 			}
 			resp.Response = string(data)
-		case "info":
+		case NameInfo:
 			sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 			if err != nil {
 				return nil, err
@@ -87,7 +87,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to jsonify file info %s: %w", arg.Name, err)
 			}
 			resp.Response = string(jsonify)
-		case "list":
+		case NameList:
 			if arg.FileName != "" {
 				return nil, fmt.Errorf("filename is not allowed to give while name is list")
 			}
@@ -104,9 +104,9 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to jsonify dir %s: %w", arg.FileName, err)
 			}
 			resp.Response = string(jsonify)
-		case "dir":
+		case NameDir:
 			resp.Response = pwd
-		case "delete":
+		case NameDelete:
 			if s.cfg.Mode == "readonly" {
 				return nil, fmt.Errorf("failed to delete: read-only mode set by user")
 			}
@@ -119,7 +119,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 				return nil, fmt.Errorf("failed to delete file %s: %w", sPath, err)
 			}
 			resp.Response = "success"
-		case "write":
+		case NameWrite:
 			if s.cfg.Mode == "readonly" {
 				return nil, fmt.Errorf("failed to write: read-only mode set by user")
 			}

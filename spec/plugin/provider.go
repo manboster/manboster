@@ -16,6 +16,7 @@ type Provider interface {
 	Args() *schema.Args                                                 // get args description from the plugin
 	Init(ctx context.Context, conf any) error                           // initialize the plugin
 	Migrate(ctx context.Context, from int, conf any) (any, error)       // migration when the version is too low
+	CacheGroup(args string) string                                      // return this action's group as a string, as this string will be used to group actions and control what should do next
 	Start(ctx context.Context) error                                    // if long polling, it would work
 	Run(ctx context.Context, args string) (*RunResponse, error)         // passthrough by JSON
 	Continue(ctx context.Context, session string) (*RunResponse, error) // continue to do, avoid to interrupt
