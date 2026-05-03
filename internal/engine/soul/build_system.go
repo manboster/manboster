@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/config/prompt"
 	"github.com/manboster/manboster/spec/llm"
 )
 
@@ -19,7 +19,7 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 	for _, soul := range souls {
 		// system soul is automatically global!
 		if soul == "system" {
-			basePrompt := config.InitialSystemPrompt
+			basePrompt := prompt.InitialSystemPrompt
 			if so, avail := s.soulMap["system"]; avail {
 				replacement := fmt.Sprintf("<tone_and_formatting>\n%s\n</tone_and_formatting>", so.Content)
 				basePrompt = re.ReplaceAllString(basePrompt, replacement)

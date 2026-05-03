@@ -17,18 +17,21 @@ import (
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	executeGroup := toolProvider.CacheGroup(fmt.Sprintf("%s", req.ToolArgs))
 	ud := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), msg.UserID, sid, toolProvider.Name(), executeGroup)
-	if s.ignoranceSessionManager.GetCancelMark(ud) {
-		return false, fmt.Errorf("this user rejected all calls of this tool and please try again after 15 minutes")
+	err := s.CheckSession(ud)
+	if err != nil {
+		return false, err
 	}
 
-	if s.ignoranceSessionManager.GetIgnoreMark(ud) && types.UserTypeFromString(toolProvider.MetaData().MinUserType) <= s.safeguardService.UserType(ctx, instance.Name(), msg.UserID) {
+	requireUserType := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
+	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
+	if s.ignoranceSessionManager.GetIgnoreMark(ud) && requireUserType <= actualUserType {
 		// run hachimi here...
 		return true, nil
 	}
 
 	txt := fmt.Sprintf("Model wants to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
-	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
+	err = json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
 	if err != nil {
 		color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
 	}
@@ -73,6 +76,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	if resp.SelectionCallback != nil {
 		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid, toolProvider.Name(), executeGroup)
 
+		err = s.CheckSession(id)
+		if err != nil {
+			return false, err
+		}
 		if s.ignoranceSessionManager.GetIgnoreMark(id) {
 			// run hachimi here...
 			return true, nil
@@ -89,6 +96,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		switch resp.SelectionCallback.SelectionValue {
 		case "hachimi":
 			ttl := 0
+			// set TTL based on tools required user permission
 			switch minPermission {
 			case types.UserUnknown:
 				ttl = 60 * 120 // 2 hours

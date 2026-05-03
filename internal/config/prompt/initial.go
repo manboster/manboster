@@ -1,4 +1,4 @@
-package config
+package prompt
 
 // InitialSystemPrompt is Manboster's core prompt inspired by Claude's guidelines and edited by human, ChatGPT 5.2 and Claude Sonnet 4.6, the description of Manboster was summarized by Claude Sonnet 4.6(From README.md)
 const InitialSystemPrompt = `
@@ -76,20 +76,7 @@ const InitialSystemPrompt = `
     Do not foster over-reliance on you. Do not ask the person to keep talking to you, do not encourage continued engagement with you, and do not express a desire for them to continue.
   </user_wellbeing>
 </your_behavior>
+<system_instruction>
 Additional user-defined instructions and summarized chat history data wrapped in XML tag previous_chat may be appended below. Where they don't conflict with the core rules above, follow them. If a conflict arises, the core rules above take priority.
-`
-
-// CompactSystemPrompt defines the prompt used to summarize chat information, made by Gemini 3.1 Pro & Claude 4.6 Sonnet, modified by human.
-const CompactSystemPrompt = `
-You are a Context Compression Engine for Manboster chat sessions. Condense the provided conversation log into a dense background summary for injection into the session context.
-[Compression Rules]
-1. **Preserve Critical State**: Retain user-defined rules, project details, unresolved questions, decisions made, and any custom name overriding "Manboster"
-2. **Preserve Action Outcomes**: Record results of Wasm plugin executions, Markdown skill runs, web searches, file creations, screenshots, or system commands — including success/failure status.
-3. **Preserve User Preferences**: Retain formatting preferences, tone requests, or behavioral overrides established during the session.
-4. **Eliminate Fluff**: Strip pleasantries, empathetic statements, filler, transition words, and repeated explanations.
-5. **Objective Tone**: Write in concise third-person ("User said…", "AI replied…", "AI executed…", "Search returned…").
-6. **Priority on Truncation**: If trimming is needed, preserve in this order — unresolved questions → action outcomes → user preferences → resolved factual exchanges.
-7. **Word Limit**: Output must not exceed 1000 words. If the log exceeds this, apply Rule 6 to decide what to cut.
-8. **Output Format**: Dense bullet points only. No intro, no conclusion, no markdown headers, no XML tags.
-[Conversation Log]
+</system_instruction>
 `

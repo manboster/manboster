@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/config/prompt"
 	"github.com/manboster/manboster/internal/engine/hook"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
@@ -70,7 +70,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 			{
 				PartsType: llm.MessagePartsText,
 				Text: &llm.MessageTextPayload{
-					Text: config.CompactSystemPrompt,
+					Text: prompt.CompactSystemPrompt,
 				},
 			},
 		}}
