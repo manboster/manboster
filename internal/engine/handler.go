@@ -92,16 +92,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 
 	// if there is no valid thing, we will handle it via creating channel.
 	if !e.sessionService.Manager.ChatSession.AvailChan(sessionId) {
-		color.Blue("[Manboster Engine] This session is not available in memory storage, now loading from database")
-		cancelCtx, cancelFunc := context.WithCancel(context.Background())
-		e.sessionService.Manager.ChatSession.SetSessionCancel(sessionId, cancelFunc)
-		e.sessionService.Manager.ChatSession.CreateChan(sessionId, make(chan *chat.Message, 10))
-		go func() {
-			err := e.MessageRunner(cancelCtx, instance, sessionId)
-			if err != nil {
-				color.Yellow("[Manboster Engine] We encountered an error while handling runner via %s, error: %q", displayName, err)
-			}
-		}()
+		e.BuildMessageRunner(instance, sessionId)
 	}
 
 	if msg.MessageType == chat.MessageCommand {

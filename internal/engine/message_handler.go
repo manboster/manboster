@@ -46,27 +46,6 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	p, m := util.GetModelWithFallback(ctx, e.llmProviders, provider, model)
 	respMessage := msg.Clone()
 
-	// get total tokens in order to compact
-	totToken, err := e.repo.GetTotalToken(ctx, sessionId)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Engine] Error while getting total tokens from repository: %q", err))
-	}
-	// checkout whether a need to compact or not
-	if uint64(totToken) > llm.CalculateCompactTokens(m) {
-		err := e.handler.HandleCompact(ctx, instance, msg, sessionId)
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Error while compacting data: %q", err))
-			return err
-		}
-		// get new session id
-		resp, err := e.repo.GetChat(ctx, msg.ChatID, instance.Name())
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Error while getting new session id: %q", err))
-			return err
-		}
-		sessionId = resp.SessionID
-	}
-
 	var souls []string
 	s, avail := e.sessionService.Manager.ChatSession.GetSoul(sessionId)
 	if !avail {
