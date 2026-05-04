@@ -37,15 +37,19 @@ func (repo *ChatRepo) GetChat(ctx context.Context, chatId string, provider strin
 	return types.MapChat(dbChatInfo), nil
 }
 
-// GetAllChats TODO: gets all chat's information
+// GetAllChats gets all chat's information
 func (repo *ChatRepo) GetAllChats(ctx context.Context) ([]types.Chat, error) {
-	//var dbChatInfo []dbtypes.Chat
-	//err := repo.db.Model(&dbChatInfo).Error
-	//if err != nil {
-	//	return []types.Chat{}, err
-	//}
-	//return types.MapChat(dbChatInfo), nil
-	return []types.Chat{}, nil
+	var dbChatInfo []dbtypes.Chat
+	err := repo.db.WithContext(ctx).Find(&dbChatInfo).Error
+	if err != nil {
+		return []types.Chat{}, err
+	}
+
+	var chats []types.Chat
+	for _, dbChat := range dbChatInfo {
+		chats = append(chats, types.MapChat(dbChat))
+	}
+	return chats, nil
 }
 
 // UpdateChat updates information of this chat's session ID.

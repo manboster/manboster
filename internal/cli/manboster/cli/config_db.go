@@ -3,9 +3,11 @@ package cli
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 )
@@ -39,6 +41,10 @@ func (s *databaseConfigService) configDatabaseLandingForm() error {
 		case databaseConfigLandingUser:
 			return nil
 		case databaseConfigLandingSession:
+			err := s.runConfigDatabaseSessionSelection()
+			if err != nil {
+				return err
+			}
 			return nil
 		case databaseConfigLandingSoul:
 			return nil
@@ -78,7 +84,11 @@ const (
 
 func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
 	var se databaseConfigSessionSelection
-	err := huh.NewForm(
+	err := s.printConfigDatabaseSessionList()
+	if err != nil {
+		return err
+	}
+	err = huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[databaseConfigSessionSelection]().Options(
 				huh.NewOption("Purge Session Data", databaseConfigSessionPurge),
@@ -89,6 +99,7 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
 	if err != nil {
 		return err
 	}
+	helper.ClearScreen()
 	switch se {
 	case databaseConfigSessionPurge:
 		return nil
@@ -106,6 +117,9 @@ func (s *databaseConfigService) printConfigDatabaseSessionList() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// string is sessionID
+	chatsMap := make(map[string][]types.Chat)
+
 	sessions, err := s.repo.GetSessions(ctx)
 	if err != nil {
 		return err
@@ -117,6 +131,33 @@ func (s *databaseConfigService) printConfigDatabaseSessionList() error {
 		return err
 	}
 	s.chats = chats
-	// TODO: print it out...
+
+	for _, c := range chats {
+		cm, avail := chatsMap[c.SessionID]
+		if !avail {
+			cm = []types.Chat{c}
+			chatsMap[c.SessionID] = cm
+			continue
+		}
+		cm = append(cm, c)
+		chatsMap[c.SessionID] = cm
+	}
+
+	var outputMsg strings.Builder
+	for _, sess := range s.sessions {
+		outputMsg.WriteString(fmt.Sprintf("%d) `%s`, used `%s:%s` created at %s, updated at %s.\n", sess.ID, sess.SessionID, sess.LLMProvider, sess.LLMProviderModel, sess.CreatedAt.Format("2006-01-02 15:04:05"), sess.UpdatedAt.Format("2006-01-02 15:04:05")))
+		cm, avail := chatsMap[sess.SessionID]
+		if avail {
+			outputMsg.WriteString(fmt.Sprintf("Bind %d chats: ", len(cm)))
+			for _, c := range cm {
+				outputMsg.WriteString(fmt.Sprintf("%s:%s ", c.ChatProvider, c.ChatID))
+			}
+			outputMsg.WriteString("\n")
+		}
+	}
+
+	outputMsg.WriteString(fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(s.sessions), len(sessions)-len(chatsMap)))
+
+	helper.DisplayText(outputMsg.String())
 	return nil
 }

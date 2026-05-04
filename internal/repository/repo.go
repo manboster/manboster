@@ -2,6 +2,7 @@ package repository
 
 import "gorm.io/gorm"
 
+// Repository is a universal call for repos
 type Repository interface {
 	UserRepository
 	ChatRepository
