@@ -58,6 +58,10 @@ func configCmd() *cobra.Command {
 
 // configCmdRun is used to run interactive huh forms to config.
 func configCmdRun(cmd *cobra.Command, args []string) {
+	err := configFormRun()
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring."))
+	}
 }
 
 // configCmdEditRun runs terminal editor to config

@@ -22,7 +22,7 @@ var boxStyle = lipgloss.NewStyle().
 
 // OnboardWarningForm provides a warning notice
 func OnboardWarningForm(ctx context.Context) error {
-	return OnboardConfirmForm(ctx, `
+	return ConfirmForm(ctx, `
 # RISK DISCLOSURE & DISCLAIMER
 **PLEASE READ THESE WORDS CAREFULLY:**
 
@@ -38,7 +38,7 @@ Manboster is an AI agent able to chat and control your computers like OpenClaw a
 
 func OnboardVersionWarningForm(ctx context.Context) error {
 
-	return OnboardConfirmForm(ctx, `
+	return ConfirmForm(ctx, `
 # UNSTABLE VERSION WARNING
 **PLEASE READ THESE WORDS CAREFULLY:**
 It seems that you're going to use an unstable version of Manboster. Please note that:
@@ -51,7 +51,7 @@ It seems that you're going to use an unstable version of Manboster. Please note 
 
 }
 
-func OnboardConfirmForm(ctx context.Context, tips string, confirmTitle string, confirmContent string) error {
+func ConfirmForm(ctx context.Context, tips string, confirmTitle string, confirmContent string) error {
 	agree := false
 
 	width, _, _ := term.GetSize(os.Stdout.Fd())

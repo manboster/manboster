@@ -99,7 +99,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	confDescription.WriteString("If there is no problem, you can continue writing the configuration.\n\n")
 	confDesc := confDescription.String()
 
-	err = OnboardConfirmForm(ctx, confDesc, "Do you want to continue?", "Continue")
+	err = ConfirmForm(ctx, confDesc, "Do you want to continue?", "Continue")
 	if err != nil {
 		return c, err
 	}
