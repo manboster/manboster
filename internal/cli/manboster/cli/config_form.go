@@ -68,8 +68,8 @@ func configStartupForm() (Selection, error) {
 			huh.NewSelect[Selection]().Options(
 				huh.NewOption("Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this.", SelectionDatabase),
 				huh.NewOption("Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this.", SelectionConfig),
-				huh.NewOption("Open Configuration yaml file in system's default editor(For advanced users only)", SelectionEditor),
-				huh.NewOption("Quit Manboster Configuration Wizard", SelectionQuit),
+				huh.NewOption("Open Configuration yaml file in system's default editor\n(For advanced users only)", SelectionEditor),
+				huh.NewOption("Quit Manboster Configuration Wizard\nBye!", SelectionQuit),
 			).Title("Please select what to configure").Description("Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.").Value(&s),
 		)).Run()
 	if err != nil {

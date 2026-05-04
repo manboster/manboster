@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
@@ -16,6 +17,7 @@ type databaseConfigService struct {
 	repo     repository.Repository
 	sessions []types.Session
 	chats    []types.Chat
+	chatsMap map[string][]types.Chat
 }
 
 type databaseConfigLandingSelection string
@@ -28,10 +30,16 @@ const (
 )
 
 func newDatabaseConfigService(repo repository.Repository) *databaseConfigService {
-	return &databaseConfigService{repo: repo}
+	return &databaseConfigService{
+		repo:     repo,
+		chatsMap: make(map[string][]types.Chat),
+	}
 }
 
 func (s *databaseConfigService) configDatabaseLandingForm() error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	for {
 		se, err := s.runConfigDatabaseLandingSelection()
 		if err != nil {
@@ -41,7 +49,7 @@ func (s *databaseConfigService) configDatabaseLandingForm() error {
 		case databaseConfigLandingUser:
 			return nil
 		case databaseConfigLandingSession:
-			err := s.runConfigDatabaseSessionSelection()
+			err := s.runConfigDatabaseSessionSelection(ctx)
 			if err != nil {
 				return err
 			}
@@ -77,14 +85,14 @@ func (s *databaseConfigService) runConfigDatabaseLandingSelection() (databaseCon
 type databaseConfigSessionSelection string
 
 const (
-	databaseConfigSessionPurge databaseConfigSessionSelection = "purge"
-	databaseConfigSessionList  databaseConfigSessionSelection = "list"
-	databaseConfigSessionQuit  databaseConfigSessionSelection = "quit"
+	databaseConfigSessionPurge  databaseConfigSessionSelection = "purge"
+	databaseConfigSessionSelect databaseConfigSessionSelection = "select"
+	databaseConfigSessionQuit   databaseConfigSessionSelection = "quit"
 )
 
-func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
+func (s *databaseConfigService) runConfigDatabaseSessionSelection(ctx context.Context) error {
 	var se databaseConfigSessionSelection
-	err := s.printConfigDatabaseSessionList()
+	err := s.printConfigDatabaseSessionList(ctx)
 	if err != nil {
 		return err
 	}
@@ -92,9 +100,9 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
 		huh.NewGroup(
 			huh.NewSelect[databaseConfigSessionSelection]().Options(
 				huh.NewOption("Purge Session Data", databaseConfigSessionPurge),
-				huh.NewOption("Select Sessions", databaseConfigSessionList),
+				huh.NewOption("Select Sessions", databaseConfigSessionSelect),
 				huh.NewOption("Quit", databaseConfigSessionQuit),
-			).Value(&se),
+			).Value(&se).Description("What do you want to do?"),
 		)).Run()
 	if err != nil {
 		return err
@@ -102,8 +110,24 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
 	helper.ClearScreen()
 	switch se {
 	case databaseConfigSessionPurge:
+		purgeNum := len(s.sessions) - len(s.chatsMap)
+		if purgeNum <= 0 {
+			color.Yellow("No need to purge sessions, your session list is clean and smart!")
+			time.Sleep(500 * time.Millisecond)
+			helper.ClearScreen()
+			return nil
+		}
+		if helper.ContinueConfirm(ctx, fmt.Sprintf("Do you really want to purge %d sessions? YOUR ACTION IS IRREVERSIBLE!", purgeNum)) {
+			err := s.purgeConfigDatabaseSession(ctx)
+			if err != nil {
+				return err
+			}
+			color.Blue(fmt.Sprintf("Successfully purged %d sessions!", purgeNum))
+			time.Sleep(500 * time.Millisecond)
+			helper.ClearScreen()
+		}
 		return nil
-	case databaseConfigSessionList:
+	case databaseConfigSessionSelect:
 		return nil
 	case databaseConfigSessionQuit:
 		color.Blue("Bye!")
@@ -113,10 +137,7 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelection() error {
 	}
 }
 
-func (s *databaseConfigService) printConfigDatabaseSessionList() error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func (s *databaseConfigService) printConfigDatabaseSessionList(ctx context.Context) error {
 	// string is sessionID
 	chatsMap := make(map[string][]types.Chat)
 
@@ -142,6 +163,7 @@ func (s *databaseConfigService) printConfigDatabaseSessionList() error {
 		cm = append(cm, c)
 		chatsMap[c.SessionID] = cm
 	}
+	s.chatsMap = chatsMap
 
 	var outputMsg strings.Builder
 	for _, sess := range s.sessions {
@@ -159,5 +181,31 @@ func (s *databaseConfigService) printConfigDatabaseSessionList() error {
 	outputMsg.WriteString(fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(s.sessions), len(sessions)-len(chatsMap)))
 
 	helper.DisplayText(outputMsg.String())
+	return nil
+}
+
+func (s *databaseConfigService) purgeConfigDatabaseSession(ctx context.Context) error {
+	for _, sess := range s.sessions {
+		cm, avail := s.chatsMap[sess.SessionID]
+		if !avail {
+			err := s.repo.DeleteSession(ctx, sess.SessionID)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Client] Error purging session %s: %q", sess.SessionID, err))
+				continue
+			}
+			err = s.repo.DeleteChatData(ctx, sess.SessionID)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Client] Error purging session %s: %q", sess.SessionID, err))
+				continue
+			}
+			for _, c := range cm {
+				err := s.repo.DeleteChat(ctx, c.ChatID, c.ChatProvider)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Client] Error purging session %s: %q", sess.SessionID, err))
+					continue
+				}
+			}
+		}
+	}
 	return nil
 }
