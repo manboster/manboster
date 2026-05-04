@@ -1,8 +1,8 @@
-package cli
+package daemon
 
 import "github.com/spf13/cobra"
 
-func startCmd() *cobra.Command {
+func StartCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "start",
 		Short: "Start the Manboster daemon in background",
@@ -10,7 +10,7 @@ func startCmd() *cobra.Command {
 	}
 }
 
-func stopCmd() *cobra.Command {
+func StopCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "stop",
 		Short: "Stop the Manboster daemon in background",
@@ -18,7 +18,7 @@ func stopCmd() *cobra.Command {
 	}
 }
 
-func restartCmd() *cobra.Command {
+func RestartCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "restart",
 		Short: "Restart the Manboster daemon in background",
@@ -26,7 +26,7 @@ func restartCmd() *cobra.Command {
 	}
 }
 
-func statusCmd() *cobra.Command {
+func StatusCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",
 		Short: "Show the status of Manboster daemon in background",

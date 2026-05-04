@@ -1,4 +1,4 @@
-package cli
+package app
 
 import (
 	"context"
@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/cli/manboster/cli"
+	"github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/loader"
 	"github.com/spf13/cobra"
@@ -18,27 +20,27 @@ import (
 	_ "github.com/manboster/manboster/internal/llm/all"
 )
 
-// main is the entrypoint function that when user runs 'manboster'.
-func main(cmd *cobra.Command, args []string) {
+// Main is the entrypoint function that when user runs 'manboster'.
+func Main(cmd *cobra.Command, args []string) {
 	// output welcome
 	color.Cyan("Welcome to Manboster!")
 	color.Blue("[Manboster Client] Your Lobster is on the way, please wait...")
 
-	_, err := ctx.Search()
+	_, err := ctx.DaemonCtx.Search()
 	if err == nil {
 		color.Red("[Manboster Client] Another lobster is running in the daemon mode! In order to use this client, please run `manboster stop` and retry.")
 		color.Red("[Manboster Client] Quiting the application!")
 		os.Exit(1)
 	}
 
-	mainInner()
+	MainInner()
 }
 
-func mainInner() {
+func MainInner() {
 	err := config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
 		color.Yellow("[Manboster Client] config.yaml is not found, now guide you to create one...\n")
-		OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])
+		cli.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])
 		color.Green("[Manboster Client] Successfully created config.yaml, open Manboster again and enjoy it!")
 		time.Sleep(1 * time.Second)
 		os.Exit(0)

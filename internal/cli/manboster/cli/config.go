@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func configCmd() *cobra.Command {
+func ConfigCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config [command]",
 		Short: "Run configuration wizard for Manboster application",
@@ -60,7 +60,7 @@ func configCmd() *cobra.Command {
 func configCmdRun(cmd *cobra.Command, args []string) {
 	err := configFormRun()
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring."))
+		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring: %q.", err))
 	}
 }
 
@@ -125,7 +125,6 @@ func openWithSystemDefault(filePath string) error {
 		return fmt.Errorf("unsupported platform")
 	}
 
-	// 这里不需要绑定 Stdin/Stdout，因为它是弹出一个独立的 GUI 窗口
 	return cmd.Run()
 }
 

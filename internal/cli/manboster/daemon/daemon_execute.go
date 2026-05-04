@@ -1,4 +1,4 @@
-package cli
+package daemon
 
 import (
 	"errors"
@@ -8,23 +8,16 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/cli/manboster/app"
+	"github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/sevlyar/go-daemon"
 	"github.com/spf13/cobra"
 )
 
-var ctx = &daemon.Context{
-	PidFileName: config.Path("manboster.pid"),
-	PidFilePerm: 0644,
-	LogFileName: config.Path("manboster.log"),
-	LogFilePerm: 0640,
-	WorkDir:     config.Path(""),
-	Umask:       027,
-}
-
 // startCommandExecutor starts daemon
 func startCommandExecutor(cmd *cobra.Command, args []string) {
-	d, err := ctx.Reborn()
+	d, err := ctx.DaemonCtx.Reborn()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when starting Manboster daemon, error: %v\n[Manboster Daemon]Please be sure that this daemon is not running.", err))
 		return
@@ -40,7 +33,7 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v", err))
 		}
-	}(ctx)
+	}(ctx.DaemonCtx)
 
 	err = config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
@@ -49,12 +42,12 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 	} else if err != nil {
 		panic(err)
 	}
-	mainInner()
+	app.MainInner()
 }
 
 // stopCommandExecutor stops daemon
 func stopCommandExecutor(cmd *cobra.Command, args []string) {
-	d, err := ctx.Search()
+	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v\n Please be sure that you have started this daemon.", err))
 		return
@@ -83,7 +76,7 @@ func restartCommandExecutor(cmd *cobra.Command, args []string) {
 
 // statusCommandExecutor returns current daemon status of Manboster
 func statusCommandExecutor(cmd *cobra.Command, args []string) {
-	d, err := ctx.Search()
+	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when getting Manboster daemon PID file, error: %v\nMaybe the daemon is not running.", err))
 		return

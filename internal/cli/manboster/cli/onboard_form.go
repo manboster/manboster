@@ -9,6 +9,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
 	_ "github.com/manboster/manboster/internal/chat/all"
+	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
@@ -44,7 +45,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 			return c, err
 		}
 		c.LLMs = append(c.LLMs, llmCfg)
-		if !ContinueConfirm(ctx, fmt.Sprintf("You've successfully added %d llm providers!", count)) {
+		if !helper.ContinueConfirm(ctx, fmt.Sprintf("You've successfully added %d llm providers!", count)) {
 			break
 		}
 		count++
@@ -99,7 +100,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	confDescription.WriteString("If there is no problem, you can continue writing the configuration.\n\n")
 	confDesc := confDescription.String()
 
-	err = ConfirmForm(ctx, confDesc, "Do you want to continue?", "Continue")
+	err = helper.ConfirmForm(ctx, confDesc, "Do you want to continue?", "Continue")
 	if err != nil {
 		return c, err
 	}

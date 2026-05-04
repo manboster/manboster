@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// onboardConfigCmd provides an interactive TUI to configure your manboster application.
-func onboardConfigCmd() *cobra.Command {
+// OnboardConfigCmd provides an interactive TUI to configure your manboster application.
+func OnboardConfigCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "onboard",
 		Short: "Run onboard configuration wizard for Manboster application",
