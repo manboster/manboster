@@ -7,17 +7,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevInit uses cobra to register as a client in manbodev.
-func DevInit() {
+// Init uses cobra to register as a client in manbodev.
+func Init() {
 	var rootCmd = &cobra.Command{
 		Use:   "manbodev",
 		Short: "manbodev: A helpful plugin build toolchain for Manboster.",
 		Long:  `Manboster is an build helper delivers you the best experience in developing your plugin for Manboster!`,
-		Run:   devMain,
+		Run:   main,
 	}
 
 	// Add version indicator.
-	rootCmd.AddCommand(devVersionCmd())
+	rootCmd.AddCommand(versionCmd())
 
 	// Disable smart completion in order to clean help, no more about it!
 	rootCmd.CompletionOptions.DisableDefaultCmd = true

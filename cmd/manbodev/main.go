@@ -9,5 +9,5 @@ import (
 // Last Update: 2026.4.15
 
 func main() {
-	manbodev.DevInit()
+	manbodev.Init()
 }
