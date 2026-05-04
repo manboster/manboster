@@ -124,7 +124,7 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 	// 7. Convert <p> to newline separation
 	doc.Find("p").Each(func(_ int, p *goquery.Selection) {
 		inner, _ := p.Html()
-		p.ReplaceWithHtml(inner + "\n\n")
+		p.ReplaceWithHtml(inner)
 	})
 
 	// 8. Rename tags to Telegram-compatible versions

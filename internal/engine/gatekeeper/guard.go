@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository/types"
@@ -105,6 +106,15 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			case types.UserRoot:
 				ttl = 60 * 30 // 30 minutes
 			default:
+			}
+			respMsg := msg.Clone()
+			respMsg.MessageType = chat.MessageText
+			respMsg.Text = &chat.TextPayload{
+				Text: "You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
+			}
+			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
+			if err != nil {
+				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
 			}
 			s.ignoranceSessionManager.SetIgnoreMark(id, true, ttl)
 			return true, nil

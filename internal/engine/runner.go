@@ -11,8 +11,7 @@ import (
 
 // MessageRunner is a single goroutine running for checking messages and handle it
 func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sessionId string) error {
-	sessChan := make(chan *chat.Message, 10)
-	e.sessionService.Manager.ChatSession.CreateChan(sessionId, sessChan)
+	sessChan := e.sessionService.Manager.ChatSession.GetChan(sessionId)
 	displayName := instance.DisplayName()
 
 	timer := time.NewTimer(time.Minute * 30)
