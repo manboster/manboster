@@ -6,6 +6,7 @@ import (
 	dbtypes "github.com/manboster/manboster/internal/database/types"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/llm"
+	"gorm.io/gorm"
 )
 
 type ChatDataRepository interface {
@@ -16,14 +17,18 @@ type ChatDataRepository interface {
 	GetTotalToken(ctx context.Context, sessionId string) (int, error)
 }
 
+type ChatDataRepo struct {
+	db *gorm.DB
+}
+
 // CreateChatData creates chats data
-func (repo *Repo) CreateChatData(ctx context.Context, chatData types.ChatData) error {
+func (repo *ChatDataRepo) CreateChatData(ctx context.Context, chatData types.ChatData) error {
 	dbChatDataType := types.MapCD(chatData)
 	return repo.db.WithContext(ctx).Create(&dbChatDataType).Error
 }
 
 // GetChatData gets chats' data from database
-func (repo *Repo) GetChatData(ctx context.Context, sessionId string) ([]types.ChatData, error) {
+func (repo *ChatDataRepo) GetChatData(ctx context.Context, sessionId string) ([]types.ChatData, error) {
 	var dbChatData []dbtypes.ChatData
 	var chatData []types.ChatData
 
@@ -41,12 +46,12 @@ func (repo *Repo) GetChatData(ctx context.Context, sessionId string) ([]types.Ch
 }
 
 // DeleteChatData deletes chats data via sessionId
-func (repo *Repo) DeleteChatData(ctx context.Context, sessionId string) error {
+func (repo *ChatDataRepo) DeleteChatData(ctx context.Context, sessionId string) error {
 	return repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Delete(&dbtypes.ChatData{}).Error
 }
 
 // CountChatDataTokenBySession counts all input/output tokens used in this chat session
-func (repo *Repo) CountChatDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error) {
+func (repo *ChatDataRepo) CountChatDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error) {
 	data, err := repo.GetChatData(ctx, sessionId)
 	if err != nil {
 		return llm.Usage{}, err
@@ -72,7 +77,7 @@ func (repo *Repo) CountChatDataTokenBySession(ctx context.Context, sessionId str
 }
 
 // GetTotalToken gets latest token used in this chat session
-func (repo *Repo) GetTotalToken(ctx context.Context, sessionId string) (int, error) {
+func (repo *ChatDataRepo) GetTotalToken(ctx context.Context, sessionId string) (int, error) {
 	var dbChatData []dbtypes.ChatData
 	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Order("created_at DESC").Find(&dbChatData)
 	if resp.Error != nil {

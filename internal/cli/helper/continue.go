@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/exec"
-	"runtime"
 
 	"github.com/charmbracelet/huh"
 )
@@ -28,18 +26,4 @@ func ContinueConfirm(ctx context.Context, content string) bool {
 		os.Exit(0)
 	}
 	return agree
-}
-
-func ClearScreen() {
-	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/c", "cls")
-	} else {
-		cmd = exec.Command("clear")
-	}
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
-	if err != nil {
-		return
-	}
 }

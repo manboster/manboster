@@ -5,6 +5,7 @@ import (
 
 	dbtypes "github.com/manboster/manboster/internal/database/types"
 	"github.com/manboster/manboster/internal/repository/types"
+	"gorm.io/gorm"
 )
 
 type ChatRepository interface {
@@ -16,14 +17,18 @@ type ChatRepository interface {
 	ReplaceChatSessions(ctx context.Context, oldSession string, newSession string) error
 }
 
+type ChatRepo struct {
+	db *gorm.DB
+}
+
 // CreateChat creates a new chat information
-func (repo *Repo) CreateChat(ctx context.Context, chat types.Chat) error {
+func (repo *ChatRepo) CreateChat(ctx context.Context, chat types.Chat) error {
 	dbChat := types.MapC(chat)
 	return repo.db.WithContext(ctx).Create(&dbChat).Error
 }
 
 // GetChat gets chat information via chatId and provider
-func (repo *Repo) GetChat(ctx context.Context, chatId string, provider string) (types.Chat, error) {
+func (repo *ChatRepo) GetChat(ctx context.Context, chatId string, provider string) (types.Chat, error) {
 	var dbChatInfo dbtypes.Chat
 	err := repo.db.WithContext(ctx).Where("chat_id = ? AND chat_provider = ?", chatId, provider).First(&dbChatInfo).Error
 	if err != nil {
@@ -33,7 +38,7 @@ func (repo *Repo) GetChat(ctx context.Context, chatId string, provider string) (
 }
 
 // GetAllChats TODO: gets all chat's information
-func (repo *Repo) GetAllChats(ctx context.Context) ([]types.Chat, error) {
+func (repo *ChatRepo) GetAllChats(ctx context.Context) ([]types.Chat, error) {
 	//var dbChatInfo []dbtypes.Chat
 	//err := repo.db.Model(&dbChatInfo).Error
 	//if err != nil {
@@ -44,7 +49,7 @@ func (repo *Repo) GetAllChats(ctx context.Context) ([]types.Chat, error) {
 }
 
 // UpdateChat updates information of this chat's session ID.
-func (repo *Repo) UpdateChat(ctx context.Context, chatId string, provider string, sessionId string) error {
+func (repo *ChatRepo) UpdateChat(ctx context.Context, chatId string, provider string, sessionId string) error {
 	resp := repo.db.WithContext(ctx).Model(&dbtypes.Chat{}).Where("chat_id = ? AND chat_provider = ?", chatId, provider).Update("session_id", sessionId)
 	if resp.Error != nil {
 		return resp.Error
@@ -58,11 +63,11 @@ func (repo *Repo) UpdateChat(ctx context.Context, chatId string, provider string
 }
 
 // ReplaceChatSessions replaces old session to new ones
-func (repo *Repo) ReplaceChatSessions(ctx context.Context, oldSession string, newSession string) error {
+func (repo *ChatRepo) ReplaceChatSessions(ctx context.Context, oldSession string, newSession string) error {
 	return repo.db.WithContext(ctx).Model(&dbtypes.Chat{}).Where("session_id = ?", oldSession).Update("session_id", newSession).Error
 }
 
 // DeleteChat deletes chat information by chatId and Provider
-func (repo *Repo) DeleteChat(ctx context.Context, chatId string, provider string) error {
+func (repo *ChatRepo) DeleteChat(ctx context.Context, chatId string, provider string) error {
 	return repo.db.WithContext(ctx).Where("chat_id = ? AND chat_provider = ?", chatId, provider).Delete(&dbtypes.Chat{}).Error
 }

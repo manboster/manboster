@@ -10,6 +10,15 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 )
 
+type Selection string
+
+const (
+	SelectionDatabase Selection = "database"
+	SelectionQuit     Selection = "quit"
+	SelectionConfig   Selection = "config"
+	SelectionEditor   Selection = "editor"
+)
+
 func configFormRun() error {
 	for {
 		se, err := configStartupForm()
@@ -67,8 +76,4 @@ func configStartupForm() (Selection, error) {
 		return "", err
 	}
 	return s, nil
-}
-
-func configChatConfigRun() error {
-	return nil
 }

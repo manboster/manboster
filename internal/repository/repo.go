@@ -11,11 +11,29 @@ type Repository interface {
 }
 
 type Repo struct {
-	db *gorm.DB
+	*SessionRepo
+	*SoulRepo
+	*ChatDataRepo
+	*UserRepo
+	*ChatRepo
 }
 
 func New(db *gorm.DB) *Repo {
 	return &Repo{
-		db: db,
+		SessionRepo: &SessionRepo{
+			db: db,
+		},
+		SoulRepo: &SoulRepo{
+			db: db,
+		},
+		ChatDataRepo: &ChatDataRepo{
+			db: db,
+		},
+		UserRepo: &UserRepo{
+			db: db,
+		},
+		ChatRepo: &ChatRepo{
+			db: db,
+		},
 	}
 }

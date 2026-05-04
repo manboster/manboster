@@ -9,7 +9,7 @@ import (
 // HandleSelectionCallback handles selection and callback.
 func (h *Handler) HandleSelectionCallback(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	if msg.SelectionCallback != nil {
-		ch := h.selectionSessionManager.GetSelectionChan(msg.SelectionCallback.SelectionSessionId)
+		ch := h.sessionManager.SelectionManager.GetSelectionChan(msg.SelectionCallback.SelectionSessionId)
 		if ch == nil {
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText

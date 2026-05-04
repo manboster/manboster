@@ -40,7 +40,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	msg.ChatType = chatType
 
 	// commands, help to process commands which prefixes started with "/".
-	if strings.HasPrefix(m.Text, "/") {
+	if strings.HasPrefix(m.Text, "/") && !strings.Contains(m.Text, "\n") {
 		// process "/xxxxxx xxxx" and "/xxxx@xxxxbot xxxxxxx"
 		var command string
 		var args []string
