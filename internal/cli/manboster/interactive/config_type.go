@@ -45,9 +45,18 @@ const (
 	configLandingQuit    configLandingSelection = "quit"
 )
 
-type configLandingChatActionSelection string
+type configLandingActionSelection string
 
 const (
-	configLandingChatActionNew  configLandingChatActionSelection = "new"
-	configLandingChatActionQuit configLandingChatActionSelection = "quit"
+	configLandingActionNew    configLandingActionSelection = "new"
+	configLandingActionSelect configLandingActionSelection = "select"
+	configLandingActionQuit   configLandingActionSelection = "quit"
+)
+
+type configLandingPageActionSelection string
+
+const (
+	configLandingPageEdit   configLandingPageActionSelection = "edit"
+	configLandingPageDelete configLandingPageActionSelection = "delete"
+	configLandingPageQuit   configLandingPageActionSelection = "quit"
 )

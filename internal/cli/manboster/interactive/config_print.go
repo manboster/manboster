@@ -111,7 +111,7 @@ func printConfigLLMProvidersData(ctx context.Context) {
 }
 
 func printConfigHachimiProvidersData(ctx context.Context) {
-
+	// TODO: wait for hachimi ends
 }
 
 func printConfigToolProvidersData(ctx context.Context) {

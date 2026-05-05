@@ -189,6 +189,18 @@ func runConfigLandingSelectionForm() error {
 	return nil
 }
 
-func configLandingChatActionForm() (configLandingChatActionSelection, error) {
+func configLandingChatActionForm() (configLandingActionSelection, error) {
+	return "", nil
+}
+
+func configLandingLLMActionForm() (configLandingActionSelection, error) {
+	return "", nil
+}
+
+func configLandingToolActionForm() (configLandingActionSelection, error) {
+	return "", nil
+}
+
+func configLandingHachimiActionForm() (configLandingActionSelection, error) {
 	return "", nil
 }
