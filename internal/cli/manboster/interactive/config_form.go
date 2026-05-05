@@ -1,6 +1,8 @@
 package interactive
 
 import (
+	"context"
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/huh"
@@ -76,4 +78,50 @@ func configStartupForm() (Selection, error) {
 		return "", err
 	}
 	return s, nil
+}
+
+func (s *databaseConfigService) runConfigDatabaseLandingSelectionForm() (databaseConfigLandingSelection, error) {
+	var se databaseConfigLandingSelection
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[databaseConfigLandingSelection]().Options(
+				huh.NewOption("Sessions\nIt's chat sessions you made in daily chatting routine, you can purge it to save disk or do more.", databaseConfigLandingSession),
+				huh.NewOption("Users\nIt helps you to grant a user to an admin or degrade it. It's all up to you to decide.", databaseConfigLandingUser),
+				huh.NewOption("Souls\nSouls is the key system prompt for you to personalize your Manbo Lobster.", databaseConfigLandingSoul),
+				huh.NewOption("Quit Manboster Configuration Wizard", databaseConfigLandingQuit),
+			).Title("Please select what to configure in database").Description("Please choose which field you want to configure in database field.").Value(&se),
+		)).Run()
+	if err != nil {
+		return "", err
+	}
+	return se, nil
+}
+
+func (s *databaseConfigService) configDatabaseLandingForm() error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	for {
+		se, err := s.runConfigDatabaseLandingSelectionForm()
+		if err != nil {
+			return err
+		}
+		switch se {
+		case databaseConfigLandingUser:
+			return nil
+		case databaseConfigLandingSession:
+			err := s.runConfigDatabaseSessionSelection(ctx)
+			if err != nil {
+				return err
+			}
+			return nil
+		case databaseConfigLandingSoul:
+			return nil
+		case databaseConfigLandingQuit:
+			color.Blue("Bye!")
+			return nil
+		default:
+			return fmt.Errorf("unexpected database landing form: %s", se)
+		}
+	}
 }

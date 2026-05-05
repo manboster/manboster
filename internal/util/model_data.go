@@ -19,11 +19,21 @@ func GetModelWithFallback(ctx context.Context, llmProviders map[string]llm.Provi
 	} else {
 		provider = p
 	}
+
+	isOK := false
 	for _, m := range provider.Models() {
 		if m.Name == targetModel {
 			model = m
+			isOK = true
 			break
 		}
 	}
+	if !isOK {
+		if len(provider.Models()) == 0 {
+			return provider, model
+		}
+		model = provider.Models()[0]
+	}
+
 	return provider, model
 }

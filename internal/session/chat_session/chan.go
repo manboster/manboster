@@ -2,38 +2,23 @@ package chat_session
 
 import "github.com/manboster/manboster/spec/chat"
 
-func (m *Manager) GetChan(sid string) chan *chat.Message {
-	m.Lock.RLock()
-	defer m.Lock.RUnlock()
-	s, avail := m.Sessions[sid]
-	if !avail {
-		return nil
-	}
-	return s.Ch
-}
-
-func (m *Manager) CreateChan(sid string, ch chan *chat.Message) {
+func (m *Manager) LoadOrCreateChan(sid string) (chan *chat.Message, bool) {
 	m.Lock.Lock()
 	defer m.Lock.Unlock()
+
 	s, avail := m.Sessions[sid]
 	if !avail {
+		ch := make(chan *chat.Message, 16)
 		se := Session{
 			Ch: ch,
 		}
 		m.Sessions[sid] = se
-		return
+		return ch, true
 	}
-	s.Ch = ch
-	m.Sessions[sid] = s
-	return
-}
-
-func (m *Manager) AvailChan(sid string) bool {
-	m.Lock.RLock()
-	defer m.Lock.RUnlock()
-	s, avail := m.Sessions[sid]
-	if !avail {
-		return false
+	if s.Ch == nil {
+		s.Ch = make(chan *chat.Message, 16)
+		m.Sessions[sid] = s
+		return s.Ch, true
 	}
-	return s.Ch != nil
+	return s.Ch, false
 }

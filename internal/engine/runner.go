@@ -10,8 +10,7 @@ import (
 )
 
 // MessageRunner is a single goroutine running for checking messages and handle it
-func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sessionId string) error {
-	sessChan := e.sessionService.Manager.ChatSession.GetChan(sessionId)
+func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sessionId string, ch chan *chat.Message) error {
 	displayName := instance.DisplayName()
 
 	timer := time.NewTimer(time.Minute * 30)
@@ -19,7 +18,7 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 
 	for {
 		select {
-		case msg := <-sessChan:
+		case msg := <-ch:
 			color.Blue("[Manboster Engine] Runner received message from engine")
 			timer.Reset(time.Minute * 30)
 
@@ -29,8 +28,8 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 			}
 			if isCompacted {
 				e.BuildMessageRunner(instance, newSessionId)
-				ch := e.sessionService.Manager.ChatSession.GetChan(newSessionId)
-				ch <- msg
+				newCh, _ := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+				newCh <- msg
 				e.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 				return nil
 			}
@@ -62,9 +61,9 @@ func (e *Engine) BuildMessageRunner(instance chat.Provider, sessionId string) {
 	color.Blue("[Manboster Engine] This session is not available in memory storage, now loading from database")
 	cancelCtx, cancelFunc := context.WithCancel(context.Background())
 	e.sessionService.Manager.ChatSession.SetSessionCancel(sessionId, cancelFunc)
-	e.sessionService.Manager.ChatSession.CreateChan(sessionId, make(chan *chat.Message, 10))
+	ch, _ := e.sessionService.Manager.ChatSession.LoadOrCreateChan(sessionId)
 	go func() {
-		err := e.MessageRunner(cancelCtx, instance, sessionId)
+		err := e.MessageRunner(cancelCtx, instance, sessionId, ch)
 		if err != nil {
 			color.Yellow("[Manboster Engine] We encountered an error while handling runner via %s, error: %q", instance.DisplayName(), err)
 		}

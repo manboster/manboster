@@ -89,11 +89,6 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
-	// if there is no valid thing, we will handle it via creating channel.
-	if !e.sessionService.Manager.ChatSession.AvailChan(sessionId) {
-		e.BuildMessageRunner(instance, sessionId)
-	}
-
 	if msg.MessageType == chat.MessageCommand {
 		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)
 		if err != nil {
@@ -103,6 +98,9 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	color.Blue("[Manboster Engine] Getting channel...")
-	ch := e.sessionService.Manager.ChatSession.GetChan(sessionId)
+	ch, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(sessionId)
+	if created {
+		e.BuildMessageRunner(instance, sessionId)
+	}
 	ch <- msg
 }
