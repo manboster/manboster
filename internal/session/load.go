@@ -53,7 +53,5 @@ func (s *Service) LoadChatSession(ctx context.Context, instance chat.Provider, m
 		return "", err
 	}
 
-	color.Blue("[Manboster Engine] This session is not available in memory storage, now loading from database")
-
 	return sessionId, nil
 }

@@ -48,6 +48,7 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 				color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling message type(%d) message via %s, error: %q", msg.MessageType, displayName, err))
 			}
 		case <-timer.C:
+			color.Yellow("[Manboster Engine Runner] Timed out for receiving message, bye!")
 			e.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 			return nil
 		case <-ctx.Done():

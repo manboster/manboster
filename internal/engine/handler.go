@@ -12,7 +12,7 @@ import (
 func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) {
 	displayName := instance.DisplayName()
 	color.Blue("[Manboster Engine] Handling message")
-	color.Blue(fmt.Sprintf("[Manboster Engine] Got an message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
+	color.Blue(fmt.Sprintf("[Manboster Engine] Got a message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
 	if msg.MessageType == chat.MessageSelectionCallback {
 		err := e.handler.HandleSelectionCallback(ctx, instance, msg)
@@ -63,7 +63,6 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 	}
 
 	// get message types
-	// sessionId := e.sessionManager.ID(displayName, msg.ChatID)
 	sessionId, err := e.sessionService.LoadChatSession(ctx, instance, msg, e.safeguardService.IsAdmin(uType))
 	// if you're not an administrator, you can not create a new session
 	if errors.Is(err, ErrAccessDenied) {

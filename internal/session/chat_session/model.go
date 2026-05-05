@@ -7,6 +7,11 @@ func (m *Manager) SetModel(sid string, provider string, model string) {
 
 	s, avail := m.Sessions[sid]
 	if !avail {
+		s = Session{
+			Model:    model,
+			Provider: provider,
+		}
+		m.Sessions[sid] = s
 		return
 	}
 	s.Model = model
