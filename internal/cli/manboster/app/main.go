@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/cli/manboster/cli"
 	"github.com/manboster/manboster/internal/cli/manboster/ctx"
+	"github.com/manboster/manboster/internal/cli/manboster/interactive"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/loader"
 	"github.com/spf13/cobra"
@@ -40,7 +40,7 @@ func MainInner() {
 	err := config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
 		color.Yellow("[Manboster Client] config.yaml is not found, now guide you to create one...\n")
-		cli.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])
+		interactive.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])
 		color.Green("[Manboster Client] Successfully created config.yaml, open Manboster again and enjoy it!")
 		time.Sleep(1 * time.Second)
 		os.Exit(0)

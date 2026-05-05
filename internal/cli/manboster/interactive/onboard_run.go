@@ -1,4 +1,4 @@
-package cli
+package interactive
 
 import (
 	"context"
@@ -8,16 +8,10 @@ import (
 	"github.com/manboster/manboster/spec/config"
 )
 
-// RunEditConfig runs provider and gets config result
-func RunEditConfig(ctx context.Context, provider config.Provider, currentConfig any) (any, error) {
+// RunOnboardConfig runs provider and gets config result
+func RunOnboardConfig(ctx context.Context, provider config.Provider) (any, error) {
 	form := provider.Args().ToHuhGroup()
-
-	err := form.Build(currentConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	err = huh.NewForm(form.Groups...).Run()
+	err := huh.NewForm(form.Groups...).Run()
 	if err != nil {
 		return nil, err
 	}

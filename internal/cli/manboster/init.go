@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/manboster/manboster/internal/cli/manboster/app"
-	"github.com/manboster/manboster/internal/cli/manboster/cli"
 	"github.com/manboster/manboster/internal/cli/manboster/daemon"
+	"github.com/manboster/manboster/internal/cli/manboster/interactive"
 	"github.com/spf13/cobra"
 )
 
@@ -23,8 +23,8 @@ func Init() {
 	rootCmd.AddCommand(app.VersionCmd())
 
 	// Add configuration options
-	rootCmd.AddCommand(cli.OnboardConfigCmd())
-	rootCmd.AddCommand(cli.ConfigCmd())
+	rootCmd.AddCommand(interactive.OnboardConfigCmd())
+	rootCmd.AddCommand(interactive.ConfigCmd())
 
 	// Add daemon options
 	rootCmd.AddCommand(daemon.StartCmd())

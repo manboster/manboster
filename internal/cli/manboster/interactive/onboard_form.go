@@ -1,4 +1,4 @@
-package cli
+package interactive
 
 import (
 	"context"
@@ -157,7 +157,7 @@ func OnboardToolConfigForm(ctx context.Context, tools []tool.Provider) ([]config
 func OnboardLLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	// get providers to generate options
 	llmProviders := llm.AllProviders()
-	llmProvider, err := OnboardSelectLLMForm(ctx, llmProviders, "Next, let's pick an LLM. Which provider would you like to use?")
+	llmProvider, err := OnboardSelectLLMForm(ctx, llmProviders, "Next, let's pick a LLM provider. Which provider would you like to use?")
 	if err != nil {
 		return config.LLMConfig{}, err
 	}
@@ -180,12 +180,12 @@ func OnboardLLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 }
 
 func OnboardAPPConfigForm(ctx context.Context, llmConfig []config.LLMConfig) (config.AppConfig, error) {
-	provider, err := OnboardLLMProviderInstanceForm(ctx, llmConfig, "Please select the default provider you want to use in the Manboster:")
+	provider, err := LLMProviderInstanceForm(ctx, llmConfig, "Please select the default provider you want to use in the Manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.")
 	if err != nil {
 		return config.AppConfig{}, err
 	}
 	models := provider.Models()
-	model, err := OnboardSelectModelForm(ctx, models, "Please select the default model you want to use in the manboster:")
+	model, err := SelectModelForm(ctx, models, "Please select the default model you want to use in the manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.")
 	if err != nil {
 		return config.AppConfig{}, err
 	}
