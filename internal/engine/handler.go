@@ -78,21 +78,12 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return
 	}
 
-	// cancel command, passthrough session lock
-	if msg.MessageType == chat.MessageCommand && msg.Command.CommandType == chat.CommandCancel {
+	if msg.MessageType == chat.MessageCommand {
 		color.Blue(fmt.Sprintf("[Manboster Engine] Handling cancel command via %s, sessionId: %s", displayName, sessionId))
 		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command via %s, error: %q", displayName, err))
 			return
-		}
-		return
-	}
-
-	if msg.MessageType == chat.MessageCommand {
-		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)
-		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Engine] We encountered an error while handling command: %q", err))
 		}
 		return
 	}

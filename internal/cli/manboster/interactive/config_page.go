@@ -10,14 +10,6 @@ import (
 	"github.com/manboster/manboster/internal/cli/helper"
 )
 
-type databaseConfigSessionPageSelection string
-
-const (
-	databaseConfigSessionPageQuit   databaseConfigSessionPageSelection = "quit"
-	databaseConfigSessionPageEdit   databaseConfigSessionPageSelection = "edit"
-	databaseConfigSessionPageDelete databaseConfigSessionPageSelection = "delete"
-)
-
 func (s *databaseConfigService) runConfigDatabaseSessionSelect(ctx context.Context) error {
 	var options []huh.Option[string]
 

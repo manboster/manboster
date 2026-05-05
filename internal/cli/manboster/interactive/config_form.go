@@ -12,15 +12,6 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 )
 
-type Selection string
-
-const (
-	SelectionDatabase Selection = "database"
-	SelectionQuit     Selection = "quit"
-	SelectionConfig   Selection = "config"
-	SelectionEditor   Selection = "editor"
-)
-
 func configFormRun() error {
 	for {
 		se, err := configStartupForm()
@@ -33,13 +24,13 @@ func configFormRun() error {
 			return err
 		}
 		switch se {
-		case SelectionEditor:
+		case configSelectionEditor:
 			configCmdOpenRun(nil, nil)
 			color.Blue("Opened via your default Editor, please edit in the editor, save it and then restart the instance!")
 			os.Exit(0)
-		case SelectionConfig:
+		case configSelectionConfig:
 
-		case SelectionDatabase:
+		case configSelectionDatabase:
 			cli := database.Client{}
 			path := config.Read().App.DBPath
 			err := cli.Init(path)
@@ -54,7 +45,7 @@ func configFormRun() error {
 			if err != nil {
 				return err
 			}
-		case SelectionQuit:
+		case configSelectionQuit:
 			color.Blue("Bye!")
 			os.Exit(0)
 		}
@@ -63,15 +54,15 @@ func configFormRun() error {
 	return nil
 }
 
-func configStartupForm() (Selection, error) {
-	var s Selection
+func configStartupForm() (configSelection, error) {
+	var s configSelection
 	err := huh.NewForm(
 		huh.NewGroup(
-			huh.NewSelect[Selection]().Options(
-				huh.NewOption("Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this.", SelectionDatabase),
-				huh.NewOption("Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this.", SelectionConfig),
-				huh.NewOption("Open Configuration yaml file in system's default editor\n(For advanced users only)", SelectionEditor),
-				huh.NewOption("Quit Manboster Configuration Wizard\nBye!", SelectionQuit),
+			huh.NewSelect[configSelection]().Options(
+				huh.NewOption("Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this.", configSelectionDatabase),
+				huh.NewOption("Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this.", configSelectionConfig),
+				huh.NewOption("Open Configuration yaml file in system's default editor\n(For advanced users only)", configSelectionEditor),
+				huh.NewOption("Quit Manboster Configuration Wizard\nBye!", configSelectionQuit),
 			).Title("Please select what to configure").Description("Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.").Value(&s),
 		)).Run()
 	if err != nil {

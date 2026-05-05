@@ -19,29 +19,12 @@ type databaseConfigService struct {
 	chatsMap map[string][]types.Chat
 }
 
-type databaseConfigLandingSelection string
-
-const (
-	databaseConfigLandingUser    databaseConfigLandingSelection = "user"
-	databaseConfigLandingSession databaseConfigLandingSelection = "session"
-	databaseConfigLandingSoul    databaseConfigLandingSelection = "soul"
-	databaseConfigLandingQuit    databaseConfigLandingSelection = "quit"
-)
-
 func newDatabaseConfigService(repo repository.Repository) *databaseConfigService {
 	return &databaseConfigService{
 		repo:     repo,
 		chatsMap: make(map[string][]types.Chat),
 	}
 }
-
-type databaseConfigSessionSelection string
-
-const (
-	databaseConfigSessionPurge  databaseConfigSessionSelection = "purge"
-	databaseConfigSessionSelect databaseConfigSessionSelection = "select"
-	databaseConfigSessionQuit   databaseConfigSessionSelection = "quit"
-)
 
 func (s *databaseConfigService) runConfigDatabaseSessionSelection(ctx context.Context) error {
 	defer helper.ClearScreen()
