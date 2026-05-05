@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/repository"
@@ -140,8 +142,11 @@ func configLandingForm() (configLandingSelection, error) {
 }
 
 func runConfigLandingSelectionForm() error {
-	_, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+	defer helper.ClearScreen()
+
+	conf := config.Read()
 
 	se, err := configLandingForm()
 	if err != nil {
@@ -149,10 +154,32 @@ func runConfigLandingSelectionForm() error {
 	}
 	switch se {
 	case configLandingChat:
+		printConfigChatProvidersData(ctx)
+		time.Sleep(1 * time.Second)
+		return nil
 	case configLandingLLM:
+		printConfigLLMProvidersData(ctx)
+		time.Sleep(1 * time.Second)
+		return nil
 	case configLandingTool:
+		printConfigToolProvidersData(ctx)
+		time.Sleep(1 * time.Second)
+		return nil
 	case configLandingHachimi:
 	case configLandingApp:
+		appConf, err := OnboardAPPConfigForm(ctx, conf.LLMs)
+		if err != nil {
+			return err
+		}
+		dbpath := conf.App.DBPath
+		conf.App = appConf
+		conf.App.DBPath = dbpath
+		err = config.Write(conf)
+		if err != nil {
+			return err
+		}
+		color.Blue("Successfully saved config!")
+		time.Sleep(1 * time.Second)
 	case configLandingQuit:
 		color.Blue("Bye!")
 		return nil
@@ -160,4 +187,8 @@ func runConfigLandingSelectionForm() error {
 		return fmt.Errorf("unexpected database landing form: %s", se)
 	}
 	return nil
+}
+
+func configLandingChatActionForm() (configLandingChatActionSelection, error) {
+	return "", nil
 }

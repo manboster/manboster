@@ -44,3 +44,10 @@ const (
 	configLandingApp     configLandingSelection = "app"
 	configLandingQuit    configLandingSelection = "quit"
 )
+
+type configLandingChatActionSelection string
+
+const (
+	configLandingChatActionNew  configLandingChatActionSelection = "new"
+	configLandingChatActionQuit configLandingChatActionSelection = "quit"
+)
