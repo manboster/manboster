@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/cli/helper"
+	"github.com/manboster/manboster/internal/config"
 )
 
 func (s *databaseConfigService) runConfigDatabaseSessionSelect(ctx context.Context) error {
@@ -69,10 +71,37 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelect(ctx context.Conte
 
 	switch se {
 	case databaseConfigSessionPageEdit:
-		color.Blue("Bye!")
+		llmConfigs := config.Read().LLMs
+		provider, err := LLMProviderInstanceForm(ctx, llmConfigs, "Select the default provider you want to use in this session:", "")
+		if err != nil {
+			return err
+		}
+		model, err := SelectModelForm(ctx, provider.Models(), "Select the default model you want to use in this session:", "")
+		if err != nil {
+			return err
+		}
+		err = s.editConfigSessionDatabase(ctx, selection, provider.Name(), model.Name)
+		if err != nil {
+			return err
+		}
+		color.Blue("Successfully updated the default model and provider!")
+		time.Sleep(1 * time.Second)
 		return nil
 	case databaseConfigSessionPageDelete:
-		color.Blue("Bye!")
+		txt := ""
+		cm, avail := s.chatsMap[selection]
+		if avail {
+			txt = fmt.Sprintf("\nThis session bind with %d chats, if you delete it, the chats information will be deleted too.", len(cm))
+		}
+		if helper.ContinueConfirm(ctx, fmt.Sprintf("Do you want to continue delete session %s? YOUR ACTION IS IRREVERSIBLE!%s", selection, txt)) {
+			err := s.deleteConfigSessionDatabase(ctx, selection)
+			if err != nil {
+				return err
+			}
+			color.Blue("Successfully deleted session!")
+			time.Sleep(1 * time.Second)
+			return nil
+		}
 		return nil
 	case databaseConfigSessionPageQuit:
 		return nil

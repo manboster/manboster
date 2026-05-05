@@ -13,7 +13,7 @@ LDFLAGS := -ldflags "-s -w -X '$(CONFIG_PKG).BuildCommit=$(COMMIT)' -X '$(CONFIG
 .PHONY: run build build-linux-amd64 build-linux-i386 build-linux-arm64 build-mac build-mac-intel build-win-amd64 build-win-i386 build-win-arm64 build-win build-linux
 run :
 	@echo "=> Running: go run ./cmd/manboster/main.go $(RUN_ARGS)"
-	go run $(LDFLAGS) ./cmd/manboster/main.go $(RUN_ARGS)
+	go run -race $(LDFLAGS) ./cmd/manboster/main.go $(RUN_ARGS)
 
 build:
 	go build $(LDFLAGS) -trimpath -o build/manboster ./cmd/manboster/main.go

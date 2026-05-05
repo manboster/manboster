@@ -82,3 +82,28 @@ func (s *databaseConfigService) purgeConfigDatabaseSession(ctx context.Context) 
 	}
 	return nil
 }
+
+func (s *databaseConfigService) editConfigSessionDatabase(ctx context.Context, sid string, provider string, model string) error {
+	return s.repo.UpdateSession(ctx, sid, map[string]interface{}{
+		"llm_provider":       provider,
+		"llm_provider_model": model,
+	})
+}
+
+func (s *databaseConfigService) deleteConfigSessionDatabase(ctx context.Context, sid string) error {
+	err := s.repo.DeleteSession(ctx, sid)
+	if err != nil {
+		return err
+	}
+	cm, avail := s.chatsMap[sid]
+	if !avail {
+		return nil
+	}
+	for _, c := range cm {
+		err := s.repo.DeleteChat(ctx, c.ChatID, c.ChatProvider)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Client] Error deleting session %s: %q", sid, err))
+		}
+	}
+	return nil
+}
