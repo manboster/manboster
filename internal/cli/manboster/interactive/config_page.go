@@ -72,7 +72,7 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelect(ctx context.Conte
 	switch se {
 	case databaseConfigSessionPageEdit:
 		llmConfigs := config.Read().LLMs
-		provider, err := LLMProviderInstanceForm(ctx, llmConfigs, "Select the default provider you want to use in this session:", "")
+		provider, err := SelectLLMProviderInstanceForm(ctx, llmConfigs, "Select the default provider you want to use in this session:", "")
 		if err != nil {
 			return err
 		}

@@ -33,3 +33,14 @@ const (
 	databaseConfigSessionSelect databaseConfigSessionSelection = "select"
 	databaseConfigSessionQuit   databaseConfigSessionSelection = "quit"
 )
+
+type configLandingSelection string
+
+const (
+	configLandingChat    configLandingSelection = "chat"
+	configLandingLLM     configLandingSelection = "llm"
+	configLandingTool    configLandingSelection = "tool"
+	configLandingHachimi configLandingSelection = "hachimi"
+	configLandingApp     configLandingSelection = "app"
+	configLandingQuit    configLandingSelection = "quit"
+)

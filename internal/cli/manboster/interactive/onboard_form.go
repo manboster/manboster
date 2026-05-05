@@ -112,7 +112,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 func OnboardChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 	chatProviders := chat.AllProviders()
 
-	chatProvider, err := OnboardSelectChatForm(ctx, chatProviders, "First, which platform would you like to use for your Manboster?")
+	chatProvider, err := SelectChatForm(ctx, chatProviders, "First, which platform would you like to use for your Manboster?")
 	if err != nil {
 		return config.ChatConfig{}, err
 	}
@@ -130,7 +130,7 @@ func OnboardChatConfigForm(ctx context.Context) (config.ChatConfig, error) {
 }
 
 func OnboardToolConfigForm(ctx context.Context, tools []tool.Provider) ([]config.ToolConfig, error) {
-	providers, err := OnboardSelectToolForm(ctx, tools, "Select and activate the tools you want to use", "Please select the tool you want to use, please be careful to select as they will be the tool call of AIs.")
+	providers, err := SelectToolForm(ctx, tools, "Select and activate the tools you want to use", "Please select the tool you want to use, please be careful to select as they will be the tool call of AIs.")
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func OnboardToolConfigForm(ctx context.Context, tools []tool.Provider) ([]config
 func OnboardLLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 	// get providers to generate options
 	llmProviders := llm.AllProviders()
-	llmProvider, err := OnboardSelectLLMForm(ctx, llmProviders, "Next, let's pick a LLM provider. Which provider would you like to use?")
+	llmProvider, err := SelectLLMForm(ctx, llmProviders, "Next, let's pick a LLM provider. Which provider would you like to use?")
 	if err != nil {
 		return config.LLMConfig{}, err
 	}
@@ -180,7 +180,7 @@ func OnboardLLMConfigForm(ctx context.Context) (config.LLMConfig, error) {
 }
 
 func OnboardAPPConfigForm(ctx context.Context, llmConfig []config.LLMConfig) (config.AppConfig, error) {
-	provider, err := LLMProviderInstanceForm(ctx, llmConfig, "Please select the default provider you want to use in the Manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.")
+	provider, err := SelectLLMProviderInstanceForm(ctx, llmConfig, "Please select the default provider you want to use in the Manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.")
 	if err != nil {
 		return config.AppConfig{}, err
 	}
