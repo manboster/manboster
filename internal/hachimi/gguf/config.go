@@ -5,6 +5,13 @@ import "github.com/manboster/manboster/spec/config"
 type Config struct {
 }
 
+type ModelType string
+
+const (
+	ModelQwenSafeguard ModelType = "qwen-safeguard"
+	ModelLLM           ModelType = "llm"
+)
+
 func (c *Config) Name() string {
 	return "hachimi-gguf"
 }
