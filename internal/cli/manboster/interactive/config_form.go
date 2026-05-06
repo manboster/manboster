@@ -8,10 +8,15 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
+	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/repository"
+	"github.com/manboster/manboster/internal/tool"
+	chatType "github.com/manboster/manboster/spec/chat"
+	llmType "github.com/manboster/manboster/spec/llm"
 )
 
 func configStartupForm() (configSelection, error) {
@@ -154,15 +159,24 @@ func runConfigLandingSelectionForm() error {
 	}
 	switch se {
 	case configLandingChat:
-		printConfigChatProvidersData(ctx)
+		err := runLandingChatActionForm(ctx)
+		if err != nil {
+			return err
+		}
 		time.Sleep(1 * time.Second)
 		return nil
 	case configLandingLLM:
-		printConfigLLMProvidersData(ctx)
+		err := runLandingLLMActionForm(ctx)
+		if err != nil {
+			return err
+		}
 		time.Sleep(1 * time.Second)
 		return nil
 	case configLandingTool:
-		printConfigToolProvidersData(ctx)
+		err := runLandingToolActionForm(ctx)
+		if err != nil {
+			return err
+		}
 		time.Sleep(1 * time.Second)
 		return nil
 	case configLandingHachimi:
@@ -190,17 +204,225 @@ func runConfigLandingSelectionForm() error {
 }
 
 func configLandingChatActionForm() (configLandingActionSelection, error) {
-	return "", nil
+	return configLandingActionForm("Add a new chat provider", "Select an existing chat provider", "Quit")
 }
 
 func configLandingLLMActionForm() (configLandingActionSelection, error) {
-	return "", nil
+	return configLandingActionForm("Add a new LLM provider", "Select an existing LLM provider", "Quit")
 }
 
 func configLandingToolActionForm() (configLandingActionSelection, error) {
-	return "", nil
+	return configLandingActionForm("Add a new Tool provider", "Select an existing tool provider", "Quit")
 }
 
 func configLandingHachimiActionForm() (configLandingActionSelection, error) {
-	return "", nil
+	return configLandingActionForm("Add a new hachimi provider", "Select an existing hachimi provider", "Quit")
+}
+
+func configLandingActionForm(add string, sel string, quit string) (configLandingActionSelection, error) {
+	var se configLandingActionSelection
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[configLandingActionSelection]().Options(
+				huh.NewOption(add, configLandingActionAdd),
+				huh.NewOption(sel, configLandingActionSelect),
+				huh.NewOption(quit, configLandingActionQuit),
+			).Description("What do you want to do?").Value(&se),
+		)).Run()
+	if err != nil {
+		return se, err
+	}
+	return se, nil
+}
+
+func runLandingChatActionForm(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	printConfigChatProvidersData(ctx)
+	se, err := configLandingChatActionForm()
+	if err != nil {
+		return err
+	}
+	switch se {
+	case configLandingActionAdd:
+		conf := config.Read()
+		providerAvail := chat.AvailProviders()
+		var providerList []chatType.Provider
+
+		occupy := make(map[string]bool)
+		for _, c := range conf.Chats {
+			occupy[c.Provider] = true
+		}
+
+		for _, provider := range providerAvail {
+			if !occupy[provider] {
+				p, err := chat.GetProvider(provider)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Client] Failed to get Chat provider %s: %q", provider, err))
+				}
+				providerList = append(providerList, p)
+			}
+		}
+
+		helper.ClearScreen()
+		if len(providerList) == 0 {
+			color.Yellow("[Manboster Client] No new chat providers available to add!")
+			time.Sleep(1 * time.Second)
+			return nil
+		}
+
+		chatProvider, err := SelectChatForm(ctx, providerList, "Please select a provider you want to add:")
+		if err != nil {
+			return err
+		}
+
+		cf, err := RunOnboardConfig(ctx, chatProvider.Config())
+		if err != nil {
+			return err
+		}
+
+		conf.Chats = append(conf.Chats, config.ChatConfig{
+			Provider:      chatProvider.Name(),
+			Configuration: cf,
+		})
+
+		err = config.Write(conf)
+		if err != nil {
+			return err
+		}
+	case configLandingActionSelect:
+	case configLandingActionQuit:
+		color.Blue("Bye!")
+		return nil
+	default:
+		return fmt.Errorf("unexpected landing chat-action form: %s", se)
+	}
+	return nil
+}
+
+func runLandingLLMActionForm(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	printConfigLLMProvidersData(ctx)
+	se, err := configLandingLLMActionForm()
+	if err != nil {
+		return err
+	}
+	switch se {
+	case configLandingActionAdd:
+		conf := config.Read()
+		var llmProviders []llmType.Provider
+		for _, p := range llm.AvailProviders() {
+			pr, err := llm.GetProvider(p)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Client] Failed to get LLM provider %s: %q", p, err))
+			}
+			llmProviders = append(llmProviders, pr)
+		}
+
+		helper.ClearScreen()
+		llmProvider, err := SelectLLMForm(ctx, llmProviders, "Please select a LLM provider you want to add:")
+		if err != nil {
+			return err
+		}
+
+		cf, err := RunOnboardConfig(ctx, llmProvider.Config())
+		if err != nil {
+			return err
+		}
+
+		conf.LLMs = append(conf.LLMs, config.LLMConfig{
+			Provider:      llmProvider.Config().Name(),
+			Configuration: cf,
+		})
+	case configLandingActionSelect:
+	case configLandingActionQuit:
+		color.Blue("Bye!")
+		return nil
+	default:
+		return fmt.Errorf("unexpected landing LLM-action form: %s", se)
+	}
+	return nil
+}
+
+func runLandingToolActionForm(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	printConfigToolProvidersData(ctx)
+	se, err := configLandingToolActionForm()
+	if err != nil {
+		return err
+	}
+	switch se {
+	case configLandingActionAdd:
+		conf := config.Read()
+		var toolProviders []tool.Provider
+
+		occupy := make(map[string]bool)
+		for _, c := range conf.Tools {
+			occupy[c.Name] = true
+		}
+
+		helper.ClearScreen()
+		for _, p := range tool.AvailProviders() {
+			if !occupy[p] {
+				pr, err := tool.GetProvider(p)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Client] Failed to get tool provider %s: %q", p, err))
+				}
+				toolProviders = append(toolProviders, pr)
+			}
+		}
+
+		if len(toolProviders) == 0 {
+			color.Yellow("[Manboster Client] No new tool providers available to add!")
+			time.Sleep(1 * time.Second)
+			return nil
+		}
+
+		toolProvider, err := SelectSingleToolForm(ctx, toolProviders, "Please select the Tool provider you want to add:")
+		if err != nil {
+			return err
+		}
+
+		if toolProvider.Config() != nil {
+			cf, err := RunOnboardConfig(ctx, toolProvider.Config())
+			if err != nil {
+				return err
+			}
+			conf.Tools = append(conf.Tools, config.ToolConfig{
+				Name:          toolProvider.Name(),
+				Configuration: cf,
+			})
+		} else {
+			conf.Tools = append(conf.Tools, config.ToolConfig{
+				Name: toolProvider.Name(),
+			})
+		}
+	case configLandingActionSelect:
+	case configLandingActionQuit:
+		color.Blue("Bye!")
+		return nil
+	default:
+		return fmt.Errorf("unexpected landing tool-action form: %s", se)
+	}
+	return nil
+}
+
+func runLandingHachimiActionForm(ctx context.Context) error {
+	printConfigHachimiProvidersData(ctx)
+	se, err := configLandingChatActionForm()
+	if err != nil {
+		return err
+	}
+	switch se {
+	case configLandingActionAdd:
+	case configLandingActionSelect:
+	case configLandingActionQuit:
+		color.Blue("Bye!")
+		return nil
+	default:
+		return fmt.Errorf("unexpected landing hachimi-action form: %s", se)
+	}
+	return nil
 }

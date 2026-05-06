@@ -6,6 +6,6 @@ func (s *Service) Start(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) Close() error {
+func (s *Service) Stop() error {
 	return nil
 }

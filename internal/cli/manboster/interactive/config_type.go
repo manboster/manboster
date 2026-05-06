@@ -48,7 +48,7 @@ const (
 type configLandingActionSelection string
 
 const (
-	configLandingActionNew    configLandingActionSelection = "new"
+	configLandingActionAdd    configLandingActionSelection = "add"
 	configLandingActionSelect configLandingActionSelection = "select"
 	configLandingActionQuit   configLandingActionSelection = "quit"
 )

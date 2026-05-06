@@ -27,15 +27,20 @@ func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Prov
 			continue
 		}
 		provider.RegisterHook(hook.Reg)
-		go func() {
+		go func(provider tool.Provider) {
 			err := provider.Start(ctx)
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while polling tool call provider %q: %q", provider.DisplayName(), err))
 			}
-		}()
+
+			defer func(provider tool.Provider) {
+				err := provider.Stop()
+				if err != nil {
+					color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while stopping tool call provider %q: %q", provider.DisplayName(), err))
+				}
+			}(provider)
+		}(provider)
 		toolCallProviders = append(toolCallProviders, provider)
-		// str, _ := json.MarshalIndent(provider.Args(), "", " ")
-		// fmt.Printf("%s", string(str))
 	}
 	return toolCallProviders, nil
 }

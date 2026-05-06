@@ -166,3 +166,34 @@ func SelectToolForm(ctx context.Context, toolProviders []tool.Provider, title st
 
 	return respTool, nil
 }
+
+func SelectSingleToolForm(ctx context.Context, toolProviders []tool.Provider, title string) (tool.Provider, error) {
+	var toolOptions []huh.Option[string]
+	toolsMap := map[string]tool.Provider{}
+
+	for _, toolData := range toolProviders {
+		toolsMap[toolData.Name()] = toolData
+
+		display := fmt.Sprintf("%s(%s)\n%s", toolData.DisplayName(), toolData.Name(), toolData.MetaData().Description)
+		// to check the compatibility...
+
+		option := huh.NewOption(display, toolData.Name())
+		toolOptions = append(toolOptions, option)
+	}
+	var tools string
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().Title(title).
+				Options(toolOptions...).Value(&tools),
+		)).Run()
+	if err != nil {
+		return nil, err
+	}
+
+	var respTool tool.Provider
+	if t, ok := toolsMap[tools]; ok {
+		respTool = t
+	}
+
+	return respTool, nil
+}

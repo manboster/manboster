@@ -22,6 +22,6 @@ func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResp
 	return nil, nil
 }
 
-func (s *Service) Close() error {
+func (s *Service) Stop() error {
 	return nil
 }

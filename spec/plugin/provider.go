@@ -21,5 +21,5 @@ type Provider interface {
 	Run(ctx context.Context, args string) (*RunResponse, error)         // passthrough by JSON
 	Continue(ctx context.Context, session string) (*RunResponse, error) // continue to do, avoid to interrupt
 	Config() config.Provider                                            // if config.Provider is nil, it means there is no need to configure.
-	Close() error                                                       // force stop
+	Stop() error                                                        // force stop
 }
