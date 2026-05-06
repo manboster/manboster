@@ -11,7 +11,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-var re = regexp.MustCompile(`(?s)<tone_and_formatting>.*?</tone_and_formatting>`)
+var re = regexp.MustCompile(`(?s)## Tone and Formatting.*?## Reminders`)
 
 // BuildSystemMessage returns system prompt message
 func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.Message, error) {
@@ -21,7 +21,7 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 		if soul == "system" {
 			basePrompt := prompt.InitialSystemPrompt
 			if so, avail := s.soulMap["system"]; avail {
-				replacement := fmt.Sprintf("<tone_and_formatting>\n%s\n</tone_and_formatting>", so.Content)
+				replacement := fmt.Sprintf("# Tone and Formatting\n%s\n", so.Content)
 				basePrompt = re.ReplaceAllString(basePrompt, replacement)
 			}
 			text.WriteString(basePrompt + "\n")

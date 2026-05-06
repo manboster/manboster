@@ -115,7 +115,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	err = s.repo.CreateSoul(ctx, types.Soul{
 		Priority: 1,
 		Name:     "previous-message-" + newSessionID,
-		Content:  "<previous_chat>" + compactedMessage + "</previous_chat>",
+		Content:  "# Previous chat messages:\n" + compactedMessage,
 		Scope: []string{
 			"session:" + newSessionID,
 		},
