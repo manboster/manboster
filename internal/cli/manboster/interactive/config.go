@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -58,7 +59,12 @@ func ConfigCmd() *cobra.Command {
 
 // configCmdRun is used to run interactive huh forms to config.
 func configCmdRun(cmd *cobra.Command, args []string) {
-	err := configFormRun()
+	res, err := ctx.DaemonCtx.Search()
+	if err == nil && res != nil {
+		color.Red("Manboster is running, please run 'manboster stop' to stop it!\nQuiting the application...")
+		return
+	}
+	err = configFormRun()
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring: %q.", err))
 	}

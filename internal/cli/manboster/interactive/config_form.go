@@ -259,6 +259,7 @@ func runLandingChatActionForm(ctx context.Context) error {
 				p, err := chat.GetProvider(provider)
 				if err != nil {
 					color.Yellow(fmt.Sprintf("[Manboster Client] Failed to get Chat provider %s: %q", provider, err))
+					continue
 				}
 				providerList = append(providerList, p)
 			}
@@ -291,6 +292,21 @@ func runLandingChatActionForm(ctx context.Context) error {
 			return err
 		}
 	case configLandingActionSelect:
+		conf := config.Read()
+		var providerList []chatType.Provider
+
+		for _, c := range conf.Chats {
+			p, err := chat.GetProvider(c.Provider)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Client] Failed to get Chat provider %s: %q", c.Provider, err))
+				continue
+			}
+			providerList = append(providerList, p)
+		}
+		_, err := SelectChatForm(ctx, providerList, "Please select a provider:")
+		if err != nil {
+			return err
+		}
 	case configLandingActionQuit:
 		color.Blue("Bye!")
 		return nil
@@ -425,4 +441,20 @@ func runLandingHachimiActionForm(ctx context.Context) error {
 		return fmt.Errorf("unexpected landing hachimi-action form: %s", se)
 	}
 	return nil
+}
+
+func configPageActionSelectForm(edit string, del string, quit string) (configLandingPageActionSelection, error) {
+	var se configLandingPageActionSelection
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[configLandingPageActionSelection]().Options(
+				huh.NewOption(edit, configLandingPageEdit),
+				huh.NewOption(del, configLandingPageDelete),
+				huh.NewOption(quit, configLandingPageQuit),
+			).Description("What do you want to do?").Value(&se),
+		)).Run()
+	if err != nil {
+		return se, err
+	}
+	return se, nil
 }
