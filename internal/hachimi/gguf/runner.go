@@ -1,6 +1,7 @@
 package gguf
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 
@@ -32,6 +33,13 @@ func (s *Service) DownloadLibraryRunner(path string) error {
 	return nil
 }
 
-func (s *Service) DownloadModelRunner() error {
-	return nil
+func (s *Service) CheckReadyRunner(ctx context.Context) error {
+	for {
+		select {
+		case <-s.ready:
+			return s.Prepare(ctx)
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
 }

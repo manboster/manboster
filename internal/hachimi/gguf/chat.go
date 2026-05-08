@@ -10,5 +10,6 @@ func (s *Service) Chat(ctx context.Context, sysMsg string, evalMsg string) (*hac
 	if !(s.avail && s.availModel) {
 		return nil, ErrNotAvailable
 	}
+
 	return nil, nil
 }

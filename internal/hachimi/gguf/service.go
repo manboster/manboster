@@ -9,6 +9,7 @@ type Service struct {
 	avail      bool
 	availModel bool
 	cfg        *Config
+	ready      chan struct{}
 }
 
 func (s *Service) Name() string {
