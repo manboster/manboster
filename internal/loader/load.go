@@ -64,9 +64,27 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to load Tool Call Providers: %q", err))
 	}
 
+	hachimiLoaded := false
+
+	// check hachimi enable status and open based on hachimi's provider name
+	if l.cfg.Hachimi.Enabled {
+		color.Blue(fmt.Sprintf("[Manboster Loader] Hachimi enabled, initializing Hachimi Providers..."))
+		for _, conf := range l.cfg.Hachimi.Hachimi {
+			if l.cfg.Hachimi.Provider == conf.Provider {
+				hProvider, err := LoadHachimiProvider(ctx, conf)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))
+					break
+				}
+				l.hachimiProvider = hProvider
+				hachimiLoaded = true
+			}
+		}
+	}
+
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
-	e, err := engine.New(l.cfg, repo, llmProvidersMap, tool)
+	e, err := engine.New(l.cfg, repo, llmProvidersMap, tool, l.hachimiProvider, &hachimiLoaded)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err
@@ -85,22 +103,6 @@ func (l *Loader) Load(ctx context.Context) error {
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the chat providers: %q", err))
 		return err
-	}
-
-	// check hachimi enable status and open based on hachimi's provider name
-	if l.cfg.Hachimi.Enabled {
-		color.Blue(fmt.Sprintf("[Manboster Loader] Hachimi enabled, initializing Hachimi Providers..."))
-		for _, conf := range l.cfg.Hachimi.Hachimi {
-			if l.cfg.Hachimi.Provider == conf.Provider {
-				hProvider, err := LoadHachimiProvider(ctx, conf)
-				if err != nil {
-					color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))
-					break
-				}
-				l.hachimiProvider = hProvider
-				l.cfg.Hachimi.Enabled = true
-			}
-		}
 	}
 
 	return nil
