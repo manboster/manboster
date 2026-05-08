@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Service) Start(ctx context.Context) error {
-	if !(s.avail && s.availModel) {
+	if !s.manager.IsReady() {
 		go func() {
 			err := s.CheckReadyRunner(ctx)
 			if err != nil {
@@ -23,6 +23,7 @@ func (s *Service) Start(ctx context.Context) error {
 }
 
 func (s *Service) Stop() error {
+	close(s.ready)
 	llama.Close()
 	return nil
 }

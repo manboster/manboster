@@ -7,12 +7,11 @@ import (
 )
 
 type Service struct {
-	avail      bool
-	availModel bool
-	cfg        *Config
-	ready      chan struct{}
-	modelCtx   llama.Context
-	model      llama.Model
+	manager  *Manager
+	cfg      *Config
+	ready    chan struct{}
+	modelCtx llama.Context
+	model    llama.Model
 }
 
 func (s *Service) Name() string {

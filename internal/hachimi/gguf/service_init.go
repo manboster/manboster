@@ -24,31 +24,37 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 		return err
 	}
 
+	s.manager = NewManager()
+
 	libInstallPath := libPath()
 	if !download.AlreadyInstalled(libInstallPath) {
-		s.avail = false
+		s.manager.SetAvail(false)
 		go func() {
 			err := s.DownloadLibraryRunner(libInstallPath)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download library: %s", err))
 			}
-			s.avail = true
+			s.manager.SetAvail(true)
 		}()
 	} else {
-		s.avail = true
+		s.manager.SetAvail(true)
 	}
 
+	modelFilePath, err := modelPath(s.cfg.GGUFurl)
+	if err != nil {
+		return err
+	}
 	if _, err = os.Stat(modelFilePath); os.IsNotExist(err) {
-		s.availModel = false
+		s.manager.SetAvailModel(false)
 		go func() {
 			err := Download(ctx, cfg.GGUFurl, modelFilePath)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download model: %s", err))
 			}
-			s.availModel = true
+			s.manager.SetAvailModel(true)
 		}()
 	} else if os.IsExist(err) {
-		s.availModel = true
+		s.manager.SetAvailModel(true)
 	} else {
 		return err
 	}
