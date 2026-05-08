@@ -18,17 +18,19 @@ func (s *Service) Prepare(ctx context.Context) error {
 		return err
 	}
 	llama.LogSet(llama.LogSilent())
+	llama.Init()
+
 	model, err := llama.ModelLoadFromFile(mPath, llama.ModelDefaultParams())
 	if err != nil {
 		return err
 	}
+	s.model = model
 
 	modelCtx, err := llama.InitFromModel(model, llama.ContextDefaultParams())
 	if err != nil {
 		return err
 	}
-
-	llama.Init()
+	s.modelCtx = modelCtx
 
 	return nil
 }

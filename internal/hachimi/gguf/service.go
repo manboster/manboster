@@ -1,6 +1,7 @@
 package gguf
 
 import (
+	"github.com/hybridgroup/yzma/pkg/llama"
 	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/spec/config"
 )
@@ -10,6 +11,8 @@ type Service struct {
 	availModel bool
 	cfg        *Config
 	ready      chan struct{}
+	modelCtx   llama.Context
+	model      llama.Model
 }
 
 func (s *Service) Name() string {
