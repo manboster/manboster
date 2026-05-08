@@ -71,6 +71,7 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Blue(fmt.Sprintf("[Manboster Loader] Hachimi enabled, initializing Hachimi Providers..."))
 		for _, conf := range l.cfg.Hachimi.Hachimi {
 			if l.cfg.Hachimi.Provider == conf.Provider {
+				color.Blue(fmt.Sprintf(fmt.Sprintf("[Manboster Loader] Initializing Hachimi Provider %q...", conf.Provider)))
 				hProvider, err := LoadHachimiProvider(ctx, conf)
 				if err != nil {
 					color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))

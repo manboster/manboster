@@ -9,7 +9,7 @@ import (
 	"github.com/hybridgroup/yzma/pkg/download"
 )
 
-func (s *Service) DownloadLibraryRunner(path string) error {
+func (s *Service) DownloadLibraryRunner(ctx context.Context, path string) error {
 	version, err := download.LlamaLatestVersion()
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] could not get the latest version of llama.cpp: %q", err))
@@ -30,10 +30,11 @@ func (s *Service) DownloadLibraryRunner(path string) error {
 		return err
 	}
 	color.Green("[Manboster Hachimi Provider] successfully downloaded llama.cpp!")
-	return nil
+	return s.CheckModel(ctx)
 }
 
 func (s *Service) CheckReadyRunner(ctx context.Context) error {
+	color.Blue("[Manboster Hachimi Provider] Running CheckReady Runner...")
 	for {
 		select {
 		case <-s.ready:

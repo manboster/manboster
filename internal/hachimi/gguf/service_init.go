@@ -27,11 +27,20 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 	s.manager = NewManager()
 	s.ready = make(chan struct{})
 
+	err = os.MkdirAll(libPath(), 0755)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(modelPath(), 0755)
+	if err != nil {
+		return err
+	}
+
 	libInstallPath := libPath()
 	if !download.AlreadyInstalled(libInstallPath) {
 		s.manager.SetAvail(false)
 		go func() {
-			err := s.DownloadLibraryRunner(libInstallPath)
+			err := s.DownloadLibraryRunner(ctx, libInstallPath)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download library: %s", err))
 			}
@@ -41,24 +50,5 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 		s.manager.SetAvail(true)
 	}
 
-	modelFilePath, err := modelPath(s.cfg.GGUFurl)
-	if err != nil {
-		return err
-	}
-	if _, err = os.Stat(modelFilePath); os.IsNotExist(err) {
-		s.manager.SetAvailModel(false)
-		go func() {
-			err := Download(ctx, cfg.GGUFurl, modelFilePath)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download model: %s", err))
-			}
-			s.manager.SetAvailModel(true)
-		}()
-	} else if os.IsExist(err) {
-		s.manager.SetAvailModel(true)
-	} else {
-		return err
-	}
-
-	return nil
+	return s.CheckModel(ctx)
 }

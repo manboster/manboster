@@ -11,6 +11,8 @@ import (
 	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/hachimi"
+	_ "github.com/manboster/manboster/internal/hachimi/all"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/tool"
@@ -74,10 +76,17 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	}
 	c.Tools = toolCfg
 
+	// Step 5: config hachimi
+	hachimiCfg, err := OnboardHachimiConfigForm(ctx)
+	if err != nil {
+		return c, err
+	}
+	c.Hachimi = hachimiCfg
+
 	// set V and manboster.db path
 	c = config.Default(c)
 
-	// Step 4: See what's entered and start to write configuration.
+	// Step 6: See what's entered and start to write configuration.
 	confDescription := strings.Builder{}
 	confDescription.WriteString("# Before you proceed, you need to review what you have entered. \n")
 	confDescription.WriteString("If anything is incorrect, please use Ctrl+C to quit and restart it with 'manboster onboard'.\n\n")
@@ -95,6 +104,12 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	confDescription.WriteString(fmt.Sprintf("You configured %d tool providers\n\n", len(c.Tools)))
 	for i, _ := range c.Tools {
 		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration: \n\n%s \n\n", i+1, c.Tools[i].Name, c.Tools[i].Configuration))
+	}
+
+	if c.Hachimi.Enabled {
+		confDescription.WriteString(fmt.Sprintf("You enabled hachimi features\n\n"))
+	} else {
+		confDescription.WriteString(fmt.Sprintf("You disabled hachimi feature.\n\n"))
 	}
 
 	confDescription.WriteString("If there is no problem, you can continue writing the configuration.\n\n")
@@ -194,4 +209,33 @@ func OnboardAPPConfigForm(ctx context.Context, llmConfig []config.LLMConfig) (co
 		DefaultLLMProvider: provider.Name(),
 		DefaultLLMModel:    model.Name,
 	}, nil
+}
+
+func OnboardHachimiConfigForm(ctx context.Context) (config.HachimiConfigs, error) {
+	var hachimiConf config.HachimiConfigs
+	isEnabled, err := HachimiEnablePrompt(ctx, "Do you want to activate hachimi?", "Hachimi is a small language model running on your device side and it can check out LLM's behaviour and evaulate its action.\nIf your device's available memory is lower than 1GB or you don't know what's this, please disable it.")
+	if err != nil {
+		return hachimiConf, err
+	}
+	if !isEnabled {
+		hachimiConf.Enabled = false
+		return hachimiConf, nil
+	}
+	hachimiProviders := hachimi.AllProviders()
+	hachimiProvider, err := SelectHachimiForm(ctx, hachimiProviders, "Please choose your hachimi provider:")
+	if err != nil {
+		return hachimiConf, err
+	}
+	provider := hachimiProvider.Config()
+	conf, err := RunOnboardConfig(ctx, provider)
+	if err != nil {
+		return hachimiConf, err
+	}
+	hachimiConf.Enabled = true
+	hachimiConf.Provider = provider.Name()
+	hachimiConf.Hachimi = append(hachimiConf.Hachimi, config.HachimiConfig{
+		Provider:      provider.Name(),
+		Configuration: conf,
+	})
+	return hachimiConf, nil
 }

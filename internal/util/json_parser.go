@@ -54,8 +54,8 @@ func JSONParse(j map[string]interface{}) string {
 
 		if k != "shell" {
 			runeValStr := []rune(valStr)
-			if len(runeValStr) > 50 {
-				runeValStr = append(append(runeValStr[:25], []rune("......")...), runeValStr[len(runeValStr)-5:]...)
+			if len(runeValStr) > 100 {
+				runeValStr = append(append(runeValStr[:25], []rune("......")...), runeValStr[len(runeValStr)-25:]...)
 			}
 			valStr = string(runeValStr)
 		}

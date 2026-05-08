@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/llm"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/chat"
@@ -216,4 +217,43 @@ func SelectSingleToolForm(ctx context.Context, toolProviders []tool.Provider, ti
 	}
 
 	return respTool, nil
+}
+
+func SelectHachimiForm(ctx context.Context, hachimiProviders []hachimi.Provider, prompt string) (hachimi.Provider, error) {
+	var options []huh.Option[string]
+	for _, h := range hachimiProviders {
+		options = append(options, huh.NewOption(h.Config().DisplayName(), h.Config().Name()))
+	}
+
+	var hProvider string
+	hProviderForm := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().Title(prompt).
+				Options(options...).Value(&hProvider),
+		))
+	err := hProviderForm.Run()
+	if err != nil || hProvider == "" {
+		return nil, err
+	}
+	for _, h := range hachimiProviders {
+		if h.Config().Name() == hProvider {
+			return h, nil
+		}
+	}
+	return nil, fmt.Errorf("no such provider %s", hProvider)
+}
+
+func HachimiEnablePrompt(ctx context.Context, title string, desc string) (bool, error) {
+	isEnabled := false
+
+	enableForm := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().Title(title).Description(desc).Affirmative("Enable").Negative("Disable").Value(&isEnabled),
+		))
+
+	err := enableForm.Run()
+	if err != nil {
+		return false, err
+	}
+	return isEnabled, nil
 }

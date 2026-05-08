@@ -3,12 +3,14 @@ package gguf
 import (
 	"context"
 
+	"github.com/fatih/color"
 	"github.com/hybridgroup/yzma/pkg/llama"
 )
 
 func (s *Service) Prepare(ctx context.Context) error {
+	color.Blue("[Manboster Hachimi Provider] Preparing Hachimi Model...")
 	libraryPath := libPath()
-	mPath, err := modelPath(s.cfg.GGUFurl)
+	mPath, err := modelFilePath(s.cfg.GGUFurl)
 	if err != nil {
 		return err
 	}
@@ -36,6 +38,7 @@ func (s *Service) Prepare(ctx context.Context) error {
 		return err
 	}
 	s.modelCtx = modelCtx
+	color.Green("[Manboster Hachimi Provider] Hachimi Model loaded from memory!")
 
 	sampler := llama.SamplerChainInit(llama.SamplerChainDefaultParams())
 	llama.SamplerChainAdd(sampler, llama.SamplerInitGreedy())
@@ -44,6 +47,6 @@ func (s *Service) Prepare(ctx context.Context) error {
 	vocab := llama.ModelGetVocab(s.model)
 	s.vocab = vocab
 
-	s.ready <- struct{}{}
+	color.Blue("[Manboster Hachimi Provider] Ready to go!")
 	return nil
 }

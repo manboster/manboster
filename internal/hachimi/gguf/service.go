@@ -29,5 +29,5 @@ func (s *Service) New() hachimi.Provider {
 }
 
 func (s *Service) Config() config.Provider {
-	return nil
+	return &Config{}
 }

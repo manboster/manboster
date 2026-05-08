@@ -37,6 +37,7 @@ func (c *Config) Validate() error {
 
 func (c *Config) Setup() error {
 	// TODO: setup
+	c.ModelType = ModelSafeguard
 	c.GGUFurl = models[0].Groups[0].Quants[2].URL
 	c.GGUFsha256 = models[0].Groups[0].Quants[2].Sha256
 	return nil
