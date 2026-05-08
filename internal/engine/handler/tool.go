@@ -12,7 +12,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string) (llm.Event, bool, error) {
+func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string, toolCallMsg *string) (llm.Event, bool, error) {
 	successExecution := false
 
 	var respEvent llm.Event
@@ -112,14 +112,15 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			err = h.gateway.SendMessage(ctx, instance, callMsg)
 			*msgId = callMsg.MessageID
 			if *count != 0 {
-				txt.Reset()
+				*toolCallMsg = ""
 			}
 		} else {
+			*toolCallMsg = *toolCallMsg + "\n" + txt.String()
 			cMsg := callMsg.Clone()
 			cMsg.MessageID = *msgId
 			cMsg.MessageType = callMsg.MessageType | chat.MessageUnknown
 			cMsg.Text = &chat.TextPayload{
-				Text: txt.String(),
+				Text: *toolCallMsg,
 			}
 			err = h.gateway.EditMessage(ctx, instance, cMsg)
 		}

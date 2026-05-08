@@ -25,6 +25,7 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 	buf := make([]byte, 4096)
 	n := llama.ChatApplyTemplate(s.chatTemplate, messages, true, buf)
 	if n <= 0 {
+		s.manager.SetAvail(false)
 		return nil, fmt.Errorf("failed to apply chat template")
 	}
 	prompt := string(buf[:n])
@@ -38,6 +39,7 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 	if llama.ModelHasEncoder(s.model) {
 		_, err := llama.Encode(s.modelCtx, batch)
 		if err != nil {
+			s.manager.SetAvail(false)
 			return nil, err
 		}
 
@@ -53,6 +55,7 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 	for pos := int32(0); pos < 128; pos += batch.NTokens {
 		_, err := llama.Decode(s.modelCtx, batch)
 		if err != nil {
+			s.manager.SetAvail(false)
 			return nil, err
 		}
 		token := llama.SamplerSample(s.sampler, s.modelCtx, -1)

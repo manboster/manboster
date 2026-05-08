@@ -45,6 +45,7 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download library: %s", err))
 			}
 			s.manager.SetAvail(true)
+			s.ready <- struct{}{}
 		}()
 	} else {
 		s.manager.SetAvail(true)

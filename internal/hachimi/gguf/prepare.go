@@ -17,6 +17,7 @@ func (s *Service) Prepare(ctx context.Context) error {
 
 	err = llama.Load(libraryPath)
 	if err != nil {
+		s.manager.SetAvail(false)
 		return err
 	}
 	llama.LogSet(llama.LogSilent())
@@ -24,6 +25,7 @@ func (s *Service) Prepare(ctx context.Context) error {
 
 	model, err := llama.ModelLoadFromFile(mPath, llama.ModelDefaultParams())
 	if err != nil {
+		s.manager.SetAvail(false)
 		return err
 	}
 	s.model = model
@@ -35,6 +37,7 @@ func (s *Service) Prepare(ctx context.Context) error {
 
 	modelCtx, err := llama.InitFromModel(model, ctxParams)
 	if err != nil {
+		s.manager.SetAvail(false)
 		return err
 	}
 	s.modelCtx = modelCtx
