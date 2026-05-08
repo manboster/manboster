@@ -87,5 +87,21 @@ func (l *Loader) Load(ctx context.Context) error {
 		return err
 	}
 
+	// check hachimi enable status and open based on hachimi's provider name
+	if l.cfg.Hachimi.Enabled {
+		color.Blue(fmt.Sprintf("[Manboster Loader] Hachimi enabled, initializing Hachimi Providers..."))
+		for _, conf := range l.cfg.Hachimi.Hachimi {
+			if l.cfg.Hachimi.Provider == conf.Provider {
+				hProvider, err := LoadHachimiProvider(ctx, conf)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))
+					break
+				}
+				l.hachimiProvider = hProvider
+				l.cfg.Hachimi.Enabled = true
+			}
+		}
+	}
+
 	return nil
 }

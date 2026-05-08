@@ -12,6 +12,8 @@ type Service struct {
 	ready    chan struct{}
 	modelCtx llama.Context
 	model    llama.Model
+	sampler  llama.Sampler
+	vocab    llama.Vocab
 }
 
 func (s *Service) Name() string {

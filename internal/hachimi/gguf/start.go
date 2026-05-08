@@ -23,7 +23,13 @@ func (s *Service) Start(ctx context.Context) error {
 }
 
 func (s *Service) Stop() error {
-	close(s.ready)
+	if s.ready != nil {
+		close(s.ready)
+	}
 	llama.Close()
+	err := llama.Free(s.modelCtx)
+	if err != nil {
+		return err
+	}
 	return nil
 }

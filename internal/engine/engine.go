@@ -10,6 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
+	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/internal/tool"
@@ -17,12 +18,14 @@ import (
 )
 
 type Engine struct {
-	sessionService *session.Service
-	llmProviders   map[string]llm.Provider
-	toolProviders  []tool.Provider
-	toolMaps       map[string]tool.Provider
-	config         *config.Config
-	repo           repository.Repository
+	sessionService  *session.Service
+	llmProviders    map[string]llm.Provider
+	toolProviders   []tool.Provider
+	hachimiProvider hachimi.Provider
+	hachimiLoaded   *bool
+	toolMaps        map[string]tool.Provider
+	config          *config.Config
+	repo            repository.Repository
 
 	commandHandler    *command.Handler
 	handler           *handler.Handler
@@ -34,13 +37,15 @@ type Engine struct {
 	gatekeeperService *gatekeeper.Service
 }
 
-func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, toolProviders []tool.Provider) (*Engine, error) {
+func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, toolProviders []tool.Provider, hachimiProvider hachimi.Provider, hachimiLoaded *bool) (*Engine, error) {
 	return &Engine{
-		llmProviders:  llmProviders,
-		toolProviders: toolProviders,
-		toolMaps:      make(map[string]tool.Provider),
-		config:        cfg,
-		repo:          repo,
-		onboard:       nil,
+		llmProviders:    llmProviders,
+		toolProviders:   toolProviders,
+		toolMaps:        make(map[string]tool.Provider),
+		config:          cfg,
+		repo:            repo,
+		onboard:         nil,
+		hachimiLoaded:   hachimiLoaded,
+		hachimiProvider: hachimiProvider,
 	}, nil
 }

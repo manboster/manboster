@@ -25,6 +25,7 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 	}
 
 	s.manager = NewManager()
+	s.ready = make(chan struct{})
 
 	libInstallPath := libPath()
 	if !download.AlreadyInstalled(libInstallPath) {
