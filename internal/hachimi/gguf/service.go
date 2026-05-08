@@ -6,6 +6,8 @@ import (
 )
 
 type Service struct {
+	avail      bool
+	availModel bool
 }
 
 func (s *Service) Name() string {

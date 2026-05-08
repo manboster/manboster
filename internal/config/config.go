@@ -2,11 +2,12 @@ package config
 
 // Config makes configurations to this whole application and store it in yml format.
 type Config struct {
-	Version int16        `yaml:"version" mapstructure:"version" json:"version"` // version data, used for migration.
-	Chats   []ChatConfig `yaml:"chats" mapstructure:"chats" json:"chats"`       // chat configurations
-	LLMs    []LLMConfig  `yaml:"llms" mapstructure:"llms" json:"llms"`          // LLM configurations
-	Tools   []ToolConfig `yaml:"tools" mapstructure:"tools" json:"tools"`       // Tool configurations
-	App     AppConfig    `yaml:"app" mapstructure:"app" json:"app"`             // APP specific configurations
+	Version int16          `yaml:"version" mapstructure:"version" json:"version"`  // version data, used for migration.
+	Chats   []ChatConfig   `yaml:"chats" mapstructure:"chats" json:"chats"`        // chat configurations
+	LLMs    []LLMConfig    `yaml:"llms" mapstructure:"llms" json:"llms"`           // LLM configurations
+	Tools   []ToolConfig   `yaml:"tools" mapstructure:"tools" json:"tools"`        // Tool configurations
+	App     AppConfig      `yaml:"app" mapstructure:"app" json:"app"`              // APP specific configurations
+	Hachimi HachimiConfigs `yaml:"hachimi" mapstructure:"hachimi" json:"hachimi" ` // Hachimi configurations
 }
 
 // ChatConfig stores configurations from chat providers
@@ -32,4 +33,16 @@ type AppConfig struct {
 type ToolConfig struct {
 	Name          string `yaml:"name" mapstructure:"name" json:"name"`
 	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration,omitempty"`
+}
+
+// HachimiConfig is configuration available to hachimi providers
+type HachimiConfig struct {
+	Provider      string `yaml:"name" mapstructure:"name" json:"name"`
+	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration"`
+}
+
+// HachimiConfigs wraps HachimiConfig
+type HachimiConfigs struct {
+	enabled bool
+	Hachimi []HachimiConfig
 }
