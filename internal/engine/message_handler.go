@@ -72,6 +72,9 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	repeatSingleMaxCount := 5
 	repeatSingleFingerprint := map[string]int{}
 
+	toolCallNum := 0
+	toolCallMsgId := ""
+
 	isOverflow := false
 
 	for {
@@ -153,7 +156,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				repeatFingerPrint = strings.Join(toolNameArgs, "%")
 			}
 
-			respEvent, successExecution, err := e.handler.HandleToolCall(ctx, instance, msg, *event, sessionId)
+			respEvent, successExecution, err := e.handler.HandleToolCall(ctx, instance, msg, *event, sessionId, &toolCallNum, &toolCallMsgId)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", err))
 			}

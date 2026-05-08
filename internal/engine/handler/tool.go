@@ -12,7 +12,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string) (llm.Event, bool, error) {
+func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string) (llm.Event, bool, error) {
 	successExecution := false
 
 	var respEvent llm.Event
@@ -22,8 +22,6 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		Type: llm.MessageToolCallResponse,
 	}
 
-	toolCallReqCount := 0
-	toolCallMsgId := ""
 	var txt strings.Builder
 
 	for _, req := range event.Message.ToolCallRequest {
@@ -110,15 +108,15 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			}
 		}
 
-		if toolCallReqCount%5 == 0 {
+		if *count%5 == 0 {
 			err = h.gateway.SendMessage(ctx, instance, callMsg)
-			toolCallMsgId = callMsg.MessageID
-			if toolCallReqCount != 0 {
+			*msgId = callMsg.MessageID
+			if *count != 0 {
 				txt.Reset()
 			}
 		} else {
 			cMsg := callMsg.Clone()
-			cMsg.MessageID = toolCallMsgId
+			cMsg.MessageID = *msgId
 			cMsg.MessageType = callMsg.MessageType | chat.MessageUnknown
 			cMsg.Text = &chat.TextPayload{
 				Text: txt.String(),
@@ -126,7 +124,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			err = h.gateway.EditMessage(ctx, instance, cMsg)
 		}
 
-		toolCallReqCount++
+		*count++
 
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
