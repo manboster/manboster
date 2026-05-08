@@ -7,13 +7,14 @@ import (
 )
 
 type Service struct {
-	manager  *Manager
-	cfg      *Config
-	ready    chan struct{}
-	modelCtx llama.Context
-	model    llama.Model
-	sampler  llama.Sampler
-	vocab    llama.Vocab
+	manager      *Manager
+	cfg          *Config
+	ready        chan struct{}
+	modelCtx     llama.Context
+	model        llama.Model
+	sampler      llama.Sampler
+	vocab        llama.Vocab
+	chatTemplate string
 }
 
 func (s *Service) Name() string {

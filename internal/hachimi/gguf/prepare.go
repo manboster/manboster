@@ -47,6 +47,12 @@ func (s *Service) Prepare(ctx context.Context) error {
 	vocab := llama.ModelGetVocab(s.model)
 	s.vocab = vocab
 
+	template := llama.ModelChatTemplate(model, "")
+	if template == "" {
+		template = "chatml"
+	}
+	s.chatTemplate = template
+
 	color.Blue("[Manboster Hachimi Provider] Ready to go!")
 	return nil
 }

@@ -8,7 +8,7 @@ import (
 
 // Provider defines hachimi's provider, only provide one model and easy to use. It is like llm's provider, it's much easier than llm one.
 type Provider interface {
-	Chat(ctx context.Context, sysMsg string, evalMsg string) (*Response, error)
+	Chat(ctx context.Context, evalMsg string) (*Response, error)
 	Init(ctx context.Context, config any) error
 	Start(ctx context.Context) error
 	Stop() error

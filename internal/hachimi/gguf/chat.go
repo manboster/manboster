@@ -2,29 +2,41 @@ package gguf
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fatih/color"
 	"github.com/hybridgroup/yzma/pkg/llama"
 	"github.com/manboster/manboster/internal/hachimi"
 )
 
-func (s *Service) Chat(ctx context.Context, sysMsg string, evalMsg string) (*hachimi.Response, error) {
+func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, error) {
 	if !s.manager.IsReady() {
 		return nil, ErrNotAvailable
 	}
 
 	messages := make([]llama.ChatMessage, 0)
-	if sysMsg != "" {
-		messages = append(messages, llama.NewChatMessage("system", sysMsg))
+	switch s.cfg.ModelType {
+	case ModelLLM:
+		messages = append(messages, llama.NewChatMessage("system", safetyLLMSystemPrompt))
+	case ModelSafeguard:
+		messages = append(messages, llama.NewChatMessage("system", safetySafeguardSystemPrompt))
 	}
 	messages = append(messages, llama.NewChatMessage("user", evalMsg))
 
-	tokens := llama.Tokenize(s.vocab, evalMsg, true, true)
+	buf := make([]byte, 4096)
+	n := llama.ChatApplyTemplate(s.chatTemplate, messages, true, buf)
+	if n <= 0 {
+		return nil, fmt.Errorf("failed to apply chat template")
+	}
+	prompt := string(buf[:n])
+
+	color.Blue(prompt)
+	tokens := llama.Tokenize(s.vocab, prompt, true, true)
 	batch := llama.BatchGetOne(tokens)
 
 	resp := ""
 
-	if llama.ModelHasDecoder(s.model) {
+	if llama.ModelHasEncoder(s.model) {
 		_, err := llama.Encode(s.modelCtx, batch)
 		if err != nil {
 			return nil, err
@@ -40,11 +52,11 @@ func (s *Service) Chat(ctx context.Context, sysMsg string, evalMsg string) (*hac
 	}
 
 	for pos := int32(0); pos < 128; pos += batch.NTokens {
-		decode, err := llama.Decode(s.modelCtx, batch)
+		_, err := llama.Decode(s.modelCtx, batch)
 		if err != nil {
 			return nil, err
 		}
-		token := llama.SamplerSample(s.sampler, s.modelCtx, decode)
+		token := llama.SamplerSample(s.sampler, s.modelCtx, -1)
 
 		if llama.VocabIsEOG(s.vocab, token) {
 			break
@@ -61,5 +73,11 @@ func (s *Service) Chat(ctx context.Context, sysMsg string, evalMsg string) (*hac
 
 	color.Blue(resp)
 
+	switch s.cfg.ModelType {
+	case ModelLLM:
+		return s.purgeLLMChatData(resp)
+	case ModelSafeguard:
+		return s.purgeSafeguardChatData(resp)
+	}
 	return nil, nil
 }
