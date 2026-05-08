@@ -30,7 +30,7 @@ func (s *Service) DownloadLibraryRunner(ctx context.Context, path string) error 
 		return err
 	}
 	color.Green("[Manboster Hachimi Provider] successfully downloaded llama.cpp!")
-	return s.CheckModel(ctx)
+	return nil
 }
 
 func (s *Service) CheckReadyRunner(ctx context.Context) error {

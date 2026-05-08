@@ -46,11 +46,13 @@ func (s *Service) CheckModel(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	color.Blue("[Manboster Hachimi Provider] Loding models...")
 
 	_, err = os.Stat(modelFileName)
 	if os.IsNotExist(err) {
 		s.manager.SetAvailModel(false)
 		go func() {
+			color.Yellow("[Manboster Hachimi Provider] Model not found, starting to download...")
 			dlErr := Download(ctx, s.cfg.GGUFurl, modelFileName)
 			if dlErr != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download model: %s", err))
@@ -59,6 +61,7 @@ func (s *Service) CheckModel(ctx context.Context) error {
 			s.ready <- struct{}{}
 		}()
 	} else if os.IsExist(err) || err == nil {
+		color.Green("[Manboster Hachimi Provider] Model loaded!")
 		s.manager.SetAvailModel(true)
 	} else {
 		return err
