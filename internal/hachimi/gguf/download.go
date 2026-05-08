@@ -24,18 +24,27 @@ func (pw *progressWriter) Write(p []byte) (n int, err error) {
 	atomic.AddInt64(pw.downloaded, int64(n))
 	return n, err
 }
-
 func Download(ctx context.Context, url string, savePath string) error {
-	var startByte int64 = 0
+	// set temporary filepath
+	tempPath := savePath + ".downloading"
 
-	info, err := os.Stat(savePath)
+	// any files there?
+	if info, err := os.Stat(savePath); err == nil && !info.IsDir() {
+		color.Yellow("[Manboster Downloader] it already exists, quit downloading...")
+		return nil
+	}
+
+	// checkpoint
+	var startByte int64 = 0
+	info, err := os.Stat(tempPath)
 	if err == nil && !info.IsDir() {
 		startByte = info.Size()
 	}
 
+	// make request
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create %w", err)
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 
 	if startByte > 0 {
@@ -54,55 +63,61 @@ func Download(ctx context.Context, url string, savePath string) error {
 		}
 	}(resp.Body)
 
+	// check the code
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusPartialContent {
+		return fmt.Errorf("server returned code: %d %s", resp.StatusCode, resp.Status)
+	}
+
+	// calculate actual size
 	var totalSize int64 = 0
 	if resp.ContentLength > 0 {
 		totalSize = startByte + resp.ContentLength
 	}
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusPartialContent {
-		return fmt.Errorf("server returned code: %d %s", resp.StatusCode, resp.Status)
-	}
-
+	// set downloading
 	flags := os.O_CREATE | os.O_WRONLY
 	if startByte > 0 && resp.StatusCode == http.StatusPartialContent {
-		flags |= os.O_APPEND // support so append
+		flags |= os.O_APPEND
 	} else {
-		flags |= os.O_TRUNC // not support partial then clean
+		flags |= os.O_TRUNC
+		startByte = 0
 	}
 
-	file, err := os.OpenFile(savePath, flags, 0666)
+	file, err := os.OpenFile(tempPath, flags, 0666)
 	if err != nil {
-		return fmt.Errorf("failed to open file: %w", err)
+		return fmt.Errorf("failed to open temp file: %w", err)
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to close file: %s", err))
-		}
-	}(file)
 
+	// download status management
+	currentDownloaded := startByte
 	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
 
-	var currentDownloaded int64 = 0
-
 	done := make(chan struct{})
-	defer close(done)
 
-	// open a backend goroutine
+	// start download notify runner
 	go DownloadNotifyRunner(done, ticker, &currentDownloaded, totalSize)
 
-	// wrap struct
+	// wrapper
 	pw := &progressWriter{
 		target:     file,
 		downloaded: &currentDownloaded,
 	}
 
 	_, err = io.Copy(pw, resp.Body)
+
+	err = file.Close()
 	if err != nil {
-		return fmt.Errorf("failed to write: %w", err)
+		return fmt.Errorf("failed to write data: %w", err)
+	}
+	close(done)
+
+	err = os.Rename(tempPath, savePath)
+	if err != nil {
+		return fmt.Errorf("failed to rename temp file: %w", err)
 	}
 
+	color.Green(fmt.Sprintf("[Manboster Downloader]: Successfully download! Saving to %s", savePath))
 	return nil
 }
 

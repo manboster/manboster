@@ -8,6 +8,7 @@ import (
 type Service struct {
 	avail      bool
 	availModel bool
+	cfg        *Config
 }
 
 func (s *Service) Name() string {
