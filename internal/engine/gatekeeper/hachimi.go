@@ -5,7 +5,9 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -15,12 +17,21 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 		color.Yellow("[Manboster Gatekeeper] Hachimi is not loaded!")
 		return true, nil
 	}
-	resp, err := s.hachimiProvider.Chat(ctx, "The model wants to run `rm -rf`.")
+	resp, err := s.hachimiProvider.Chat(ctx, util.DescribeToHachimi(req, toolProvider))
 	if err != nil {
 		return false, err
 	}
 
-	fmt.Printf("%+v\n", resp)
-
-	return true, nil
+	switch resp.Type {
+	case hachimi.ResponseStatusUnsafe:
+		// unsafe prompt
+	case hachimi.ResponseStatusInspect:
+		// inspect prompt
+	case hachimi.ResponseStatusSafe:
+		color.Blue("[Manboster Gatekeeper] Hachimi thinks it's safe to go!")
+		return true, nil
+	default:
+		return false, fmt.Errorf("unexpected response type: %v", resp.Type)
+	}
+	return false, nil
 }

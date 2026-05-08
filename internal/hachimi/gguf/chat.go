@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/hybridgroup/yzma/pkg/llama"
 	"github.com/manboster/manboster/internal/hachimi"
 )
@@ -30,7 +29,7 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 	}
 	prompt := string(buf[:n])
 
-	color.Blue(prompt)
+	// color.Blue(prompt)
 	tokens := llama.Tokenize(s.vocab, prompt, true, true)
 	batch := llama.BatchGetOne(tokens)
 
@@ -71,7 +70,7 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 		resp += next
 	}
 
-	color.Blue(resp)
+	// color.Blue(resp)
 
 	switch s.cfg.ModelType {
 	case ModelLLM:
