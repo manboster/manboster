@@ -43,6 +43,7 @@ type HachimiConfig struct {
 
 // HachimiConfigs wraps HachimiConfig
 type HachimiConfigs struct {
-	enabled bool
-	Hachimi []HachimiConfig
+	Enabled bool            `yaml:"enabled" mapstructure:"enabled" json:"enabled"`
+	Default string          `yaml:"default" mapstructure:"default" json:"default"` // default provider
+	Hachimi []HachimiConfig `yaml:"hachimi" mapstructure:"hachimi" json:"hachimi"`
 }

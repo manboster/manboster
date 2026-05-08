@@ -5,6 +5,9 @@ import (
 )
 
 func (m *Manager) Activate(sid string, cf context.CancelFunc) {
+	m.Lock.Lock()
+	defer m.Lock.Unlock()
+
 	s, avail := m.Sessions[sid]
 	if !avail {
 		m.Sessions[sid] = Session{
@@ -19,6 +22,9 @@ func (m *Manager) Activate(sid string, cf context.CancelFunc) {
 }
 
 func (m *Manager) Deactivate(sid string) {
+	m.Lock.Lock()
+	defer m.Lock.Unlock()
+
 	s, avail := m.Sessions[sid]
 	if avail {
 		s.Active = false

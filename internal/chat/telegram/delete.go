@@ -2,7 +2,7 @@ package telegram
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
@@ -14,13 +14,11 @@ func (s *Service) DeleteMessage(ctx context.Context, msg *chat.Message) error {
 		return ErrInvalidMessageType
 	}
 
-	msgId := 0
-	_, err := fmt.Sscanf(msg.ChatID, "%d", &msgId)
+	msgId, err := strconv.Atoi(msg.MessageID)
 	if err != nil {
 		return err
 	}
-	chatId := 0
-	_, err = fmt.Sscanf(msg.ChatID, "%d", &chatId)
+	chatId, err := strconv.Atoi(msg.ChatID)
 	if err != nil {
 		return err
 	}
