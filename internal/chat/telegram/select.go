@@ -26,11 +26,21 @@ func (s *Service) Select(ctx context.Context, sessionId string, message *chat.Me
 	if message.Selection == nil {
 		return ErrInvalidSelectionMessage
 	}
+
+	maxLen := 0
 	for _, slc := range message.Selection.Selection {
 		btn := menu.Data(slc.Name, slc.Value, sessionId)
 		btns = append(btns, btn)
+		if maxLen < len(slc.Name) {
+			maxLen = len(slc.Name)
+		}
 	}
-	menu.Inline(menu.Split(1, btns)...)
+
+	if maxLen < 10 {
+		menu.Inline(menu.Split(2, btns)...)
+	} else {
+		menu.Inline(menu.Split(1, btns)...)
+	}
 
 	text, err := util.EscapeMarkdownToTelegramHTML(message.Text.Text)
 	// send menu selection

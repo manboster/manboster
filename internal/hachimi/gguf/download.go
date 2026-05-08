@@ -104,11 +104,14 @@ func Download(ctx context.Context, url string, savePath string) error {
 		downloaded: &currentDownloaded,
 	}
 
-	_, err = io.Copy(pw, resp.Body)
+	_, copyErr := io.Copy(pw, resp.Body)
 
-	err = file.Close()
-	if err != nil {
-		return fmt.Errorf("failed to write data: %w", err)
+	closeErr := file.Close()
+	if copyErr != nil {
+		return fmt.Errorf("failed to download: %w", copyErr)
+	}
+	if closeErr != nil {
+		return fmt.Errorf("failed to close file: %w", closeErr)
 	}
 	close(done)
 
@@ -133,7 +136,7 @@ func DownloadNotifyRunner(done chan struct{}, ticker *time.Ticker, currentDownlo
 				percent := float64(down) / float64(totalSize) * 100
 				speed := (float64(down) - float64(previous)) / 5 / 1024 / 1024
 				color.Blue(fmt.Sprintf("\r[Manboster Downloader] Now Downloading: %.2f%%  -  %.2f MB / %.2f MB, %.2f MB/s",
-					percent, float64(down)/1024/1024, float64(totalSize)/1024/1024), speed)
+					percent, float64(down)/1024/1024, float64(totalSize)/1024/1024, speed))
 			} else {
 				color.Blue(fmt.Sprintf("\r[Manboster Downloader] Now Downloading: %.2f MB", float64(down)/1024/1024))
 			}

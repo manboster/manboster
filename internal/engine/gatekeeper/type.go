@@ -39,3 +39,14 @@ var selectionWithHachimi = []chat.Selection{
 		Value: "cAnCel",
 	},
 }
+
+var selectionHachimi = []chat.Selection{
+	{
+		Name:  "Allow",
+		Value: "allow",
+	},
+	{
+		Name:  "Deny",
+		Value: "deny",
+	},
+}

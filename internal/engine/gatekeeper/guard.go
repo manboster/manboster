@@ -2,7 +2,6 @@ package gatekeeper
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -30,18 +29,6 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return s.HachimiHandler(ctx, instance, msg, toolProvider, req, sid)
 	}
 
-	txt := fmt.Sprintf("Model wants to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
-	var result map[string]interface{}
-	err = json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
-	if err != nil {
-		color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
-	}
-	params := util.JSONParse(result)
-	if params != "" {
-		txt += fmt.Sprintf("with params: %s", params)
-	}
-	txt += ", do you want to continue?"
-
 	var selection []chat.Selection
 	if s.hachimiConfig.Enabled {
 		selection = selectionWithHachimi
@@ -49,7 +36,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		selection = selectionNoHachimi
 	}
 
-	return s.Select(ctx, instance, msg, selection, txt, func(cb *chat.SelectionCallbackPayload) (bool, error) {
+	return s.Select(ctx, instance, msg, selection, util.DescribeToHuman(req, toolProvider), func(cb *chat.SelectionCallbackPayload) (bool, error) {
 		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), cb.SelectionBy, sid, toolProvider.Name(), executeGroup)
 
 		err = s.CheckSession(id)

@@ -1,6 +1,10 @@
 package gguf
 
-import "github.com/manboster/manboster/spec/config"
+import (
+	"context"
+
+	"github.com/manboster/manboster/spec/config"
+)
 
 type Config struct {
 	GGUFurl    string    `json:"gguf_url" yaml:"gguf_url" mapstructure:"gguf_url" manboconfig:"skip"`
@@ -35,7 +39,7 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-func (c *Config) Setup() error {
+func (c *Config) Setup(ctx context.Context) error {
 	// TODO: setup
 	c.ModelType = ModelSafeguard
 	c.GGUFurl = models[0].Groups[0].Quants[2].URL

@@ -3,6 +3,7 @@ package gatekeeper
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/hachimi"
@@ -24,14 +25,37 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 
 	switch resp.Type {
 	case hachimi.ResponseStatusUnsafe:
-		// unsafe prompt
+		var txt strings.Builder
+		txt.WriteString(fmt.Sprintf("**Hachimi thinks this tool call is unsafe! Please look at it carefully and decide!**\n"))
+		txt.WriteString(util.DescribeToHuman(req, toolProvider))
+		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: `%s`\n", resp.Reason))
+		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(cb *chat.SelectionCallbackPayload) (bool, error) {
+			switch cb.SelectionValue {
+			case "allow":
+				return true, nil
+			case "deny":
+				return false, fmt.Errorf("hachimi thinks it's unsafe and user denied it")
+			}
+			return false, fmt.Errorf("invalid selection value: %s", cb.SelectionValue)
+		})
 	case hachimi.ResponseStatusInspect:
-		// inspect prompt
+		var txt strings.Builder
+		txt.WriteString(fmt.Sprintf("**Hachimi thinks this tool call is suspicious! Please look at it carefully and decide!**\n"))
+		txt.WriteString(util.DescribeToHuman(req, toolProvider))
+		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: %s\n", resp.Reason))
+		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(cb *chat.SelectionCallbackPayload) (bool, error) {
+			switch cb.SelectionValue {
+			case "allow":
+				return true, nil
+			case "deny":
+				return false, fmt.Errorf("hachimi thinks it's suspicious and user denied it")
+			}
+			return false, fmt.Errorf("invalid selection value: %s", cb.SelectionValue)
+		})
 	case hachimi.ResponseStatusSafe:
 		color.Blue("[Manboster Gatekeeper] Hachimi thinks it's safe to go!")
 		return true, nil
 	default:
 		return false, fmt.Errorf("unexpected response type: %v", resp.Type)
 	}
-	return false, nil
 }
