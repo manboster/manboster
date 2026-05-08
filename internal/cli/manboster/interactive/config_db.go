@@ -81,3 +81,21 @@ func (s *databaseConfigService) runConfigDatabaseSessionSelection(ctx context.Co
 		return fmt.Errorf("unexpected database session selection: %s", se)
 	}
 }
+
+func (s *databaseConfigService) runConfigDatabaseUserSelection(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	return nil
+}
+
+func (s *databaseConfigService) runConfigDatabaseSoulSelection(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	return nil
+}
+
+func (s *databaseConfigService) runConfigDatabaseChatSelection(ctx context.Context) error {
+	defer helper.ClearScreen()
+
+	return nil
+}
