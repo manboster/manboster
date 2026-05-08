@@ -41,9 +41,9 @@ func (c *Config) GetConfig() any {
 func (c *Config) String() string {
 	var b strings.Builder
 	for _, m := range c.Model {
-		b.WriteString(m.DisplayName + " ")
+		b.WriteString(m.DisplayName + ",")
 	}
-	return fmt.Sprintf("Name: %s, API URL: %s, API Key: %s\nmodels(%d): %s", c.ProviderDisplayName, c.BaseURL, util.MaskSecret(c.ApiKey), len(c.Model), b.String())
+	return fmt.Sprintf("Name: `%s`, API URL: `%s`, API Key: `%s`\nmodels(%d): `%s`", c.ProviderDisplayName, c.BaseURL, util.MaskSecret(c.ApiKey), len(c.Model), b.String())
 }
 
 func (c *Config) Name() string {

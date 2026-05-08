@@ -52,7 +52,7 @@ func (s *Service) Chat(ctx context.Context, sysMsg string, evalMsg string) (*hac
 
 		buf := make([]byte, 256)
 		l := llama.TokenToPiece(s.vocab, token, buf, 0, false)
-		next := string(buf[l:])
+		next := string(buf[:l])
 
 		batch = llama.BatchGetOne([]llama.Token{token})
 

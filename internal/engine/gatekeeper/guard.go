@@ -27,8 +27,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	requireUserType := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
 	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 	if s.ignoranceSessionManager.GetIgnoreMark(ud) && requireUserType <= actualUserType {
-		// run hachimi here...
-		return true, nil
+		return s.HachimiHandler(ctx, instance, msg, toolProvider, req, sid)
 	}
 
 	txt := fmt.Sprintf("Model wants to call tool `%s`(`%s`) ", toolProvider.DisplayName(), req.ToolName)
@@ -43,40 +42,15 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	}
 	txt += ", do you want to continue?"
 
-	selection := []chat.Selection{
-		{
-			Name:  "Continue",
-			Value: "continue",
-		},
-		{
-			Name:  "Continue and shut up, handled by hachimi",
-			Value: "hachimi",
-		},
-		{
-			Name:  "Cancel",
-			Value: "cancel",
-		},
-		{
-			Name:  "Cancel and silence in 15 minutes",
-			Value: "cAnCel",
-		},
+	var selection []chat.Selection
+	if s.hachimiConfig.Enabled {
+		selection = selectionWithHachimi
+	} else {
+		selection = selectionNoHachimi
 	}
-	selectMsg := msg.Clone()
-	selectMsg.MessageType = chat.MessageSelection | chat.MessageText
-	selectMsg.Selection = &chat.SelectionPayload{
-		Selection:   selection,
-		SelectionId: "",
-	}
-	selectMsg.Text = &chat.TextPayload{
-		Text: txt,
-	}
-	resp, err := s.gatewayService.SendSelect(ctx, instance, selectMsg)
-	if err != nil {
-		color.Yellow("[Manboster Gatekeeper] Failed to get select result")
-		return false, fmt.Errorf("failed to get select result: %v", err)
-	}
-	if resp.SelectionCallback != nil {
-		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), resp.SelectionCallback.SelectionBy, sid, toolProvider.Name(), executeGroup)
+
+	return s.Select(ctx, instance, msg, selection, txt, func(cb *chat.SelectionCallbackPayload) (bool, error) {
+		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), cb.SelectionBy, sid, toolProvider.Name(), executeGroup)
 
 		err = s.CheckSession(id)
 		if err != nil {
@@ -84,18 +58,18 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		}
 		if s.ignoranceSessionManager.GetIgnoreMark(id) {
 			// run hachimi here...
-			return true, nil
+			return s.HachimiHandler(ctx, instance, msg, toolProvider, req, sid)
 		}
 
 		// get tool's min permission and compare it with current user's
 		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
-		uPermission := s.safeguardService.UserType(ctx, instance.Name(), resp.SelectionCallback.SelectionBy)
+		uPermission := s.safeguardService.UserType(ctx, instance.Name(), cb.SelectionBy)
 		if uPermission < minPermission {
 			return false, fmt.Errorf("the permission user who performs the action is too low, please contact the owner")
 		}
 
 		// get resp based on
-		switch resp.SelectionCallback.SelectionValue {
+		switch cb.SelectionValue {
 		case "hachimi":
 			ttl := 0
 			// set TTL based on tools required user permission
@@ -109,25 +83,26 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			default:
 			}
 
-			respMsg := msg.Clone()
-			respMsg.MessageType = chat.MessageText
-			respMsg.Text = &chat.TextPayload{
-				Text: "You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
-			}
-			respMsg.Reply = nil
-			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
-			if err != nil {
-				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
-			}
-			s.ignoranceSessionManager.SetIgnoreMark(id, true, ttl)
-
-			go func(instance chat.Provider, rMsg *chat.Message) {
-				err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
-				if err != nil {
-					color.Yellow("[Manboster Gatekeeper] Failed to recall result")
+			if s.hachimiConfig.Enabled {
+				respMsg := msg.Clone()
+				respMsg.MessageType = chat.MessageText
+				respMsg.Text = &chat.TextPayload{
+					Text: "You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
 				}
-			}(instance, respMsg)
+				respMsg.Reply = nil
+				err := s.gatewayService.SendMessage(ctx, instance, respMsg)
+				if err != nil {
+					color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
+				}
+				s.ignoranceSessionManager.SetIgnoreMark(id, true, ttl)
 
+				go func(instance chat.Provider, rMsg *chat.Message) {
+					err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
+					if err != nil {
+						color.Yellow("[Manboster Gatekeeper] Failed to recall result")
+					}
+				}(instance, respMsg)
+			}
 			return true, nil
 		case "continue":
 			return true, nil
@@ -137,8 +112,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			s.ignoranceSessionManager.SetCancelMark(id, true)
 			return false, fmt.Errorf("user manually canceled your request")
 		default:
-			return false, fmt.Errorf("invalid selection value: %v", resp.SelectionCallback.SelectionValue)
+			return false, fmt.Errorf("invalid selection value: %v", cb.SelectionValue)
 		}
-	}
-	return false, fmt.Errorf("response do not contain available message params")
+	})
 }
