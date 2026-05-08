@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/cli/helper"
 	"github.com/manboster/manboster/internal/config"
@@ -238,6 +240,8 @@ func configLandingActionForm(add string, sel string, quit string) (configLanding
 func runLandingChatActionForm(ctx context.Context) error {
 	defer helper.ClearScreen()
 
+	conf := config.Read()
+
 	printConfigChatProvidersData(ctx)
 	se, err := configLandingChatActionForm()
 	if err != nil {
@@ -245,7 +249,6 @@ func runLandingChatActionForm(ctx context.Context) error {
 	}
 	switch se {
 	case configLandingActionAdd:
-		conf := config.Read()
 		providerAvail := chat.AvailProviders()
 		var providerList []chatType.Provider
 
@@ -292,7 +295,6 @@ func runLandingChatActionForm(ctx context.Context) error {
 			return err
 		}
 	case configLandingActionSelect:
-		conf := config.Read()
 		var providerList []chatType.Provider
 
 		for _, c := range conf.Chats {
@@ -303,9 +305,64 @@ func runLandingChatActionForm(ctx context.Context) error {
 			}
 			providerList = append(providerList, p)
 		}
-		_, err := SelectChatForm(ctx, providerList, "Please select a provider:")
+		provider, err := SelectChatForm(ctx, providerList, "Please select a provider:")
 		if err != nil {
 			return err
+		}
+
+		cfg := provider.Config()
+		var confData any
+		var outputMsg strings.Builder
+		for i, cp := range conf.Chats {
+			if cp.Provider == provider.Name() {
+				// get config
+				confData = cp.Configuration
+				err = mapstructure.Decode(cp.Configuration, &cfg)
+				if err != nil {
+					outputMsg.WriteString(fmt.Sprintf("%d) Could not get this!\n", i+1))
+					break
+				}
+				outputMsg.WriteString(fmt.Sprintf("%d) `%s`, config: %s\n", i+1, provider.DisplayName(), cfg))
+				break
+			}
+		}
+		action, err := configPageActionSelectForm("Edit This Chat Provider", "Delete This Provider", "Quit")
+		if err != nil {
+			return err
+		}
+		switch action {
+		case configLandingPageEdit:
+			edited, err := RunEditConfig(ctx, cfg, confData)
+			if err != nil {
+				return err
+			}
+			for i, c := range conf.Chats {
+				if c.Provider == provider.Name() {
+					conf.Chats[i].Configuration = edited
+					break
+				}
+			}
+			err = config.Write(conf)
+			if err != nil {
+				return err
+			}
+			color.Blue("Config Updated!")
+			time.Sleep(1 * time.Second)
+		case configLandingPageDelete:
+			for i, c := range conf.Chats {
+				if c.Provider == provider.Name() {
+					conf.Chats = append(conf.Chats[:i], conf.Chats[i+1:]...)
+					break
+				}
+			}
+			err = config.Write(conf)
+			if err != nil {
+				return err
+			}
+			color.Blue("Config Deleted!")
+			time.Sleep(1 * time.Second)
+		case configLandingPageQuit:
+			return nil
 		}
 	case configLandingActionQuit:
 		color.Blue("Bye!")
@@ -319,6 +376,7 @@ func runLandingChatActionForm(ctx context.Context) error {
 func runLandingLLMActionForm(ctx context.Context) error {
 	defer helper.ClearScreen()
 
+	conf := config.Read()
 	printConfigLLMProvidersData(ctx)
 	se, err := configLandingLLMActionForm()
 	if err != nil {
@@ -326,7 +384,6 @@ func runLandingLLMActionForm(ctx context.Context) error {
 	}
 	switch se {
 	case configLandingActionAdd:
-		conf := config.Read()
 		var llmProviders []llmType.Provider
 		for _, p := range llm.AvailProviders() {
 			pr, err := llm.GetProvider(p)
@@ -351,7 +408,66 @@ func runLandingLLMActionForm(ctx context.Context) error {
 			Provider:      llmProvider.Config().Name(),
 			Configuration: cf,
 		})
+
+		err = config.Write(conf)
+		if err != nil {
+			return err
+		}
+		color.Blue("Config Updated!")
+		time.Sleep(1 * time.Second)
 	case configLandingActionSelect:
+		helper.ClearScreen()
+		llmProvider, err := SelectLLMProviderInstanceForm(ctx, conf.LLMs, "Please select a LLM provider:", "")
+		if err != nil {
+			return err
+		}
+
+		oldName := llmProvider.Name()
+
+		llmProviders, confData := GetSelectedLLMConfig(ctx, conf.LLMs, llmProvider.Name())
+		llmProvidersMap := map[string]llmType.Provider{}
+		for _, p := range llmProviders {
+			llmProvidersMap[p.Name()] = p
+		}
+
+		sel, err := configPageActionSelectForm("Edit this LLM Provider", "Delete this LLM Provider", "Quit")
+		if err != nil {
+			return err
+		}
+		switch sel {
+		case configLandingPageEdit:
+			edited, err := RunEditConfig(ctx, llmProvider.Config(), confData)
+			if err != nil {
+				return err
+			}
+			for i, c := range conf.LLMs {
+				p, ok := llmProvidersMap[c.Provider]
+				if ok && p.Name() == oldName {
+					conf.LLMs[i].Configuration = edited
+					break
+				}
+			}
+			err = config.Write(conf)
+			if err != nil {
+				return err
+			}
+			color.Blue("Config Updated!")
+			time.Sleep(1 * time.Second)
+		case configLandingPageDelete:
+			for i, c := range conf.Chats {
+				p, ok := llmProvidersMap[c.Provider]
+				if ok && p.Name() == llmProvider.Name() {
+					conf.Chats = append(conf.Chats[:i], conf.Chats[i+1:]...)
+					break
+				}
+			}
+			err = config.Write(conf)
+			if err != nil {
+				return err
+			}
+			color.Blue("Config Deleted!")
+			time.Sleep(1 * time.Second)
+		}
 	case configLandingActionQuit:
 		color.Blue("Bye!")
 		return nil

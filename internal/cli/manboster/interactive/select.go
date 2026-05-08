@@ -13,21 +13,41 @@ import (
 	llmType "github.com/manboster/manboster/spec/llm"
 )
 
-func SelectLLMProviderInstanceForm(ctx context.Context, llmConfigs []config.LLMConfig, title string, prompt string) (llmType.Provider, error) {
+func ActivateLLMProviders(ctx context.Context, llmConfigs []config.LLMConfig) []llmType.Provider {
+	providers, _ := GetSelectedLLMConfig(ctx, llmConfigs, "")
+	return providers
+}
+
+func GetSelectedLLMConfig(ctx context.Context, llmConfigs []config.LLMConfig, name string) ([]llmType.Provider, any) {
 	var llmProviders []llmType.Provider
+	var confData any
 	for _, c := range llmConfigs {
 		p, err := llm.GetProvider(c.Provider)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Configuration Wizard] Failed to get llm provider %q: %q\n", c.Provider, err))
 			continue
 		}
+
 		err = p.Init(ctx, c.Configuration)
+		if p.Name() == name {
+			confData = c.Configuration
+		}
+
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Configuration Wizard] Failed to init llm provider %q: %q\n", c.Provider, err))
 			continue
 		}
 		llmProviders = append(llmProviders, p)
 	}
+
+	if name == "" {
+		return llmProviders, nil
+	}
+	return llmProviders, confData
+}
+
+func SelectLLMProviderInstanceForm(ctx context.Context, llmConfigs []config.LLMConfig, title string, prompt string) (llmType.Provider, error) {
+	llmProviders := ActivateLLMProviders(ctx, llmConfigs)
 	var llmOptions []huh.Option[string]
 	for _, c := range llmProviders {
 		llmOptions = append(llmOptions, huh.NewOption(c.DisplayName(), c.Name()))

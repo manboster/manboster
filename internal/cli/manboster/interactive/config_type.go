@@ -39,6 +39,7 @@ type configLandingSelection string
 const (
 	configLandingChat    configLandingSelection = "chat"
 	configLandingLLM     configLandingSelection = "llm"
+	configLandingModels  configLandingSelection = "models"
 	configLandingTool    configLandingSelection = "tool"
 	configLandingHachimi configLandingSelection = "hachimi"
 	configLandingApp     configLandingSelection = "app"
