@@ -9,6 +9,7 @@ type Cron struct {
 	ChatProvider string    `gorm:"column:chat_provider"`
 	CronTab      string    `gorm:"column:cron_tab"`
 	Prompt       string    `gorm:"column:prompt"`
+	Type         string    `gorm:"column:type"`
 	CreatedBy    string    `gorm:"column:created_by"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`

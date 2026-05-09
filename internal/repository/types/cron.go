@@ -8,6 +8,7 @@ type Cron struct {
 	ChatID       string
 	ChatProvider string
 	CronTab      string
+	Type         string
 	Prompt       string
 	CreateBy     string
 }
@@ -18,6 +19,7 @@ func MapCron(c types.Cron) Cron {
 		Name:         c.Name,
 		ChatID:       c.ChatID,
 		ChatProvider: c.ChatProvider,
+		Type:         c.Type,
 		CronTab:      c.CronTab,
 		Prompt:       c.Prompt,
 		CreateBy:     c.CreatedBy,
@@ -30,6 +32,7 @@ func MapCr(c Cron) types.Cron {
 		Name:         c.Name,
 		ChatID:       c.ChatID,
 		ChatProvider: c.ChatProvider,
+		Type:         c.Type,
 		CronTab:      c.CronTab,
 		Prompt:       c.Prompt,
 		CreatedBy:    c.CreateBy,
