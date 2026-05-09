@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
+	"github.com/robfig/cron/v3"
 )
 
 var metadata = schema.MetaData{
@@ -24,6 +25,7 @@ var metadata = schema.MetaData{
 type Service struct {
 	cronRepo repository.CronRepository
 	manager  *Manager
+	cron     *cron.Cron
 }
 
 func (s *Service) Name() string {

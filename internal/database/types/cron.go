@@ -10,6 +10,7 @@ type Cron struct {
 	CronTab      string    `gorm:"column:cron_tab"`
 	Prompt       string    `gorm:"column:prompt"`
 	Type         string    `gorm:"column:type"`
+	Ignore       string    `gorm:"column:ignore"`
 	CreatedBy    string    `gorm:"column:created_by"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`

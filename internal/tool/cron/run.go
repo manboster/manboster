@@ -76,7 +76,3 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
 	return nil, nil
 }
-
-func (s *Service) Stop() error {
-	return nil
-}

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/manboster/manboster/internal/engine/runner"
+	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -79,6 +80,39 @@ func buildMessageDataFromArgs(arg RunArgs, chatId string, chatProvider string, u
 
 	msgData.ChatMsg.Text = &chat.TextPayload{
 		Text: arg.Prompt,
+	}
+
+	return msgData
+}
+
+func buildMessageDataFromCronJob(cj types.Cron) runner.MsgData {
+	var msgData runner.MsgData
+	msgData.ChatMsg = &chat.Message{
+		Provider:    cj.ChatProvider,
+		ChatID:      cj.ChatID,
+		MessageType: chat.MessageText,
+		UserID:      cj.CreateBy,
+		Text: &chat.TextPayload{
+			Text: cj.Prompt,
+		},
+	}
+
+	switch IgnoreType(cj.Ignore) {
+	case IgnoreNone:
+		msgData.ChatMsg.MessageType |= chat.MessageFromCronIgnore
+	case IgnoreHachimi:
+		msgData.ChatMsg.MessageType |= chat.MessageFromCron
+	default:
+		msgData.ChatMsg.MessageType |= chat.MessageFromCron
+	}
+
+	switch MessageType(cj.Type) {
+	case MessageText:
+		msgData.Type = runner.MsgText
+	case MessagePrompt:
+		msgData.Type = runner.MsgPrompt
+	default:
+		msgData.Type = runner.MsgText
 	}
 
 	return msgData

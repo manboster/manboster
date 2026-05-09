@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/manboster/manboster/spec/chat"
@@ -10,6 +11,9 @@ import (
 
 // EditMessage edits a message specified
 func (s *Service) EditMessage(ctx context.Context, msg *chat.Message) error {
+	if !s.manager.Avail() {
+		return fmt.Errorf("telegram instance is currently available")
+	}
 	if msg.MessageType&chat.MessageUnknown == 0 {
 		return ErrInvalidMessageType
 	}

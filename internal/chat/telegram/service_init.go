@@ -21,5 +21,6 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 		return err
 	}
 
+	s.manager = NewManager()
 	return nil
 }

@@ -32,6 +32,7 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 		return err
 	}
 	s.tgInstance = b
+	s.manager.SetAvail(true)
 
 	go func() {
 		select {

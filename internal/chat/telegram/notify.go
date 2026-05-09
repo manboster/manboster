@@ -66,7 +66,7 @@ func (s *Service) Notify(ctx context.Context, msg *chat.Message, action chat.Act
 	case chat.ActionSuccess:
 		chatId, msgId = notifierCancel(msg.ChatID)
 
-		if isClean {
+		if isClean && msg.MessageType&(chat.MessageFromCronIgnore|chat.MessageFromCron) == 0 {
 			return s.tgInstance.React(recipient, &telebot.Message{
 				ID: msgId,
 				Chat: &telebot.Chat{

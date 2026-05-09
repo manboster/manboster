@@ -10,7 +10,7 @@ import (
 )
 
 // RunChat is a separate goroutine running for polling chats.
-func (l *Loader) RunChat(ctx context.Context, instance chat.Provider, conf any) {
+func (l *Loader) RunChat(ctx context.Context, instance chat.Provider) {
 	displayName := instance.DisplayName()
 
 	defer func(instance chat.Provider) {
@@ -23,14 +23,7 @@ func (l *Loader) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 
 	for tries := 1; tries <= 3; tries++ {
 		color.Blue(fmt.Sprintf("[Manboster Loader] Try %d times, now activating chat provider %s...", tries, displayName))
-
-		err := instance.Init(ctx, conf)
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Loader] Failed to init a chat provider on %s, get error: %q", displayName, err))
-			continue
-		}
-
-		err = instance.Start(ctx, func(msg *chat.Message) {
+		err := instance.Start(ctx, func(msg *chat.Message) {
 			err := l.engine.HandleMessage(ctx, instance, msg)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to handle message on %s, get error: %q", displayName, err))

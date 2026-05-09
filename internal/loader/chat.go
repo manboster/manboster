@@ -2,6 +2,7 @@ package loader
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
@@ -15,7 +16,11 @@ func (l *Loader) LoadChat(ctx context.Context, chatConfig config.ChatConfig) (ch
 		return nil, err
 	}
 
-	go l.RunChat(ctx, cProvider, chatConfig.Configuration)
+	err = cProvider.Init(ctx, chatConfig.Configuration)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Loader] Failed to init a chat provider on %s, get error: %q", cProvider.DisplayName(), err))
+	}
+	go l.RunChat(ctx, cProvider)
 	return cProvider, nil
 }
 

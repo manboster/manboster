@@ -12,11 +12,13 @@ type Service struct {
 	tgInstance *telebot.Bot
 	cfg        *Config
 	sendMutex  sync.Mutex
+	manager    *Manager
 }
 
 func NewService(tgInstance *telebot.Bot) *Service {
 	return &Service{
 		tgInstance: tgInstance,
+		manager:    NewManager(),
 	}
 }
 

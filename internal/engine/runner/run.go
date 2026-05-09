@@ -23,11 +23,18 @@ func (r *Runner) Run(ctx context.Context) error {
 				color.Yellow("[Manboster Engine] could not get provider")
 				continue
 			}
+			color.Blue("[Manboster Engine] received a cronjob and processing it...")
 			switch data.Type {
 			case MsgPrompt:
-				return r.engine.HandleMessage(ctx, provider, data.ChatMsg)
+				err := r.engine.HandleMessage(ctx, provider, data.ChatMsg)
+				if err != nil {
+					color.Yellow("[Manboster Engine] could not handle message")
+				}
 			case MsgText:
-				return r.gateway.SendMessage(ctx, provider, data.ChatMsg)
+				err := r.gateway.SendMessage(ctx, provider, data.ChatMsg)
+				if err != nil {
+					color.Yellow("[Manboster Engine] could not send message")
+				}
 			}
 		}
 	}

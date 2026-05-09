@@ -32,10 +32,11 @@ const (
 
 func NewRunner(e requiredInterface, providerMap map[string]chat.Provider) *Runner {
 	return &Runner{
-		InputCh:       make(chan MsgData, 16),
+		InputCh:       InputCh,
 		engine:        e,
 		chatProviders: providerMap,
 	}
 }
 
 var Instance *Runner // Activate it in engine.load
+var InputCh = make(chan MsgData, 32)

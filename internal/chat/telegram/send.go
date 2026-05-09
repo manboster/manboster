@@ -14,6 +14,9 @@ import (
 
 // SendMessage sends a message to user.
 func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
+	if !s.manager.Avail() {
+		return fmt.Errorf("telegram instance is currently available")
+	}
 	// temporarily solution
 	s.sendMutex.Lock()
 	defer s.sendMutex.Unlock()

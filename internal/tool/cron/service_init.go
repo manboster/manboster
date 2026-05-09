@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/database"
 	dbtypes "github.com/manboster/manboster/internal/database/types"
 	"github.com/manboster/manboster/internal/repository"
+	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -37,5 +38,6 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 		s.cronRepo = repository.NewCronRepo(dbi)
 	}
 	s.manager = NewManager()
-	return nil
+	s.cron = cron.New(cron.WithSeconds())
+	return s.FullRegister(ctx)
 }

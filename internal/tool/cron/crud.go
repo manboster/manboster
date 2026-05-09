@@ -2,10 +2,9 @@ package cron
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/robfig/cron/v3"
 )
 
 func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatProvider string, userId string) error {
@@ -15,12 +14,7 @@ func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatPr
 			return err
 		}
 
-		go func() {
-			err := s.DelayRunner(d, buildMessageDataFromArgs(arg, chatId, chatProvider, userId))
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Tool Provider] Error running delay runner: %s", err.Error()))
-			}
-		}()
+		go s.DelayRunner(d, buildMessageDataFromArgs(arg, chatId, chatProvider, userId))
 		return nil
 	}
 
@@ -31,6 +25,7 @@ func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatPr
 	cj.Name = arg.JobName
 	cj.Prompt = arg.Prompt
 	cj.Type = string(arg.MessageType)
+	cj.Ignore = string(arg.Ignore)
 	switch arg.To {
 	case ToThisChat:
 		cj.ChatID = chatId
@@ -39,16 +34,24 @@ func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatPr
 	default:
 		cj.ChatID = chatId
 	}
+	err := s.Register(cj)
+	if err != nil {
+		return err
+	}
 	return s.cronRepo.CreateCronjob(ctx, cj)
 }
 
 func (s *Service) Delete(ctx context.Context, name string) error {
+	id, avail := s.manager.GetEntry(name)
+	if avail {
+		s.cron.Remove(cron.EntryID(id))
+	}
 	return s.cronRepo.DeleteCronjob(ctx, name)
 }
 
 func (s *Service) List(ctx context.Context, provider string, chat string) ([]string, error) {
 	var resp []string
-	data, err := s.cronRepo.GetCronjobByChatID(ctx, provider, chat)
+	data, err := s.cronRepo.GetCronjobByChatID(ctx, chat, provider)
 	if err != nil {
 		return nil, err
 	}
