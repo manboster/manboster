@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"runtime"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/hybridgroup/yzma/pkg/download"
@@ -42,6 +43,25 @@ func (s *Service) CheckReadyRunner(ctx context.Context) error {
 			return s.Prepare(ctx)
 		case <-ctx.Done():
 			return ctx.Err()
+		}
+	}
+}
+
+func (s *Service) GCRunner(ctx context.Context) error {
+	ticker := time.NewTicker(time.Minute)
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-ticker.C:
+			if time.Since(s.lastUse) > 10*time.Minute {
+				color.Blue("[Manboster Hachimi Provider] Garbage Collecting model data...")
+				err := s.FreeModel()
+				if err != nil {
+					return err
+				}
+				color.Blue("[Manboster Hachimi Provider] Saved unused memory!")
+			}
 		}
 	}
 }

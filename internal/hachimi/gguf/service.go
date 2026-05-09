@@ -1,6 +1,9 @@
 package gguf
 
 import (
+	"sync"
+	"time"
+
 	"github.com/hybridgroup/yzma/pkg/llama"
 	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/spec/config"
@@ -10,11 +13,11 @@ type Service struct {
 	manager      *Manager
 	cfg          *Config
 	ready        chan struct{}
-	modelCtx     llama.Context
-	model        llama.Model
 	sampler      llama.Sampler
 	vocab        llama.Vocab
 	chatTemplate string
+	chatLock     sync.Mutex
+	lastUse      time.Time
 }
 
 func (s *Service) Name() string {
