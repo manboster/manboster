@@ -18,6 +18,15 @@ func (s *Service) Prepare(ctx context.Context) error {
 	}
 	llama.LogSet(llama.LogSilent())
 	llama.Init()
+
+	go func() {
+		color.Blue("[Manboster Hachimi Provider] Starting GC Runner...")
+		err := s.GCRunner(ctx)
+		if err != nil {
+			color.Yellow("[Manboster Hachimi Provider] Failed to start gc runner!")
+		}
+	}()
+
 	return nil
 }
 

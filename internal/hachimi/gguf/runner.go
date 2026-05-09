@@ -49,6 +49,8 @@ func (s *Service) CheckReadyRunner(ctx context.Context) error {
 
 func (s *Service) GCRunner(ctx context.Context) error {
 	ticker := time.NewTicker(time.Minute)
+	defer ticker.Stop()
+
 	for {
 		select {
 		case <-ctx.Done():
