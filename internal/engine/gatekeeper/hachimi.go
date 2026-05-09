@@ -34,6 +34,13 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 	}
 	s.ignoranceSessionManager.UpdateMark(id)
 
+	if resp == nil {
+		resp = &hachimi.Response{
+			Type:   hachimi.ResponseStatusUnsafe,
+			Reason: "input message is too long so hachimi could not make decision for you",
+		}
+	}
+
 	switch resp.Type {
 	case hachimi.ResponseStatusUnsafe:
 		var txt strings.Builder

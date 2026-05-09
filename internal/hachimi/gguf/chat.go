@@ -45,6 +45,9 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 		s.manager.SetAvail(false)
 		return nil, fmt.Errorf("failed to apply chat template")
 	}
+	if n > 3968 {
+		return nil, nil
+	}
 	prompt := string(buf[:n])
 
 	// color.Blue(prompt)
