@@ -38,7 +38,7 @@ type ToolConfig struct {
 // HachimiConfig is configuration available to hachimi providers
 type HachimiConfig struct {
 	Provider      string `yaml:"name" mapstructure:"name" json:"name"`
-	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration"`
+	Configuration any    `yaml:"configuration" mapstructure:"configuration" json:"configuration,omitempty"`
 }
 
 // HachimiConfigs wraps HachimiConfig

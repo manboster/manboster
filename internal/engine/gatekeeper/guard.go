@@ -28,10 +28,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 
 	mark, markType := s.ignoranceSessionManager.GetMark(ud)
-	if mark && markType == ignorance.MarkHachimi && requireUserType <= actualUserType {
+	if (mark && markType == ignorance.MarkHachimi && requireUserType <= actualUserType) || msg.MessageType&chat.MessageFromCron != 0 {
 		return s.HachimiHandler(ctx, instance, msg, toolProvider, req, ud)
 	}
-	if mark && markType == ignorance.MarkIgnore && requireUserType <= actualUserType {
+	if mark && markType == ignorance.MarkIgnore && requireUserType <= actualUserType || msg.MessageType&chat.MessageFromCronIgnore != 0 {
 		return true, nil
 	}
 

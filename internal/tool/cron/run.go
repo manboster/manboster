@@ -30,7 +30,10 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 	if json.Unmarshal([]byte(args), &arg) == nil {
 		switch arg.Name {
 		case NameSet:
-			err := s.Create(ctx, arg, chatProvider, chatID, userId)
+			if arg.MessageType != MessagePrompt && arg.MessageType != MessageText {
+				return nil, fmt.Errorf("invalid argument '%s' in messageType", arg.Name)
+			}
+			err := s.Create(ctx, arg, chatID, chatProvider, userId)
 			if err != nil {
 				return nil, err
 			}

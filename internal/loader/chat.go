@@ -6,25 +6,29 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
+	chatType "github.com/manboster/manboster/spec/chat"
 )
 
-func (l *Loader) LoadChat(ctx context.Context, chatConfig config.ChatConfig) error {
+func (l *Loader) LoadChat(ctx context.Context, chatConfig config.ChatConfig) (chatType.Provider, error) {
 	cProvider, err := chat.GetProvider(chatConfig.Provider)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	go l.RunChat(ctx, cProvider, chatConfig.Configuration)
-	return nil
+	return cProvider, nil
 }
 
-func (l *Loader) LoadChats(ctx context.Context, chatConfigs []config.ChatConfig) error {
+func (l *Loader) LoadChats(ctx context.Context, chatConfigs []config.ChatConfig) ([]chatType.Provider, error) {
 	color.Blue("[Manboster Loader] Loading chat providers...")
+	var providers []chatType.Provider
 	for _, chatConfig := range chatConfigs {
-		err := l.LoadChat(ctx, chatConfig)
+		provider, err := l.LoadChat(ctx, chatConfig)
 		if err != nil {
-			return err
+			color.Yellow("[Manboster Loader] Loading chat provider failed: %s", err)
+			continue
 		}
+		providers = append(providers, provider)
 	}
-	return nil
+	return providers, nil
 }

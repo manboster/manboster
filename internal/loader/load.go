@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
 	"github.com/manboster/manboster/internal/repository"
+	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
@@ -83,9 +84,22 @@ func (l *Loader) Load(ctx context.Context) error {
 		}
 	}
 
+	// we activate chats after loading engine
+	cProviders, err := l.LoadChats(ctx, l.cfg.Chats)
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the chat providers: %q", err))
+		return err
+	}
+	l.chatProviders = cProviders
+
+	chatProvidersMap := make(map[string]chatType.Provider)
+	for _, p := range cProviders {
+		chatProvidersMap[p.Name()] = p
+	}
+
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
-	e, err := engine.New(l.cfg, repo, llmProvidersMap, tool, l.hachimiProvider, &hachimiLoaded)
+	e, err := engine.New(l.cfg, repo, llmProvidersMap, chatProvidersMap, tool, l.hachimiProvider, &hachimiLoaded)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err
@@ -96,13 +110,6 @@ func (l *Loader) Load(ctx context.Context) error {
 	err = e.Load(ctx)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the engine: %q", err))
-		return err
-	}
-
-	// we activate chats after loading engine
-	err = l.LoadChats(ctx, l.cfg.Chats)
-	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the chat providers: %q", err))
 		return err
 	}
 

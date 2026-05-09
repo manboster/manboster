@@ -12,9 +12,10 @@ type requiredInterface interface {
 }
 
 type Runner struct {
-	InputCh chan MsgData
-	engine  requiredInterface
-	gateway *gateway.Service
+	InputCh       chan MsgData
+	engine        requiredInterface
+	gateway       *gateway.Service
+	chatProviders map[string]chat.Provider
 }
 
 type MsgData struct {
@@ -29,10 +30,11 @@ const (
 	MsgText   MsgType = "text"
 )
 
-func NewRunner(e requiredInterface) *Runner {
+func NewRunner(e requiredInterface, providerMap map[string]chat.Provider) *Runner {
 	return &Runner{
-		InputCh: make(chan MsgData, 16),
-		engine:  e,
+		InputCh:       make(chan MsgData, 16),
+		engine:        e,
+		chatProviders: providerMap,
 	}
 }
 

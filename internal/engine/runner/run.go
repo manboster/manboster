@@ -2,10 +2,8 @@ package runner
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/chat"
 )
 
 func (r *Runner) Run(ctx context.Context) error {
@@ -16,12 +14,14 @@ func (r *Runner) Run(ctx context.Context) error {
 			color.Green("[Manboster Engine] stopping polling runner...")
 			return ctx.Err()
 		case data := <-r.InputCh:
-			if data.ChatMsg != nil {
-				return fmt.Errorf("could not read message")
+			if data.ChatMsg == nil {
+				color.Yellow("[Manboster Engine] could not read message")
+				continue
 			}
-			provider, err := chat.GetProvider(data.ChatMsg.Provider)
-			if err != nil {
-				return err
+			provider, ok := r.chatProviders[data.ChatMsg.Provider]
+			if !ok {
+				color.Yellow("[Manboster Engine] could not get provider")
+				continue
 			}
 			switch data.Type {
 			case MsgPrompt:

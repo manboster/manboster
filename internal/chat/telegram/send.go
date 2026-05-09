@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -27,9 +28,8 @@ func (s *Service) SendMessage(ctx context.Context, msg *chat.Message) error {
 		ParseMode: telebot.ModeHTML,
 	}
 
-	if msg.Reply != nil {
-		var replyID int
-		_, err = fmt.Sscanf(msg.Reply.MessageID, "%d", &replyID)
+	if msg.Reply != nil && msg.Reply.MessageID != "" {
+		replyID, err := strconv.Atoi(msg.Reply.MessageID)
 		opts.ReplyTo = &telebot.Message{ID: replyID}
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Telegram Provider] Error getting reply id: %q", err))
