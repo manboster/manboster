@@ -56,6 +56,12 @@ func (e *Engine) Load(ctx context.Context) error {
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
 	runner.Instance = runner.NewRunner(e)
+	go func() {
+		err := runner.Instance.Run(ctx)
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Engine] Failed to run engine runner: %q", err))
+		}
+	}()
 
 	// version tips
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {

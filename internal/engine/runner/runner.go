@@ -3,25 +3,31 @@ package runner
 import (
 	"context"
 
+	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/spec/chat"
-	"github.com/manboster/manboster/spec/llm"
 )
 
 type requiredInterface interface {
-	MessageHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error
+	HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) error
 }
 
 type Runner struct {
 	InputCh chan MsgData
 	engine  requiredInterface
+	gateway *gateway.Service
 }
 
 type MsgData struct {
-	SessionID string
-	Instance  string
-	ChatMsg   *chat.Message
-	LLMMsg    *llm.Message
+	Type    MsgType
+	ChatMsg *chat.Message
 }
+
+type MsgType string
+
+const (
+	MsgPrompt MsgType = "prompt"
+	MsgText   MsgType = "text"
+)
 
 func NewRunner(e requiredInterface) *Runner {
 	return &Runner{

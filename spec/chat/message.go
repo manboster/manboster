@@ -40,6 +40,8 @@ const (
 	MessageFile
 	MessageSelectionCallback
 	MessageSelection
+	MessageFromCron
+	MessageFromCronIgnore
 )
 
 const MessageTextAndImage = MessageText | MessageImage

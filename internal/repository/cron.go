@@ -9,13 +9,20 @@ import (
 )
 
 type CronRepository interface {
+	CreateCronjob(ctx context.Context, cj types.Cron) error
+	GetCronjobByChatID(ctx context.Context, chat string, provider string) ([]types.Cron, error)
+	GetCronjobByName(ctx context.Context, name string) (types.Cron, error)
+	UpdateCronjobTab(ctx context.Context, name string, newTab string) error
+	UpdateCronjobPrompt(ctx context.Context, name string, newPrompt string) error
+	DeleteCronjob(ctx context.Context, name string) error
+	GetAllCronjob(ctx context.Context) ([]types.Cron, error)
 }
 
 type CronRepo struct {
 	db *gorm.DB
 }
 
-func NewCronRepository(db *gorm.DB) CronRepository {
+func NewCronRepo(db *gorm.DB) CronRepository {
 	return &CronRepo{
 		db: db,
 	}
@@ -46,6 +53,19 @@ func (repo *CronRepo) GetCronjobByName(ctx context.Context, name string) (types.
 		return types.Cron{}, resp.Error
 	}
 	return types.MapCron(cronDatabase), nil
+}
+
+func (repo *CronRepo) GetAllCronjob(ctx context.Context) ([]types.Cron, error) {
+	var cronDatabase []dbtypes.Cron
+	var cj []types.Cron
+	resp := repo.db.WithContext(ctx).Find(&cronDatabase)
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+	for _, cron := range cronDatabase {
+		cj = append(cj, types.MapCron(cron))
+	}
+	return cj, nil
 }
 
 func (repo *CronRepo) UpdateCronjobTab(ctx context.Context, name string, newTab string) error {

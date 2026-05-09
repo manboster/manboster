@@ -3,14 +3,14 @@ package types
 import "github.com/manboster/manboster/internal/database/types"
 
 type Cron struct {
-	ID           uint64
-	Name         string
-	ChatID       string
-	ChatProvider string
-	CronTab      string
-	Type         string
-	Prompt       string
-	CreateBy     string
+	ID           uint64 `json:"id"`
+	Name         string `json:"name"`
+	ChatID       string `json:"chat_id"`
+	ChatProvider string `json:"chat_provider"`
+	CronTab      string `json:"cron_tab"`
+	Type         string `json:"type"`
+	Prompt       string `json:"prompt"`
+	CreateBy     string `json:"create_by"`
 }
 
 func MapCron(c types.Cron) Cron {

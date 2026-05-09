@@ -1,0 +1,63 @@
+package cron
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/repository/types"
+)
+
+func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatProvider string, userId string) error {
+	if isDelayFormat(arg.Cron) {
+		d, err := parseDelay(arg.Cron)
+		if err != nil {
+			return err
+		}
+
+		go func() {
+			err := s.DelayRunner(d, buildMessageDataFromArgs(arg, chatId, chatProvider, userId))
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Tool Provider] Error running delay runner: %s", err.Error()))
+			}
+		}()
+		return nil
+	}
+
+	var cj types.Cron
+	cj.CreateBy = userId
+	cj.ChatProvider = chatProvider
+	cj.CronTab = arg.Cron
+	cj.Name = arg.JobName
+	cj.Prompt = arg.Prompt
+	cj.Type = string(arg.MessageType)
+	switch arg.To {
+	case ToThisChat:
+		cj.ChatID = chatId
+	case ToPM:
+		cj.ChatID = userId
+	default:
+		cj.ChatID = chatId
+	}
+	return s.cronRepo.CreateCronjob(ctx, cj)
+}
+
+func (s *Service) Delete(ctx context.Context, name string) error {
+	return s.cronRepo.DeleteCronjob(ctx, name)
+}
+
+func (s *Service) List(ctx context.Context, provider string, chat string) ([]string, error) {
+	var resp []string
+	data, err := s.cronRepo.GetCronjobByChatID(ctx, provider, chat)
+	if err != nil {
+		return nil, err
+	}
+	for _, d := range data {
+		resp = append(resp, d.Name)
+	}
+	return resp, nil
+}
+
+func (s *Service) Get(ctx context.Context, name string) (types.Cron, error) {
+	return s.cronRepo.GetCronjobByName(ctx, name)
+}

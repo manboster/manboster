@@ -22,3 +22,10 @@ const (
 	NameList   NameType = "list"
 	NameDelete NameType = "delete"
 )
+
+type IgnoreType string
+
+const (
+	IgnoreNone    IgnoreType = "ignore"
+	IgnoreHachimi IgnoreType = "hachimi"
+)

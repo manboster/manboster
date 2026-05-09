@@ -15,24 +15,27 @@ func (l *Loader) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 
 	defer func(instance chat.Provider) {
 		displayName := instance.DisplayName()
-		color.Yellow(fmt.Sprintf("[Manboster Engine] Stopping chat provider: %s", displayName))
+		color.Yellow(fmt.Sprintf("[Manboster Loader] Stopping chat provider: %s", displayName))
 		if stopErr := instance.Stop(); stopErr != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Error stopping chat provider %s: %v", displayName, stopErr))
+			color.Red(fmt.Sprintf("[Manboster Loader] Error stopping chat provider %s: %v", displayName, stopErr))
 		}
 	}(instance)
 
 	for tries := 1; tries <= 3; tries++ {
-		color.Blue(fmt.Sprintf("[Manboster Engine] Try %d times, now activating chat provider %s...", tries, displayName))
+		color.Blue(fmt.Sprintf("[Manboster Loader] Try %d times, now activating chat provider %s...", tries, displayName))
 
 		err := instance.Init(ctx, conf)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to init a chat provider on %s, get error: %q", displayName, err))
+			color.Red(fmt.Sprintf("[Manboster Loader] Failed to init a chat provider on %s, get error: %q", displayName, err))
 			continue
 		}
 
 		err = instance.Start(ctx, func(msg *chat.Message) {
-			// TODO: signal notification
-			l.engine.HandleMessage(ctx, instance, msg)
+			err := l.engine.HandleMessage(ctx, instance, msg)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to handle message on %s, get error: %q", displayName, err))
+				return
+			}
 		})
 
 		if err != nil {
@@ -40,11 +43,11 @@ func (l *Loader) RunChat(ctx context.Context, instance chat.Provider, conf any) 
 				return
 			}
 
-			color.Red(fmt.Sprintf("[Manboster Engine] Failed to start a chat provider on %s, get error: %q", displayName, err))
+			color.Red(fmt.Sprintf("[Manboster Loader] Failed to start a chat provider on %s, get error: %q", displayName, err))
 			continue
 		}
 
 		return
 	}
-	color.Red(fmt.Sprintf("[Manboster Engine] Failed to start the chat instance: %s", displayName))
+	color.Red(fmt.Sprintf("[Manboster Loader] Failed to start the chat instance: %s", displayName))
 }

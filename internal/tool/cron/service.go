@@ -23,6 +23,7 @@ var metadata = schema.MetaData{
 
 type Service struct {
 	cronRepo repository.CronRepository
+	manager  *Manager
 }
 
 func (s *Service) Name() string {

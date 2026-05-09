@@ -20,7 +20,7 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 		if err != nil {
 			return err
 		}
-		s.cronRepo = repository.NewCronRepository(dbi)
+		s.cronRepo = repository.NewCronRepo(dbi)
 	} else {
 		// downgrade to memory storage
 		color.Yellow(fmt.Sprintf("[Manboster Tool] dev.manboster.cron downgraded to memory repository, this session's storage is not persistent!"))
@@ -34,7 +34,8 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 		if err != nil {
 			return err
 		}
-		s.cronRepo = repository.NewCronRepository(dbi)
+		s.cronRepo = repository.NewCronRepo(dbi)
 	}
+	s.manager = NewManager()
 	return nil
 }
