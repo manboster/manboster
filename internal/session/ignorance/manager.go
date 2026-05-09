@@ -5,8 +5,9 @@ import (
 )
 
 type Manager struct {
-	mark map[string]mark
-	lock *sync.RWMutex
+	mark        map[string]mark
+	hachimiMark map[string]bool
+	lock        *sync.RWMutex
 }
 
 func New() *Manager {

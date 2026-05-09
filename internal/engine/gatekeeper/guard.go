@@ -104,14 +104,14 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: "You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
+				Text: "You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes.",
 			}
 			respMsg.Reply = nil
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
-				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
+				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
 			}
-			s.ignoranceSessionManager.SetMark(id, true, ttl, ignorance.MarkHachimi)
+			s.ignoranceSessionManager.SetMark(id, true, ttl, ignorance.MarkIgnore)
 
 			go func(instance chat.Provider, rMsg *chat.Message) {
 				err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
