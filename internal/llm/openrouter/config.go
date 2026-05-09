@@ -40,6 +40,10 @@ func (c *Config) Setup(ctx context.Context) error {
 	}
 	modelOptions = append(modelOptions, huh.NewOption("Other Model", "_CustomModel_"))
 
+	for _, m := range c.Model {
+		c.inputModelData = append(c.inputModelData, m.Name)
+	}
+
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(

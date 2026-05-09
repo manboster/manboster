@@ -67,6 +67,9 @@ func (c *Config) Setup(ctx context.Context) error {
 	err := svc.Init(ctx, c)
 	models, err := svc.FetchModels(ctx)
 	var modelValues []string
+	for _, m := range c.Model {
+		modelValues = append(modelValues, m.Name)
+	}
 
 	if err != nil {
 		err := huh.NewForm(huh.NewGroup(huh.NewNote().Title("Oops! We can't get information based on your credentials!").Description("We strongly recommend you check your Internet Connection and credentials. If you have a poor Internet connection or have a strong belief that you're not wrong, please press enter to proceed to add model manually. Otherwise, please press Ctrl + C to exit.").Next(true))).Run()

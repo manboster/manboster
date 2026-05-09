@@ -12,7 +12,12 @@ import (
 func RunEditConfig(ctx context.Context, provider config.Provider, currentConfig any) (any, error) {
 	form := provider.Args().ToHuhGroup()
 
-	err := form.Build(currentConfig)
+	err := mapstructure.Decode(currentConfig, provider.GetConfig())
+	if err != nil {
+		return nil, err
+	}
+
+	err = form.Build(currentConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -34,6 +39,7 @@ func RunEditConfig(ctx context.Context, provider config.Provider, currentConfig 
 	}
 
 	p, ok := provider.(config.ProviderWithSetup)
+
 	if ok {
 		err = p.Setup(ctx)
 		if err != nil {

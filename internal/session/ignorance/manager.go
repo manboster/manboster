@@ -12,7 +12,8 @@ type Manager struct {
 
 func New() *Manager {
 	return &Manager{
-		mark: make(map[string]mark),
-		lock: &sync.RWMutex{},
+		mark:        make(map[string]mark),
+		lock:        &sync.RWMutex{},
+		hachimiMark: make(map[string]bool),
 	}
 }
