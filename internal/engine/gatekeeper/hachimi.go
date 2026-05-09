@@ -13,7 +13,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
+func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, id string) (bool, error) {
 	if !*s.hachimiLoaded || s.hachimiProvider == nil {
 		color.Yellow("[Manboster Gatekeeper] Hachimi is not loaded!")
 		return true, nil
@@ -22,6 +22,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 	if err != nil {
 		return false, err
 	}
+	s.ignoranceSessionManager.UpdateMark(id)
 
 	switch resp.Type {
 	case hachimi.ResponseStatusUnsafe:

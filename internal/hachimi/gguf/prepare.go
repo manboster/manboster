@@ -18,12 +18,6 @@ func (s *Service) Prepare(ctx context.Context) error {
 	}
 	llama.LogSet(llama.LogSilent())
 	llama.Init()
-
-	err = s.LoadModel(ctx)
-	if err != nil {
-		s.manager.SetAvail(false)
-		return err
-	}
 	return nil
 }
 
