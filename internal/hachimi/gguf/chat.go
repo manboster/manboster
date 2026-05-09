@@ -39,13 +39,18 @@ func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, 
 	}
 	messages = append(messages, llama.NewChatMessage("user", evalMsg))
 
-	buf := make([]byte, 4096)
+	buf := make([]byte, 8192)
 	n := llama.ChatApplyTemplate(s.chatTemplate, messages, true, buf)
 	if n <= 0 {
 		s.manager.SetAvail(false)
 		return nil, fmt.Errorf("failed to apply chat template")
 	}
-	if n > 3968 {
+
+	c, ok := ModelCtxMap[string(s.cfg.ContextLength)]
+	if !ok {
+		c = ModelCtxMap["medium"]
+	}
+	if n > int32(c.NBatch) {
 		return nil, nil
 	}
 	prompt := string(buf[:n])

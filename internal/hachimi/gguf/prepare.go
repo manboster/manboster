@@ -42,9 +42,13 @@ func (s *Service) LoadModel(ctx context.Context) error {
 	s.manager.SetModel(model)
 
 	ctxParams := llama.ContextDefaultParams()
-	ctxParams.NCtx = 4096
-	ctxParams.NBatch = 3968
-	ctxParams.NUbatch = 256
+	c, ok := ModelCtxMap[string(s.cfg.ContextLength)]
+	if !ok {
+		c = ModelCtxMap["medium"]
+	}
+	ctxParams.NCtx = c.NCtx
+	ctxParams.NBatch = c.NBatch
+	ctxParams.NUbatch = c.NUBatch
 
 	modelCtx, err := llama.InitFromModel(model, ctxParams)
 	if err != nil {

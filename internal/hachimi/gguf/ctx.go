@@ -1,9 +1,9 @@
 package gguf
 
 type ModelCtx struct {
-	NCtx    int
-	NBatch  int
-	NUBatch int
+	NCtx    uint32
+	NBatch  uint32
+	NUBatch uint32
 }
 
 type ModelCtxType string
