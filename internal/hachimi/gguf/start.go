@@ -29,7 +29,7 @@ func (s *Service) Stop() error {
 	if llama.Close != nil {
 		llama.Close()
 	}
-	if llama.Free != nil {
+	if llama.Free != nil && s.manager.Load() {
 		err := llama.Free(s.manager.ModelCtx())
 		if err != nil {
 			return err

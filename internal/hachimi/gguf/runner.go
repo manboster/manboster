@@ -56,7 +56,7 @@ func (s *Service) GCRunner(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		case <-ticker.C:
-			if time.Since(s.lastUse) > 10*time.Minute {
+			if time.Since(s.lastUse) > 10*time.Minute && s.manager.Load() {
 				color.Blue("[Manboster Hachimi Provider] Garbage Collecting model data...")
 				err := s.FreeModel()
 				if err != nil {
