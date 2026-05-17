@@ -5,6 +5,7 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/go-viper/mapstructure/v2"
+	huhProvider "github.com/manboster/manboster/internal/cli/provider/huh"
 	"github.com/manboster/manboster/spec/config"
 )
 
@@ -41,7 +42,7 @@ func RunEditConfig(ctx context.Context, provider config.Provider, currentConfig 
 	p, ok := provider.(config.ProviderWithSetup)
 
 	if ok {
-		err = p.Setup(ctx)
+		err = p.Setup(ctx, huhProvider.Huh{})
 		if err != nil {
 			return nil, err
 		}

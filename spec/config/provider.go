@@ -2,6 +2,8 @@ package config
 
 import (
 	"context"
+
+	"github.com/manboster/manboster/spec/cli"
 )
 
 // Provider provides interfaces for all configurations
@@ -15,5 +17,5 @@ type Provider interface {
 
 type ProviderWithSetup interface {
 	Provider
-	Setup(ctx context.Context) error
+	Setup(ctx context.Context, p cli.Provider) error
 }

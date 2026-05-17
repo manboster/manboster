@@ -3,7 +3,11 @@ package interact
 import (
 	"fmt"
 
+	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/config"
+	_ "github.com/manboster/manboster/internal/hachimi/all"
+	_ "github.com/manboster/manboster/internal/llm/all"
+	_ "github.com/manboster/manboster/internal/tool/all"
 	"github.com/manboster/manboster/spec/cli"
 )
 
