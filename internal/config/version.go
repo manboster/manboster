@@ -1,7 +1,7 @@
 package config
 
 // Version defines manboster's application version.
-const Version = "0.1.0"
+const Version = "0.2.0"
 
 // APILevel defines the current level(Tool) supported in Manboster.
 const APILevel = 1

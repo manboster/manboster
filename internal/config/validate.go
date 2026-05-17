@@ -4,7 +4,7 @@ import (
 	"github.com/fatih/color"
 )
 
-func (c *Config) Validate() error {
+func (c Config) Validate() error {
 	current := int16(0)
 	// check version
 	if c.Version > current {
