@@ -9,6 +9,9 @@ import (
 
 // cmdPair executes pair command
 func (h *Handler) cmdPair(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
+	if !(msg.ChatType == chat.ChatsPersonal) {
+		return nil // in order to avoid leaking...
+	}
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {

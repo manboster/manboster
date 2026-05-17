@@ -10,7 +10,7 @@ import (
 
 // HandleOnBoard helps user tackle onboarding problems
 func (h *Handler) HandleOnBoard(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
-	if h.onboard != nil {
+	if h.onboard.Active() {
 		h.onboard.HandleOnBoard()
 	}
 	respMessage := msg.Clone()
