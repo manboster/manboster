@@ -6,7 +6,7 @@ import (
 
 // Manboster: Your Personal Manbo Lobster!
 // Powered by chihuo2104 (c) 2026.
-// Last Update: 2026.5.17
+// Last Update: 2026.5.18
 
 func main() {
 	manboster.Init()

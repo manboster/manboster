@@ -1,5 +1,7 @@
 package cli
 
+import "time"
+
 type Option[T any] struct {
 	Key      string
 	Value    T
@@ -12,4 +14,5 @@ type Provider interface {
 	MultiSelect(title string, description string, options []Option[any], validate func(options []Option[any]) bool) ([]Option[any], error)
 	Input(title string, description string, validate func(input any) bool) (any, error)
 	Prompt(title string, description string, t string, f string) (bool, error)
+	Display(content string, timeout time.Duration) error
 }
