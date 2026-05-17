@@ -52,7 +52,7 @@ build-release:
 	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)linux-amd64 ./cmd/manboster/main.go
 	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)linux-arm64 ./cmd/manboster/main.go
 	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)darwin-arm64 ./cmd/manboster/main.go
-	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)darwin-amd64 ./cmd/manboster/main.go
+	GOOS=windows GOARCH=arm64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)win-arm64.exe ./cmd/manboster/main.go
 	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -trimpath -o build/manboster-$(RELEASE)win-amd64.exe ./cmd/manboster/main.go
 
 build-release-all:
