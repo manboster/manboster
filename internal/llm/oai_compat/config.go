@@ -80,8 +80,14 @@ func (c *Config) Setup(ctx context.Context) error {
 		}
 	} else {
 		var ModelOptions []huh.Option[string]
+		isFirst := true
 		for _, m := range models {
-			ModelOptions = append(ModelOptions, huh.NewOption(m, m))
+			option := huh.NewOption(m, m)
+			if isFirst {
+				option.Selected(true)
+				isFirst = false
+			}
+			ModelOptions = append(ModelOptions, option)
 		}
 		ModelOptions = append(ModelOptions, huh.NewOption("Other Model", CustomModel))
 
