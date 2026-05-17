@@ -30,7 +30,7 @@ func (e *Engine) HandleMessage(ctx context.Context, instance chat.Provider, msg 
 		return err
 	}
 
-	if e.onboard != nil && msg.ChatType == chat.ChatsPersonal {
+	if e.onboard.Active() && msg.ChatType == chat.ChatsPersonal {
 		err := e.handler.HandleOnBoard(ctx, instance, msg)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while handling onboard via %s, error: %q", displayName, err))

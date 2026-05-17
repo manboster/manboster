@@ -10,12 +10,9 @@ import (
 )
 
 func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, code int64) error {
-	if !s.active {
+	if !s.Active() {
 		return nil
 	}
-
-	s.lock.Lock()
-	defer s.lock.Unlock()
 
 	text := ""
 	if code == s.pairKey {
@@ -32,6 +29,7 @@ func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Me
 		}
 
 		text += "\nEnjoy using your personal Lobster!"
+		s.Deactivate()
 		return nil
 	}
 

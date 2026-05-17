@@ -1,6 +1,6 @@
 module github.com/manboster/manboster
 
-go 1.25.5
+go 1.26.2
 
 require (
 	github.com/JohannesKaufmann/html-to-markdown v1.6.0
@@ -16,6 +16,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.4.0
 	github.com/hpcloud/tail v1.0.0
 	github.com/hybridgroup/yzma v1.13.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/sashabaranov/go-openai v1.41.2
 	github.com/sevlyar/go-daemon v0.1.6
 	github.com/shirou/gopsutil/v4 v4.26.3
@@ -104,8 +105,6 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/robfig/cron v1.2.0 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sagikazarmark/locafero v0.11.0 // indirect
 	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect
 	github.com/spf13/afero v1.15.0 // indirect
@@ -136,7 +135,7 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.3 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	modernc.org/libc v1.22.5 // indirect
