@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config/model"
 	"github.com/manboster/manboster/spec/cli"
@@ -36,26 +35,35 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 			return err
 		}
 	} else {
-		var ModelOptions []huh.Option[string]
-		isFirst := true
-		for _, m := range models {
-			option := huh.NewOption(m, m)
-			if isFirst {
-				option.Selected(true)
-				isFirst = false
-			}
-			ModelOptions = append(ModelOptions, option)
-		}
-		ModelOptions = append(ModelOptions, huh.NewOption("Other Model", CustomModel))
+		options := cli.BuildStringOptions(models, modelValues)
+		options = append(options, cli.Option{
+			Key:   "Other Model",
+			Value: CustomModel,
+		})
 
-		err = huh.NewForm(
-			huh.NewGroup(
-				huh.NewMultiSelect[string]().Title("Models").Description("Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.").Options(
-					ModelOptions...).Value(&modelValues),
-			),
-		).Run()
+		modelOptions, err := p.MultiSelect("Models", "Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.", options, modelValues, func(options []cli.Option) error {
+			for _, option := range options {
+				opt := option
+				mark := false
+				for _, modelOption := range options {
+					if opt == modelOption {
+						mark = true
+						break
+					}
+				}
+				if !mark {
+					return fmt.Errorf("option '%s' not found in options", opt.Value)
+				}
+			}
+			return nil
+		})
 		if err != nil {
 			return err
+		}
+
+		modelValues = []string{}
+		for _, option := range modelOptions {
+			modelValues = append(modelValues, option.Value)
 		}
 	}
 

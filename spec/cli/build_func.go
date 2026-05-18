@@ -41,3 +41,16 @@ func BuildModelOptions[T buildableModel](options []T, selected []string) []Optio
 		}
 	})
 }
+
+func BuildStringOptions(options []string, selected []string) []Option {
+	var opts []*BuildableType
+	for _, option := range options {
+		opts = append(opts, NewBuildableType(option, option))
+	}
+	return buildOptions[*BuildableType](opts, selected, func(option *BuildableType) Option {
+		return Option{
+			Key:   option.Name(),
+			Value: option.DisplayName(),
+		}
+	})
+}
