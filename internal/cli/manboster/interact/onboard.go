@@ -57,5 +57,10 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	}
 	conf.Tools = toolConfigs
 
+	err = runOnboardPreview(p, conf)
+	if err != nil {
+		return conf, err
+	}
+
 	return conf, nil
 }
