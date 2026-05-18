@@ -3,11 +3,7 @@ package interact
 import (
 	"fmt"
 
-	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/config"
-	_ "github.com/manboster/manboster/internal/hachimi/all"
-	_ "github.com/manboster/manboster/internal/llm/all"
-	_ "github.com/manboster/manboster/internal/tool/all"
 	"github.com/manboster/manboster/spec/cli"
 )
 
@@ -26,6 +22,40 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	if err != nil {
 		return conf, err
 	}
+
+	chatConfig, err := runOnboardChatConfig(p)
+	if err != nil {
+		return conf, err
+	}
+	conf.Chats = append(conf.Chats, chatConfig)
+
+	for {
+		llmConfig, err := runOnboardLLMConfig(p)
+		if err != nil {
+			return conf, err
+		}
+		conf.LLMs = append(conf.LLMs, llmConfig)
+
+		ok, err := p.Prompt(fmt.Sprintf("You've added %d llm providers! Do you want to continue?", len(conf.LLMs)), "", "Continue", "Exit and go on")
+		if err != nil {
+			return conf, err
+		}
+		if !ok {
+			break
+		}
+	}
+
+	appConfig, err := runOnboardAPPConfig(p, conf)
+	if err != nil {
+		return conf, err
+	}
+	conf.App = appConfig
+
+	toolConfigs, err := runOnboardToolConfig(p)
+	if err != nil {
+		return conf, err
+	}
+	conf.Tools = toolConfigs
 
 	return conf, nil
 }
