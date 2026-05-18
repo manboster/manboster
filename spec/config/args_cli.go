@@ -11,16 +11,19 @@ import (
 
 // ToCliProvider walks the args tree and collects values from the user via p.
 // initial may be nil or a map of pre-filled values (keyed by dotted path).
-// Returns a nested map suitable for mapstructure decoding.
-func (args *Args) ToCliProvider(p cli.Provider, initial map[string]any) (map[string]any, error) {
-	out := make(map[string]any)
-	if args == nil {
-		return out, nil
+// Returns a *CliForm whose Collect() gives a nested map suitable for mapstructure decoding.
+func (args *Args) ToCliProvider(p cli.Provider, initial map[string]any) (*CliForm, error) {
+	form := &CliForm{
+		values: make(map[string]any),
+		args:   args,
 	}
-	if err := collectProviderValues(args.Nodes, p, out, "", initial); err != nil {
+	if args == nil {
+		return form, nil
+	}
+	if err := collectProviderValues(args.Nodes, p, form.values, "", initial); err != nil {
 		return nil, err
 	}
-	return out, nil
+	return form, nil
 }
 
 func collectProviderValues(
