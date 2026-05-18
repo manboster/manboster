@@ -34,7 +34,7 @@ func InputModel() (llm.Model, error) {
 	// generate a new form
 	err := huh.NewForm(
 		huh.NewGroup(
-			huh.NewInput().Title("Model Name").Description("Please specify the model name. If you are using OpenRouter, you can copy it by clicking the clipboard icon on OpenRouter's model page. Otherwise, please find it in your provider's page.").Value(&customModel.Name),
+			huh.NewInput().Title("Model name").Description("Please specify the model name. If you are using OpenRouter, you can copy it by clicking the clipboard icon on OpenRouter's model page. Otherwise, please find it in your provider's page.").Value(&customModel.Name),
 			huh.NewInput().Title("Model's Context Length").Description("If you don't know what is this, please leave it empty, we will assign a default value.").Value(&modelContext),
 			huh.NewInput().Title("Model's Max Output Tokens").Description("If you don't know what is this, please leave it empty, we will assign a default value.").Value(&modelMaxOutputTokens),
 			huh.NewInput().Title("Model's Input Price($/1m tokens)").Description("The input prices of this model, if you don't know, you can leave it empty.").Value(&modelInputPrice),

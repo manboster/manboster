@@ -3,7 +3,6 @@ package interact
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/manboster/manboster/internal/chat"
 	_ "github.com/manboster/manboster/internal/chat/all"
@@ -22,7 +21,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 	for {
 		chatConfig, err := runOnboardChatConfig(p, chatProviders)
 		if err != nil {
-			err := p.Display(fmt.Sprintf("Failed to config %q", err), 3*time.Second)
+			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Failed to config %q", err))
 			if err != nil {
 				return chatConfigs, err
 			}
@@ -43,7 +42,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 		}
 		if len(chatProviders) == 0 || !ok {
 			if len(allChatProviders) == 0 {
-				err := p.Display("There is no more providers available for you to config...", 3*time.Second)
+				err := p.Alert("Manboster Configuration Wizard", "There is no more providers available for you to config...")
 				if err != nil {
 					return chatConfigs, err
 				}

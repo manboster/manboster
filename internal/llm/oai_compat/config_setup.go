@@ -3,7 +3,6 @@ package oai_compat
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
@@ -31,11 +30,10 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	}
 
 	if err != nil {
-		err := huh.NewForm(huh.NewGroup(huh.NewNote().Title("Oops! We can't get information based on your credentials!").Description("We strongly recommend you check your Internet Connection and credentials. If you have a poor Internet connection or have a strong belief that you're not wrong, please press enter to proceed to add model manually. Otherwise, please press Ctrl + C to exit.").Next(true))).Run()
+		err = p.Alert("Oops! We can't get information based on your credentials!", "We strongly recommend you check your Internet Connection and credentials. If you have a poor Internet connection or have a strong belief that you're not wrong, please press enter to proceed to add model manually. Otherwise, please press Ctrl + C to exit.")
 		modelValues = append(modelValues, CustomModel)
 		if err != nil {
-			// don't do that, it will continue to configuration acceptance
-			os.Exit(1)
+			return err
 		}
 	} else {
 		var ModelOptions []huh.Option[string]
