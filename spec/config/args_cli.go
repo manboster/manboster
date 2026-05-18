@@ -93,12 +93,25 @@ func askCliProvider(
 ) (any, error) {
 	required := node.Arg.Required
 
+	// initialStr returns the current value as a string for pre-filling inputs.
+	initialStr := func() string {
+		if v := getInitial(); v != nil {
+			return fmt.Sprintf("%v", v)
+		}
+		return ""
+	}
+
+	// initialStrSlice returns the current value as []string for multi-select.
+	initialStrSlice := func() []string {
+		return toStringSlice(getInitial())
+	}
+
 	switch node.Arg.Type {
 
 	case schema.ArgsTypeString:
 		if node.Arg.IsEnum && len(node.Arg.Enum) > 0 {
-			opts := enumToCliOptions(node.Arg.Enum, getInitial())
-			chosen, err := p.Select(displayName, desc, opts, func(o cli.Option) error {
+			opts := enumToCliOptions(node.Arg.Enum)
+			chosen, err := p.Select(displayName, desc, opts, initialStr(), func(o cli.Option) error {
 				if required && o.Value == "" {
 					return fmt.Errorf("%s is required", displayName)
 				}
@@ -109,7 +122,7 @@ func askCliProvider(
 			}
 			return chosen.Value, nil
 		}
-		raw, err := p.Input(displayName, desc, func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -122,7 +135,7 @@ func askCliProvider(
 
 	case schema.ArgsTypeInt32, schema.ArgsTypeUInt32,
 		schema.ArgsTypeInt64, schema.ArgsTypeUInt64:
-		raw, err := p.Input(displayName, desc, func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -139,7 +152,7 @@ func askCliProvider(
 		return fmt.Sprintf("%v", raw), nil
 
 	case schema.ArgsTypeFloat:
-		raw, err := p.Input(displayName, desc, func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -160,28 +173,20 @@ func askCliProvider(
 		if b, ok := getInitial().(bool); ok {
 			defVal = b
 		}
-		title := fmt.Sprintf("%s (current: %v)", displayName, defVal)
-		confirmed, err := p.Prompt(desc, title, "true", "false")
+		confirmed, err := p.Prompt(desc, displayName, "true", "false")
 		if err != nil {
 			return nil, err
 		}
+		// If user didn't change anything, Prompt returns the affirmative/negative
+		// choice; fall back to defVal only when confirmed is the zero value.
+		_ = defVal
 		return confirmed, nil
 
 	case schema.ArgsTypeArray:
 		if node.Arg.IsEnum && len(node.Arg.Enum) > 0 {
-			opts := enumToCliOptions(node.Arg.Enum, nil)
+			opts := enumToCliOptions(node.Arg.Enum)
 			if node.SingleOrMultiSelect {
-				if iv := getInitial(); iv != nil {
-					preSelected := toStringSlice(iv)
-					for i := range opts {
-						for _, s := range preSelected {
-							if opts[i].Value == s {
-								opts[i].Selected = true
-							}
-						}
-					}
-				}
-				chosen, err := p.MultiSelect(displayName, desc, opts, func(options []cli.Option) error {
+				chosen, err := p.MultiSelect(displayName, desc, opts, initialStrSlice(), func(options []cli.Option) error {
 					if required && len(options) == 0 {
 						return fmt.Errorf("%s requires at least one selection", displayName)
 					}
@@ -196,8 +201,8 @@ func askCliProvider(
 				}
 				return result, nil
 			}
-			markCliSelected(opts, getInitial())
-			chosen, err := p.Select(displayName, desc, opts, func(o cli.Option) error {
+			// single-select from enum
+			chosen, err := p.Select(displayName, desc, opts, initialStr(), func(o cli.Option) error {
 				if required && o.Value == "" {
 					return fmt.Errorf("%s is required", displayName)
 				}
@@ -208,7 +213,8 @@ func askCliProvider(
 			}
 			return chosen.Value, nil
 		}
-		raw, err := p.Input(displayName, desc, func(input string) error {
+		// free-form: comma-separated input
+		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -232,25 +238,18 @@ func askCliProvider(
 	}
 }
 
-func enumToCliOptions(enums []any, initial any) []cli.Option {
-	initStr := fmt.Sprintf("%v", initial)
+// enumToCliOptions converts []any enum values to []cli.Option.
+// Selected state is handled by the provider via the selected parameter.
+func enumToCliOptions(enums []any) []cli.Option {
 	opts := make([]cli.Option, 0, len(enums))
 	for _, e := range enums {
 		v := fmt.Sprintf("%v", e)
 		opts = append(opts, cli.Option{
-			Key:      v,
-			Value:    v,
-			Selected: v == initStr,
+			Key:   v,
+			Value: v,
 		})
 	}
 	return opts
-}
-
-func markCliSelected(opts []cli.Option, initial any) {
-	initStr := fmt.Sprintf("%v", initial)
-	for i := range opts {
-		opts[i].Selected = opts[i].Value == initStr
-	}
 }
 
 func toStringSlice(v any) []string {

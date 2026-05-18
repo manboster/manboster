@@ -7,9 +7,12 @@ import (
 	"github.com/manboster/manboster/spec/cli"
 )
 
-func (h Huh) Select(title string, description string, options []cli.Option, validate func(option cli.Option) error) (cli.Option, error) {
+func (h Huh) Select(title string, description string, options []cli.Option, selected string, validate func(option cli.Option) error) (cli.Option, error) {
 	opts := BuildHuhOptions(options)
 	var sel string
+	if selected != "" {
+		sel = selected
+	}
 
 	err := huh.NewForm(huh.NewGroup(
 		huh.NewSelect[string]().Title(title).Description(description).Options(opts...).Value(&sel).Validate(func(s string) error {
@@ -31,9 +34,12 @@ func (h Huh) Select(title string, description string, options []cli.Option, vali
 	return opt, nil
 }
 
-func (h Huh) MultiSelect(title string, description string, options []cli.Option, validate func(options []cli.Option) error) ([]cli.Option, error) {
+func (h Huh) MultiSelect(title string, description string, options []cli.Option, selected []string, validate func(options []cli.Option) error) ([]cli.Option, error) {
 	opts := BuildHuhOptions(options)
 	var sels []string
+	if selected != nil {
+		sels = selected
+	}
 
 	err := huh.NewForm(huh.NewGroup(
 		huh.NewMultiSelect[string]().Title(title).Description(description).Options(opts...).Value(&sels).Validate(func(s []string) error {

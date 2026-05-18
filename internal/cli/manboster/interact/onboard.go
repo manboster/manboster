@@ -23,27 +23,17 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 		return conf, err
 	}
 
-	chatConfig, err := runOnboardChatConfig(p)
+	chatConfigs, err := runOnboardChatConfigs(p)
 	if err != nil {
 		return conf, err
 	}
-	conf.Chats = append(conf.Chats, chatConfig)
+	conf.Chats = chatConfigs
 
-	for {
-		llmConfig, err := runOnboardLLMConfig(p)
-		if err != nil {
-			return conf, err
-		}
-		conf.LLMs = append(conf.LLMs, llmConfig)
-
-		ok, err := p.Prompt(fmt.Sprintf("You've added %d llm providers! Do you want to continue?", len(conf.LLMs)), "", "Continue", "Exit and go on")
-		if err != nil {
-			return conf, err
-		}
-		if !ok {
-			break
-		}
+	llmConfigs, err := runOnboardLLMConfigs(p)
+	if err != nil {
+		return conf, err
 	}
+	conf.LLMs = llmConfigs
 
 	appConfig, err := runOnboardAPPConfig(p, conf)
 	if err != nil {
