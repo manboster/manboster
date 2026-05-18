@@ -37,7 +37,7 @@ func (c *Config) String() string {
 	for _, m := range c.Model {
 		b.WriteString(m.DisplayName + ",")
 	}
-	return fmt.Sprintf("name: `%s`, API URL: `%s`, API Key: `%s`\nmodels(%d): `%s`", c.ProviderDisplayName, c.BaseURL, util.MaskSecret(c.ApiKey), len(c.Model), b.String())
+	return fmt.Sprintf("Name: `%s`, API URL: `%s`, API Key: `%s`\nmodels(%d): `%s`", c.ProviderDisplayName, c.BaseURL, util.MaskSecret(c.ApiKey), len(c.Model), b.String())
 }
 
 func (c *Config) Name() string {

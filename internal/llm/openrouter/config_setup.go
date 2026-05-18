@@ -16,7 +16,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	for _, m := range Models() {
 		modelOptions = append(modelOptions, huh.NewOption(m.DisplayName, m.Name))
 	}
-	modelOptions = append(modelOptions, huh.NewOption("Other Model", "_CustomModel_"))
+	modelOptions = append(modelOptions, huh.NewOption("Other Model", oai_compat.CustomModel))
 
 	for _, m := range c.Model {
 		c.inputModelData = append(c.inputModelData, m.Name)

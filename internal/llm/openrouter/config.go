@@ -34,7 +34,7 @@ func (c *Config) String() string {
 	for _, m := range c.Model {
 		b.WriteString(m.DisplayName + ",")
 	}
-	return fmt.Sprintf("API Key: `%s`,models(%d): `%s`", util.MaskSecret(c.ApiKey), len(c.Model), b.String())
+	return fmt.Sprintf("API Key: `%s`, Models(%d): `%s`", util.MaskSecret(c.ApiKey), len(c.Model), b.String())
 
 }
 

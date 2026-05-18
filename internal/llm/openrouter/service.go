@@ -10,10 +10,6 @@ type Service struct {
 	oaiInstance *oai_compat.Service
 }
 
-func NewService(cli *oai_compat.Service) *Service {
-	return &Service{oaiInstance: cli}
-}
-
 func (s *Service) Name() string {
 	return s.oaiInstance.Name()
 }
