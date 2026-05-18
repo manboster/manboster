@@ -1,6 +1,8 @@
 package huh
 
-import "github.com/charmbracelet/huh"
+import (
+	"github.com/charmbracelet/huh"
+)
 
 func (h Huh) Alert(title string, description string) error {
 	return huh.NewForm(

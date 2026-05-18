@@ -8,9 +8,9 @@ import (
 	"github.com/manboster/manboster/internal/chat"
 	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/util"
 	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/cli"
-	configType "github.com/manboster/manboster/spec/config"
 )
 
 // runOnboardChatConfigs
@@ -54,13 +54,13 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 	return chatConfigs, nil
 }
 
-// runOnboardChatConfig runs LLM Config
+// runOnboardChatConfig runs chat Config
 func runOnboardChatConfig(p cli.Provider, chatProviders []chatType.Provider) (config.ChatConfig, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	conf := config.ChatConfig{}
-	options := buildChatOptions(chatProviders, nil)
+	options := util.BuildOptions[chatType.Provider](chatProviders, nil)
 	chatProviderOption, err := p.Select("First, which platform would you like to use for your Manboster?", "", options, "", func(option cli.Option) error {
 		for _, provider := range chatProviders {
 			if provider.Name() == option.Value {
@@ -86,12 +86,4 @@ func runOnboardChatConfig(p cli.Provider, chatProviders []chatType.Provider) (co
 	}
 
 	return conf, fmt.Errorf("no chat provider named %q", chatProviderOption.Value)
-}
-
-func buildChatOptions(providers []chatType.Provider, selected []string) []cli.Option {
-	var confProviders []configType.Provider
-	for _, provider := range providers {
-		confProviders = append(confProviders, provider.Config())
-	}
-	return buildOptions(confProviders, selected)
 }

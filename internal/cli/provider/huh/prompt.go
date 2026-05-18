@@ -1,6 +1,8 @@
 package huh
 
-import "github.com/charmbracelet/huh"
+import (
+	"github.com/charmbracelet/huh"
+)
 
 func (h Huh) Prompt(content string, title string, t string, f string) (bool, error) {
 	err := h.Display(content, 0)

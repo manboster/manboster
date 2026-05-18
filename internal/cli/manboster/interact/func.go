@@ -5,9 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-
-	"github.com/manboster/manboster/spec/cli"
-	"github.com/manboster/manboster/spec/config"
 )
 
 // openWithSystemDefault opens a file with default open way
@@ -54,29 +51,4 @@ func openEditor(filePath string) error {
 	}
 
 	return nil
-}
-
-func buildOptions(p []config.Provider, selected []string) []cli.Option {
-	var options []cli.Option
-	for i, provider := range p {
-		option := cli.Option{
-			Key:   provider.DisplayName(),
-			Value: provider.Name(),
-		}
-
-		if i == 0 && (len(selected) == 0 || selected == nil) {
-			option.Selected = true
-		} else if selected != nil && len(selected) > 0 {
-			for j, selectedItem := range selected {
-				if selectedItem == provider.Name() {
-					option.Selected = true
-					selected = append(selected[:j], selected[j+1:]...)
-					break
-				}
-			}
-		}
-
-		options = append(options, option)
-	}
-	return options
 }
