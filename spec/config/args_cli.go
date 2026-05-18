@@ -9,21 +9,14 @@ import (
 	"github.com/manboster/manboster/spec/schema"
 )
 
-// ToCliProvider walks the args tree and collects values from the user via p.
-// initial may be nil or a map of pre-filled values (keyed by dotted path).
-// Returns a *CliForm whose Collect() gives a nested map suitable for mapstructure decoding.
-func (args *Args) ToCliProvider(p cli.Provider, initial map[string]any) (*CliForm, error) {
-	form := &CliForm{
+// ToCliProvider binds p to a new CliForm. Call CliForm.Build to run the
+// interaction and collect values.
+func (args *Args) ToCliProvider(p cli.Provider) *CliForm {
+	return &CliForm{
 		values: make(map[string]any),
 		args:   args,
+		p:      p,
 	}
-	if args == nil {
-		return form, nil
-	}
-	if err := collectProviderValues(args.Nodes, p, form.values, "", initial); err != nil {
-		return nil, err
-	}
-	return form, nil
 }
 
 func collectProviderValues(
@@ -59,7 +52,7 @@ func collectProviderValues(
 
 		getInitial := func() any {
 			if initial != nil {
-				if v, ok := initial[key]; ok {
+				if v := getNestedValue(initial, key); v != nil {
 					return v
 				}
 			}
@@ -73,6 +66,23 @@ func collectProviderValues(
 		setNested(out, key, val)
 	}
 	return nil
+}
+
+// getNestedValue looks up a dotted key (e.g. "db.host") in a nested map.
+func getNestedValue(m map[string]any, key string) any {
+	parts := strings.SplitN(key, ".", 2)
+	v, ok := m[parts[0]]
+	if !ok {
+		return nil
+	}
+	if len(parts) == 1 {
+		return v
+	}
+	nested, ok := v.(map[string]any)
+	if !ok {
+		return nil
+	}
+	return getNestedValue(nested, parts[1])
 }
 
 func askCliProvider(
@@ -161,7 +171,6 @@ func askCliProvider(
 		if node.Arg.IsEnum && len(node.Arg.Enum) > 0 {
 			opts := enumToCliOptions(node.Arg.Enum, nil)
 			if node.SingleOrMultiSelect {
-				// pre-select items matching initial values
 				if iv := getInitial(); iv != nil {
 					preSelected := toStringSlice(iv)
 					for i := range opts {
@@ -187,7 +196,6 @@ func askCliProvider(
 				}
 				return result, nil
 			}
-			// single-select from enum
 			markCliSelected(opts, getInitial())
 			chosen, err := p.Select(displayName, desc, opts, func(o cli.Option) error {
 				if required && o.Value == "" {
@@ -200,7 +208,6 @@ func askCliProvider(
 			}
 			return chosen.Value, nil
 		}
-		// free-form: comma-separated input
 		raw, err := p.Input(displayName, desc, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)

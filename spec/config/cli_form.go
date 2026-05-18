@@ -13,6 +13,7 @@ import (
 type CliForm struct {
 	values map[string]any
 	args   *Args
+	p      cli.Provider
 }
 
 // Collect returns all filled values as a nested map, suitable for mapstructure.
@@ -20,9 +21,9 @@ func (f *CliForm) Collect() map[string]any {
 	return f.values
 }
 
-// Build re-runs the provider interaction with the given initial values pre-filled.
-// Clears any previous values.
-func (f *CliForm) Build(p cli.Provider, config any) error {
+// Build runs the provider interaction with the given initial values pre-filled.
+// Pass nil for a blank form. Clears any previous values.
+func (f *CliForm) Build(config any) error {
 	var initial map[string]any
 
 	switch v := config.(type) {
@@ -41,5 +42,5 @@ func (f *CliForm) Build(p cli.Provider, config any) error {
 	}
 
 	f.values = make(map[string]any)
-	return collectProviderValues(f.args.Nodes, p, f.values, "", initial)
+	return collectProviderValues(f.args.Nodes, f.p, f.values, "", initial)
 }
