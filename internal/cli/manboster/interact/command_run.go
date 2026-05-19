@@ -21,10 +21,10 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 		color.Red("Manboster is running, please run 'manboster stop' to stop it!\nQuiting the application...")
 		return
 	}
-	// err = configFormRun()
-	// if err != nil {
-	// 	color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring: %q.", err))
-	// }
+	err = runConfigEntrypoint(huh.Huh{})
+	if err != nil {
+		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring: %q.", err))
+	}
 }
 
 // configCmdEditRun runs terminal editor to config

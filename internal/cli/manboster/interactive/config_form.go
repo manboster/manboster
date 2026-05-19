@@ -146,8 +146,6 @@ func runConfigLandingSelectionForm() error {
 	defer cancel()
 	defer helper.ClearScreen()
 
-	conf := config.Read()
-
 	se, err := configLandingForm()
 	if err != nil {
 		return err

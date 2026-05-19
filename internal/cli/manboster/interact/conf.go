@@ -1,9 +1,73 @@
 package interact
 
 import (
+	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/spec/cli"
 )
 
+type entrypointType string
+
+const (
+	entrypointConfig   entrypointType = "config"
+	entrypointDatabase entrypointType = "database"
+	entrypointEditor   entrypointType = "editor"
+	entrypointQuit     entrypointType = "quit"
+)
+
+func (t entrypointType) Name() string {
+	return string(t)
+}
+
+func (t entrypointType) DisplayName() string {
+	switch t {
+	case entrypointConfig:
+		return "Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this."
+	case entrypointDatabase:
+		return "Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this."
+	case entrypointEditor:
+		return "Open Configuration yaml file in system's default editor\n(For advanced users only)"
+	case entrypointQuit:
+		return "Quit Manboster Configuration Wizard\nBye!"
+	default:
+		return ""
+	}
+}
+
 func runConfigEntrypoint(p cli.Provider) error {
-	return nil
+	selections := []entrypointType{entrypointConfig, entrypointDatabase, entrypointEditor, entrypointQuit}
+	options := cli.BuildOptions[entrypointType](selections, nil)
+
+	form := newConfigForm[entrypointType]()
+	form.Register(entrypointEditor, func() error {
+		return openEditor(config.Path("config.yaml"))
+	})
+	form.Register(entrypointConfig, func() error {
+		return nil
+	})
+	form.Register(entrypointDatabase, func() error {
+		return nil
+	})
+	form.Register(entrypointQuit, func() error {
+		return nil
+	})
+
+	for {
+		option, err := p.Select("Please select what to configure!", "Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.", options, string(entrypointConfig), func(option cli.Option) error {
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+
+		err = form.Handle(entrypointType(option.Value))
+		if err != nil {
+			return err
+		}
+
+		if option.Value == string(entrypointQuit) {
+			color.Yellow("Bye!")
+			return nil
+		}
+	}
 }
