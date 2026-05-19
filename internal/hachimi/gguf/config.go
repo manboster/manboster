@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/spec/cli"
 	"github.com/manboster/manboster/spec/config"
 )
 
@@ -53,7 +54,7 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-func (c *Config) Setup(ctx context.Context) error {
+func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	sel := false
 	err := huh.NewForm(
 		huh.NewGroup(

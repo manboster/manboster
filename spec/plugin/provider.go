@@ -12,6 +12,7 @@ type Provider interface {
 	Name() string                                                       // get the package name e.g. dev.manboster.websearch (We recommend you to create package names by reserved domain policy as this is the industrial standard)
 	DisplayName() string                                                // get the display name of the provider
 	MetaData() schema.MetaData                                          // get the metadata of the plugin
+	Description() string                                                // get the description of the metadata
 	Requires() []schema.RequirementData                                 // get the requirement type of plugin
 	Args() *schema.Args                                                 // get args description from the plugin
 	Init(ctx context.Context, conf any) error                           // initialize the plugin

@@ -183,7 +183,7 @@ func runConfigLandingSelectionForm() error {
 		dbpath := conf.App.DBPath
 		conf.App = appConf
 		conf.App.DBPath = dbpath
-		err = config.Write(conf)
+		err = config.Write(conf, config.Path("config.yaml"))
 		if err != nil {
 			return err
 		}

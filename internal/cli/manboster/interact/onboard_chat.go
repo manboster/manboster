@@ -41,8 +41,8 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 			return chatConfigs, err
 		}
 		if len(chatProviders) == 0 || !ok {
-			if len(allChatProviders) == 0 {
-				err := p.Alert("Manboster Configuration Wizard", "There is no more providers available for you to config...")
+			if len(chatProviders) == 0 {
+				err := p.Alert("Manboster Configuration Wizard", "There are no more providers available for you to config...")
 				if err != nil {
 					return chatConfigs, err
 				}
@@ -59,8 +59,8 @@ func runOnboardChatConfig(p cli.Provider, chatProviders []chatType.Provider) (co
 	defer cancel()
 
 	conf := config.ChatConfig{}
-	options := util.BuildOptions[chatType.Provider](chatProviders, nil)
-	chatProviderOption, err := p.Select("First, which platform would you like to use for your Manboster?", "", options, "", func(option cli.Option) error {
+	options := util.BuildOptionsForConfig[chatType.Provider](chatProviders, nil)
+	chatProviderOption, err := p.Select("Which platform would you like to use for your Manboster?", "", options, "", func(option cli.Option) error {
 		for _, provider := range chatProviders {
 			if provider.Name() == option.Value {
 				return nil

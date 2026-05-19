@@ -87,7 +87,7 @@ func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 		color.Red(fmt.Sprintf("[Manboster Client] Error while validating configuration: %q", err))
 		return
 	}
-	err = config.Write(cfg)
+	err = config.Write(cfg, config.Path("config.yaml"))
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] Error while writing config: %q", err))
 		os.Exit(1)

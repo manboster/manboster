@@ -22,6 +22,10 @@ var metadata = schema.MetaData{
 
 type Service struct{}
 
+func (s *Service) Description() string {
+	return metadata.Description
+}
+
 func (s *Service) Name() string {
 	return metadata.Name
 }

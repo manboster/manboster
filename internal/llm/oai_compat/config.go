@@ -2,12 +2,15 @@ package oai_compat
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/llm"
 )
+
+var re = regexp.MustCompile(`^[a-zA-Z0-9]+$`)
 
 // Config contains what you should enter in application configuration.
 type Config struct {
@@ -57,6 +60,9 @@ func (c *Config) Validate() error {
 	}
 	if c.ApiKey == "" {
 		return fmt.Errorf("no API key provided")
+	}
+	if !re.MatchString(c.ProviderName) {
+		return fmt.Errorf("invalid provider name")
 	}
 	return nil
 }

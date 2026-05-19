@@ -25,6 +25,10 @@ type Service struct {
 	cfg *Config
 }
 
+func (s *Service) Description() string {
+	return metadata.Description
+}
+
 func (s *Service) Name() string {
 	return metadata.Name
 }

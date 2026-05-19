@@ -3,6 +3,7 @@ package interact
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -10,16 +11,17 @@ import (
 type wizardCurrentState int8
 
 const (
-	wizardConfigChat wizardCurrentState = iota
+	wizardConfigHello wizardCurrentState = iota
+	wizardConfigChat
 	wizardConfigLLM
 	wizardConfigApp
 	wizardConfigTool
 	wizardConfigHachimi
 	wizardConfigPreview
 	wizardConfigConfig
-	wizardConfigWriting
-	wizardConfigSuccess
+	wizardConfigWrite
 	wizardConfigError
+	wizardConfigSuccess
 )
 
 func runOnboardConfig(p cli.Provider) (config.Config, error) {
@@ -33,45 +35,120 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 		return conf, fmt.Errorf("you rejected the warning, in order to protect you, we skip your installation progress")
 	}
 
-	err = p.Alert("Manboster Configuration Wizard", "Welcome to the Manboster Configuration Wizard. Enjoy your experience with your little Manbo!")
-	if err != nil {
-		return conf, err
-	}
+	state := wizardConfigHello
+	lastState := wizardConfigHello
+	var reportedError error
 
-	chatConfigs, err := runOnboardChatConfigs(p)
-	if err != nil {
-		return conf, err
-	}
-	conf.Chats = chatConfigs
+	for state != wizardConfigSuccess {
+		switch state {
+		case wizardConfigHello:
+			err = p.Alert("Manboster Configuration Wizard", "Welcome to the Manboster Configuration Wizard. Enjoy your experience with your little Manbo!")
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
 
-	llmConfigs, err := runOnboardLLMConfigs(p)
-	if err != nil {
-		return conf, err
-	}
-	conf.LLMs = llmConfigs
+			state = wizardConfigChat
+		case wizardConfigChat:
+			chatConfigs, err := runOnboardChatConfigs(p)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
 
-	appConfig, err := runOnboardAPPConfig(p, conf)
-	if err != nil {
-		return conf, err
-	}
-	conf.App = appConfig
+			conf.Chats = chatConfigs
+			state = wizardConfigLLM
+		case wizardConfigLLM:
+			llmConfigs, err := runOnboardLLMConfigs(p)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
 
-	toolConfigs, err := runOnboardToolConfig(p)
-	if err != nil {
-		return conf, err
-	}
-	conf.Tools = toolConfigs
+			conf.LLMs = llmConfigs
+			state = wizardConfigApp
+		case wizardConfigApp:
+			appConfig, err := runOnboardAPPConfig(p, conf)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
 
-	hachimiConfigs, err := runOnboardHachimiConfigs(p)
-	if err != nil {
-		return conf, err
-	}
-	conf.Hachimi = hachimiConfigs
+			conf.App = appConfig
+			state = wizardConfigTool
+		case wizardConfigTool:
+			toolConfigs, err := runOnboardToolConfig(p)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
+			conf.Tools = toolConfigs
+			state = wizardConfigHachimi
+		case wizardConfigHachimi:
+			hachimiConfigs, err := runOnboardHachimiConfigs(p)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
 
-	conf = conf.Default()
-	err = runOnboardPreview(p, conf)
-	if err != nil {
-		return conf, err
+			conf.Hachimi = hachimiConfigs
+			state = wizardConfigPreview
+		case wizardConfigPreview:
+			conf = conf.Default()
+			confirm, err := runOnboardPreview(p, conf)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
+
+			if !confirm {
+				conf, err = runConfig(p, conf)
+				if err != nil {
+					return conf, err
+				}
+			}
+			state = wizardConfigWrite
+		case wizardConfigWrite:
+			err = runConfigWrite(p, conf)
+			if err != nil {
+				lastState = state
+				state = wizardConfigError
+				reportedError = err
+				continue
+			}
+			state = wizardConfigSuccess
+		case wizardConfigError:
+			confirm, err := p.Prompt(fmt.Sprintf("We meet an error while processing wizard: %q", reportedError), "Do you want to retry?", "Retry", "Exit")
+			if err != nil {
+				color.Red(fmt.Sprintf("[Manboster Configuration Wizard] Error while processing wizard: %q", reportedError))
+			}
+			if !confirm {
+				return conf, reportedError
+			}
+			state = lastState
+		case wizardConfigSuccess:
+			err := p.Alert("Manboster Configuration Wizard", "Successfully processed the configuration!\nWish you have a good time with your Manbo Lobster!")
+			if err != nil {
+				return config.Config{}, err
+			}
+		default:
+			return conf, fmt.Errorf("unknown wizard state: %d", state)
+		}
+
 	}
 
 	return conf, nil

@@ -125,7 +125,7 @@ func runLandingToolActionForm(ctx context.Context) error {
 						conf.Tools[i].Configuration = newConfig
 					}
 				}
-				err = config.Write(conf)
+				err = config.Write(conf, config.Path("config.yaml"))
 				if err != nil {
 					return err
 				}
@@ -140,7 +140,7 @@ func runLandingToolActionForm(ctx context.Context) error {
 					conf.Tools = append(conf.Tools[:i], conf.Tools[i+1:]...)
 				}
 			}
-			err := config.Write(conf)
+			err := config.Write(conf, config.Path("config.yaml"))
 			if err != nil {
 				return err
 			}

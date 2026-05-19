@@ -84,7 +84,7 @@ func OnboardConfigurationForm(ctx context.Context) (config.Config, error) {
 	c.Hachimi = hachimiCfg
 
 	// set V and manboster.db path
-	c = config.Default(c)
+	c = c.Default()
 
 	// Step 6: See what's entered and start to write configuration.
 	confDescription := strings.Builder{}

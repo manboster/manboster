@@ -44,7 +44,7 @@ func runOnboardLLMConfig(p cli.Provider, llmProviders []llmType.Provider) (confi
 	defer cancel()
 
 	conf := config.LLMConfig{}
-	options := util.BuildOptions[llmType.Provider](llmProviders, nil)
+	options := util.BuildOptionsForConfig[llmType.Provider](llmProviders, nil)
 	llmProviderOption, err := p.Select("Next, let's pick a LLM provider. Which provider would you like to use?", "", options, "", func(option cli.Option) error {
 		for _, provider := range llmProviders {
 			if provider.Config().Name() == option.Value {

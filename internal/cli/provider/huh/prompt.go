@@ -5,6 +5,7 @@ import (
 )
 
 func (h Huh) Prompt(content string, title string, t string, f string) (bool, error) {
+	ClearScreen()
 	err := h.Display(content, 0)
 	defer ClearScreen()
 	if err != nil {

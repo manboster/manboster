@@ -122,7 +122,7 @@ func askCliProvider(
 			}
 			return chosen.Value, nil
 		}
-		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), node.IsSecret, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -135,7 +135,7 @@ func askCliProvider(
 
 	case schema.ArgsTypeInt32, schema.ArgsTypeUInt32,
 		schema.ArgsTypeInt64, schema.ArgsTypeUInt64:
-		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), false, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -152,7 +152,7 @@ func askCliProvider(
 		return fmt.Sprintf("%v", raw), nil
 
 	case schema.ArgsTypeFloat:
-		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), false, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}
@@ -214,7 +214,7 @@ func askCliProvider(
 			return chosen.Value, nil
 		}
 		// free-form: comma-separated input
-		raw, err := p.Input(displayName, desc, initialStr(), func(input string) error {
+		raw, err := p.Input(displayName, desc, initialStr(), false, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
 			}

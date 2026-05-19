@@ -5,7 +5,7 @@ import (
 	"github.com/manboster/manboster/spec/config"
 )
 
-func BuildOptions[T configurable](providers []T, selected []string) []cli.Option {
+func BuildOptionsForConfig[T configurable](providers []T, selected []string) []cli.Option {
 	var options []cli.Option
 	var configProviders []config.Provider
 	for _, p := range providers {

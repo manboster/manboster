@@ -52,7 +52,7 @@ func runLandingLLMActionForm(ctx context.Context) error {
 			Configuration: cf,
 		})
 
-		err = config.Write(conf)
+		err = config.Write(conf, config.Path("config.yaml"))
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ func runLandingLLMActionForm(ctx context.Context) error {
 					break
 				}
 			}
-			err = config.Write(conf)
+			err = config.Write(conf, config.Path("config.yaml"))
 			if err != nil {
 				return err
 			}
@@ -104,7 +104,7 @@ func runLandingLLMActionForm(ctx context.Context) error {
 					break
 				}
 			}
-			err = config.Write(conf)
+			err = config.Write(conf, config.Path("config.yaml"))
 			if err != nil {
 				return err
 			}

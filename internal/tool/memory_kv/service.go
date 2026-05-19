@@ -23,6 +23,10 @@ type Service struct {
 	memDB repository.MemoryRepository
 }
 
+func (s *Service) Description() string {
+	return metadata.Description
+}
+
 func (s *Service) Name() string {
 	return metadata.Name
 }

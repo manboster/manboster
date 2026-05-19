@@ -28,6 +28,10 @@ type Service struct {
 	cron     *cron.Cron
 }
 
+func (s *Service) Description() string {
+	return metadata.Description
+}
+
 func (s *Service) Name() string {
 	return metadata.Name
 }

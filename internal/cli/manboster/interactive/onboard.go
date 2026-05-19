@@ -49,7 +49,7 @@ func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	err = config.Write(cfg)
+	err = config.Write(cfg, config.Path("config.yaml"))
 	if err != nil {
 		os.Exit(1)
 		return

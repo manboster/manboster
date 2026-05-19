@@ -4,15 +4,21 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-func (h Huh) Input(title string, description string, defaultVal string, validate func(input string) error) (any, error) {
+func (h Huh) Input(title string, description string, defaultVal string, secret bool, validate func(input string) error) (any, error) {
+	ClearScreen()
 	var data string
 	if defaultVal != "" {
 		data = defaultVal
 	}
-	
+
+	i := huh.NewInput().Title(title).Description(description).Value(&data).Validate(validate)
+	if secret {
+		i.EchoMode(huh.EchoModePassword)
+	}
+
 	err := huh.NewForm(
 		huh.NewGroup(
-			huh.NewInput().Title(title).Description(description).Value(&data).Validate(validate),
+			i,
 		)).Run()
 	if err != nil {
 		return nil, err
