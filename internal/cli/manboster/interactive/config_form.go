@@ -176,19 +176,6 @@ func runConfigLandingSelectionForm() error {
 		return nil
 	case configLandingHachimi:
 	case configLandingApp:
-		appConf, err := OnboardAPPConfigForm(ctx, conf.LLMs)
-		if err != nil {
-			return err
-		}
-		dbpath := conf.App.DBPath
-		conf.App = appConf
-		conf.App.DBPath = dbpath
-		err = config.Write(conf, config.Path("config.yaml"))
-		if err != nil {
-			return err
-		}
-		color.Blue("Successfully saved config!")
-		time.Sleep(1 * time.Second)
 	case configLandingQuit:
 		color.Blue("Bye!")
 		return nil

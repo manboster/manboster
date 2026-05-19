@@ -50,8 +50,8 @@ func ConfigCmd() *cobra.Command {
 // OnboardConfigCmd provides an interactive TUI to configure your manboster application.
 func OnboardConfigCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "onboard-next",
-		Short: "[Experimental] Run onboard configuration wizard for Manboster application",
+		Use:   "onboard",
+		Short: "Run onboard configuration wizard for Manboster application",
 		Run:   OnboardConfigCmdRun,
 	}
 }

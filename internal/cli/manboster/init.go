@@ -24,7 +24,6 @@ func Init() {
 	rootCmd.AddCommand(app.VersionCmd())
 
 	// Add configuration options [to be removed later when new app ends]
-	rootCmd.AddCommand(interactive.OnboardConfigCmd())
 	rootCmd.AddCommand(interactive.ConfigCmd())
 
 	// Add configuration next options [Experimental]
