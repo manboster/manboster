@@ -17,7 +17,7 @@ Manboster is an AI agent able to chat and control your computers like OpenClaw a
 4. **Hachimi scoring reduces decision fatigue, but cannot fully prevent advanced prompt injections or unsafe LLM behaviors.**
 5. **Granting access enables data transmission to LLMs and allows device control. We are not liable for any issues arising from these interactions.**
 6. This software is provided "AS IS" under Apache 2.0. **You are strictly prohibited from using this application for any criminal or illegal purposes. We disclaim all liability and responsibility for any unlawful activities conducted using this software.**
-`, "Do you understand the risks and wish to proceed?", "I Understand & Continue", "Exit Now")
+`, "Please scroll up and read RISK DISCLOSURE & DISCLAIMER carefully.\nDo you understand the risks and wish to proceed?", "I Understand & Continue", "Exit Now")
 	if err != nil || !t {
 		return t, err
 	}
@@ -32,7 +32,7 @@ It seems that you're going to use an unstable version of Manboster. Please note 
 3. This version's configuration may be incompatible with older versions and please aware the configuration changes.
 4. If you encounter bugs, we appreciate you to commit to issues and we will fix it as soon as possible.
 5. PLEASE DO NOT STORE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as is.
-`, "Do you understand the risks and wish to proceed?", "I Understand & Continue", "Exit Now")
+`, "Please scroll up and read UNSTABLE VERSION WARNING carefully.\nDo you understand the risks and wish to proceed?", "I Understand & Continue", "Exit Now")
 	}
 
 	return true, nil

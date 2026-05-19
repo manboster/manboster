@@ -1,7 +1,7 @@
 package config
 
 // Default sets Default configurations
-func Default(c Config) Config {
+func (c Config) Default() Config {
 	// write database default path
 	c.App.DBPath = Path("manboster.db")
 

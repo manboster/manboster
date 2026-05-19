@@ -19,7 +19,11 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 	for {
 		llmConfig, err := runOnboardLLMConfig(p, llmProviders)
 		if err != nil {
-			return confs, err
+			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Failed to config %q", err))
+			if err != nil {
+				return nil, err
+			}
+			continue
 		}
 		confs = append(confs, llmConfig)
 

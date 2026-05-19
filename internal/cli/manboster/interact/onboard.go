@@ -7,6 +7,21 @@ import (
 	"github.com/manboster/manboster/spec/cli"
 )
 
+type wizardCurrentState int8
+
+const (
+	wizardConfigChat wizardCurrentState = iota
+	wizardConfigLLM
+	wizardConfigApp
+	wizardConfigTool
+	wizardConfigHachimi
+	wizardConfigPreview
+	wizardConfigConfig
+	wizardConfigWriting
+	wizardConfigSuccess
+	wizardConfigError
+)
+
 func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	conf := config.Config{}
 
@@ -47,6 +62,13 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	}
 	conf.Tools = toolConfigs
 
+	hachimiConfigs, err := runOnboardHachimiConfigs(p)
+	if err != nil {
+		return conf, err
+	}
+	conf.Hachimi = hachimiConfigs
+
+	conf = conf.Default()
 	err = runOnboardPreview(p, conf)
 	if err != nil {
 		return conf, err
