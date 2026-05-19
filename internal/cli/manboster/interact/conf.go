@@ -3,6 +3,8 @@ package interact
 import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/database"
+	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/spec/cli"
 )
 
@@ -64,15 +66,29 @@ func runConfigEntrypoint(p cli.Provider) error {
 	})
 
 	form.Register(entrypointDatabase, func() error {
-		return nil
+		err := config.Init()
+		if err != nil {
+			return err
+		}
+		cfg := config.Read()
+
+		err = database.DBInstance.Init(cfg.App.DBPath)
+		if err != nil {
+			return err
+		}
+
+		repo := repository.New(database.DBInstance.Instance())
+		return runDatabaseConfig(p, repo)
 	})
 
 	form.Register(entrypointQuit, func() error {
 		return nil
 	})
 
+	var option cli.Option
 	for {
-		option, err := p.Select("Please select what to configure!", "Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.", options, string(entrypointConfig), func(option cli.Option) error {
+		var err error
+		option, err = p.Select("Please select what to configure!", "Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.", options, option.Value, func(option cli.Option) error {
 			return nil
 		})
 		if err != nil {
