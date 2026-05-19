@@ -6,6 +6,7 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/hachimi"
+	_ "github.com/manboster/manboster/internal/hachimi/all"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
 )

@@ -21,9 +21,9 @@ func (t entrypointType) Name() string {
 
 func (t entrypointType) DisplayName() string {
 	switch t {
-	case entrypointConfig:
-		return "Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this."
 	case entrypointDatabase:
+		return "Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this."
+	case entrypointConfig:
 		return "Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this."
 	case entrypointEditor:
 		return "Open Configuration yaml file in system's default editor\n(For advanced users only)"
@@ -42,12 +42,31 @@ func runConfigEntrypoint(p cli.Provider) error {
 	form.Register(entrypointEditor, func() error {
 		return openEditor(config.Path("config.yaml"))
 	})
+
 	form.Register(entrypointConfig, func() error {
-		return nil
+		err := config.Init()
+		if err != nil {
+			return err
+		}
+
+		cfg := config.Read()
+		cfg, err = runConfig(p, cfg)
+		if err != nil {
+			return err
+		}
+
+		err = cfg.Validate()
+		if err != nil {
+			return err
+		}
+
+		return config.Write(cfg, config.Path("config.yaml"))
 	})
+
 	form.Register(entrypointDatabase, func() error {
 		return nil
 	})
+
 	form.Register(entrypointQuit, func() error {
 		return nil
 	})
