@@ -38,25 +38,25 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	users, err := repo.GetAllUsers(ctx)
-	if err != nil {
-		return err
-	}
-
-	// list all users, then quit
-	options := []cli.Option{}
-	for _, user := range users {
-		options = append(options, cli.Option{
-			Key:   fmt.Sprintf("`%s` (%s) type: %s, created at %s", user.UserID, user.Platform, user.Type.String(), user.CreatedAt.Format("2006-01-02 15:04:05")),
-			Value: fmt.Sprintf("%s:%s", user.Platform, user.UserID),
-		})
-	}
-	options = append(options, quitOption)
-
-	summary := fmt.Sprintf("%d users registered.", len(users))
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		users, err := repo.GetAllUsers(ctx)
+		if err != nil {
+			return err
+		}
+
+		options := []cli.Option{}
+		for _, user := range users {
+			options = append(options, cli.Option{
+				Key:   fmt.Sprintf("`%s` (%s) type: %s, created at %s", user.UserID, user.Platform, user.Type.String(), user.CreatedAt.Format("2006-01-02 15:04:05")),
+				Value: fmt.Sprintf("%s:%s", user.Platform, user.UserID),
+			})
+		}
+		options = append(options, quitOption)
+
+		summary := fmt.Sprintf("%d users registered.", len(users))
+
 		option, err = p.Select("Select a user to manage.", summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
@@ -154,7 +154,10 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.DeleteUser(ctx, selectedUser.Platform, selectedUser.UserID); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "User deleted successfully!")
+			if err := p.Alert("Manboster Configuration Wizard", "User deleted successfully!"); err != nil {
+				return err
+			}
+			return errQuit
 		})
 
 		form.Register(databaseUserPageQuit, nilFunc)

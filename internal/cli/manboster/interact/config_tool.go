@@ -39,39 +39,39 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var toolProviders []tool.Provider
-	for _, c := range cfg.Tools {
-		provider, err := tool.GetProvider(c.Name)
-		if err != nil {
-			return nil, err
-		}
-		toolProviders = append(toolProviders, provider)
-	}
-
-	options := cli.BuildOptionsWithDescription[tool.Provider](toolProviders, nil)
-	options = append(options, quitOption)
-
-	// build list of tools not yet added
-	occupy := make(map[string]bool)
-	for _, c := range cfg.Tools {
-		occupy[c.Name] = true
-	}
-	var availProviders []tool.Provider
-	for _, name := range tool.AvailProviders() {
-		if !occupy[name] {
-			pr, err := tool.GetProvider(name)
-			if err != nil {
-				continue
-			}
-			availProviders = append(availProviders, pr)
-		}
-	}
-	if len(availProviders) > 0 {
-		options = append([]cli.Option{addOption}, options...)
-	}
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		var toolProviders []tool.Provider
+		for _, c := range cfg.Tools {
+			provider, err := tool.GetProvider(c.Name)
+			if err != nil {
+				return nil, err
+			}
+			toolProviders = append(toolProviders, provider)
+		}
+
+		occupy := make(map[string]bool)
+		for _, c := range cfg.Tools {
+			occupy[c.Name] = true
+		}
+		var availProviders []tool.Provider
+		for _, name := range tool.AvailProviders() {
+			if !occupy[name] {
+				pr, err := tool.GetProvider(name)
+				if err != nil {
+					continue
+				}
+				availProviders = append(availProviders, pr)
+			}
+		}
+
+		options := cli.BuildOptionsWithDescription[tool.Provider](toolProviders, nil)
+		options = append(options, quitOption)
+		if len(availProviders) > 0 {
+			options = append([]cli.Option{addOption}, options...)
+		}
+
 		var err error
 		option, err = p.Select("Select a tool provider to configure.", "Please select a tool provider to configure.", options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
@@ -130,14 +130,16 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Tools = append(cfg.Tools[:selectedIndex], cfg.Tools[selectedIndex+1:]...)
+			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Tool provider %q deleted successfully!", selectedConfig.Name)); err != nil {
+				return err
+			}
 			return errQuit
 		})
 
 		form.Register(toolConfigEdit, func() error {
 			providerCfg := selectedProvider.Config()
 			if providerCfg == nil {
-				err := p.Alert("No configuration needed", fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
-				return err
+				return p.Alert("No configuration needed", fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
 			}
 			conf, err := EditConfig(ctx, p, providerCfg, selectedConfig.Configuration)
 			if err != nil {

@@ -41,24 +41,27 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var llmProviders []llmType.Provider
-	for _, c := range cfg.LLMs {
-		provider, err := llm.GetProvider(c.Provider)
-		if err != nil {
-			return nil, err
-		}
-		err = provider.Init(ctx, c.Configuration)
-		if err != nil {
-			continue
-		}
-		llmProviders = append(llmProviders, provider)
-	}
-
-	options := util.BuildOptionsForConfig[llmType.Provider](llmProviders, nil)
-	options = append(options, addOption, quitOption)
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		var llmProviders []llmType.Provider
+		for _, c := range cfg.LLMs {
+			provider, err := llm.GetProvider(c.Provider)
+			if err != nil {
+				return nil, err
+			}
+
+			err = provider.Init(ctx, c.Configuration)
+			if err != nil {
+				continue
+			}
+
+			llmProviders = append(llmProviders, provider)
+		}
+
+		options := util.BuildOptionsForConfig[llmType.Provider](llmProviders, nil)
+		options = append(options, addOption, quitOption)
+
 		var err error
 		option, err = p.Select("Select a LLM provider to configure.", "Please select a LLM provider to configure.", options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
@@ -96,10 +99,15 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 				if err != nil {
 					return nil, err
 				}
+				err = pr.Init(ctx, c.Configuration)
+				if err != nil {
+					continue
+				}
 				selectedProvider = pr
 				break
 			}
 		}
+
 		if selectedIndex == -1 {
 			return nil, fmt.Errorf("unknown LLM provider selected: %s", option.Value)
 		}
@@ -117,6 +125,9 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 				return fmt.Errorf("cancelled")
 			}
 			cfg.LLMs = append(cfg.LLMs[:selectedIndex], cfg.LLMs[selectedIndex+1:]...)
+			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("LLM provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+				return err
+			}
 			return errQuit
 		})
 

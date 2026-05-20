@@ -18,10 +18,7 @@ const (
 	databaseSoulPageQuit   databaseSoulPageAction = _QUIT_
 )
 
-func (a databaseSoulPageAction) Name() string {
-	return string(a)
-}
-
+func (a databaseSoulPageAction) Name() string { return string(a) }
 func (a databaseSoulPageAction) DisplayName() string {
 	switch a {
 	case databaseSoulPageEdit:
@@ -39,25 +36,25 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	souls, err := repo.GetAllSouls(ctx)
-	if err != nil {
-		return err
-	}
-
-	// create first, then existing souls, then quit
-	options := []cli.Option{createOption}
-	for _, soul := range souls {
-		options = append(options, cli.Option{
-			Key:   fmt.Sprintf("`%s` (scope: %s)", soul.Name, strings.Join(soul.Scope, ", ")),
-			Value: soul.Name,
-		})
-	}
-	options = append(options, quitOption)
-
-	summary := fmt.Sprintf("%d souls loaded.", len(souls))
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		souls, err := repo.GetAllSouls(ctx)
+		if err != nil {
+			return err
+		}
+
+		options := []cli.Option{createOption}
+		for _, soul := range souls {
+			options = append(options, cli.Option{
+				Key:   fmt.Sprintf("`%s` (scope: %s)", soul.Name, strings.Join(soul.Scope, ", ")),
+				Value: soul.Name,
+			})
+		}
+		options = append(options, quitOption)
+
+		summary := fmt.Sprintf("%d souls loaded.", len(souls))
+
 		option, err = p.Select("Select a soul to manage.", summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
@@ -127,7 +124,10 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.DeleteSoul(ctx, selectedSoul.Name); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "Soul deleted successfully!")
+			if err := p.Alert("Manboster Configuration Wizard", "Soul deleted successfully!"); err != nil {
+				return err
+			}
+			return errQuit
 		})
 
 		form.Register(databaseSoulPageQuit, nilFunc)

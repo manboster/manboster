@@ -40,33 +40,34 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var hachimiProviders []hachimi.Provider
-	for _, c := range cfg.Hachimi.Hachimi {
-		provider, err := hachimi.GetProvider(c.Provider)
-		if err != nil {
-			return cfg.Hachimi, err
-		}
-		hachimiProviders = append(hachimiProviders, provider)
-	}
-
-	options := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
-	options = append(options, quitOption)
-
-	allHachimiProviders := hachimi.AllProviders()
-	for i, provider := range hachimiProviders {
-		for _, hp := range allHachimiProviders {
-			if hp.Name() == provider.Name() {
-				allHachimiProviders = append(allHachimiProviders[:i], allHachimiProviders[i+1:]...)
-				break
-			}
-		}
-	}
-	if len(allHachimiProviders) > 0 {
-		options = append([]cli.Option{addOption}, options...)
-	}
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		var hachimiProviders []hachimi.Provider
+		for _, c := range cfg.Hachimi.Hachimi {
+			provider, err := hachimi.GetProvider(c.Provider)
+			if err != nil {
+				return cfg.Hachimi, err
+			}
+			hachimiProviders = append(hachimiProviders, provider)
+		}
+
+		allHachimiProviders := hachimi.AllProviders()
+		for i, provider := range hachimiProviders {
+			for _, hp := range allHachimiProviders {
+				if hp.Name() == provider.Name() {
+					allHachimiProviders = append(allHachimiProviders[:i], allHachimiProviders[i+1:]...)
+					break
+				}
+			}
+		}
+
+		options := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
+		options = append(options, quitOption)
+		if len(allHachimiProviders) > 0 {
+			options = append([]cli.Option{addOption}, options...)
+		}
+
 		var err error
 		option, err = p.Select("Select a Hachimi provider to configure.", "Please select a Hachimi provider to configure.", options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
@@ -125,6 +126,9 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Hachimi.Hachimi = append(cfg.Hachimi.Hachimi[:selectedIndex], cfg.Hachimi.Hachimi[selectedIndex+1:]...)
+			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Hachimi provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+				return err
+			}
 			return errQuit
 		})
 

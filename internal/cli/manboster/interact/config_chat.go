@@ -39,39 +39,37 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var chatProviders []chatType.Provider
-	for _, c := range cfg.Chats {
-		provider, err := chat.GetProvider(c.Provider)
-		if err != nil {
-			return nil, err
-		}
-
-		err = provider.Init(ctx, c.Configuration)
-		if err != nil {
-			continue
-		}
-
-		chatProviders = append(chatProviders, provider)
-	}
-
-	options := cli.BuildOptions[chatType.Provider](chatProviders, nil)
-	options = append(options, quitOption)
-
-	allChatProviders := chat.AllProviders()
-	for i, provider := range chatProviders {
-		for _, ch := range allChatProviders {
-			if ch.Config().Name() == provider.Config().Name() {
-				allChatProviders = append(allChatProviders[:i], allChatProviders[i+1:]...)
-				break
-			}
-		}
-	}
-	if len(allChatProviders) > 0 {
-		options = append([]cli.Option{addOption}, options...)
-	}
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		var chatProviders []chatType.Provider
+		for _, c := range cfg.Chats {
+			provider, err := chat.GetProvider(c.Provider)
+			if err != nil {
+				return nil, err
+			}
+			if err := provider.Init(ctx, c.Configuration); err != nil {
+				continue
+			}
+			chatProviders = append(chatProviders, provider)
+		}
+
+		allChatProviders := chat.AllProviders()
+		for i, provider := range chatProviders {
+			for _, ch := range allChatProviders {
+				if ch.Config().Name() == provider.Config().Name() {
+					allChatProviders = append(allChatProviders[:i], allChatProviders[i+1:]...)
+					break
+				}
+			}
+		}
+
+		options := cli.BuildOptions[chatType.Provider](chatProviders, nil)
+		options = append(options, quitOption)
+		if len(allChatProviders) > 0 {
+			options = append([]cli.Option{addOption}, options...)
+		}
+
 		var err error
 		option, err = p.Select("Select a chat provider to configure.", "Please select a chat provider to configure.", options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
@@ -95,6 +93,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 				return nil, err
 			}
 			cfg.Chats = append(cfg.Chats, chatConfig)
+			continue
 		}
 
 		var selectedConfig config.ChatConfig
@@ -104,11 +103,11 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 			if c.Provider == option.Value {
 				selectedConfig = c
 				selectedIndex = i
-				p, err := chat.GetProvider(c.Provider)
+				pr, err := chat.GetProvider(c.Provider)
 				if err != nil {
 					return nil, err
 				}
-				selectedProvider = p
+				selectedProvider = pr
 				break
 			}
 		}
@@ -129,6 +128,9 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Chats = append(cfg.Chats[:selectedIndex], cfg.Chats[selectedIndex+1:]...)
+			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Chat provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+				return err
+			}
 			return errQuit
 		})
 

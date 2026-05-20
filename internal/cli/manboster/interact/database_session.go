@@ -6,9 +6,12 @@ import (
 	"strings"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/llm"
+	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/cli"
+	llmType "github.com/manboster/manboster/spec/llm"
 )
 
 type databaseSessionPageAction string
@@ -37,39 +40,40 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	sessions, err := repo.GetSessions(ctx)
-	if err != nil {
-		return err
-	}
-	chats, err := repo.GetAllChats(ctx)
-	if err != nil {
-		return err
-	}
-	chatsMap := make(map[string][]types.Chat)
-	for _, c := range chats {
-		chatsMap[c.SessionID] = append(chatsMap[c.SessionID], c)
-	}
-	purgeNum := len(sessions) - len(chatsMap)
-
-	// purge first, then existing sessions, then quit
-	options := []cli.Option{purgeOption}
-	for _, sess := range sessions {
-		var label strings.Builder
-		label.WriteString(fmt.Sprintf("`%s`, used `%s:%s`, created at %s",
-			sess.SessionID, sess.LLMProvider, sess.LLMProviderModel,
-			sess.CreatedAt.Format("2006-01-02 15:04:05"),
-		))
-		if cm, ok := chatsMap[sess.SessionID]; ok {
-			label.WriteString(fmt.Sprintf(", %d chats", len(cm)))
-		}
-		options = append(options, cli.Option{Key: label.String(), Value: sess.SessionID})
-	}
-	options = append(options, quitOption)
-
-	summary := fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(sessions), purgeNum)
-
 	var option cli.Option
 	for {
+		// reload on every iteration so changes are reflected
+		sessions, err := repo.GetSessions(ctx)
+		if err != nil {
+			return err
+		}
+		chats, err := repo.GetAllChats(ctx)
+		if err != nil {
+			return err
+		}
+		chatsMap := make(map[string][]types.Chat)
+		for _, c := range chats {
+			chatsMap[c.SessionID] = append(chatsMap[c.SessionID], c)
+		}
+		purgeNum := len(sessions) - len(chatsMap)
+
+		// purge first, then existing sessions, then quit
+		options := []cli.Option{purgeOption}
+		for _, sess := range sessions {
+			var label strings.Builder
+			label.WriteString(fmt.Sprintf("`%s`, used `%s:%s`, created at %s",
+				sess.SessionID, sess.LLMProvider, sess.LLMProviderModel,
+				sess.CreatedAt.Format("2006-01-02 15:04:05"),
+			))
+			if cm, ok := chatsMap[sess.SessionID]; ok {
+				label.WriteString(fmt.Sprintf(", %d chats", len(cm)))
+			}
+			options = append(options, cli.Option{Key: label.String(), Value: sess.SessionID})
+		}
+		options = append(options, quitOption)
+
+		summary := fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(sessions), purgeNum)
+
 		option, err = p.Select("Select a session to manage.", summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
@@ -110,8 +114,12 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Some errors occurred during purge:\n%s", strings.Join(purgeErrors, "\n"))); err != nil {
 					return err
 				}
+			} else {
+				if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Successfully deleted %d unused sessions!", purgeNum)); err != nil {
+					return err
+				}
 			}
-			return p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Successfully deleted %d unused sessions!", purgeNum))
+			continue
 		}
 
 		// find selected session
@@ -149,29 +157,59 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		form.Register(databaseSessionPageEdit, func() error {
 			cfg := config.Read()
-			llmOptions := cli.BuildStringOptions(func() []string {
-				var names []string
-				for _, c := range cfg.LLMs {
-					names = append(names, c.Provider)
+
+			var activatedProviders []llmType.Provider
+			for _, l := range cfg.LLMs {
+				provider, err := llm.GetProvider(l.Provider)
+				if err != nil {
+					continue
 				}
-				return names
-			}(), nil)
-			providerOpt, err := p.Select("Select the LLM provider for this session.", "", llmOptions, selectedSession.LLMProvider, func(o cli.Option) error { return nil })
-			if err != nil {
-				return err
+				if err := provider.Init(ctx, l.Configuration); err != nil {
+					continue
+				}
+				activatedProviders = append(activatedProviders, provider)
 			}
-			modelRaw, err := p.Input("Model name", "Enter the model name to use in this session.", selectedSession.LLMProviderModel, false, func(input string) error {
-				if strings.TrimSpace(input) == "" {
-					return fmt.Errorf("model name is required")
+
+			providerOptions := cli.BuildOptions[llmType.Provider](activatedProviders, nil)
+			providerOpt, err := p.Select("Select the LLM provider for this session.", "", providerOptions, selectedSession.LLMProvider, func(o cli.Option) error {
+				for _, pr := range activatedProviders {
+					if pr.Name() == o.Value {
+						return nil
+					}
 				}
-				return nil
+				return fmt.Errorf("unknown provider %s", o.Value)
 			})
 			if err != nil {
 				return err
 			}
+
+			var selectedProvider llmType.Provider
+			for _, pr := range activatedProviders {
+				if pr.Name() == providerOpt.Value {
+					selectedProvider = pr
+					break
+				}
+			}
+			if selectedProvider == nil {
+				return fmt.Errorf("unknown provider %s", providerOpt.Value)
+			}
+
+			modelOptions := cli.BuildModelOptions[llmType.Model](selectedProvider.Models(), nil)
+			modelOpt, err := p.Select("Select the model for this session.", "", modelOptions, selectedSession.LLMProviderModel, func(o cli.Option) error {
+				for _, m := range modelOptions {
+					if m.Value == o.Value {
+						return nil
+					}
+				}
+				return fmt.Errorf("unknown model %s", o.Value)
+			})
+			if err != nil {
+				return err
+			}
+
 			if err := repo.UpdateSession(ctx, selectedSession.SessionID, map[string]interface{}{
 				"llm_provider":       providerOpt.Value,
-				"llm_provider_model": fmt.Sprintf("%v", modelRaw),
+				"llm_provider_model": modelOpt.Value,
 			}); err != nil {
 				return err
 			}
@@ -207,7 +245,10 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 					}
 				}
 			}
-			return p.Alert("Manboster Configuration Wizard", "Successfully deleted session!")
+			if err := p.Alert("Manboster Configuration Wizard", "Successfully deleted session!"); err != nil {
+				return err
+			}
+			return errQuit
 		})
 
 		form.Register(databaseSessionPageQuit, nilFunc)
