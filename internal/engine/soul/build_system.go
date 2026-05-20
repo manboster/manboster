@@ -21,24 +21,27 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 	// system soul is automatically global!
 	for _, soul := range souls {
 		if soul == "system" {
+			basePrompt := prompt.InitialSystemPrompt
+			replacement := ""
+
 			if _, err := os.Stat(config.Path("SOUL.md")); err == nil {
 				content, err := os.ReadFile(config.Path("SOUL.md"))
 				if err != nil {
 					color.Yellow(fmt.Sprintf("[Manboster Soul] Error reading SOUL.md file: %s", err))
 				}
+
 				color.Blue("[Manboster Soul] Found SOUL.md, appending file...")
-				text.Write(content)
-				text.WriteString("\n")
-				continue
+				replacement += fmt.Sprintf("%s\n", string(content))
 			}
 
-			basePrompt := prompt.InitialSystemPrompt
 			if so, avail := s.soulMap["system"]; avail {
-				replacement := fmt.Sprintf("# Tone and Formatting\n%s\n", so.Content)
-				basePrompt = re.ReplaceAllString(basePrompt, replacement)
-				text.WriteString(basePrompt + "\n")
-				continue
+				replacement += fmt.Sprintf("%s\n", so.Content)
 			}
+
+			if replacement != "" {
+				basePrompt = re.ReplaceAllString(basePrompt, replacement)
+			}
+			text.WriteString(basePrompt + "\n")
 		} else {
 			so, avail := s.soulMap[soul]
 			if !avail {
