@@ -3,8 +3,9 @@ package gguf
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strings"
 
-	"github.com/charmbracelet/huh"
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/spec/cli"
 	"github.com/manboster/manboster/spec/config"
@@ -55,25 +56,44 @@ func (c *Config) Validate() error {
 }
 
 func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
-	sel := false
-	err := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().Title("Do you want to enter model details manually?").Description("If you don't know what's this, please select 'No'.").Negative("No").Affirmative("Yes").Value(&sel),
-		)).Run()
+	confirm, err := p.Prompt("Do you want to enter model details manually?\n\nIf you don't know what's this, please select 'No'.", "Do you want to enter model details manually?", "Yes", "No")
 	if err != nil {
 		return err
 	}
 
-	if sel {
-		// TODO: add user defined sha256 and gguf link
-		color.Blue("Work in Progress...")
-		return nil
+	if confirm {
+		ggufURL, err := p.Input("GGUF File URL", "Please enter a valid URL to download GGUF.", "", false, func(input string) error {
+			_, err := url.ParseRequestURI(input)
+			if err != nil {
+				return err
+			}
+			t := strings.HasSuffix(input, ".gguf")
+			if t == false {
+				return fmt.Errorf("gguf_url does not end with .gguf")
+			}
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+
+		sha256, err := p.Input("SHA256", "Please enter a valid SHA256 hash to download.\nIf you don't know what's this, please leave it as is.", "", false, func(input string) error { return nil })
+		if err != nil {
+			return err
+		}
+
+		c.GGUFurl = fmt.Sprintf("%s", ggufURL)
+		c.GGUFsha256 = fmt.Sprintf("%s", sha256)
+
+		return p.Alert("Manboster Configuration Wizard", "Successfully wrote hachimi config!")
 	}
 
-	color.Blue("Set your model to qwen3 guard 0.6B, other models is work in progress...")
-	// TODO: setup
+	err = p.Alert("Manboster Configuration Wizard", "Automatically set model with 'Qwen3-Guard Gen 0.6B'.")
+	if err != nil {
+		return err
+	}
 	c.ModelType = ModelSafeguard
-	c.GGUFurl = models[0].Groups[0].Quants[2].URL
-	c.GGUFsha256 = models[0].Groups[0].Quants[2].Sha256
+	c.GGUFurl = models[0].Groups[0].Quants[3].URL
+	c.GGUFsha256 = models[0].Groups[0].Quants[3].Sha256
 	return nil
 }
