@@ -68,6 +68,23 @@ func collectProviderValues(
 	return nil
 }
 
+func setNested(m map[string]any, key string, val any) {
+	parts := strings.Split(key, ".")
+	for i := 0; i < len(parts)-1; i++ {
+		existing, ok := m[parts[i]]
+		if ok {
+			if nested, ok := existing.(map[string]any); ok {
+				m = nested
+				continue
+			}
+		}
+		newMap := make(map[string]any)
+		m[parts[i]] = newMap
+		m = newMap
+	}
+	m[parts[len(parts)-1]] = val
+}
+
 // getNestedValue looks up a dotted key (e.g. "db.host") in a nested map.
 func getNestedValue(m map[string]any, key string) any {
 	parts := strings.SplitN(key, ".", 2)
