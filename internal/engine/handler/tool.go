@@ -10,6 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string, toolCallMsg *string) (llm.Event, bool, error) {
@@ -22,9 +23,8 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		Type: llm.MessageToolCallResponse,
 	}
 
-	var txt strings.Builder
-
 	for _, req := range event.Message.ToolCallRequest {
+		var txt strings.Builder
 		originalName := req.ToolName
 		safeName := strings.ReplaceAll(req.ToolName, "_", ".")
 		req.ToolName = safeName
@@ -34,8 +34,9 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		callMsg.Reply = nil
 
 		toolProvider, avail := h.toolMaps[req.ToolName]
+
 		if !avail {
-			color.Red(fmt.Sprintf("[Manboster Engine] There is no tool named %q", req.ToolName))
+			color.Red(fmt.Sprintf("[Manboster Handler] There is no tool named %q", req.ToolName))
 			callMsg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf("Model called tool `%s` but not found.", safeName),
 			}
@@ -51,11 +52,17 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			})
 			continue
 		}
-		isOK, err := h.gatekeeperService.Guard(ctx, instance, msg, toolProvider, req, sid)
-		if !isOK {
-			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
+
+		intf, err := util.FromPayloadToInterface(req)
+		if err != nil {
+			color.Yellow("[Manboster Handler] Failed to convert payload to interface for %s: %s", req.ToolName, err)
+		}
+		err = schema.Validate(intf, *toolProvider.Args())
+		if err != nil {
+			color.Red(fmt.Sprintf("[Manboster Handler] Validate `%s` failed: %q", req.ToolName, err))
+			result := fmt.Sprintf("Gatekeeper Rejected `%s`, params validate failed: %q", req.ToolName, err.Error())
 			callMsg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err.Error()),
+				Text: result,
 			}
 			e := h.gateway.SendMessage(ctx, instance, callMsg)
 			if e != nil {
@@ -65,12 +72,34 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{
 				ID:       req.ID,
 				ToolName: req.ToolName,
-				Result:   fmt.Sprintf("Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err),
+				Result:   result,
+			})
+			continue
+		}
+
+		isOK, err := h.gatekeeperService.Guard(ctx, instance, msg, toolProvider, req, sid)
+		if !isOK {
+			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
+			result := fmt.Sprintf("Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err)
+
+			callMsg.Text = &chat.TextPayload{
+				Text: result,
+			}
+			e := h.gateway.SendMessage(ctx, instance, callMsg)
+			if e != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
+			}
+
+			respEvent.Message.ToolCallResponse = append(respEvent.Message.ToolCallResponse, llm.MessageToolCallResponsePayload{
+				ID:       req.ID,
+				ToolName: req.ToolName,
+				Result:   result,
 			})
 			continue
 		}
 
 		resp := ""
+		// bring things passthrough to tools
 		valueCtx := context.WithValue(ctx, "chat_id", msg.ChatID)
 		valueCtx = context.WithValue(valueCtx, "user_id", msg.UserID)
 		valueCtx = context.WithValue(valueCtx, "chat_provider", instance.Name())

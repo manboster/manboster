@@ -63,3 +63,12 @@ func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provid
 	txt += ", do you want to continue?"
 	return txt
 }
+
+func FromPayloadToInterface(req llm.MessageToolCallRequestPayload) (map[string]interface{}, error) {
+	var result map[string]interface{}
+	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
