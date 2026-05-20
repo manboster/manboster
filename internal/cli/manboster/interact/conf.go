@@ -1,7 +1,6 @@
 package interact
 
 import (
-	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/repository"
@@ -81,28 +80,7 @@ func runConfigEntrypoint(p cli.Provider) error {
 		return runDatabaseConfig(p, repo)
 	})
 
-	form.Register(entrypointQuit, func() error {
-		return nil
-	})
+	form.Register(entrypointQuit, nilFunc)
 
-	var option cli.Option
-	for {
-		var err error
-		option, err = p.Select("Please select what to configure!", "Welcome to Manboster Configuration Wizard! Please choose which field you want to configure.", options, option.Value, func(option cli.Option) error {
-			return nil
-		})
-		if err != nil {
-			return err
-		}
-
-		err = form.Handle(entrypointType(option.Value))
-		if err != nil {
-			return err
-		}
-
-		if option.Value == string(entrypointQuit) {
-			color.Yellow("Bye!")
-			return nil
-		}
-	}
+	return handle[entrypointType](p, form, options, "", "")
 }
