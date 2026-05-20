@@ -41,7 +41,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 			return chatConfigs, err
 		}
 		if len(chatProviders) == 0 || !ok {
-			if len(chatProviders) == 0 {
+			if len(chatProviders) == 0 && ok {
 				err := p.Alert("Manboster Configuration Wizard", "There are no more providers available for you to config...")
 				if err != nil {
 					return chatConfigs, err

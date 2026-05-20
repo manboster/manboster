@@ -59,7 +59,7 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 			return conf, err
 		}
 		if len(hachimiProviders) == 0 || !ok {
-			if len(hachimiProviders) == 0 {
+			if len(hachimiProviders) == 0 && ok {
 				err := p.Alert("Manboster Configuration Wizard", "There are no more providers available for you to config...")
 				if err != nil {
 					return conf, err

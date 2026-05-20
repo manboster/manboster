@@ -40,5 +40,6 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 		Result:           &c.Config,
 	})
 
+	c.ApiKey = "PLEASE_EDIT_API_KEY_IN_CONFIG_FIELD_BELOW"
 	return decoder.Decode(sp.GetConfig())
 }
