@@ -21,13 +21,6 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 	// system soul is automatically global!
 	for _, soul := range souls {
 		if soul == "system" {
-			basePrompt := prompt.InitialSystemPrompt
-			if so, avail := s.soulMap["system"]; avail {
-				replacement := fmt.Sprintf("# Tone and Formatting\n%s\n", so.Content)
-				basePrompt = re.ReplaceAllString(basePrompt, replacement)
-				text.WriteString(basePrompt + "\n")
-			}
-
 			if _, err := os.Stat(config.Path("SOUL.md")); err == nil {
 				content, err := os.ReadFile(config.Path("SOUL.md"))
 				if err != nil {
@@ -36,8 +29,16 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 				color.Blue("[Manboster Soul] Found SOUL.md, appending file...")
 				text.Write(content)
 				text.WriteString("\n")
+				continue
 			}
 
+			basePrompt := prompt.InitialSystemPrompt
+			if so, avail := s.soulMap["system"]; avail {
+				replacement := fmt.Sprintf("# Tone and Formatting\n%s\n", so.Content)
+				basePrompt = re.ReplaceAllString(basePrompt, replacement)
+				text.WriteString(basePrompt + "\n")
+				continue
+			}
 		} else {
 			so, avail := s.soulMap[soul]
 			if !avail {
