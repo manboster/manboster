@@ -4,59 +4,41 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/charmbracelet/huh"
-	"github.com/fatih/color"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
 	"github.com/manboster/manboster/spec/cli"
+	"github.com/manboster/manboster/spec/config"
 )
 
 // Setup runs its first run
 func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
-	var modelOptions []huh.Option[string]
-	for _, m := range Models() {
-		modelOptions = append(modelOptions, huh.NewOption(m.DisplayName, m.Name))
-	}
-	modelOptions = append(modelOptions, huh.NewOption("Other Model", oai_compat.CustomModel))
-
-	for _, m := range c.Model {
-		c.inputModelData = append(c.inputModelData, m.Name)
-	}
-
-	err := huh.NewForm(
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().Title("OpenRouter Models").Description("Select the model you want to use as Manboster's brain.").Options(
-				modelOptions...,
-			).Value(&c.inputModelData))).Run()
+	s := oai_compat.Service{}
+	err := s.InitWithConfig(ctx, &oai_compat.Config{
+		ProviderName:        c.Name(),
+		ProviderDisplayName: c.DisplayName(),
+		BaseURL:             openrouterBaseurl,
+		ApiKey:              c.ApiKey,
+		Model:               nil,
+	})
 	if err != nil {
 		return err
 	}
 
-	if len(c.inputModelData) == 0 {
-		return ErrModelNameRequired
+	sp, ok := s.Config().(config.ProviderWithSetup)
+	if !ok {
+		return fmt.Errorf("config is not a setup-able provider")
 	}
 
-	// If you choose Custom Model, you should specify it.
-	for _, m := range c.inputModelData {
-		if m == oai_compat.CustomModel {
-			customModel, err := c.InputCustomModel()
-			if err != nil {
-				return err
-			}
-			c.Model = append(c.Model, customModel)
-		} else {
-			avail := false
-			for _, k := range Models() {
-				// check if these name is valid or not
-				if k.Name == m {
-					c.Model = append(c.Model, k)
-					avail = true
-				}
-			}
-			if !avail {
-				color.Yellow(fmt.Sprintf("Input Model %s is not found in models data", m))
-			}
-		}
+	err = sp.Setup(ctx, p)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	decoder, _ := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName:          "mapstructure",
+		WeaklyTypedInput: true,
+		Result:           &c.Config,
+	})
+
+	return decoder.Decode(sp.GetConfig())
 }

@@ -4,7 +4,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/x/term"
 	"github.com/manboster/manboster/spec/cli"
@@ -58,18 +60,44 @@ func BuildProviderOptions(options []cli.Option, resp []string) []cli.Option {
 	return ops
 }
 
+// sizeModel is a minimal bubbletea model that captures the terminal size
+// from WindowSizeMsg and immediately quits.
+type sizeModel struct{ h int }
+
+func (m sizeModel) Init() tea.Cmd                            { return tea.WindowSize() }
+func (m sizeModel) View() string                             { return "" }
+func (m sizeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if sz, ok := msg.(tea.WindowSizeMsg); ok {
+		m.h = sz.Height
+		return m, tea.Quit
+	}
+	return m, nil
+}
+
 func getHeight() int {
-	// Try stderr first (less likely to be redirected), then stdout, then stdin.
+	const reserve = 10
+
+	// Try each stdio fd first — fast path for normal terminals.
 	for _, fd := range []uintptr{os.Stderr.Fd(), os.Stdout.Fd(), os.Stdin.Fd()} {
-		_, h, err := term.GetSize(fd)
-		if err == nil && h > 0 {
-			// Reserve space for title, description, help line, borders and padding.
-			height := h - 10
-			if height < 3 {
-				height = 3
-			}
-			return height
+		if _, h, err := term.GetSize(fd); err == nil && h > 0 {
+			return max(h-reserve, 3)
 		}
 	}
-	return 10 // safe fallback
+
+	// Fallback: LINES env var (set by some terminals).
+	if lines := os.Getenv("LINES"); lines != "" {
+		if h, err := strconv.Atoi(lines); err == nil && h > 0 {
+			return max(h-reserve, 3)
+		}
+	}
+
+	// Last resort: run a minimal bubbletea program to receive WindowSizeMsg.
+	// This works in JetBrains and other pty-emulated environments.
+	if m, err := tea.NewProgram(sizeModel{}, tea.WithoutRenderer()).Run(); err == nil {
+		if sm, ok := m.(sizeModel); ok && sm.h > 0 {
+			return max(sm.h-reserve, 3)
+		}
+	}
+
+	return 10
 }

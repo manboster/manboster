@@ -15,10 +15,10 @@ func (s *Service) Init(ctx context.Context, config any) error {
 	if err != nil {
 		return err
 	}
-	return s.InitWithConfig(ctx, conf)
+	return s.InitWithConfig(ctx, &conf)
 }
 
-func (s *Service) InitWithConfig(ctx context.Context, config Config) error {
+func (s *Service) InitWithConfig(ctx context.Context, config *Config) error {
 	s.cfg = config
 
 	// set default headers, then overwrite it with client configuration.

@@ -8,7 +8,7 @@ import (
 
 type Service struct {
 	cli *openai.Client
-	cfg Config
+	cfg *Config
 }
 
 func NewService(cli *openai.Client) *Service {
@@ -31,7 +31,12 @@ func (s *Service) DisplayName() string { return s.cfg.ProviderDisplayName }
 
 func (s *Service) Stop() error { return nil }
 
-func (s *Service) Config() config.Provider { return &Config{} }
+func (s *Service) Config() config.Provider {
+	if s.cfg == nil {
+		return &Config{}
+	}
+	return s.cfg
+}
 
 func (s *Service) Type() string {
 	return "openai"
