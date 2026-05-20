@@ -21,6 +21,13 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 		color.Red("Manboster is running, please run 'manboster stop' to stop it!\nQuiting the application...")
 		return
 	}
+
+	err = config.Init()
+	if err != nil {
+		color.Red(fmt.Sprintf("Error initializing config: %v! If there is no valid config, please run 'manboster onboard' or 'manboster' first.\nQuiting the application...", err))
+		return
+	}
+
 	err = runConfigEntrypoint(huh.Huh{})
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] We encountered an error when configuring: %q.", err))

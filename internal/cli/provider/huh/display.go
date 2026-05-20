@@ -3,8 +3,6 @@ package huh
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/charmbracelet/glamour"
@@ -12,22 +10,7 @@ import (
 	"github.com/charmbracelet/x/term"
 )
 
-func ClearScreen() {
-	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/c", "cls")
-	} else {
-		cmd = exec.Command("clear")
-	}
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
-	if err != nil {
-		return
-	}
-}
-
 func (h Huh) Display(content string, timeout time.Duration) error {
-	ClearScreen()
 	width, _, _ := term.GetSize(os.Stdout.Fd())
 	if width == 0 {
 		width = 80

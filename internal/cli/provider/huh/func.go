@@ -1,9 +1,28 @@
 package huh
 
 import (
+	"os"
+	"os/exec"
+	"runtime"
+
 	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/x/term"
 	"github.com/manboster/manboster/spec/cli"
 )
+
+func ClearScreen() {
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/c", "cls")
+	} else {
+		cmd = exec.Command("clear")
+	}
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	if err != nil {
+		return
+	}
+}
 
 func BuildHuhOptions(options []cli.Option) []huh.Option[string] {
 	var ops []huh.Option[string]
@@ -37,4 +56,20 @@ func BuildProviderOptions(options []cli.Option, resp []string) []cli.Option {
 		}
 	}
 	return ops
+}
+
+func getHeight() int {
+	// Try stderr first (less likely to be redirected), then stdout, then stdin.
+	for _, fd := range []uintptr{os.Stderr.Fd(), os.Stdout.Fd(), os.Stdin.Fd()} {
+		_, h, err := term.GetSize(fd)
+		if err == nil && h > 0 {
+			// Reserve space for title, description, help line, borders and padding.
+			height := h - 10
+			if height < 3 {
+				height = 3
+			}
+			return height
+		}
+	}
+	return 10 // safe fallback
 }

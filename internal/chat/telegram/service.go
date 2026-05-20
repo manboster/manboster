@@ -15,13 +15,6 @@ type Service struct {
 	manager    *Manager
 }
 
-func NewService(tgInstance *telebot.Bot) *Service {
-	return &Service{
-		tgInstance: tgInstance,
-		manager:    NewManager(),
-	}
-}
-
 func (s *Service) New() chat.Provider {
 	return &Service{}
 }

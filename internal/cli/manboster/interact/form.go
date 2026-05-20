@@ -2,6 +2,7 @@ package interact
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/manboster/manboster/spec/cli"
@@ -48,4 +49,28 @@ func Config(ctx context.Context, cliProvider cli.Provider, configProvider config
 	}
 
 	return configProvider.GetConfig(), nil
+}
+
+func buildConfigStringData[T configurable](ctx context.Context, provider T, conf any) (string, error) {
+	cfg := provider.Config()
+	if conf == nil {
+		return "", fmt.Errorf("no configuration provided")
+	}
+
+	decoder, _ := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName:          "mapstructure",
+		WeaklyTypedInput: true,
+		Result:           cfg.GetConfig(),
+	})
+
+	err := decoder.Decode(conf)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", cfg), nil
+}
+
+type configurable interface {
+	Config() config.Provider
 }

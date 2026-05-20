@@ -32,7 +32,7 @@ func runOnboardAPPConfig(p cli.Provider, cfg config.Config) (config.AppConfig, e
 	}
 
 	options := cli.BuildOptions[llmType.Provider](activatedLLMProviders, nil)
-	selected, err := p.Select("Please select the default provider you want to use in the Manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.", options, "", func(option cli.Option) error {
+	selected, err := p.Select("Please select the default provider you want to use in the Manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.", options, cfg.App.DefaultLLMProvider, func(option cli.Option) error {
 		for _, provider := range activatedLLMProviders {
 			if provider.Name() == option.Value {
 				return nil
@@ -48,7 +48,7 @@ func runOnboardAPPConfig(p cli.Provider, cfg config.Config) (config.AppConfig, e
 		if provider.Name() == selected.Value {
 			conf.DefaultLLMProvider = selected.Value
 			modelOptions := cli.BuildModelOptions[llmType.Model](provider.Models(), nil)
-			selectedModel, err := p.Select("Please select the default model you want to use in the manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.", modelOptions, "", func(option cli.Option) error {
+			selectedModel, err := p.Select("Please select the default model you want to use in the manboster:", "The model you select will be the default model of all sessions. If you don't know what's this, please leave it as is.", modelOptions, cfg.App.DefaultLLMModel, func(option cli.Option) error {
 				for _, model := range modelOptions {
 					if model.Value == option.Value {
 						return nil

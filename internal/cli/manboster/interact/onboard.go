@@ -18,7 +18,6 @@ const (
 	wizardConfigTool
 	wizardConfigHachimi
 	wizardConfigPreview
-	wizardConfigConfig
 	wizardConfigWrite
 	wizardConfigError
 	wizardConfigSuccess
@@ -26,6 +25,16 @@ const (
 
 func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	conf := config.Config{}
+
+	if err := config.Init(); err == nil {
+		prompt, err := p.Prompt("**A valid configuration file is found on your machine!**\n\nIf you want to reconfigure or create configuration in another directory, please continue. If you don't know what you want to do, please exit.", "Do you want to continue?", "Continue", "Exit")
+		if err != nil {
+			return config.Config{}, err
+		}
+		if !prompt {
+			return config.Config{}, fmt.Errorf("user cancelled")
+		}
+	}
 
 	allowed, err := OnboardWarningPrompt(p)
 	if err != nil {
@@ -131,6 +140,7 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 				continue
 			}
 			state = wizardConfigSuccess
+		// If you are using GoLand or other JetBrains IDEs, please ignore this `condition is always true` error.
 		case wizardConfigError:
 			confirm, err := p.Prompt(fmt.Sprintf("We meet an error while processing wizard: %q", reportedError), "Do you want to retry?", "Retry", "Exit")
 			if err != nil {

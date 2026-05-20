@@ -1,6 +1,8 @@
 package interact
 
 import (
+	"fmt"
+
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -13,7 +15,7 @@ const (
 	configLandingTool    configLandingSelection = "tool"
 	configLandingHachimi configLandingSelection = "hachimi"
 	configLandingApp     configLandingSelection = "app"
-	configLandingQuit    configLandingSelection = "quit"
+	configLandingQuit    configLandingSelection = _QUIT_
 )
 
 func (s configLandingSelection) Name() string {
@@ -42,6 +44,7 @@ func (s configLandingSelection) DisplayName() string {
 func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 	se := []configLandingSelection{configLandingChat, configLandingLLM, configLandingTool, configLandingHachimi, configLandingApp, configLandingQuit}
 	options := cli.BuildOptions[configLandingSelection](se, nil)
+	mark := false
 
 	form := newConfigForm[configLandingSelection]()
 	form.Register(configLandingChat, func() error {
@@ -71,6 +74,7 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 		}
 		cfg.Tools = toolConfigs
 
+		return nil
 	})
 
 	form.Register(configLandingHachimi, func() error {
@@ -92,12 +96,21 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 		return nil
 	})
 
-	form.Register(configLandingQuit, nilFunc)
+	form.Register(configLandingQuit, func() error {
+		mark = true
+		return nil
+	})
 
-	err := handle[configLandingSelection](p, form, options, "Please select what to configure in configuration", "Please choose what you want to configure in configuration field.")
-	if err != nil {
-		return config.Config{}, err
+	for {
+		err := handle[configLandingSelection](p, form, options, "Please select what to configure in configuration", "Please choose what you want to configure in configuration field.")
+		if err != nil {
+			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("We encountered an error while configuring: %q", err))
+			if err != nil {
+				return config.Config{}, err
+			}
+		}
+		if mark {
+			return cfg, nil
+		}
 	}
-
-	return cfg, nil
 }

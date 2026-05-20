@@ -38,6 +38,7 @@ func (t entrypointType) DisplayName() string {
 func runConfigEntrypoint(p cli.Provider) error {
 	selections := []entrypointType{entrypointConfig, entrypointDatabase, entrypointEditor, entrypointQuit}
 	options := cli.BuildOptions[entrypointType](selections, nil)
+	mark := false
 
 	form := newConfigForm[entrypointType]()
 	form.Register(entrypointEditor, func() error {
@@ -71,6 +72,7 @@ func runConfigEntrypoint(p cli.Provider) error {
 		}
 		cfg := config.Read()
 
+		database.DBInstance = &database.Client{}
 		err = database.DBInstance.Init(cfg.App.DBPath)
 		if err != nil {
 			return err
@@ -80,7 +82,18 @@ func runConfigEntrypoint(p cli.Provider) error {
 		return runDatabaseConfig(p, repo)
 	})
 
-	form.Register(entrypointQuit, nilFunc)
+	form.Register(entrypointQuit, func() error {
+		mark = true
+		return nil
+	})
 
-	return handle[entrypointType](p, form, options, "", "")
+	for {
+		err := handle[entrypointType](p, form, options, "Please select what to configure", "Welcome to Manboster Configuration Wizard! Please choose the field you want to configure.")
+		if err != nil {
+			return err
+		}
+		if mark {
+			return nil
+		}
+	}
 }

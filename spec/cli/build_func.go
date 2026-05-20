@@ -1,5 +1,11 @@
 package cli
 
+import (
+	"fmt"
+
+	"github.com/manboster/manboster/spec/schema"
+)
+
 func BuildOptions[T buildable](options []T, selected []string) []Option {
 	return buildOptions(options, selected, func(option T) Option {
 		return Option{
@@ -18,10 +24,16 @@ type buildableWithDescription interface {
 func BuildOptionsWithDescription[T buildableWithDescription](options []T, selected []string) []Option {
 	return buildOptions[T](options, selected, func(option T) Option {
 		return Option{
-			Key:   option.DisplayName() + "\n" + option.Description(),
+			Key:   fmt.Sprintf("%s\n%s", option.DisplayName(), option.Description()),
 			Value: option.Name(),
 		}
 	})
+}
+
+type buildableWithMetadata interface {
+	DisplayName() string
+	Name() string
+	Metadata() schema.MetaData
 }
 
 type buildableModel interface {

@@ -6,5 +6,5 @@ import (
 )
 
 func runAppConfig(p cli.Provider, cfg config.Config) (config.AppConfig, error) {
-	return config.AppConfig{}, nil
+	return runOnboardAPPConfig(p, cfg)
 }
