@@ -3,6 +3,7 @@ package loader
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
@@ -99,6 +100,11 @@ func (l *Loader) Load(ctx context.Context) error {
 
 	// open a new engine
 	color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Manboster Engine..."))
+
+	if _, err := os.Stat(config.Path("SOUL.md")); os.IsNotExist(err) {
+		color.Cyan(fmt.Sprintf("[Manboster] Tips: You can create file %q to define your Lobster's soul!", config.Path("SOUL.md")))
+	}
+
 	e, err := engine.New(l.cfg, repo, llmProvidersMap, chatProvidersMap, tool, l.hachimiProvider, &hachimiLoaded)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
