@@ -33,6 +33,7 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 		return conf, nil
 	}
 
+	conf.Enabled = true
 	allHachimiProviders := hachimi.AllProviders()
 	hachimiProviders := allHachimiProviders
 
@@ -65,11 +66,36 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 					return conf, err
 				}
 			}
-			break
+			conf.Hachimi = hachimiConfigs
+
+			// select default provider
+			if len(hachimiConfigs) == 1 {
+				conf.Provider = hachimiConfigs[0].Provider
+			} else {
+				var defaultOptions []cli.Option
+				for _, hc := range hachimiConfigs {
+					defaultOptions = append(defaultOptions, cli.Option{
+						Key:   hc.Provider,
+						Value: hc.Provider,
+					})
+				}
+				selected, err := p.Select("Please select the default Hachimi provider.", "The selected provider will be used by default for safety evaluation.", defaultOptions, "", func(option cli.Option) error {
+					for _, o := range defaultOptions {
+						if o.Value == option.Value {
+							return nil
+						}
+					}
+					return fmt.Errorf("unknown provider %q", option.Value)
+				})
+				if err != nil {
+					return conf, err
+				}
+				conf.Provider = selected.Value
+			}
+
+			return conf, nil
 		}
 	}
-
-	return conf, nil
 }
 
 func runOnboardHachimiConfig(p cli.Provider, hachimiProviders []hachimi.Provider) (config.HachimiConfig, error) {

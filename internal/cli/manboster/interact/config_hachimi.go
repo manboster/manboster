@@ -14,9 +14,10 @@ import (
 type hachimiConfigAction string
 
 const (
-	hachimiConfigDelete hachimiConfigAction = _DELETE_
-	hachimiConfigEdit   hachimiConfigAction = _EDIT_
-	hachimiConfigQuit   hachimiConfigAction = _QUIT_
+	hachimiConfigDelete     hachimiConfigAction = _DELETE_
+	hachimiConfigEdit       hachimiConfigAction = _EDIT_
+	hachimiConfigSetDefault hachimiConfigAction = "set_default"
+	hachimiConfigQuit       hachimiConfigAction = _QUIT_
 )
 
 func (a hachimiConfigAction) Name() string {
@@ -29,6 +30,8 @@ func (a hachimiConfigAction) DisplayName() string {
 		return "Delete this provider"
 	case hachimiConfigEdit:
 		return "Edit this provider"
+	case hachimiConfigSetDefault:
+		return "Set as default provider"
 	case hachimiConfigQuit:
 		return "Quit"
 	default:
@@ -62,7 +65,15 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 			}
 		}
 
-		options := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
+		// build options, mark default provider
+		rawOptions := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
+		var options []cli.Option
+		for _, o := range rawOptions {
+			if o.Value == cfg.Hachimi.Provider {
+				o.Key = fmt.Sprintf("%s [default]", o.Key)
+			}
+			options = append(options, o)
+		}
 		options = append(options, quitOption)
 		if len(allHachimiProviders) > 0 {
 			options = append([]cli.Option{addOption}, options...)
@@ -91,6 +102,10 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 				return cfg.Hachimi, err
 			}
 			cfg.Hachimi.Hachimi = append(cfg.Hachimi.Hachimi, hachimiConfig)
+			// auto set as default if it's the first one
+			if cfg.Hachimi.Provider == "" {
+				cfg.Hachimi.Provider = hachimiConfig.Provider
+			}
 			continue
 		}
 
@@ -113,9 +128,24 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 			return cfg.Hachimi, fmt.Errorf("unknown Hachimi provider selected: %s", option.Value)
 		}
 
-		se := []hachimiConfigAction{hachimiConfigEdit, hachimiConfigDelete, hachimiConfigQuit}
+		isDefault := cfg.Hachimi.Provider == selectedConfig.Provider
+		detail := fmt.Sprintf("Hachimi provider: %s", selectedProvider.DisplayName())
+		if isDefault {
+			detail += " [default]"
+		}
+
+		se := []hachimiConfigAction{hachimiConfigEdit, hachimiConfigSetDefault, hachimiConfigDelete, hachimiConfigQuit}
+		// hide "set as default" if already default
+		if isDefault {
+			se = []hachimiConfigAction{hachimiConfigEdit, hachimiConfigDelete, hachimiConfigQuit}
+		}
 		opts := cli.BuildOptions[hachimiConfigAction](se, nil)
 		form := newConfigForm[hachimiConfigAction]()
+
+		form.Register(hachimiConfigSetDefault, func() error {
+			cfg.Hachimi.Provider = selectedConfig.Provider
+			return p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Hachimi provider %q set as default!", selectedConfig.Provider))
+		})
 
 		form.Register(hachimiConfigDelete, func() error {
 			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete %q?\n\nYour action is IRREVERSIBLE!", selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
@@ -126,6 +156,14 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Hachimi.Hachimi = append(cfg.Hachimi.Hachimi[:selectedIndex], cfg.Hachimi.Hachimi[selectedIndex+1:]...)
+			// clear default if deleted provider was default
+			if cfg.Hachimi.Provider == selectedConfig.Provider {
+				if len(cfg.Hachimi.Hachimi) > 0 {
+					cfg.Hachimi.Provider = cfg.Hachimi.Hachimi[0].Provider
+				} else {
+					cfg.Hachimi.Provider = ""
+				}
+			}
 			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Hachimi provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
 				return err
 			}
@@ -144,7 +182,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigQuit, nilFunc)
 
-		err = handleWithPrompt[hachimiConfigAction](p, form, opts, fmt.Sprintf("This Hachimi provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), "What do you want to do with it?")
+		err = handleWithPrompt[hachimiConfigAction](p, form, opts, detail, "What do you want to do with it?")
 		if err != nil {
 			return cfg.Hachimi, err
 		}

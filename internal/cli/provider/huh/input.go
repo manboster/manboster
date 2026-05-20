@@ -5,7 +5,7 @@ import (
 )
 
 func (h Huh) Input(title string, description string, defaultVal string, secret bool, validate func(input string) error) (any, error) {
-	ClearScreen()
+	defer ClearScreen()
 	var data string
 	if defaultVal != "" {
 		data = defaultVal

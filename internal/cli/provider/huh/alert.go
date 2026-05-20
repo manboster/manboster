@@ -5,7 +5,7 @@ import (
 )
 
 func (h Huh) Alert(title string, description string) error {
-	ClearScreen()
+	defer ClearScreen()
 	return huh.NewForm(
 		huh.NewGroup(
 			huh.NewNote().Title(title).Description(description).Next(true),

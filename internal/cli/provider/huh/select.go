@@ -8,6 +8,7 @@ import (
 )
 
 func (h Huh) Select(title string, description string, options []cli.Option, selected string, validate func(option cli.Option) error) (cli.Option, error) {
+	defer ClearScreen()
 	opts := BuildHuhOptions(options)
 	var sel string
 	if selected != "" {
@@ -35,7 +36,7 @@ func (h Huh) Select(title string, description string, options []cli.Option, sele
 }
 
 func (h Huh) MultiSelect(title string, description string, options []cli.Option, selected []string, validate func(options []cli.Option) error) ([]cli.Option, error) {
-	ClearScreen()
+	defer ClearScreen()
 	opts := BuildHuhOptions(options)
 	var sels []string
 	if selected != nil {
