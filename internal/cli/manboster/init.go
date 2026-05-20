@@ -7,7 +7,6 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/app"
 	"github.com/manboster/manboster/internal/cli/manboster/daemon"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
-	"github.com/manboster/manboster/internal/cli/manboster/interactive"
 	"github.com/spf13/cobra"
 )
 
@@ -23,10 +22,7 @@ func Init() {
 	// Add version indicator.
 	rootCmd.AddCommand(app.VersionCmd())
 
-	// Add configuration options [to be removed later when new app ends]
-	rootCmd.AddCommand(interactive.ConfigCmd())
-
-	// Add configuration next options [Experimental]
+	// Add configuration options
 	rootCmd.AddCommand(interact.OnboardConfigCmd())
 	rootCmd.AddCommand(interact.ConfigCmd())
 

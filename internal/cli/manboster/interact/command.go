@@ -6,8 +6,8 @@ import (
 
 func ConfigCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "config-next [command]",
-		Short: "[Experimental] Run configuration wizard for Manboster application",
+		Use:   "config [command]",
+		Short: "Run configuration wizard for Manboster application",
 		Args:  cobra.MaximumNArgs(1),
 		Run:   configCmdRun,
 	}
