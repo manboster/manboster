@@ -67,7 +67,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		}
 	}
 	if len(allChatProviders) > 0 {
-		options = append(options, addOption)
+		options = append([]cli.Option{addOption}, options...)
 	}
 
 	var option cli.Option
