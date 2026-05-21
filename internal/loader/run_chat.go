@@ -24,10 +24,14 @@ func (l *Loader) RunChat(ctx context.Context, instance chat.Provider) {
 	for tries := 1; tries <= 3; tries++ {
 		color.Blue(fmt.Sprintf("[Manboster Loader] Try %d times, now activating chat provider %s...", tries, displayName))
 		err := instance.Start(ctx, func(msg *chat.Message) {
-			err := l.engine.HandleMessage(ctx, instance, msg)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to handle message on %s, get error: %q", displayName, err))
-				return
+			if l.engine.Processor() != nil {
+				err := l.engine.Processor().Process(ctx, instance, msg)
+				if err != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to handle message on %q, get error: %q", displayName, err))
+					return
+				}
+			} else {
+				color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to get processor to process messages"))
 			}
 		})
 

@@ -54,3 +54,7 @@ func New(cfg *config.Config, repo repository.Repository, llmProviders map[string
 		hachimiProvider: hachimiProvider,
 	}, nil
 }
+
+func (e *Engine) Processor() *processor.Service {
+	return e.processor
+}

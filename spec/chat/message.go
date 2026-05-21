@@ -42,6 +42,7 @@ const (
 	MessageSelection
 	MessageFromCron
 	MessageFromCronIgnore
+	MessageStart
 )
 
 const MessageTextAndImage = MessageText | MessageImage

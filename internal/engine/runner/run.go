@@ -26,7 +26,7 @@ func (r *Runner) Run(ctx context.Context) error {
 			color.Blue("[Manboster Engine] received a cronjob and processing it...")
 			switch data.Type {
 			case MsgPrompt:
-				err := r.engine.HandleMessage(ctx, provider, data.ChatMsg)
+				err := r.processor.Process(ctx, provider, data.ChatMsg)
 				if err != nil {
 					color.Yellow("[Manboster Engine] could not handle message")
 				}

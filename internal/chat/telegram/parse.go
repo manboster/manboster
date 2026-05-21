@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -42,7 +41,6 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	msg.ChatType = chatType
 
 	text := m.Text
-
 	if m.Entities != nil && len(m.Entities) > 0 {
 		for _, e := range m.Entities {
 			substr := m.EntityText(e)
@@ -80,8 +78,10 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 			case telebot.EntitySpoiler:
 				text = strings.Replace(text, substr, "|| "+substr+" ||", -1)
 			case telebot.EntityMention:
-				uName := e.User.FirstName + " " + e.User.LastName + " " + e.User.Username
-				text = strings.Replace(text, substr, fmt.Sprintf("!@{%s,%s-%d}", uName, s.Name(), e.User.ID), -1)
+				if e.User != nil {
+					uName := e.User.FirstName + " " + e.User.LastName + " " + e.User.Username
+					text = strings.Replace(text, substr, fmt.Sprintf("[[!@{%s,%s-%d}]]", uName, s.Name(), e.User.ID), -1)
+				}
 			case telebot.EntityStrikethrough:
 				text = strings.Replace(text, substr, "~~"+substr+"~~", -1)
 			case telebot.EntityUnderline:
@@ -93,9 +93,62 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	}
 
 	msg.MessageType = chat.MessageText
-	msg.Text = &chat.TextPayload{
-		Text: m.Text,
+	if m.Text != "" {
+		msg.Text = &chat.TextPayload{
+			Text: m.Text,
+		}
+		msg.MessageType |= chat.MessageText
 	}
+
+	if m.Photo != nil {
+		if m.Photo.Caption != "" {
+			msg.Text = &chat.TextPayload{
+				Text: m.Text,
+			}
+			msg.MessageType |= chat.MessageText
+		}
+	}
+
+	if m.Video != nil {
+		if m.Video.Caption != "" {
+			msg.Text = &chat.TextPayload{
+				Text: m.Video.Caption,
+			}
+			msg.MessageType |= chat.MessageText
+		}
+	}
+
+	if m.Audio != nil {
+		if m.Audio.Caption != "" {
+			msg.Text = &chat.TextPayload{
+				Text: m.Audio.Caption,
+			}
+			msg.MessageType |= chat.MessageText
+		}
+	}
+
+	if m.Document != nil {
+		if m.Document.Caption != "" {
+			msg.Text = &chat.TextPayload{
+				Text: m.Document.Caption,
+			}
+			msg.MessageType |= chat.MessageText
+		}
+	}
+
+	if m.Sticker != nil {
+		if m.Sticker.Emoji != "" {
+			msg.Text = &chat.TextPayload{
+				Text: "[A sticker with emoji " + m.Sticker.Emoji + "]",
+			}
+			msg.MessageType |= chat.MessageText
+		}
+	}
+
+	if msg.Text != nil {
+		msg.Text.Text = strings.Replace(msg.Text.Text, "@"+s.tgInstance.Me.Username, "[[!@{Assistant}]]", -1)
+	}
+
 	// fmt.Printf(m.Text)
 	// handle reply to quote message
 	if msg.Reply != nil && m.Quote != nil {
@@ -111,6 +164,9 @@ func (s *Service) msgBaseParser(msg *chat.Message, c telebot.Context) {
 	// define things all we know.
 	msg.MessageID = fmt.Sprintf("%d", c.Message().ID)
 	msg.Username = c.Sender().FirstName + " " + c.Sender().LastName
+	if c.Sender().Username != "" {
+		msg.Username += "(" + c.Sender().Username + ")"
+	}
 	msg.ChatName = c.Chat().Title // Only Group available
 	msg.UserID = fmt.Sprintf("%d", c.Sender().ID)
 	msg.ChatID = fmt.Sprintf("%d", c.Chat().ID)
@@ -141,9 +197,8 @@ func (s *Service) msgBaseParser(msg *chat.Message, c telebot.Context) {
 			msg.Forward.Username = c.Message().Origin.SenderUsername
 			if c.Message().Origin.Sender != nil {
 				msg.Forward.Username = c.Message().Origin.Sender.FirstName + " " + c.Message().Origin.Sender.LastName
-				if len(c.Message().Origin.Sender.Usernames) > 0 {
-					sort.Strings(c.Message().Origin.Sender.Usernames) // in order to avoid things
-					msg.Forward.Username += c.Message().Origin.Sender.Usernames[0]
+				if c.Message().Origin.Sender.Username != "" {
+					msg.Forward.Username += "(" + c.Message().Origin.Sender.Username + ")"
 				}
 				if s.tgInstance.Me.ID == c.Message().Origin.Sender.ID {
 					msg.Forward.Username = "Assistant"

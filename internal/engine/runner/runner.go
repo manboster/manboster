@@ -1,19 +1,14 @@
 package runner
 
 import (
-	"context"
-
 	"github.com/manboster/manboster/internal/engine/gateway"
+	"github.com/manboster/manboster/internal/engine/processor"
 	"github.com/manboster/manboster/spec/chat"
 )
 
-type requiredInterface interface {
-	HandleMessage(ctx context.Context, instance chat.Provider, msg *chat.Message) error
-}
-
 type Runner struct {
 	InputCh       chan MsgData
-	engine        requiredInterface
+	processor     *processor.Service
 	gateway       *gateway.Service
 	chatProviders map[string]chat.Provider
 }
@@ -30,10 +25,10 @@ const (
 	MsgText   MsgType = "text"
 )
 
-func NewRunner(e requiredInterface, providerMap map[string]chat.Provider) *Runner {
+func NewRunner(processorService *processor.Service, providerMap map[string]chat.Provider) *Runner {
 	return &Runner{
 		InputCh:       InputCh,
-		engine:        e,
+		processor:     processorService,
 		chatProviders: providerMap,
 	}
 }
