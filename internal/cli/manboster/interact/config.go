@@ -92,7 +92,9 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 		if err != nil {
 			return err
 		}
+		dbPath := cfg.App.DBPath
 		cfg.App = appConfig
+		cfg.App.DBPath = dbPath
 		return nil
 	})
 

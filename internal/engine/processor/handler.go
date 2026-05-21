@@ -16,6 +16,7 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 
 	// before receiving messages, we should check users' identity.
 	// get user information
+	resultProcess = ProcessDrop
 	uType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 	sessionId := ""
 	if msg.MessageType&(chat.MessageSelectionCallback|chat.MessageSelection|chat.MessageCommand) == 0 {

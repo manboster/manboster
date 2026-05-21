@@ -25,6 +25,22 @@ func (c Config) Validate() error {
 		color.Red("Missing LLM configuration, please edit it with `manboster config` or reconfigure it with `manboster onboard`.")
 		return ErrInvalidConfig
 	}
+	if c.Hachimi.Enabled && len(c.Hachimi.Hachimi) == 0 {
+		color.Red("Hachimi enabled but there is available providers!")
+		return ErrInvalidConfig
+	}
+	if c.App.DBPath == "" {
+		color.Red("Missing Database Path! If it's not valid, please consider to use `manboster onboard` to reconfigure this app.")
+		return ErrInvalidConfig
+	}
+	if c.App.DefaultLLMProvider == "" {
+		color.Red("Missing Default LLM Provider! If it's not valid, please consider to use `manboster onboard` to reconfigure this app.")
+		return ErrInvalidConfig
+	}
+	if c.App.DefaultLLMModel == "" {
+		color.Red("Missing Default LLM Model! If it's not valid, please consider to use `manboster onboard` to reconfigure this app.")
+		return ErrInvalidConfig
+	}
 
 	return nil
 }
