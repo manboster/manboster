@@ -26,7 +26,7 @@ func runOnboardToolConfig(p cli.Provider) ([]config.ToolConfig, error) {
 
 		toolProviders = append(toolProviders, provider)
 	}
-	options := cli.BuildOptionsWithDescription[tool.Provider](toolProviders, nil)
+	options := cli.BuildOptionsWithMetadata[tool.Provider](toolProviders, nil)
 	selects, err := p.MultiSelect("Select and activate the tools you want to use", "Please select the tool you want to use, please be careful to select as they will be the tool call of AIs.", options, nil, func(options []cli.Option) error {
 		if options == nil {
 			return nil

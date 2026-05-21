@@ -66,7 +66,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 			}
 		}
 
-		options := cli.BuildOptionsWithDescription[tool.Provider](toolProviders, nil)
+		options := cli.BuildOptionsWithMetadata[tool.Provider](toolProviders, nil)
 		options = append(options, quitOption)
 		if len(availProviders) > 0 {
 			options = append([]cli.Option{addOption}, options...)

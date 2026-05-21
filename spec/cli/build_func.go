@@ -15,25 +15,31 @@ func BuildOptions[T buildable](options []T, selected []string) []Option {
 	})
 }
 
-type buildableWithDescription interface {
-	DisplayName() string
-	Name() string
-	Description() string
-}
-
-func BuildOptionsWithDescription[T buildableWithDescription](options []T, selected []string) []Option {
-	return buildOptions[T](options, selected, func(option T) Option {
-		return Option{
-			Key:   fmt.Sprintf("%s\n%s", option.DisplayName(), option.Description()),
-			Value: option.Name(),
-		}
-	})
-}
-
 type buildableWithMetadata interface {
 	DisplayName() string
 	Name() string
-	Metadata() schema.MetaData
+	Description() string
+	MetaData() schema.MetaData
+}
+
+func BuildOptionsWithMetadata[T buildableWithMetadata](options []T, selected []string) []Option {
+	return buildOptions[T](options, selected, func(option T) Option {
+		metadata := option.MetaData()
+
+		displayName := option.DisplayName()
+		description := option.Description()
+		if metadata.DescriptionForUser != "" {
+			description = metadata.DescriptionForUser
+		}
+		if metadata.DisplayNameForUser != "" {
+			displayName = metadata.DisplayNameForUser
+		}
+
+		return Option{
+			Key:   fmt.Sprintf("%s\n%s", displayName, description),
+			Value: option.Name(),
+		}
+	})
 }
 
 type buildableModel interface {
