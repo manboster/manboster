@@ -28,6 +28,11 @@ type Service struct {
 	cron     *cron.Cron
 }
 
+func (s *Service) ClientRenderer(args string) string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *Service) Description() string {
 	return metadata.Description
 }

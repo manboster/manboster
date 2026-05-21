@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
+	"github.com/manboster/manboster/internal/engine/processor"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
 	"github.com/manboster/manboster/internal/hachimi"
@@ -37,6 +38,7 @@ type Engine struct {
 	chatDataService   *chatdata.Service
 	soulService       *soul.Service
 	gatekeeperService *gatekeeper.Service
+	processor         *processor.Service
 }
 
 func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, chatProviders map[string]chat.Provider, toolProviders []tool.Provider, hachimiProvider hachimi.Provider, hachimiLoaded *bool) (*Engine, error) {

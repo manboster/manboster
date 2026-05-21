@@ -23,6 +23,11 @@ type Service struct {
 	cfg     *Config
 }
 
+func (s *Service) ClientRenderer(args string) string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *Service) Description() string {
 	return metadata.Description
 }

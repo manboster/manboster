@@ -23,6 +23,11 @@ var metadata = schema.MetaData{
 type Service struct {
 }
 
+func (s *Service) ClientRenderer(args string) string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *Service) Description() string {
 	return metadata.Description
 }

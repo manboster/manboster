@@ -12,6 +12,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
+	"github.com/manboster/manboster/internal/engine/processor"
 	"github.com/manboster/manboster/internal/engine/runner"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
@@ -54,6 +55,8 @@ func (e *Engine) Load(ctx context.Context) error {
 	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService, e.sessionService.Manager.Ignorance, e.config.Hachimi, e.hachimiProvider, e.hachimiLoaded)
 	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionService.Manager, e.gatekeeperService, e.safeguardService)
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
+
+	e.processor = processor.New(e)
 
 	runner.Instance = runner.NewRunner(e, e.chatProviders)
 	go func() {

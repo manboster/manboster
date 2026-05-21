@@ -8,5 +8,6 @@ type MetaData struct {
 	AppVersion       string            `json:"app_version" yaml:"app_version"`               // The application's version
 	APIVersion       int               `json:"api_version" yaml:"api_version"`               // This application's feature version
 	MinUserType      string            `json:"min_user_type" yaml:"min_user_type"`           // minimal user type
+	Represent        string            `json:"represent" yaml:"represent"`                   // represent emoji, if not specified it will be "🧰".
 	Requires         []RequirementData `json:"requires" yaml:"requires"`                     // The requirement of this plugin(skill/plugin)
 }
