@@ -3,6 +3,8 @@ package command
 import (
 	"context"
 	"sync"
+
+	"github.com/manboster/manboster/spec/chat"
 )
 
 type Provider[T ~string] struct {
@@ -24,13 +26,15 @@ func (p *Provider[T]) Register(t T, fn handleFunc) {
 	p.funcMap[t] = fn
 }
 
-func (p *Provider[T]) Handle(ctx context.Context, t T) error {
+func (p *Provider[T]) Handle(ctx context.Context, t T, instance chat.Provider, msg *chat.Message, sessionId string) error {
+	p.lock.Lock()
+	defer p.lock.Unlock()
 	fn, ok := p.funcMap[t]
 	if !ok {
-		return p.defaultFunc(ctx)
+		return p.defaultFunc(ctx, instance, msg, sessionId)
 	}
 
-	return fn(ctx)
+	return fn(ctx, instance, msg, sessionId)
 }
 
 func (p *Provider[T]) Default(fn handleFunc) {

@@ -2,6 +2,8 @@ package command
 
 import (
 	"context"
+
+	"github.com/manboster/manboster/spec/chat"
 )
 
 type Command struct {
@@ -10,7 +12,7 @@ type Command struct {
 	Description string
 }
 
-type handleFunc func(ctx context.Context) error
+type handleFunc func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error
 
 type HandlerInterface[T ~string] interface {
 	Register(t T, fn handleFunc)

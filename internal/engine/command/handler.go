@@ -25,7 +25,7 @@ type Handler struct {
 }
 
 func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
-	return &Handler{
+	h := &Handler{
 		repo:             repo,
 		safeguardService: safeguard,
 		sessionService:   sessionService,
@@ -36,4 +36,6 @@ func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessio
 		handler:          handler,
 		provider:         NewProvider[chat.CommandType](),
 	}
+	h.Init()
+	return h
 }
