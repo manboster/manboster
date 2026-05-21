@@ -79,6 +79,19 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	isOverflow := false
 
 	for {
+		compacted, newSessionId, err := e.handler.CheckCompact(ctx, instance, msg, sessionId)
+		if err != nil {
+			return err
+		}
+		if compacted {
+			ch, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+			if created {
+				e.BuildMessageRunner(instance, newSessionId)
+			}
+			ch <- msg
+			return nil
+		}
+
 		event, err := e.gateway.LLMChat(ctx, p, m, msgList)
 		errChat := e.gateway.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
 		if errChat != nil {

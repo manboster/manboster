@@ -35,7 +35,6 @@ func (e *Engine) Load(ctx context.Context) error {
 	e.soulService = soul.NewService(e.repo)
 	e.sessionService = session.NewService(e.repo, e.soulService, e.config)
 
-	e.chatDataService = chatdata.NewService(e.repo, e.sessionService.Manager.ChatSession, e.llmProviders)
 	e.safeguardService = safeguard.NewService(e.repo)
 
 	err = e.soulService.Init(ctx)
@@ -52,6 +51,7 @@ func (e *Engine) Load(ctx context.Context) error {
 		}
 	}
 	e.gateway = gateway.NewService(e.toolProviders, e.sessionService.Manager.SelectionManager)
+	e.chatDataService = chatdata.NewService(e.repo, e.sessionService.Manager.ChatSession, e.llmProviders, e.gateway)
 	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService, e.sessionService.Manager.Ignorance, e.config.Hachimi, e.hachimiProvider, e.hachimiLoaded)
 	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionService.Manager, e.gatekeeperService, e.safeguardService)
 	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
