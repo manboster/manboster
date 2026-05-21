@@ -18,13 +18,13 @@ func LoadToolCallProvider(ctx context.Context, provider tool.Provider, conf conf
 		return nil, err
 	}
 	provider.RegisterHook(hook.Reg)
-	go func(provider provider.Provider) {
+	go func(provider tool.Provider) {
 		err := provider.Start(ctx)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while polling tool call provider %q: %q", provider.DisplayName(), err))
 		}
 
-		defer func(provider provider.Provider) {
+		defer func(provider tool.Provider) {
 			err := provider.Stop()
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Loader] We encountered an problem while stopping tool call provider %q: %q", provider.DisplayName(), err))
