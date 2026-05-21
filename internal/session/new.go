@@ -10,13 +10,13 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) NewChatSession(ctx context.Context, provider string, msg *chat.Message) (string, error) {
+func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvider string, model string, msg *chat.Message) (string, error) {
 	sessionId := util.RandomString(8)
 	soulsList := s.soulService.GetSoulsList(ctx, msg.ChatID)
 	err := s.repo.CreateSession(ctx, types.Session{
 		SessionID:        sessionId,
-		LLMProvider:      s.config.App.DefaultLLMProvider,
-		LLMProviderModel: s.config.App.DefaultLLMModel,
+		LLMProvider:      llmProvider,
+		LLMProviderModel: model,
 		ActivatedSouls:   soulsList,
 	})
 	if err != nil {
@@ -24,8 +24,8 @@ func (s *Service) NewChatSession(ctx context.Context, provider string, msg *chat
 	}
 	// set a new session
 	s.Manager.ChatSession.SetSession(sessionId, chat_session.Session{
-		Model:    s.config.App.DefaultLLMModel,
-		Provider: s.config.App.DefaultLLMProvider,
+		Model:    model,
+		Provider: llmProvider,
 		Events:   []llm.Event{},
 		Souls:    soulsList,
 		Active:   false,

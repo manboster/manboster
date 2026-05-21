@@ -26,6 +26,8 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
+	p, m, _ := h.sessionService.Manager.ChatSession.GetModel(sessionId)
+
 	h.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
 	if err != nil {
@@ -42,7 +44,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return err
 	}
 
-	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), msg)
+	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), p, m, msg)
 	if err != nil {
 		return err
 	}

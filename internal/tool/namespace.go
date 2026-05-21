@@ -16,7 +16,10 @@ type Namespace[T ~string, R Provider] struct {
 }
 
 func (n *Namespace[T, R]) Name() string {
-	return n.meta.Name
+	if n.regInfo == nil || n.regInfo.Name == "" {
+		return n.meta.Name
+	}
+	return n.meta.Name + "." + string(n.regInfo.Name)
 }
 
 func (n *Namespace[T, R]) DisplayName() string {

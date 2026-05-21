@@ -41,3 +41,11 @@ func (f *Factory[T, R]) RegisterProvider(provider R) {
 	defer f.lock.Unlock()
 	f.provider = provider
 }
+
+func (f *Factory[T, R]) Init() {
+	for _, ns := range f.namespaceMap {
+		Register(ns.Name(), func() Provider {
+			return ns
+		})
+	}
+}
