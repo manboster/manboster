@@ -45,7 +45,7 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 	if msg.ChatType == chat.ChatsGroup {
 		resultProcess = ProcessDrop
 		if msg.MessageType&chat.MessageText != 0 {
-			if strings.Contains(msg.Text.Text, "[[!@{Assistant}]]") {
+			if msg.Text != nil && strings.Contains(msg.Text.Text, "[[!@{Assistant}]]") {
 				resultProcess = ProcessHandle
 			}
 			if msg.Reply != nil && msg.Reply.Username == "Assistant" {
