@@ -44,8 +44,14 @@ func (s *Service) Start(ctx context.Context, onMsg func(msg *chat.Message)) erro
 
 	// Handler for Message Resp calling.
 	s.tgInstance.Handle(telebot.OnText, func(c telebot.Context) error {
-		return s.HandleText(ctx, c, onMsg)
+		return s.Handler(ctx, c, onMsg)
 	})
+	s.tgInstance.Handle(telebot.OnPhoto, func(c telebot.Context) error { return s.Handler(ctx, c, onMsg) })
+	s.tgInstance.Handle(telebot.OnSticker, func(c telebot.Context) error { return s.Handler(ctx, c, onMsg) })
+	s.tgInstance.Handle(telebot.OnVideo, func(c telebot.Context) error { return s.Handler(ctx, c, onMsg) })
+	s.tgInstance.Handle(telebot.OnDocument, func(c telebot.Context) error { return s.Handler(ctx, c, onMsg) })
+	s.tgInstance.Handle(telebot.OnAudio, func(c telebot.Context) error { return s.Handler(ctx, c, onMsg) })
+
 	s.tgInstance.Handle(telebot.OnCallback, func(c telebot.Context) error { return s.HandleCallback(ctx, c, onMsg) })
 
 	color.Blue("[Manboster Telegram Provider] Starting the telegram bot...")
