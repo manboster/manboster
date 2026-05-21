@@ -9,5 +9,6 @@ type MetaData struct {
 	APIVersion       int               `json:"api_version" yaml:"api_version"`               // This application's feature version
 	MinUserType      string            `json:"min_user_type" yaml:"min_user_type"`           // minimal user type
 	Represent        string            `json:"represent" yaml:"represent"`                   // represent emoji, if not specified it will be "🧰".
+	Irreversible     bool              `json:"irreversible" yaml:"irreversible"`             // this tool's action is readonly or readwrite, default value is true and it will help hachimi to evaluate
 	Requires         []RequirementData `json:"requires" yaml:"requires"`                     // The requirement of this plugin(skill/plugin)
 }

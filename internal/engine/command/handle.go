@@ -15,50 +15,100 @@ func (h *Handler) Handle(ctx context.Context, instance chat.Provider, msg *chat.
 		return ErrInvalidParams
 	}
 	color.Blue(fmt.Sprintf("[Manboster Command Handler] Handling command... Received command: %s, args: %s", msg.Command.CommandType, msg.Command.CommandArgs))
+	cType := msg.Command.CommandType
 
-	switch msg.Command.CommandType {
-	case chat.CommandVersion:
+	h.provider.Register(chat.CommandVersion, func(ctx context.Context) error {
 		return h.cmdVersion(ctx, instance, msg)
-	case chat.CommandId:
+	})
+
+	h.provider.Register(chat.CommandId, func(ctx context.Context) error {
 		return h.cmdId(ctx, instance, msg)
-	case chat.CommandHelp:
+	})
+
+	h.provider.Register(chat.CommandHelp, func(ctx context.Context) error {
 		return h.cmdHelp(ctx, instance, msg)
-	case chat.CommandOp:
+	})
+
+	h.provider.Register(chat.CommandOp, func(ctx context.Context) error {
 		return h.cmdOp(ctx, instance, msg)
-	case chat.CommandDeOp:
+	})
+
+	h.provider.Register(chat.CommandDeOp, func(ctx context.Context) error {
 		return h.cmdDeOp(ctx, instance, msg)
-	case chat.CommandStatus:
-		return h.cmdStatus(ctx, instance, msg, sessionId)
-	case chat.CommandSave:
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdSave)
-	case chat.CommandNew:
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdNew)
-	case chat.CommandCompact:
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.handler.HandleCompact)
-	case chat.CommandModel:
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdModel)
-	case chat.CommandModels:
-		// TODO: interactive select
-	case chat.CommandProvider:
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdProvider)
-	case chat.CommandProviders:
-		// TODO: interactive select
-	case chat.CommandSession:
-		return h.handleAdminCommand(ctx, instance, msg, h.cmdSession)
-	case chat.CommandSessions:
-		// TODO: interactive select
-	case chat.CommandStart:
+	})
+
+	h.provider.Register(chat.CommandStatus, func(ctx context.Context) error {
 		return h.cmdStart(ctx, instance, msg)
-	case chat.CommandPair:
+	})
+
+	h.provider.Register(chat.CommandSave, func(ctx context.Context) error {
+		err := h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdCancel)
+		if err != nil {
+			return err
+		}
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdSave)
+	})
+
+	h.provider.Register(chat.CommandNew, func(ctx context.Context) error {
+		err := h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdCancel)
+		if err != nil {
+			return err
+		}
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdNew)
+	})
+
+	h.provider.Register(chat.CommandCompact, func(ctx context.Context) error {
+		err := h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdCancel)
+		if err != nil {
+			return err
+		}
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.handler.HandleCompact)
+	})
+
+	h.provider.Register(chat.CommandModel, func(ctx context.Context) error {
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdModel)
+	})
+
+	h.provider.Register(chat.CommandModels, func(ctx context.Context) error {
+		return nil // TODO: WIP
+	})
+
+	h.provider.Register(chat.CommandProvider, func(ctx context.Context) error {
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.cmdProvider)
+	})
+
+	h.provider.Register(chat.CommandProviders, func(ctx context.Context) error {
+		return nil // TODO: WIP
+	})
+
+	h.provider.Register(chat.CommandSession, func(ctx context.Context) error {
+		return h.handleAdminCommand(ctx, instance, msg, h.cmdSession)
+	})
+
+	h.provider.Register(chat.CommandSessions, func(ctx context.Context) error {
+		return nil // TODO: WIP
+	})
+
+	h.provider.Register(chat.CommandStart, func(ctx context.Context) error {
+		return h.cmdStart(ctx, instance, msg)
+	})
+
+	h.provider.Register(chat.CommandPair, func(ctx context.Context) error {
 		return h.cmdPair(ctx, instance, msg)
-	case chat.CommandCancel:
+	})
+
+	h.provider.Register(chat.CommandCancel, func(ctx context.Context) error {
 		return h.cmdCancel(ctx, instance, msg, sessionId)
-	default:
+	})
+
+	h.provider.Default(func(ctx context.Context) error {
 		if msg.ChatType == chat.ChatsPersonal {
 			return h.cmdDefault(ctx, instance, msg)
 		}
-	}
-	return nil
+		return nil
+	})
+
+	return h.provider.Handle(ctx, cType)
 }
 
 func (h *Handler) handleAdminCommand(ctx context.Context, instance chat.Provider, msg *chat.Message, call func(ctx context.Context, instance chat.Provider, msg *chat.Message) error) error {

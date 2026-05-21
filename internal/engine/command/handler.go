@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/soul"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
+	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
@@ -20,6 +21,7 @@ type Handler struct {
 	config           *config.Config
 	soulService      *soul.Service
 	handler          *handler.Handler
+	provider         *Provider[chat.CommandType]
 }
 
 func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
@@ -32,9 +34,6 @@ func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessio
 		soulService:      soul,
 		onboard:          onboardService,
 		handler:          handler,
+		provider:         NewProvider[chat.CommandType](),
 	}
-}
-
-func (h *Handler) InjectOnboardSvc(onboard *onboard.Service) {
-	h.onboard = onboard
 }
