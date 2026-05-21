@@ -20,7 +20,6 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	provider, model, _ := s.sessionManager.GetModel(sessionId)
 	p, m := util.GetModelWithFallback(ctx, s.llmProviders, provider, model)
 
-	splitIndex := 0
 	var i int
 	if len(msg) <= 10 {
 		return ErrNoNeedToCompact
@@ -41,7 +40,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		}
 	}
 
-	messagesToCompact := msg[:splitIndex] // compact data
+	messagesToCompact := msg // compact data
 	var compactString strings.Builder
 	for _, message := range messagesToCompact {
 		compactString.WriteString(util.ConvertLLMMessageToString(message) + "\n")
