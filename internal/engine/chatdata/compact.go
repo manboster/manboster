@@ -16,6 +16,10 @@ import (
 
 // Compact compacts chat data and then open a new session.
 func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *chat.Message, sessionId string) error {
+	// overwrite context because if not specified there will be a problem that context canceled with runner.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	msg := s.sessionManager.GetMessages(sessionId)
 	provider, model, _ := s.sessionManager.GetModel(sessionId)
 	p, m := util.GetModelWithFallback(ctx, s.llmProviders, provider, model)
