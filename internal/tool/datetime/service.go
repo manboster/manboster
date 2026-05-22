@@ -6,6 +6,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
 	configType "github.com/manboster/manboster/spec/config"
+	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -24,8 +25,7 @@ type Service struct {
 }
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	return ""
 }
 
 func (s *Service) Description() string {
@@ -60,4 +60,24 @@ func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) 
 
 func (s *Service) CacheGroup(args string) string {
 	return ""
+}
+
+func (s *Service) Init(ctx context.Context, cfg any) error {
+	return nil
+}
+
+func (s *Service) Start(ctx context.Context) error {
+	return nil
+}
+
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Stop() error {
+	return nil
 }

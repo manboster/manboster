@@ -16,10 +16,7 @@ type Namespace[T ~string, R Provider] struct {
 }
 
 func (n *Namespace[T, R]) Name() string {
-	if n.regInfo == nil || n.regInfo.Name == "" {
-		return n.meta.Name
-	}
-	return n.meta.Name + "." + string(n.regInfo.Name)
+	return n.meta.Name
 }
 
 func (n *Namespace[T, R]) DisplayName() string {
@@ -31,10 +28,7 @@ func (n *Namespace[T, R]) MetaData() schema.MetaData {
 }
 
 func (n *Namespace[T, R]) Description() string {
-	if n.regInfo.Description == "" {
-		return n.meta.Description
-	}
-	return n.regInfo.Description
+	return n.meta.Description
 }
 
 func (n *Namespace[T, R]) Requires() []schema.RequirementData {
@@ -103,7 +97,32 @@ func (n *Namespace[T, R]) RegisterHook(registry *hook.Registry) {
 func NewNamespace[T ~string, R Provider](r R, regInfo *FactoryRegisterInfo[T]) *Namespace[T, R] {
 	return &Namespace[T, R]{
 		r:       r,
-		meta:    r.MetaData(),
+		meta:    CreateNewMetaData[T](r.MetaData(), regInfo),
 		regInfo: regInfo,
 	}
+}
+
+func CreateNewMetaData[T ~string](meta schema.MetaData, regInfo *FactoryRegisterInfo[T]) schema.MetaData {
+	forkedMeta := meta
+	if regInfo != nil {
+		if regInfo.Meta.Name != "" {
+			forkedMeta.Name += "." + regInfo.Meta.Name
+		}
+		if regInfo.Meta.DisplayName != "" {
+			forkedMeta.DisplayName = regInfo.Meta.DisplayName
+		}
+		if regInfo.Meta.Description != "" {
+			forkedMeta.Description = regInfo.Meta.Description
+		}
+		if regInfo.Meta.MinUserType != "" {
+			forkedMeta.MinUserType = regInfo.Meta.MinUserType
+		}
+		if regInfo.Meta.Represent != "" {
+			forkedMeta.Represent = regInfo.Meta.Represent
+		}
+		if !regInfo.Meta.Irreversible {
+			forkedMeta.Irreversible = true
+		}
+	}
+	return forkedMeta
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
 	"github.com/manboster/manboster/internal/repository"
+	"github.com/manboster/manboster/internal/tool"
 	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -59,9 +60,10 @@ func (l *Loader) Load(ctx context.Context) error {
 	l.llmProviders = llmProvidersMap
 	l.loadDefaultModel(ctx)
 
+	tool.IsLoading = true
 	// load enabled tool call
 	color.Blue("[Manboster Loader] Loaded Tool Call Providers...")
-	tool, err := LoadToolCallProviders(ctx, l.cfg)
+	tools, err := LoadToolCallProviders(ctx, l.cfg)
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Loader] Failed to load Tool Call Providers: %q", err))
 	}
@@ -105,7 +107,7 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Cyan(fmt.Sprintf("[Manboster] Tips: You can create file %q to define your Lobster's soul!", config.Path("SOUL.md")))
 	}
 
-	e, err := engine.New(l.cfg, repo, llmProvidersMap, chatProvidersMap, tool, l.hachimiProvider, &hachimiLoaded)
+	e, err := engine.New(l.cfg, repo, llmProvidersMap, chatProvidersMap, tools, l.hachimiProvider, &hachimiLoaded)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while creating the engine: %q", err))
 		return err

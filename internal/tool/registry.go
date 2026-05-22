@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+var IsLoading = false
+
 type ProviderFactory func() Provider
 
 var (

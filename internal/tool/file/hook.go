@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Service) RegisterHook(registry *hook.Registry) {
-	registry.Register(hook.EngineAfterCompact, hook.EngineAfterCompactHookProvider{
+	registry.Register(hook.EngineAfterCompact, metadata.Name, hook.EngineAfterCompactHookProvider{
 		PolyfillFunc: func(ctx context.Context, before string, after string) error {
 			oldPath := config.Path(filepath.Join("workspace", "session-"+before))
 			newPath := config.Path(filepath.Join("workspace", "session-"+after))
