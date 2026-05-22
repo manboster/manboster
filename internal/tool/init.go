@@ -14,7 +14,7 @@ func detectLoaderMode() bool {
 	}
 	for _, arg := range os.Args[1:] {
 		if len(arg) > 0 && arg[0] == '-' {
-			continue // 跳过 flag
+			continue
 		}
 		return arg != "onboard" && arg != "config"
 	}
