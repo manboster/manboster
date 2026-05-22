@@ -36,9 +36,6 @@ func (n *Namespace[T, R]) Requires() []schema.RequirementData {
 }
 
 func (n *Namespace[T, R]) Args() *schema.Args {
-	if n.regInfo == nil || n.regInfo.Args == nil {
-		return n.r.Args()
-	}
 	return n.regInfo.Args
 }
 
