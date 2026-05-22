@@ -57,6 +57,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		return instance.SendMessage(ctx, respMessage)
 	}
 
+	model = id
 	h.sessionService.Manager.ChatSession.SetModel(sid, provider, id)
 	err := h.repo.UpdateSession(ctx, sid, map[string]interface{}{
 		"llm_provider_model": model,
