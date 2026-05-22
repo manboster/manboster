@@ -14,7 +14,7 @@ Since this project is working in progress and only shows as a MVP now, there is 
 
 We will sincerely appreciate if you contribute your own codes!
 
-BTW, manboster's code is mainly written by human, with AIs written in helper functions and boilerplate.
+BTW, Manboster's code is mainly written by human, with AIs written in helper functions and boilerplate.
 
 ## Why Manboster?
 
@@ -28,10 +28,11 @@ BTW, manboster's code is mainly written by human, with AIs written in helper fun
 8. [Experimental] A built-in vault tool helps you store your sensitive data using industry best practices while balancing your experience. LLM NEVER has access to you credentials.
 9. [Experimental] A built-in script runner sandbox tool enables JavaScript or Python scripts can run in wasm sandbox. 
 10. [Work in Progress] Pluggable RAG memory system and mem0 theory adaption.
-11. [Work in Progress] Simulate UI/Input interactions, screenshot, there are a plenty of Built-in SDKs to use for building your plugins.
-12. [Work in Progress] Plugins based on wasm & extism which is lightweight and prevents malicious plugins from breaking your machine.
-13. [Work in Progress] MamboHub, a distribution center enables you to use and download skills and plugins with ease
-14. [Work in Progress] Install skills using `.manboskill` files or plugins using `.manboplugin` files, you can even develop and write your skills and plugins using `manbodev` helper!
+11. [Work in Progress] MCP(Model Context Protocol) Compatability, just add them and use them as native tool calls in Manboster.
+12. [Work in Progress] Simulate UI/Input interactions, screenshot, there are a plenty of Built-in SDKs to use for building your plugins.
+13. [Work in Progress] Plugins based on wasm & extism which is lightweight and prevents malicious plugins from breaking your machine.
+14. [Work in Progress] MamboHub, a distribution center enables you to use and download skills and plugins with ease
+15. [Work in Progress] Install skills using `.manboskill` files or plugins using `.manboplugin` files, you can even develop and write your skills and plugins using `manbodev` helper!
 
 ## QuickStart
 
