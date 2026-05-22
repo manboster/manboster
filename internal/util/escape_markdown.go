@@ -150,6 +150,11 @@ func EscapeMarkdownToTelegramHTML(md string) (string, error) {
 		el.ReplaceWithHtml("\n—————\n")
 	})
 
+	// find br and convert it to enter
+	doc.Find("br").Each(func(_ int, el *goquery.Selection) {
+		el.ReplaceWithHtml("\n\n")
+	})
+
 	result, err := doc.Find("body").Html()
 	if err != nil {
 		return fallbackClean(htmlStr), nil
