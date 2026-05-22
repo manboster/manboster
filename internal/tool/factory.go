@@ -34,10 +34,16 @@ func (f *Factory[T, R]) RegisterProvider(provider R) {
 }
 
 func (f *Factory[T, R]) Init() {
-	for _, ns := range f.namespaceMap {
-		Register(ns.Name(), func() Provider {
-			return ns
+	if !IsLoading {
+		Register(f.provider.Name(), func() Provider {
+			return f.provider
 		})
+	} else {
+		for _, ns := range f.namespaceMap {
+			Register(ns.Name(), func() Provider {
+				return ns
+			})
+		}
 	}
 }
 

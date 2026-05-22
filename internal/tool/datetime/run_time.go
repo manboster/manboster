@@ -12,7 +12,7 @@ import (
 var runTimeInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "time",
-		DisplayName:  "Get time",
+		DisplayName:  "Get Time",
 		Description:  "Get this machine's current time in format like 12:34:56+08",
 		Represent:    "🕙",
 		Irreversible: false,

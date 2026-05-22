@@ -10,7 +10,6 @@ import (
 	"github.com/manboster/manboster/internal/database"
 	"github.com/manboster/manboster/internal/engine"
 	"github.com/manboster/manboster/internal/repository"
-	"github.com/manboster/manboster/internal/tool"
 	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -60,7 +59,6 @@ func (l *Loader) Load(ctx context.Context) error {
 	l.llmProviders = llmProvidersMap
 	l.loadDefaultModel(ctx)
 
-	tool.IsLoading = true
 	// load enabled tool call
 	color.Blue("[Manboster Loader] Loaded Tool Call Providers...")
 	tools, err := LoadToolCallProviders(ctx, l.cfg)

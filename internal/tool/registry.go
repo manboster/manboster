@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-var IsLoading = false
-
 type ProviderFactory func() Provider
 
 var (
@@ -30,9 +28,6 @@ func GetProvider(name string) (Provider, error) {
 	factory, ok := providerRegistry[name]
 	if !ok {
 		return nil, fmt.Errorf("tool: unknown provider %q (did you forget to import it?)", name)
-	}
-	if _, valid := importedRegistry[name]; valid {
-		return nil, fmt.Errorf("tool: you define 2 times with %q! The second one will be ignored", name)
 	}
 	return factory(), nil
 }

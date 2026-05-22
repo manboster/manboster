@@ -14,6 +14,7 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/loader"
+	"github.com/manboster/manboster/internal/tool"
 	"github.com/spf13/cobra"
 
 	_ "github.com/manboster/manboster/internal/chat/all"
@@ -56,11 +57,9 @@ func MainInner() {
 	)
 	defer stop()
 
-	color.Blue(fmt.Sprintf("[Manboster Client] Reading Configuration..."))
-	cfg := config.Read()
-
-	// create a loader instance
-	loaderInstance := loader.New(&cfg)
+	color.Blue(fmt.Sprintf("[Manboster Client] Reading Configuration...")) // create a loader instance
+	tool.IsLoading = true
+	loaderInstance := loader.New(new(config.Read()))
 	err = loaderInstance.Load(ctx)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Client] Error while load using the loader: %q", err))

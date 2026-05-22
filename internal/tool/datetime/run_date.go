@@ -12,7 +12,7 @@ import (
 var runDateInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "date",
-		DisplayName:  "Get date",
+		DisplayName:  "Get Date",
 		Description:  "Get this machine's current date in format like 2026-01-11",
 		Represent:    "📅",
 		Irreversible: false,
