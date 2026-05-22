@@ -40,7 +40,7 @@ func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Saved session `%s` and created session: `%s` with default provider and model.\nIf you want to change provider or model, please use `/provider` or `/model`.If you want to delete session and create a new session, please use `/new` command.", sessionId, sid),
+		Text: fmt.Sprintf("Saved session `%s` and created session: `%s` with provider %q and model %q.\nIf you want to change provider or model, please use `/provider` or `/model`.If you want to delete session and create a new session, please use `/new` command.", sessionId, sid, p, m),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }

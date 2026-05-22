@@ -16,9 +16,9 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 
-	s, _ := h.sessionService.Manager.ChatSession.GetSession(sid)
+	provider, model, _ := h.sessionService.Manager.ChatSession.GetModel(sid)
 
-	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, s.Provider, s.Model)
+	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, provider, model)
 	// fmt.Printf("%s %s %s %s", s.Model, s.Provider, p.DisplayName(), sid)
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.Reset()
@@ -44,23 +44,22 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 
 	flag := false
 	for _, m := range p.Models() {
-		if m.Name == s.Model {
+		if m.Name == id {
 			flag = true
 			break
 		}
 	}
 	if !flag {
-		respString.WriteString("Could not find model named `" + s.Model + "`")
+		respString.WriteString("Could not find model named `" + id + "`")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Model = id
-	h.sessionService.Manager.ChatSession.SetSession(sid, s)
+	h.sessionService.Manager.ChatSession.SetModel(sid, provider, id)
 	err := h.repo.UpdateSession(ctx, sid, map[string]interface{}{
-		"llm_provider_model": s.Model,
+		"llm_provider_model": model,
 	})
 	if err != nil {
 		respString.WriteString("An error was occurred when updating model name for this session!")
@@ -71,7 +70,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to `%s`.", s.Model))
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to `%s`.", model))
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}

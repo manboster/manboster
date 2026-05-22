@@ -18,7 +18,8 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 	// get user information
 	resultProcess = ProcessDrop
 	uType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
-	if msg.MessageType&(chat.MessageSelectionCallback|chat.MessageSelection|chat.MessageCommand) == 0 && msg.ChatType == chat.ChatsPersonal {
+	allowed := chat.MessageSelectionCallback | chat.MessageSelection | chat.MessageCommand | chat.MessageFromCron | chat.MessageFromCronIgnore
+	if msg.MessageType&allowed == 0 && msg.ChatType == chat.ChatsPersonal {
 		resultProcess = ProcessHandle
 		if s.onboard != nil && !s.onboard.Active() {
 			msg.MessageType = chat.MessageStart
@@ -29,7 +30,7 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 			msg.MessageType = chat.MessageUnknown
 		}
 
-	} else if msg.MessageType == chat.MessageSelectionCallback || msg.MessageType == chat.MessageCommand {
+	} else if msg.MessageType&allowed != 0 {
 		resultProcess = ProcessHandle
 	} else if msg.ChatType == chat.ChatsGroup {
 		resultProcess = ProcessDrop

@@ -14,6 +14,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
+
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [name]`, we will automatically change the first model of the provider for you):\n")
 		i := 0
@@ -36,23 +37,21 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s, _ := h.sessionService.Manager.ChatSession.GetSession(sessionId)
-
 	if _, avail := h.llmProviders[id]; !avail {
-		respString.WriteString("Current provider is what you have entered!")
+		respString.WriteString("Current provider is not found!")
 		respMessage.Text = &chat.TextPayload{
 			Text: respString.String(),
 		}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	s.Provider = h.llmProviders[id].Name()
-	s.Model = h.llmProviders[id].Models()[0].Name
+	providerName := h.llmProviders[id].Name()
+	modelName := h.llmProviders[id].Models()[0].Name
 
-	h.sessionService.Manager.ChatSession.SetSession(sessionId, s)
+	h.sessionService.Manager.ChatSession.SetModel(sessionId, providerName, modelName)
 	err := h.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
-		"llm_provider":       s.Provider,
-		"llm_provider_model": s.Model,
+		"llm_provider":       providerName,
+		"llm_provider_model": modelName,
 	})
 	if err != nil {
 		respString.WriteString("An error was occurred when updating provider name for this session!")
@@ -63,7 +62,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to `%s`, model `%s`.", s.Provider, s.Model))
+	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to `%s`, model `%s`.", providerName, modelName))
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}
