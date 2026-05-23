@@ -49,9 +49,7 @@ manboster start
 
 ## 加入我们！
 
-欢迎来为社区做出自己的一份贡献！
-
-在写代码，提出PR前，请先阅读[CONTRIBUTING.md](./CONTRIBUTING.md)来了解项目的贡献要求
+欢迎各位来为社区做出自己的一份贡献！ 在提交前记得看看[CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## 遇到了问题？
 
