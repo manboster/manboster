@@ -84,7 +84,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: "You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
+				Text: "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
 			}
 			respMsg.Reply = nil
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
@@ -104,7 +104,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: "You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes.",
+				Text: "⚠️ You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes.",
 			}
 			respMsg.Reply = nil
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)

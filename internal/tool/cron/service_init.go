@@ -15,6 +15,9 @@ import (
 )
 
 func (s *Service) Init(ctx context.Context, cfg any) error {
+	if svc != nil {
+		return nil
+	}
 	if database.DBInstance != nil {
 		dbi := database.DBInstance.Instance()
 		err := dbi.AutoMigrate(dbtypes.Cron{})
@@ -39,5 +42,6 @@ func (s *Service) Init(ctx context.Context, cfg any) error {
 	}
 	s.manager = NewManager()
 	s.cron = cron.New(cron.WithSeconds())
+	svc = s
 	return s.FullRegister(ctx)
 }

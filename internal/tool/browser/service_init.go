@@ -10,6 +10,10 @@ import (
 )
 
 func (s *Service) Init(ctx context.Context, conf any) error {
+	if svc != nil {
+		return nil
+	}
+
 	var cfg Config
 	err := mapstructure.Decode(conf, &cfg)
 	if err != nil {
@@ -36,5 +40,6 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 	}()
 
 	s.Manager = NewManager(s.cfg)
+	svc = s
 	return nil
 }

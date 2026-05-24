@@ -7,6 +7,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/hook"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
+	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 	"github.com/robfig/cron/v3"
 )
@@ -22,6 +23,8 @@ var metadata = schema.MetaData{
 	MinUserType:      "admin",
 }
 
+var svc *Service
+
 type Service struct {
 	cronRepo repository.CronRepository
 	manager  *Manager
@@ -29,8 +32,7 @@ type Service struct {
 }
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	return ""
 }
 
 func (s *Service) Description() string {
@@ -65,4 +67,12 @@ func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) 
 
 func (s *Service) CacheGroup(args string) string {
 	return ""
+}
+
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
 }

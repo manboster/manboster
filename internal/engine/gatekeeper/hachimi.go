@@ -44,7 +44,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 	switch resp.Type {
 	case hachimi.ResponseStatusUnsafe:
 		var txt strings.Builder
-		txt.WriteString(fmt.Sprintf("**Hachimi thinks this tool call is unsafe! Please look at it carefully and decide!**\n"))
+		txt.WriteString(fmt.Sprintf("🐱⚠️ **Hachimi thinks this tool call is unsafe! Please look at it carefully and decide!**\n"))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
 		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: `%s`\n", resp.Reason))
 		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(cb *chat.SelectionCallbackPayload) (bool, error) {

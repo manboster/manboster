@@ -44,7 +44,7 @@ func parseDelay(s string) (time.Duration, error) {
 	return time.ParseDuration(raw)
 }
 
-func buildMessageDataFromArgs(arg RunArgs, chatId string, chatProvider string, userId string) runner.MsgData {
+func buildMessageDataFromArgs(arg SetArgs, chatId string, chatProvider string, userId string) runner.MsgData {
 	var msgData runner.MsgData
 	msgData.ChatMsg = &chat.Message{
 		Provider:    chatProvider,

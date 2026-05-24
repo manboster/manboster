@@ -5,7 +5,9 @@ import (
 )
 
 func init() {
-	tool.Register(metadata.Name, func() tool.Provider {
-		return &Service{}
-	})
+	fa := tool.NewFactory[NameType, *Service]()
+	fa.RegisterProvider(&Service{})
+	fa.RegisterNamespace(NameSearch, &runSearchInfo)
+	fa.RegisterNamespace(NameWebpage, &runWebpageInfo)
+	fa.Init()
 }

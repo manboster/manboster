@@ -19,6 +19,9 @@ func DescribeToHachimi(req llm.MessageToolCallRequestPayload, provider tool.Prov
 	metadata := provider.MetaData()
 	purgedDescription := bracketRegex.ReplaceAllString(metadata.Description, "")
 	descStr.WriteString(fmt.Sprintf("Model wants to call %s, description: %s, required min user type: %s, ", provider.Name(), purgedDescription, metadata.MinUserType))
+	if metadata.Irreversible {
+		descStr.WriteString(" this action is irreversible, ")
+	}
 
 	var args map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &args)
@@ -50,7 +53,7 @@ func DescribeToHachimi(req llm.MessageToolCallRequestPayload, provider tool.Prov
 }
 
 func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provider) string {
-	txt := fmt.Sprintf("Model wants to call tool `%s`(`%s`) ", provider.DisplayName(), req.ToolName)
+	txt := fmt.Sprintf("🤖❓ Model wants to call tool `%s`(`%s`) ", provider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
 	if err != nil {

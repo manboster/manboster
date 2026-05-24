@@ -7,7 +7,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-func (s *Service) Create(ctx context.Context, arg RunArgs, chatId string, chatProvider string, userId string) error {
+func (s *Service) Create(ctx context.Context, arg SetArgs, chatId string, chatProvider string, userId string) error {
 	if isDelayFormat(arg.Cron) {
 		d, err := parseDelay(arg.Cron)
 		if err != nil {
