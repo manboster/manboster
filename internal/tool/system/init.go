@@ -5,7 +5,11 @@ import (
 )
 
 func init() {
-	tool.Register(metadata.Name, func() tool.Provider {
-		return &Service{}
-	})
+	fa := tool.NewFactory[NameType, *Service]()
+	fa.RegisterProvider(&Service{})
+	fa.RegisterNamespace(NameOSInfo, &runOSInfoInfo)
+	fa.RegisterNamespace(NameProcessList, &runProcessListInfo)
+	fa.RegisterNamespace(NameProcessInfo, &runProcessInfoInfo)
+	fa.RegisterNamespace(NameProcessKill, &runProcessKillInfo)
+	fa.Init()
 }

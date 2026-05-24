@@ -8,6 +8,7 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
+	"github.com/manboster/manboster/spec/plugin"
 )
 
 var metadata = schema.MetaData{
@@ -21,13 +22,12 @@ var metadata = schema.MetaData{
 	MinUserType:      "unknown",
 }
 
-type Service struct {
-	memDB repository.MemoryRepository
-}
+var memDB repository.MemoryRepository
+
+type Service struct{}
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	return ""
 }
 
 func (s *Service) Description() string {
@@ -62,4 +62,16 @@ func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) 
 
 func (s *Service) CacheGroup(args string) string {
 	return ""
+}
+
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Stop() error {
+	return nil
 }

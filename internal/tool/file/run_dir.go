@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -24,7 +25,7 @@ var runDirInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runDir(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, err := unmarshal[DirArgs](args)
+	arg, err := util.Unmarshal[DirArgs](args)
 	if err != nil {
 		return nil, err
 	}

@@ -3,14 +3,8 @@ package system
 type NameType string
 
 const (
-	NameOSInfo  NameType = "os_info"
-	NameProcess NameType = "process"
-)
-
-type ActionType string
-
-const (
-	ActionList ActionType = "list"
-	ActionInfo ActionType = "info"
-	ActionKill ActionType = "kill"
+	NameOSInfo         NameType = "os_info"
+	NameProcessList    NameType = "process_list"
+	NameProcessInfo    NameType = "process_info"
+	NameProcessKill    NameType = "process_kill"
 )

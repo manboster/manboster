@@ -2,7 +2,6 @@ package file
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -81,20 +80,12 @@ func resolvePwd(ctx context.Context, isPublic bool) (string, error) {
 	return pwd, nil
 }
 
-func unmarshal[T any](args string) (T, error) {
-	var arg T
-	if err := json.Unmarshal([]byte(args), &arg); err != nil {
-		return arg, fmt.Errorf("invalid arguments")
-	}
-	return arg, nil
-}
-
 func clientRendererFileName(args string) string {
 	type fileNameArgs struct {
-		FileName string `json:"file_name"`
+		FileName string   `json:"file_name"`
 		FilePath []string `json:"file_path"`
 	}
-	arg, err := unmarshal[fileNameArgs](args)
+	arg, err := util.Unmarshal[fileNameArgs](args)
 	if err != nil {
 		return ""
 	}
@@ -105,7 +96,7 @@ func clientRendererDirPath(args string) string {
 	type dirPathArgs struct {
 		FilePath []string `json:"file_path"`
 	}
-	arg, err := unmarshal[dirPathArgs](args)
+	arg, err := util.Unmarshal[dirPathArgs](args)
 	if err != nil {
 		return ""
 	}

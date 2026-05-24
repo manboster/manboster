@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -27,7 +28,7 @@ var runInfoInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runInfo(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, err := unmarshal[InfoArgs](args)
+	arg, err := util.Unmarshal[InfoArgs](args)
 	if err != nil {
 		return nil, err
 	}

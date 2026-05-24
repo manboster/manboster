@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -28,7 +29,7 @@ var runGrepInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runGrep(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, err := unmarshal[GrepArgs](args)
+	arg, err := util.Unmarshal[GrepArgs](args)
 	if err != nil {
 		return nil, err
 	}

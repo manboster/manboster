@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/manboster/manboster/internal/tool"
+	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -26,7 +27,7 @@ var runReadInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runRead(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, err := unmarshal[ReadArgs](args)
+	arg, err := util.Unmarshal[ReadArgs](args)
 	if err != nil {
 		return nil, err
 	}
