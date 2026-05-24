@@ -13,5 +13,7 @@ func init() {
 	fa.RegisterNamespace(NameList, &runListInfo)
 	fa.RegisterNamespace(NameDir, &runDirInfo)
 	fa.RegisterNamespace(NameDelete, &runDeleteInfo)
+	fa.RegisterNamespace(NameGrep, &runGrepInfo)
+	fa.RegisterNamespace(NameReplace, &runReplaceInfo)
 	fa.Init()
 }

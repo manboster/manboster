@@ -18,7 +18,7 @@ var runListInfo = tool.FactoryRegisterInfo[NameType]{
 		Represent:    "📂",
 		Irreversible: false,
 	},
-	Args:           nil,
+	Args:           schema.ArgsFromStruct(ListArgs{}),
 	Run:            runList,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
@@ -26,16 +26,15 @@ var runListInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runList(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, pwd, err := parseArgs(ctx, args)
+	arg, err := unmarshal[ListArgs](args)
 	if err != nil {
 		return nil, err
 	}
-
-	if arg.FileName != "" {
-		return nil, fmt.Errorf("filename is not allowed to give while name is list")
+	pwd, err := resolvePwd(ctx, arg.IsPublic)
+	if err != nil {
+		return nil, err
 	}
-
-	sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
+	sPath, err := getSafePath(pwd, arg.FilePath, "")
 	if err != nil {
 		return nil, err
 	}

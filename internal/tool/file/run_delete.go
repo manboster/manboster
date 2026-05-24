@@ -18,7 +18,7 @@ var runDeleteInfo = tool.FactoryRegisterInfo[NameType]{
 		Represent:    "🗑️",
 		Irreversible: true,
 	},
-	Args:           nil,
+	Args:           schema.ArgsFromStruct(DeleteArgs{}),
 	Run:            runDelete,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
@@ -26,15 +26,17 @@ var runDeleteInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runDelete(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, pwd, err := parseArgs(ctx, args)
+	arg, err := unmarshal[DeleteArgs](args)
 	if err != nil {
 		return nil, err
 	}
-
 	if cfg.Mode == "readonly" {
 		return nil, fmt.Errorf("failed to delete: read-only mode set by user")
 	}
-
+	pwd, err := resolvePwd(ctx, arg.IsPublic)
+	if err != nil {
+		return nil, err
+	}
 	sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 	if err != nil {
 		return nil, err

@@ -18,7 +18,7 @@ var runReadInfo = tool.FactoryRegisterInfo[NameType]{
 		Represent:    "📖",
 		Irreversible: false,
 	},
-	Args:           nil,
+	Args:           schema.ArgsFromStruct(ReadArgs{}),
 	Run:            runRead,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
@@ -26,11 +26,14 @@ var runReadInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runRead(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, pwd, err := parseArgs(ctx, args)
+	arg, err := unmarshal[ReadArgs](args)
 	if err != nil {
 		return nil, err
 	}
-
+	pwd, err := resolvePwd(ctx, arg.IsPublic)
+	if err != nil {
+		return nil, err
+	}
 	sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 	if err != nil {
 		return nil, err

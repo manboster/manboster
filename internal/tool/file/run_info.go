@@ -19,7 +19,7 @@ var runInfoInfo = tool.FactoryRegisterInfo[NameType]{
 		Represent:    "ℹ️",
 		Irreversible: false,
 	},
-	Args:           nil,
+	Args:           schema.ArgsFromStruct(InfoArgs{}),
 	Run:            runInfo,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
@@ -27,11 +27,14 @@ var runInfoInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runInfo(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	arg, pwd, err := parseArgs(ctx, args)
+	arg, err := unmarshal[InfoArgs](args)
 	if err != nil {
 		return nil, err
 	}
-
+	pwd, err := resolvePwd(ctx, arg.IsPublic)
+	if err != nil {
+		return nil, err
+	}
 	sPath, err := getSafePath(pwd, arg.FilePath, arg.FileName)
 	if err != nil {
 		return nil, err

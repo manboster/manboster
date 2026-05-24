@@ -16,7 +16,7 @@ var runDirInfo = tool.FactoryRegisterInfo[NameType]{
 		Represent:    "🗂️",
 		Irreversible: false,
 	},
-	Args:           nil,
+	Args:           schema.ArgsFromStruct(DirArgs{}),
 	Run:            runDir,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
@@ -24,7 +24,11 @@ var runDirInfo = tool.FactoryRegisterInfo[NameType]{
 }
 
 func runDir(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	_, pwd, err := parseArgs(ctx, args)
+	arg, err := unmarshal[DirArgs](args)
+	if err != nil {
+		return nil, err
+	}
+	pwd, err := resolvePwd(ctx, arg.IsPublic)
 	if err != nil {
 		return nil, err
 	}

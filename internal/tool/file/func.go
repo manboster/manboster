@@ -66,16 +66,35 @@ func listDir(path string) ([]fileEntry, error) {
 	return result, nil
 }
 
-func unmarshalArgs(args string) (RunArgs, error) {
-	var arg RunArgs
+func resolvePwd(ctx context.Context, isPublic bool) (string, error) {
+	sessID, ok := ctx.Value("session_id").(string)
+	if !ok {
+		return "", fmt.Errorf("session_id not found in context")
+	}
+	pwd := config.Path(filepath.Join("workspace", "session-"+sessID))
+	if err := os.MkdirAll(pwd, 0755); err != nil {
+		return "", fmt.Errorf("failed to create session dir: %w", err)
+	}
+	if isPublic {
+		pwd = config.Path(filepath.Join("workspace", "public"))
+	}
+	return pwd, nil
+}
+
+func unmarshal[T any](args string) (T, error) {
+	var arg T
 	if err := json.Unmarshal([]byte(args), &arg); err != nil {
-		return RunArgs{}, fmt.Errorf("invalid arguments")
+		return arg, fmt.Errorf("invalid arguments")
 	}
 	return arg, nil
 }
 
 func clientRendererFileName(args string) string {
-	arg, err := unmarshalArgs(args)
+	type fileNameArgs struct {
+		FileName string `json:"file_name"`
+		FilePath []string `json:"file_path"`
+	}
+	arg, err := unmarshal[fileNameArgs](args)
 	if err != nil {
 		return ""
 	}
@@ -83,30 +102,12 @@ func clientRendererFileName(args string) string {
 }
 
 func clientRendererDirPath(args string) string {
-	arg, err := unmarshalArgs(args)
+	type dirPathArgs struct {
+		FilePath []string `json:"file_path"`
+	}
+	arg, err := unmarshal[dirPathArgs](args)
 	if err != nil {
 		return ""
 	}
 	return filepath.Join(arg.FilePath...)
-}
-
-func parseArgs(ctx context.Context, args string) (RunArgs, string, error) {
-	arg, err := unmarshalArgs(args)
-	if err != nil {
-		return RunArgs{}, "", err
-	}
-
-	sessID, ok := ctx.Value("session_id").(string)
-	if !ok {
-		return RunArgs{}, "", fmt.Errorf("session_id not found in context")
-	}
-	pwd := config.Path(filepath.Join("workspace", "session-"+sessID))
-	if err := os.MkdirAll(pwd, 0755); err != nil {
-		return RunArgs{}, "", fmt.Errorf("failed to create session dir: %w", err)
-	}
-
-	if arg.IsPublic {
-		pwd = config.Path(filepath.Join("workspace", "public"))
-	}
-	return arg, pwd, nil
 }
