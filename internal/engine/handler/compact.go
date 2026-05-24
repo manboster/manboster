@@ -7,6 +7,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/engine/chatdata"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -18,7 +20,7 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 	respMessage.MessageType = chat.MessageText
 	text := ""
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Compacting session `%s`, please wait for a while...", sessionId),
+		Text: fmt.Sprintf(i18n.T(keys.EngineHandlerCompactWait), sessionId),
 	}
 	err := instance.SendMessage(ctx, respMessage)
 	if err != nil {
@@ -28,10 +30,10 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 	err = h.chatDataService.Compact(ctx, instance, msg, sessionId)
 	if err != nil {
 		if errors.Is(err, chatdata.ErrNoNeedToCompact) {
-			text = "The context is too small now and there is no need to compact."
+			text = i18n.T(keys.EngineHandlerCompactNoNeed)
 		} else {
 			color.Yellow(fmt.Sprintf("[Manboster Handler] We encountered an error when compacting message: %q", err))
-			text = "We encountered an error when compacting this session's message."
+			text = i18n.T(keys.EngineHandlerCompactError)
 		}
 		respMessage.MessageType = chat.MessageText
 		respMessage.Text = &chat.TextPayload{

@@ -393,3 +393,13 @@ const (
 	SessionChatDeleteError = "wizard.session.chat_delete_error"
 	SessionDataDeleteError = "wizard.session.data_delete_error"
 )
+
+// Wizard: onboard warning
+const (
+	OnboardWarningRiskTitle      = "wizard.onboard.warning_risk_title"
+	OnboardWarningRiskPrompt     = "wizard.onboard.warning_risk_prompt"
+	OnboardWarningUnstableTitle  = "wizard.onboard.warning_unstable_title"
+	OnboardWarningUnstablePrompt = "wizard.onboard.warning_unstable_prompt"
+	OnboardWarningAccept         = "wizard.onboard.warning_accept"
+	OnboardWarningExit           = "wizard.onboard.warning_exit"
+)

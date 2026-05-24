@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 )
@@ -19,25 +21,20 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	provider, model, _ := h.sessionService.Manager.ChatSession.GetModel(sid)
 
 	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, provider, model)
-	// fmt.Printf("%s %s %s %s", s.Model, s.Provider, p.DisplayName(), sid)
 	if len(msg.Command.CommandArgs) == 0 {
 		respString.Reset()
-		respString.WriteString("Available Models(If you want to see current model, please run `/status`, if you want to change model, please run `/model [id]`.):\n")
+		respString.WriteString(i18n.T(keys.CmdModelList))
 		for i, m := range p.Models() {
 			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %s` to change.\n", i+1, m.DisplayName, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, m.Name))
 		}
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
 	id := msg.Command.CommandArgs[0]
 	if id == "" {
-		respString.WriteString("Invalid input data!\n")
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respString.WriteString(i18n.T(keys.CmdModelInvalid))
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when parsing data"))
 		return instance.SendMessage(ctx, respMessage)
 	}
@@ -50,10 +47,8 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		}
 	}
 	if !flag {
-		respString.WriteString("Could not find model named `" + id + "`")
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdModelNotFound), id))
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -63,17 +58,13 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		"llm_provider_model": model,
 	})
 	if err != nil {
-		respString.WriteString("An error was occurred when updating model name for this session!")
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respString.WriteString(i18n.T(keys.CmdModelUpdateError))
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when updating model name for this session: %q", err))
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's model to `%s`.", model))
-	respMessage.Text = &chat.TextPayload{
-		Text: respString.String(),
-	}
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdModelSuccess), model))
+	respMessage.Text = &chat.TextPayload{Text: respString.String()}
 	return instance.SendMessage(ctx, respMessage)
 }

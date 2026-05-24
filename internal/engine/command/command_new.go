@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -12,17 +14,13 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	if sessionId == "" {
-		respMessage.Text = &chat.TextPayload{
-			Text: "Session is not active, there is nothing to do!",
-		}
+		respMessage.Text = &chat.TextPayload{Text: i18n.T(keys.CmdSessionNotActive)}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
 	_, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 	if !avail {
-		respMessage.Text = &chat.TextPayload{
-			Text: "Session is not active, there is nothing to do!",
-		}
+		respMessage.Text = &chat.TextPayload{Text: i18n.T(keys.CmdSessionNotActive)}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -34,7 +32,6 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return err
 	}
 
-	// delete chat data and session data
 	err = h.repo.DeleteChatData(ctx, sessionId)
 	if err != nil {
 		return err
@@ -49,14 +46,13 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return err
 	}
 
-	// auto migration
 	err = h.repo.ReplaceChatSessions(ctx, sessionId, sid)
 	if err != nil {
 		return err
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Deleted session `%s` and created session: `%s` with provider `%s` and model `%s`.\nIf you want to change provider or model, please use `/provider` or `/model`.\nIf you want to save and create a new session, please use `/save` command.", sessionId, sid, p, m),
+		Text: fmt.Sprintf(i18n.T(keys.CmdNewSuccess), sessionId, sid, p, m),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }

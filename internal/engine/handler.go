@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -108,7 +110,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: "Models tried the same tool call too much times or model calls return failed too much times, we broke it out in order to avoid consuming useless tokens and time.",
+				Text: i18n.T(keys.EngineHandlerToolCallLimit),
 			}
 			return e.gateway.SendMessage(ctx, instance, respMsg)
 		}

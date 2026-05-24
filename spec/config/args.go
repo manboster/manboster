@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -60,10 +61,15 @@ func ArgsFromStruct(s interface{}) *Args {
 			}
 		}
 
+		desc := tag["desc"]
+		if tag["desc_id"] != "" {
+			desc = i18n.T(tag["desc_id"])
+		}
+
 		arg := &schema.Args{
 			Name:        name,
 			Type:        goKindToArgsType(field.Type.Kind()),
-			Description: tag["desc"],
+			Description: desc,
 			Required:    tag["required"] == "true",
 			Enum:        enums,
 			IsEnum:      isEnum,

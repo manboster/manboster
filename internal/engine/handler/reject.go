@@ -3,6 +3,8 @@ package handler
 import (
 	"context"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -10,7 +12,7 @@ import (
 func (h *Handler) HandleReject(ctx context.Context, instance chat.Provider, msg *chat.Message) error {
 	msg.MessageType = chat.MessageText
 	msg.Text = &chat.TextPayload{
-		Text: "Access denied. You are not allowed to use this bot or this command.\nIf you are sure that this is not an error, please contact this bot's owner.",
+		Text: i18n.T(keys.EngineHandlerReject),
 	}
 	return instance.SendMessage(ctx, msg)
 }

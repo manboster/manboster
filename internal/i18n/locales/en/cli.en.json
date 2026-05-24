@@ -301,5 +301,12 @@
   "wizard.session.purge_error": "Some errors occurred during purge:\n%s",
   "wizard.session.purge_clean": "No sessions to purge, your session list is already clean!",
   "wizard.session.chat_delete_error": "Error deleting chat %s: %v",
-  "wizard.session.data_delete_error": "Error deleting chat data: %v"
+  "wizard.session.data_delete_error": "Error deleting chat data: %v",
+
+  "wizard.onboard.warning_risk_title": "# RISK DISCLOSURE & DISCLAIMER\n**PLEASE READ THESE WORDS CAREFULLY:**\n\nManboster is an AI agent able to chat and control your computers like OpenClaw and IronClaw and currently in MVP stage. By proceeding, you acknowledge:\n1. WIP means this project is **Work in Progress**, and **it is expected to encounter bugs, crashes, and breaking changes.**\n2. If you run 'manboster start', you open a daemon running in your computer. **The background process has persistent resource access to your computer.**\n3. WASM sandboxing plugins is strong, but **3rd-party code still carries risks**.\n4. **Hachimi scoring reduces decision fatigue, but cannot fully prevent advanced prompt injections or unsafe LLM behaviors.**\n5. **Granting access enables data transmission to LLMs and allows device control. We are not liable for any issues arising from these interactions.**\n6. This software is provided \"AS IS\" under Apache 2.0. **You are strictly prohibited from using this application for any criminal or illegal purposes. We disclaim all liability and responsibility for any unlawful activities conducted using this software.**",
+  "wizard.onboard.warning_risk_prompt": "Please scroll up and read RISK DISCLOSURE & DISCLAIMER carefully.\nDo you understand the risks and wish to proceed?",
+  "wizard.onboard.warning_unstable_title": "# UNSTABLE VERSION WARNING\n**PLEASE READ THESE WORDS CAREFULLY:**\nIt seems that you're going to use an unstable version of Manboster. Please note that:\n1. It's normal to encounter bugs, crashes, and breaking changes in unstable versions.\n2. As this is not a stable version, it does not contain ANY security patches and fixes.\n3. This version's configuration may be incompatible with older versions — please be aware of configuration changes.\n4. If you encounter bugs, we appreciate you submitting issues and we will fix them as soon as possible.\n5. PLEASE DO NOT STORE ANY SENSITIVE AND IMPORTANT DATA IN THIS VERSION! As it's unstable and we are unsure that this application will work as expected.",
+  "wizard.onboard.warning_unstable_prompt": "Please scroll up and read UNSTABLE VERSION WARNING carefully.\nDo you understand the risks and wish to proceed?",
+  "wizard.onboard.warning_accept": "I Understand & Continue",
+  "wizard.onboard.warning_exit": "Exit Now"
 }

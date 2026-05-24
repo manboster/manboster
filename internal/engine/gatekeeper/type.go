@@ -1,6 +1,10 @@
 package gatekeeper
 
-import "github.com/manboster/manboster/spec/chat"
+import (
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/spec/chat"
+)
 
 type guardSelectType string
 
@@ -17,73 +21,73 @@ const (
 
 var selectionNoHachimi = []chat.Selection{
 	{
-		Name:  "Continue this time",
+		Name:  i18n.T(keys.GatekeeperContinueOnce),
 		Value: string(guardSelectContinue),
 	},
 	{
-		Name:  "Continue all in 10 minutes",
+		Name:  i18n.T(keys.GatekeeperContinueAll),
 		Value: string(guardSelectContinueAll),
 	},
 	{
-		Name:  "Shut up in a moment",
+		Name:  i18n.T(keys.GatekeeperShutUp),
 		Value: string(guardSelectIgnore),
 	},
 	{
-		Name:  "Cancel this time",
+		Name:  i18n.T(keys.GatekeeperCancelOnce),
 		Value: string(guardSelectCancel),
 	},
 	{
-		Name:  "Cancel in 15 minutes",
+		Name:  i18n.T(keys.GatekeeperCancelIgnore),
 		Value: string(guardSelectCancelIgnore),
 	},
 	{
-		Name:  "Cancel all in 10 minutes",
+		Name:  i18n.T(keys.GatekeeperCancelAll),
 		Value: string(guardSelectCancelAll),
 	},
 }
 
 var selectionWithHachimi = []chat.Selection{
 	{
-		Name:  "Continue this time",
+		Name:  i18n.T(keys.GatekeeperContinueOnce),
 		Value: string(guardSelectContinue),
 	},
 	{
-		Name:  "Continue all in 10 minutes",
+		Name:  i18n.T(keys.GatekeeperContinueAll),
 		Value: string(guardSelectContinueAll),
 	},
 	{
-		Name:  "Handle to hachimi",
+		Name:  i18n.T(keys.GatekeeperHandleHachimi),
 		Value: string(guardSelectHachimi),
 	},
 	{
-		Name:  "Handle all to hachimi in an hour",
+		Name:  i18n.T(keys.GatekeeperHandleHachimiAll),
 		Value: string(guardSelectHachimiAll),
 	},
 	{
-		Name:  "Shut up in a moment",
+		Name:  i18n.T(keys.GatekeeperShutUp),
 		Value: string(guardSelectIgnore),
 	},
 	{
-		Name:  "Cancel this time",
+		Name:  i18n.T(keys.GatekeeperCancelOnce),
 		Value: string(guardSelectCancel),
 	},
 	{
-		Name:  "Cancel in 15 minutes",
+		Name:  i18n.T(keys.GatekeeperCancelIgnore),
 		Value: string(guardSelectCancelIgnore),
 	},
 	{
-		Name:  "Cancel all in 10 minutes",
+		Name:  i18n.T(keys.GatekeeperCancelAll),
 		Value: string(guardSelectCancelAll),
 	},
 }
 
 var selectionHachimi = []chat.Selection{
 	{
-		Name:  "Allow",
+		Name:  i18n.T(keys.GatekeeperAllow),
 		Value: "allow",
 	},
 	{
-		Name:  "Deny",
+		Name:  i18n.T(keys.GatekeeperDeny),
 		Value: "deny",
 	},
 }

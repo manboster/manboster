@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -43,24 +45,24 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 	}
 
 	var respString strings.Builder
-	respString.WriteString(fmt.Sprintf("Current Status of Session `%s`:\n", sessionId))
-	respString.WriteString(fmt.Sprintf("Chat %d times(call LLM %d times), provider: `%s`, model: `%s`\n", len(sessData.Events), llmCallTimes, provider.DisplayName(), model.DisplayName))
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusHeader), sessionId))
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusSummary), len(sessData.Events), llmCallTimes, provider.DisplayName(), model.DisplayName))
 	if isFull {
-		respString.WriteString(fmt.Sprintf("Using %d souls: `%s`\n", len(sessData.Souls), sessData.Souls))
+		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusSouls), len(sessData.Souls), sessData.Souls))
 	}
 
-	respString.WriteString(fmt.Sprintf("Total: %d tokens(input: %d, output: %d, thinking %d)", usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusTokens), usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
 	if usage.TotalCost > 0 {
-		respString.WriteString(fmt.Sprintf("，estimated cost: `$%.6f`", usage.TotalCost))
+		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusCost), usage.TotalCost))
 	}
-	respString.WriteString(fmt.Sprintf("\n"))
+	respString.WriteString("\n")
 
 	if isFull {
 		if usage.InputCost > 0 {
-			respString.WriteString(fmt.Sprintf("Input price: `$%.6f`/mtokens, estimated cost: `$%.6f`\n", model.InputPrice, usage.InputCost))
+			respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusInputPrice), model.InputPrice, usage.InputCost))
 		}
 		if usage.OutputCost > 0 {
-			respString.WriteString(fmt.Sprintf("Output price: `$%.6f`/mtokens, estimated cost: `$%.6f`\n", model.OutputPrice, usage.OutputCost))
+			respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusOutputPrice), model.OutputPrice, usage.OutputCost))
 		}
 	}
 
@@ -82,17 +84,17 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 			}
 		}
 		if len(modelMaps) > 0 {
-			respString.WriteString(fmt.Sprintf("This session's Model Usage Data:\n"))
+			respString.WriteString(i18n.T(keys.CmdStatusModelUsage))
 			for modelStr, count := range modelMaps {
 				respString.WriteString(fmt.Sprintf("`%s`:%d times\n", modelStr, count))
 			}
-			respString.WriteString(fmt.Sprintf("\n"))
+			respString.WriteString("\n")
 		}
 	}
 
-	respString.WriteString(fmt.Sprintf("Current Context length: `%d / %d`(`%.2f%%`)", totTokens, model.Context, float64(totTokens*100)/float64(model.Context)))
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusContext), totTokens, model.Context, float64(totTokens*100)/float64(model.Context)))
 	if !isFull {
-		respString.WriteString("\nFor full status, please run `/status full`.")
+		respString.WriteString(i18n.T(keys.CmdStatusFullHint))
 	}
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),

@@ -4,6 +4,8 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -15,25 +17,19 @@ func (h *Handler) cmdPair(ctx context.Context, instance chat.Provider, msg *chat
 	var text string
 	msg.MessageType = chat.MessageText
 	if len(msg.Command.CommandArgs) == 0 {
-		text = "No pair code provided!"
-		msg.Text = &chat.TextPayload{
-			Text: text,
-		}
+		text = i18n.T(keys.CmdPairNoCode)
+		msg.Text = &chat.TextPayload{Text: text}
 		return instance.SendMessage(ctx, msg)
 	}
 	num, err := strconv.ParseInt(msg.Command.CommandArgs[0], 10, 64)
 	if err != nil {
-		text = "What you've input is not a valid number!"
-		msg.Text = &chat.TextPayload{
-			Text: text,
-		}
+		text = i18n.T(keys.CmdPairInvalidNum)
+		msg.Text = &chat.TextPayload{Text: text}
 		return instance.SendMessage(ctx, msg)
 	}
 	if num < 100000 || num > 999999 {
-		text = "Invalid number range!"
-		msg.Text = &chat.TextPayload{
-			Text: text,
-		}
+		text = i18n.T(keys.CmdPairInvalidRange)
+		msg.Text = &chat.TextPayload{Text: text}
 		return instance.SendMessage(ctx, msg)
 	}
 
@@ -42,15 +38,13 @@ func (h *Handler) cmdPair(ctx context.Context, instance chat.Provider, msg *chat
 		if err != nil {
 			text = err.Error()
 		} else {
-			text = "Successfully paired!"
+			text = i18n.T(keys.CmdPairSuccess)
 			h.onboard = nil
 		}
 	} else {
-		text = "There is no need to pair!"
+		text = i18n.T(keys.CmdPairNoNeed)
 	}
 
-	msg.Text = &chat.TextPayload{
-		Text: text,
-	}
+	msg.Text = &chat.TextPayload{Text: text}
 	return instance.SendMessage(ctx, msg)
 }

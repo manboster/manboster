@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -16,32 +18,26 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 	var respString strings.Builder
 
 	if len(msg.Command.CommandArgs) == 0 {
-		respString.WriteString("Available Providers(If you want to see current provider, please run `/status`, if you want to change provider, please run `/provider [name]`, we will automatically change the first model of the provider for you):\n")
+		respString.WriteString(i18n.T(keys.CmdProviderList))
 		i := 0
 		for _, provider := range h.llmProviders {
 			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models. Run `/provider %s` to change.\n", i+1, provider.DisplayName(), len(provider.Models()), provider.Name()))
 			i += 1
 		}
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
 	id := msg.Command.CommandArgs[0]
 	if id == "" {
-		respString.WriteString("Invalid input data!\n")
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respString.WriteString(i18n.T(keys.CmdProviderInvalid))
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
 	if _, avail := h.llmProviders[id]; !avail {
-		respString.WriteString("Current provider is not found!")
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respString.WriteString(i18n.T(keys.CmdProviderNotFound))
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -54,17 +50,13 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		"llm_provider_model": modelName,
 	})
 	if err != nil {
-		respString.WriteString("An error was occurred when updating provider name for this session!")
+		respString.WriteString(i18n.T(keys.CmdProviderUpdateError))
 		color.Red(fmt.Sprintf("[Manboster Command Handler] An error was occurred when updating provider name for this session: %q", err))
-		respMessage.Text = &chat.TextPayload{
-			Text: respString.String(),
-		}
+		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf("Successfully changed this session's provider to `%s`, model `%s`.", providerName, modelName))
-	respMessage.Text = &chat.TextPayload{
-		Text: respString.String(),
-	}
+	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdProviderSuccess), providerName, modelName))
+	respMessage.Text = &chat.TextPayload{Text: respString.String()}
 	return instance.SendMessage(ctx, respMessage)
 }

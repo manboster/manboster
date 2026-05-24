@@ -3,6 +3,8 @@ package handler
 import (
 	"context"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -14,7 +16,7 @@ func (h *Handler) HandleSelectionCallback(ctx context.Context, instance chat.Pro
 			respMsg := msg.Clone()
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: "This selection's session doesn't exist or timed out, please try again later.",
+				Text: i18n.T(keys.EngineHandlerSelectionGone),
 			}
 			return instance.SendMessage(ctx, respMsg)
 		}

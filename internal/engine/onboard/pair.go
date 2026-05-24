@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/chat"
@@ -16,7 +18,7 @@ func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Me
 
 	text := ""
 	if code == s.pairKey {
-		text = "Successfully paired!"
+		text = i18n.T(keys.EngineOnboardPairSuccess)
 		err := repo.CreateUser(ctx, types.User{
 			ID:       0,
 			UserID:   msg.UserID,
@@ -24,15 +26,15 @@ func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Me
 			Type:     types.UserRoot,
 		})
 		if err != nil {
-			text += " But we failed to create the user! Error: " + err.Error()
+			text += fmt.Sprintf(i18n.T(keys.EngineOnboardPairUserError), err.Error())
 			return fmt.Errorf(text)
 		}
 
-		text += "\nEnjoy using your personal Lobster!"
+		text += i18n.T(keys.EngineOnboardPairSuccessMsg)
 		s.Deactivate()
 		return nil
 	}
 
-	text = "Pair failed, invalid pair code, please check your code!"
+	text = i18n.T(keys.EngineOnboardPairFailed)
 	return fmt.Errorf(text)
 }
