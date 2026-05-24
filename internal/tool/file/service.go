@@ -2,11 +2,10 @@ package file
 
 import (
 	"context"
-	"encoding/json"
-	"strings"
 
 	"github.com/manboster/manboster/internal/config"
 	configType "github.com/manboster/manboster/spec/config"
+	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -21,13 +20,12 @@ var metadata = schema.MetaData{
 	MinUserType:      "admin",
 }
 
-type Service struct {
-	cfg *Config
-}
+var cfg *Config
+
+type Service struct{}
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	return ""
 }
 
 func (s *Service) Description() string {
@@ -59,20 +57,21 @@ func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) 
 }
 
 func (s *Service) CacheGroup(args string) string {
-	arg := RunArgs{}
-	var respStr strings.Builder
-	if json.Unmarshal([]byte(args), &arg) == nil {
-		switch arg.Name {
-		case NameInfo, NameList, NameDir:
-			respStr.WriteString("list")
-		case NameRead:
-			respStr.WriteString("read")
-		case NameWrite, NameDelete:
-			respStr.WriteString("write")
-		}
-		respStr.WriteString(":")
-		jsonify, _ := json.Marshal(arg.FilePath)
-		respStr.WriteString(string(jsonify))
-	}
-	return respStr.String()
+	return ""
+}
+
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Stop() error {
+	return nil
+}
+
+func (s *Service) Start(ctx context.Context) error {
+	return nil
 }

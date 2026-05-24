@@ -1,11 +1,14 @@
 package file
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/util"
 )
 
@@ -61,4 +64,49 @@ func listDir(path string) ([]fileEntry, error) {
 		})
 	}
 	return result, nil
+}
+
+func unmarshalArgs(args string) (RunArgs, error) {
+	var arg RunArgs
+	if err := json.Unmarshal([]byte(args), &arg); err != nil {
+		return RunArgs{}, fmt.Errorf("invalid arguments")
+	}
+	return arg, nil
+}
+
+func clientRendererFileName(args string) string {
+	arg, err := unmarshalArgs(args)
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(filepath.Join(arg.FilePath...), arg.FileName)
+}
+
+func clientRendererDirPath(args string) string {
+	arg, err := unmarshalArgs(args)
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(arg.FilePath...)
+}
+
+func parseArgs(ctx context.Context, args string) (RunArgs, string, error) {
+	arg, err := unmarshalArgs(args)
+	if err != nil {
+		return RunArgs{}, "", err
+	}
+
+	sessID, ok := ctx.Value("session_id").(string)
+	if !ok {
+		return RunArgs{}, "", fmt.Errorf("session_id not found in context")
+	}
+	pwd := config.Path(filepath.Join("workspace", "session-"+sessID))
+	if err := os.MkdirAll(pwd, 0755); err != nil {
+		return RunArgs{}, "", fmt.Errorf("failed to create session dir: %w", err)
+	}
+
+	if arg.IsPublic {
+		pwd = config.Path(filepath.Join("workspace", "public"))
+	}
+	return arg, pwd, nil
 }

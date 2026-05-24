@@ -4,6 +4,10 @@ package schema
 func (a *Args) ToJSONSchema() map[string]any {
 	root := a
 
+	if a == nil {
+		return nil
+	}
+
 	properties := make(map[string]any)
 	var required []string
 

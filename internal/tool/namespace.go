@@ -117,9 +117,7 @@ func CreateNewMetaData[T ~string](meta schema.MetaData, regInfo *FactoryRegister
 		if regInfo.Meta.Represent != "" {
 			forkedMeta.Represent = regInfo.Meta.Represent
 		}
-		if !regInfo.Meta.Irreversible {
-			forkedMeta.Irreversible = true
-		}
+		forkedMeta.Irreversible = regInfo.Meta.Irreversible
 	}
 	return forkedMeta
 }

@@ -27,7 +27,6 @@ type AppConfig struct {
 	DBPath             string `yaml:"dbpath" mapstructure:"dbpath" json:"dbpath"`                                           // SQLite's path
 	DefaultLLMProvider string `yaml:"default_llm_provider" mapstructure:"default_llm_provider" json:"default_llm_provider"` // default llm provider
 	DefaultLLMModel    string `yaml:"default_llm_model" mapstructure:"default_llm_model" json:"default_llm_model"`          // default model
-	SkillCompact       bool   `yaml:"skill_compact" mapstructure:"skill_compact" json:"skill_compact"`                      // skill compatibility enabled or not?
 }
 
 // ToolConfig is configuration available to tool(local), plugin(external).
