@@ -3,9 +3,10 @@ package gatekeeper
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/session/ignorance"
 	"github.com/manboster/manboster/internal/tool"
@@ -49,9 +50,9 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 	var selection []chat.Selection
 	if s.hachimiConfig.Enabled {
-		selection = selectionWithHachimi
+		selection = buildSelectionWithHachimi()
 	} else {
-		selection = selectionNoHachimi
+		selection = buildSelectionNoHachimi()
 	}
 
 	return s.Select(ctx, instance, msg, selection, util.DescribeToHuman(req, toolProvider), func(msg *chat.Message) (bool, error) {
@@ -112,7 +113,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		// get resp based on
 		switch guardSelectType(cb.SelectionValue) {
 		case guardSelectHachimi:
-			respMsg.Text.Text = "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!"
+			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperHachimiActivated), ttl/60)
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
@@ -121,7 +122,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectHachimiAll:
-			respMsg.Text.Text = "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!"
+			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperHachimiActivated), ttl/60)
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
@@ -130,7 +131,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectIgnore:
-			respMsg.Text.Text = "⚠️ You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes."
+			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperShutUpMsg), ttl/60)
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
@@ -141,7 +142,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		case guardSelectContinue:
 			return true, nil
 		case guardSelectContinueAll:
-			respMsg.Text.Text = "⚠️ You ignored all tool calls in this session! it will automatically allow in next 10 minutes."
+			respMsg.Text.Text = i18n.T(keys.GatekeeperContinueAllMsg)
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
@@ -155,7 +156,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			s.ignoranceSessionManager.SetMark(id, true, 15*60, ignorance.MarkCancel)
 			return false, fmt.Errorf("user manually canceled your request for this tool call for 15 minutes")
 		case guardSelectCancelAll:
-			respMsg.Text.Text = "❌ You rejected all tool calls in this session! it will automatically deny in next 10 minutes."
+			respMsg.Text.Text = i18n.T(keys.GatekeeperCancelAllMsg)
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")

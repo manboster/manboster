@@ -18,7 +18,7 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 	conf := config.HachimiConfigs{}
 	var hachimiConfigs []config.HachimiConfig
 
-	confirm, err := p.Prompt(i18n.T(keys.OnboardHachimiFeaturePrompt), i18n.T(keys.OnboardHachimiEnableQuestion), "Yes", "No")
+	confirm, err := p.Prompt(i18n.T(keys.OnboardHachimiFeaturePrompt), i18n.T(keys.OnboardHachimiEnableQuestion), i18n.T(keys.BtnYes), i18n.T(keys.BtnNo))
 	if err != nil {
 		return conf, err
 	}
@@ -50,7 +50,7 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 			}
 		}
 
-		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardHachimiAddedCount), len(hachimiConfigs)), "", "Continue", "Exit and go on")
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardHachimiAddedCount), len(hachimiConfigs)), "", i18n.T(keys.BtnContinue), i18n.T(keys.BtnExit))
 		if err != nil {
 			return conf, err
 		}

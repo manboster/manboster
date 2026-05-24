@@ -147,12 +147,48 @@ const (
 
 // Engine: command - op/deop
 const (
-	CmdOpNotFound       = "engine.cmd.op_not_found"
-	CmdOpAlreadyAdmin   = "engine.cmd.op_already_admin"
-	CmdOpCreateError    = "engine.cmd.op_create_error"
-	CmdOpSuccess        = "engine.cmd.op_success"
-	CmdDeopDeleteError  = "engine.cmd.deop_delete_error"
-	CmdDeopSuccess      = "engine.cmd.deop_success"
-	CmdDeopNotFound     = "engine.cmd.deop_not_found"
-	CmdDeopFindError    = "engine.cmd.deop_find_error"
+	CmdOpNotFound      = "engine.cmd.op_not_found"
+	CmdOpAlreadyAdmin  = "engine.cmd.op_already_admin"
+	CmdOpCreateError   = "engine.cmd.op_create_error"
+	CmdOpSuccess       = "engine.cmd.op_success"
+	CmdDeopDeleteError = "engine.cmd.deop_delete_error"
+	CmdDeopSuccess     = "engine.cmd.deop_success"
+	CmdDeopNotFound    = "engine.cmd.deop_not_found"
+	CmdDeopFindError   = "engine.cmd.deop_find_error"
+)
+
+// Engine: load - version tips
+const (
+	EngineLoadUnstable   = "engine.load.unstable"
+	EngineLoadRC         = "engine.load.rc"
+	EngineLoadBeta       = "engine.load.beta"
+	EngineLoadAlpha      = "engine.load.alpha"
+	EngineLoadCanary     = "engine.load.canary"
+	EngineLoadCanaryWarn = "engine.load.canary_warn"
+)
+
+// Engine: gateway LLM error messages
+const (
+	GatewayLLMErrorDefault  = "engine.gateway.llm_error_default"
+	GatewayLLMErrorRateLimit = "engine.gateway.llm_error_rate_limit"
+	GatewayLLMErrorDown     = "engine.gateway.llm_error_down"
+	GatewayLLMErrorTimeout  = "engine.gateway.llm_error_timeout"
+	GatewayLLMErrorAuth     = "engine.gateway.llm_error_auth"
+	GatewayLLMErrorCancelled = "engine.gateway.llm_error_cancelled"
+)
+const (
+	GatekeeperHachimiActivated     = "engine.gatekeeper.hachimi_activated"
+	GatekeeperShutUpMsg            = "engine.gatekeeper.shut_up_msg"
+	GatekeeperContinueAllMsg       = "engine.gatekeeper.continue_all_msg"
+	GatekeeperCancelAllMsg         = "engine.gatekeeper.cancel_all_msg"
+	GatekeeperHachimiUnsafe        = "engine.gatekeeper.hachimi_unsafe"
+	GatekeeperHachimiSuspicious    = "engine.gatekeeper.hachimi_suspicious"
+	GatekeeperHachimiReason        = "engine.gatekeeper.hachimi_reason"
+)
+
+// Engine: util describe
+const (
+	DescribeToHumanText = "engine.describe.to_human"
+	DescribeWithParams  = "engine.describe.with_params"
+	DescribeContinue    = "engine.describe.continue"
 )

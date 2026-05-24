@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/cli"
 	"github.com/manboster/manboster/spec/config"
 )
@@ -14,8 +16,8 @@ import (
 type Config struct {
 	GGUFurl       string       `json:"gguf_url" yaml:"gguf_url" mapstructure:"gguf_url" manboconfig:"skip"`
 	GGUFsha256    string       `json:"gguf_sha256" yaml:"gguf_sha256" mapstructure:"gguf_sha256" manboconfig:"skip"`
-	ModelType     ModelType    `json:"model_type" yaml:"model_type" mapstructure:"model_type" manboconfig:"required;enum;name:Model Type;desc:If you are using safeguard models, please select 'safeguard', otherwise, please leave it as is.;default:llm" enum:"safeguard,llm"`
-	ContextLength ModelCtxType `json:"context_length" yaml:"context_length" mapstructure:"context_length" manboconfig:"required;enum;name:Model context length;desc:This value means how long context your hachimi can process, if your available RAM is low, please choose smaller one. The model's context is larger, the message can send is longer. If you don't know what's this, please leave it as is.;default:medium" enum:"low,medium,high,x-high"`
+	ModelType     ModelType    `json:"model_type" yaml:"model_type" mapstructure:"model_type" manboconfig:"required;enum;name:Model Type;desc:If you are using safeguard models, please select 'safeguard', otherwise, please leave it as is.;desc_id:config.hachimi.gguf.model_type_desc;default:llm" enum:"safeguard,llm"`
+	ContextLength ModelCtxType `json:"context_length" yaml:"context_length" mapstructure:"context_length" manboconfig:"required;enum;name:Model context length;desc:This value means how long context your hachimi can process, if your available RAM is low, please choose smaller one. The model's context is larger, the message can send is longer. If you don't know what's this, please leave it as is.;desc_id:config.hachimi.gguf.context_length_desc;default:medium" enum:"low,medium,high,x-high"`
 }
 
 type ModelType string
@@ -56,13 +58,13 @@ func (c *Config) Validate() error {
 }
 
 func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
-	confirm, err := p.Prompt("Do you want to enter model details manually?\n\nIf you don't know what's this, please select 'No'.", "Do you want to enter model details manually?", "Yes", "No")
+	confirm, err := p.Prompt(i18n.T(keys.HachimiGGUFSetupPrompt), i18n.T(keys.HachimiGGUFSetupQuestion), i18n.T(keys.BtnYes), i18n.T(keys.BtnNo))
 	if err != nil {
 		return err
 	}
 
 	if confirm {
-		ggufURL, err := p.Input("GGUF File URL", "Please enter a valid URL to download GGUF.", "", false, func(input string) error {
+		ggufURL, err := p.Input(i18n.T(keys.HachimiGGUFURLInput), i18n.T(keys.HachimiGGUFURLHelp), "", false, func(input string) error {
 			_, err := url.ParseRequestURI(input)
 			if err != nil {
 				return err
@@ -77,7 +79,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 			return err
 		}
 
-		sha256, err := p.Input("SHA256", "Please enter a valid SHA256 hash to download.\nIf you don't know what's this, please leave it as is.", "", false, func(input string) error { return nil })
+		sha256, err := p.Input(i18n.T(keys.HachimiGGUFSHA256Input), i18n.T(keys.HachimiGGUFSHA256Help), "", false, func(input string) error { return nil })
 		if err != nil {
 			return err
 		}
@@ -85,10 +87,10 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 		c.GGUFurl = fmt.Sprintf("%s", ggufURL)
 		c.GGUFsha256 = fmt.Sprintf("%s", sha256)
 
-		return p.Alert("Manboster Configuration Wizard", "Successfully wrote hachimi config!")
+		return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.HachimiGGUFSetupSuccess))
 	}
 
-	err = p.Alert("Manboster Configuration Wizard", "Automatically set model with 'Qwen3-Guard Gen 0.6B'.")
+	err = p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.HachimiGGUFAutoSetMsg))
 	if err != nil {
 		return err
 	}

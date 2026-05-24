@@ -106,5 +106,31 @@
   "engine.cmd.deop_delete_error": "删除用户失败。",
   "engine.cmd.deop_success": "已成功撤销 %s 的权限。",
   "engine.cmd.deop_not_found": "未找到您要降权的用户。",
-  "engine.cmd.deop_find_error": "查找用户时发生错误。"
+  "engine.cmd.deop_find_error": "查找用户时发生错误。",
+
+  "engine.load.unstable": "[Manboster Engine] 您正在使用非稳定版本。",
+  "engine.load.rc": "[Manboster Engine] 您正在使用候选发布版（RC）！此版本仍有少量 Bug 待修复，欢迎反馈问题，稳定版即将到来！",
+  "engine.load.beta": "[Manboster Engine] 您正在使用 Beta 版！新功能已上线但仍有工作待完成，欢迎反馈 Bug。",
+  "engine.load.alpha": "[Manboster Engine] 您正在使用 Alpha 版！功能仍在实验阶段，非常欢迎反馈 Bug。",
+  "engine.load.canary": "[Manboster Engine] 您正在使用 Canary 版！感谢您的尝鲜精神，但请勿在此版本中存储任何重要信息！",
+  "engine.load.canary_warn": "[Manboster Engine] 此版本出现 Bug 属正常现象，欢迎提交 Issue，提交前请先确认该问题是否已被修复。",
+
+  "engine.gateway.llm_error_default": "[Manboster] 从 LLM 服务商 %q（模型 %q）获取消息失败，错误：%s\n您可以重新发送消息，或检查 API 的可用性。",
+  "engine.gateway.llm_error_rate_limit": "[Manboster] 服务商 %s（模型 %s）当前流量过高并触发了限流，请稍后重试或更换模型。",
+  "engine.gateway.llm_error_down": "[Manboster] 服务商 %s 当前不可用，请查看服务商的状态页面，或更换服务商后重试。",
+  "engine.gateway.llm_error_timeout": "[Manboster] 您与服务商 %s 之间似乎存在连接问题，请检查网络连接后重试。",
+  "engine.gateway.llm_error_auth": "[Manboster] 服务商 %s 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
+  "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 %s 的请求。",
+
+  "engine.gatekeeper.hachimi_activated": "🐱 您已启用 Hachimi，它将在接下来 %d 分钟内帮您处理此工具调用，请放心使用！",
+  "engine.gatekeeper.shut_up_msg": "⚠️ 您已静默此工具调用，接下来 %d 分钟内将自动允许。",
+  "engine.gatekeeper.continue_all_msg": "⚠️ 您已允许本会话内的所有工具调用！接下来 10 分钟内将自动允许。",
+  "engine.gatekeeper.cancel_all_msg": "❌ 您已拒绝本会话内的所有工具调用！接下来 10 分钟内将自动拒绝。",
+  "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi 认为此工具调用不安全！请仔细查看并决定是否允许。**\n",
+  "engine.gatekeeper.hachimi_suspicious": "**Hachimi 认为此工具调用存在可疑行为！请仔细查看并决定是否允许。**\n",
+  "engine.gatekeeper.hachimi_reason": "\nHachimi 报告原因：`%s`\n",
+
+  "engine.describe.to_human": "🤖❓ 模型想要调用工具 `%s`（`%s`）",
+  "engine.describe.with_params": "，参数：%s",
+  "engine.describe.continue": "，是否允许？"
 }

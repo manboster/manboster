@@ -7,6 +7,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/hachimi"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
@@ -44,10 +46,10 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 	switch resp.Type {
 	case hachimi.ResponseStatusUnsafe:
 		var txt strings.Builder
-		txt.WriteString(fmt.Sprintf("🐱⚠️ **Hachimi thinks this tool call is unsafe! Please look at it carefully and decide!**\n"))
+		txt.WriteString(i18n.T(keys.GatekeeperHachimiUnsafe))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
-		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: `%s`\n", resp.Reason))
-		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(msg *chat.Message) (bool, error) {
+		txt.WriteString(fmt.Sprintf(i18n.T(keys.GatekeeperHachimiReason), resp.Reason))
+		return s.Select(ctx, instance, msg, buildSelectionHachimi(), txt.String(), func(msg *chat.Message) (bool, error) {
 			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
 			case "allow":
@@ -61,10 +63,10 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 		})
 	case hachimi.ResponseStatusInspect:
 		var txt strings.Builder
-		txt.WriteString(fmt.Sprintf("**Hachimi thinks this tool call is suspicious! Please look at it carefully and decide!**\n"))
+		txt.WriteString(i18n.T(keys.GatekeeperHachimiSuspicious))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
-		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: %s\n", resp.Reason))
-		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(msg *chat.Message) (bool, error) {
+		txt.WriteString(fmt.Sprintf(i18n.T(keys.GatekeeperHachimiReason), resp.Reason))
+		return s.Select(ctx, instance, msg, buildSelectionHachimi(), txt.String(), func(msg *chat.Message) (bool, error) {
 			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
 			case "allow":

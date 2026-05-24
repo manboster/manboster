@@ -6,6 +6,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config/model"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/cli"
 	"github.com/manboster/manboster/spec/llm"
 	"github.com/sashabaranov/go-openai"
@@ -29,7 +31,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	}
 
 	if err != nil {
-		err = p.Alert("Oops! We can't get information based on your credentials!", "We strongly recommend you check your Internet Connection and credentials. If you have a poor Internet connection or have a strong belief that you're not wrong, please press enter to proceed to add model manually. Otherwise, please press Ctrl + C to exit.")
+		err = p.Alert(i18n.T(keys.OAICompatCredentialError), i18n.T(keys.OAICompatCredentialErrorMsg))
 		modelValues = append(modelValues, CustomModel)
 		if err != nil {
 			return err
@@ -37,11 +39,11 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	} else {
 		options := cli.BuildStringOptions(models, modelValues)
 		options = append(options, cli.Option{
-			Key:   "Other Model",
+			Key:   i18n.T(keys.OAICompatOtherModel),
 			Value: CustomModel,
 		})
 
-		modelOptions, err := p.MultiSelect("Models", "Please select models available from your given API. If you want to change default values, you can later run `manboster config` to do this.", options, modelValues, func(options []cli.Option) error {
+		modelOptions, err := p.MultiSelect(i18n.T(keys.OAICompatModelSelectPrompt), i18n.T(keys.OAICompatModelSelectHelp), options, modelValues, func(options []cli.Option) error {
 			for _, option := range options {
 				opt := option
 				mark := false
@@ -75,12 +77,10 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 			}
 			c.Model = append(c.Model, iModel)
 		} else {
-			// give it a default value, or make user complete?
 			modelData := llm.Model{}
 			modelData, avail := model.Search(m)
-			modelData.Name = m // if this is not 'm', it would not get any available messages
+			modelData.Name = m
 			if !avail {
-				// default value
 				color.Yellow(fmt.Sprintf("[Manboster Configuration Wizard] We can't find %s in our library, we have set this model's params data to default value. If you want to change it, please edit config file.", m))
 				modelData = model.Default(m)
 			}

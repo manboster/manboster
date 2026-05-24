@@ -1,0 +1,43 @@
+{
+  "config.llm.openrouter.api_key_desc": "Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.",
+  "config.llm.oai_compat.name_desc": "The name of your provider.\nYou can enter what you want but no spaces in your string.",
+  "config.llm.oai_compat.display_name_desc": "The name that will display on your application. If you don't know what this is, please leave it empty.",
+  "config.llm.oai_compat.base_url_desc": "The URL used to call the API.\nIf you don't have one, please head to your provider and ask for it.",
+  "config.llm.oai_compat.api_key_desc": "Your API Key.\nIf you don't have one, please go to your provider's API Key management page and create one.",
+
+  "config.chat.telegram.bot_token_desc": "Your Telegram Bot Token. If you don't have one, you can get it from @BotFather.",
+  "config.chat.telegram.collapse_length_desc": "The message length threshold above which the message will be collapsed into an expandable quote.",
+  "config.chat.telegram.reaction_status_desc": "Emoji reaction notification preference.\n- enabled: an emoji reaction is added to your message while processing.\n- clean: the reaction is removed after the model finishes processing.\n- disabled: no emoji reaction.",
+
+  "config.hachimi.gguf.model_type_desc": "If you are using safeguard models, please select 'safeguard'. Otherwise, leave it as is.",
+  "config.hachimi.gguf.context_length_desc": "How much context Hachimi can process. If your available RAM is low, choose a smaller value. A larger context allows longer messages. If you are unsure, leave it as is.",
+
+  "config.tool.file.write_mode_desc": "File access mode. 'readonly' blocks writes and deletes; 'readwrite' allows them inside the workspace.",
+  "config.tool.browser.mode_desc": "Browser launch mode. Use 'headless' for servers; use 'headful' only when a desktop UI is available.",
+
+  "btn.yes": "Yes",
+  "btn.no": "No",
+  "btn.skip": "Skip",
+  "btn.continue": "Continue",
+  "btn.exit": "Exit",
+  "btn.exit_now": "Exit Now",
+  "btn.retry": "Retry",
+
+  "question.want_to_retry": "Do you want to retry?",
+  "question.want_to_continue": "Do you want to continue?",
+
+  "config.hachimi.gguf.setup_prompt": "Do you want to enter model details manually?\n\nIf you are unsure, please select 'No'.",
+  "config.hachimi.gguf.setup_question": "Do you want to enter model details manually?",
+  "config.hachimi.gguf.url_input": "GGUF File URL",
+  "config.hachimi.gguf.url_help": "Please enter a valid URL to download the GGUF file.",
+  "config.hachimi.gguf.sha256_input": "SHA256",
+  "config.hachimi.gguf.sha256_help": "Please enter a valid SHA256 hash. If you are unsure, leave it empty.",
+  "config.hachimi.gguf.setup_success": "Hachimi config saved successfully!",
+  "config.hachimi.gguf.auto_set_msg": "Automatically configured with 'Qwen3-Guard Gen 0.6B'.",
+
+  "config.llm.oai_compat.credential_error": "Oops! We can't get information based on your credentials!",
+  "config.llm.oai_compat.credential_error_msg": "We strongly recommend you check your Internet connection and credentials. If you have a poor connection or believe your credentials are correct, press Enter to add models manually. Otherwise, press Ctrl+C to exit.",
+  "config.llm.oai_compat.model_select_prompt": "Models",
+  "config.llm.oai_compat.model_select_help": "Please select models available from your API. You can change defaults later by running `manboster config`.",
+  "config.llm.oai_compat.other_model": "Other Model"
+}

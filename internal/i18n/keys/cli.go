@@ -395,8 +395,7 @@ const (
 )
 
 // Wizard: onboard warning
-const (
-	OnboardWarningRiskTitle      = "wizard.onboard.warning_risk_title"
+const (	OnboardWarningRiskTitle      = "wizard.onboard.warning_risk_title"
 	OnboardWarningRiskPrompt     = "wizard.onboard.warning_risk_prompt"
 	OnboardWarningUnstableTitle  = "wizard.onboard.warning_unstable_title"
 	OnboardWarningUnstablePrompt = "wizard.onboard.warning_unstable_prompt"

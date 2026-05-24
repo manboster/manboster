@@ -106,5 +106,31 @@
   "engine.cmd.deop_delete_error": "Failed to remove the user.",
   "engine.cmd.deop_success": "Successfully revoked permission for %s.",
   "engine.cmd.deop_not_found": "The user you want to demote was not found.",
-  "engine.cmd.deop_find_error": "An error occurred while looking up the user."
+  "engine.cmd.deop_find_error": "An error occurred while looking up the user.",
+
+  "engine.load.unstable": "[Manboster Engine] It seems you are using an unstable version.",
+  "engine.load.rc": "[Manboster Engine] You are using a Release Candidate build! Minor bugs may still exist. We appreciate bug reports. Hang tight for the stable release!",
+  "engine.load.beta": "[Manboster Engine] You are using a Beta build! New features have landed but there is still work to do. Bug reports are welcome.",
+  "engine.load.alpha": "[Manboster Engine] You are using an Alpha build! Features are still being experimented on. Bug reports are very welcome.",
+  "engine.load.canary": "[Manboster Engine] You are using a Canary build! We appreciate your adventurous spirit, but please do NOT store any important information in this application!",
+  "engine.load.canary_warn": "[Manboster Engine] Bugs are expected in this build. Report any issues you find, and check whether they have already been fixed before reporting.",
+
+  "engine.gateway.llm_error_default": "[Manboster] Failed to get message from LLMProvider %q, model %q, get error: %s\nYou can resend your message or check the API's availability.",
+  "engine.gateway.llm_error_rate_limit": "[Manboster] Provider %s, Model %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.",
+  "engine.gateway.llm_error_down": "[Manboster] Provider %s has been down, please check your provider's status page, or change providers and try again later.",
+  "engine.gateway.llm_error_timeout": "[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.",
+  "engine.gateway.llm_error_auth": "[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.",
+  "engine.gateway.llm_error_cancelled": "[Manboster] You cancelled provider %s's request.",
+
+  "engine.gatekeeper.hachimi_activated": "🐱 You activated Hachimi. It will handle this tool for the next %d minutes, enjoy your time!",
+  "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next %d minutes.",
+  "engine.gatekeeper.continue_all_msg": "⚠️ You allowed all tool calls in this session! They will automatically allow for the next 10 minutes.",
+  "engine.gatekeeper.cancel_all_msg": "❌ You rejected all tool calls in this session! They will automatically deny for the next 10 minutes.",
+  "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi thinks this tool call is unsafe! Please review it carefully and decide.**\n",
+  "engine.gatekeeper.hachimi_suspicious": "**Hachimi thinks this tool call is suspicious! Please review it carefully and decide.**\n",
+  "engine.gatekeeper.hachimi_reason": "\nHachimi reports reason: `%s`\n",
+
+  "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
+  "engine.describe.with_params": "with params: %s",
+  "engine.describe.continue": ", do you want to continue?"
 }

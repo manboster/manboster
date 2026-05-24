@@ -16,6 +16,8 @@ import (
 	"github.com/manboster/manboster/internal/engine/runner"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/session"
 )
 
@@ -67,17 +69,17 @@ func (e *Engine) Load(ctx context.Context) error {
 
 	// version tips
 	if config.VersionType(config.CurrentVersion) != config.VersionStable {
-		color.Yellow("[Manboster Engine] It seemed that you're using unstable version.")
+		color.Yellow(i18n.T(keys.EngineLoadUnstable))
 		switch config.VersionType(config.CurrentVersion) {
 		case config.VersionRC:
-			color.Yellow("[Manboster Engine] You're using a Release Candidate build of Manboster! This version still has minor bugs to fix and we will appreciate if you report bugs you encountered. Sit tight and wait for the stable version!")
+			color.Yellow(i18n.T(keys.EngineLoadRC))
 		case config.VersionBeta:
-			color.Yellow("[Manboster Engine] You're using a Beta build of Manboster! This version marks new features have been landed and there is still something to be done. We will appreciate if you report bugs you encountered to us.")
+			color.Yellow(i18n.T(keys.EngineLoadBeta))
 		case config.VersionAlpha:
-			color.Yellow("[Manboster Engine] You're using an Alpha build of Manboster! This version means new features is experimenting and there is a long way to implement. We will appreciate if you report bugs you encountered to us.")
+			color.Yellow(i18n.T(keys.EngineLoadAlpha))
 		case config.VersionCanary:
-			color.HiRed("[Manboster Engine] You're using a Canary build of Manboster! We apperiate your spirit to try something new, but please do not place any important information in this application!")
-			color.Yellow("[Manboster Engine] Since the version is not ready to release, it's normal to have bugs. If you find any bug in this release, you can report to us in issues. Also, don't forget to check whether this bug is fixed or not!")
+			color.HiRed(i18n.T(keys.EngineLoadCanary))
+			color.Yellow(i18n.T(keys.EngineLoadCanaryWarn))
 		default:
 		}
 	}

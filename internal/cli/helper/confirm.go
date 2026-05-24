@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func ConfirmForm(ctx context.Context, tips string, confirmTitle string, confirmContent string) error {
@@ -16,7 +18,7 @@ func ConfirmForm(ctx context.Context, tips string, confirmTitle string, confirmC
 			huh.NewConfirm().
 				Title(confirmTitle).
 				Affirmative(confirmContent).
-				Negative("Exit Now").
+				Negative(i18n.T(keys.BtnExitNow)).
 				Value(&agree),
 		),
 	)

@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -53,7 +55,7 @@ func DescribeToHachimi(req llm.MessageToolCallRequestPayload, provider tool.Prov
 }
 
 func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provider) string {
-	txt := fmt.Sprintf("🤖❓ Model wants to call tool `%s`(`%s`) ", provider.DisplayName(), req.ToolName)
+	txt := fmt.Sprintf(i18n.T(keys.DescribeToHumanText), provider.DisplayName(), req.ToolName)
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
 	if err != nil {
@@ -61,9 +63,9 @@ func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provid
 	}
 	params := JSONParse(result)
 	if params != "" {
-		txt += fmt.Sprintf("with params: %s", params)
+		txt += fmt.Sprintf(i18n.T(keys.DescribeWithParams), params)
 	}
-	txt += ", do you want to continue?"
+	txt += i18n.T(keys.DescribeContinue)
 	return txt
 }
 

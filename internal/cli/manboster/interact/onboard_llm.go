@@ -29,7 +29,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 		}
 		confs = append(confs, llmConfig)
 
-		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardLLMAddedCount), len(confs)), "", "Continue", "Exit and go on")
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardLLMAddedCount), len(confs)), "", i18n.T(keys.BtnContinue), i18n.T(keys.BtnExit))
 		if err != nil {
 			return confs, err
 		}

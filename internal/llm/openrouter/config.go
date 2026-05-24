@@ -7,7 +7,7 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey             string `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required;secret;name:Your OpenRouter APIKey;desc:Your OpenRouter API Key.\nIf you don't have one,please open https://openrouter.ai/workspaces/default/keys to create one."` // your openrouter system's apikey
+	ApiKey             string `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required;secret;name:Your OpenRouter APIKey;desc:Your OpenRouter API Key.\nIf you don't have one,please open https://openrouter.ai/workspaces/default/keys to create one.;desc_id:config.llm.openrouter.api_key_desc"` // your openrouter system's apikey
 	*oai_compat.Config `mapstructure:"config"`
 }
 

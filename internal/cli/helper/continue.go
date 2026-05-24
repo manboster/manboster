@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func ContinueConfirm(ctx context.Context, content string) bool {
@@ -15,8 +17,8 @@ func ContinueConfirm(ctx context.Context, content string) bool {
 		huh.NewGroup(
 			huh.NewConfirm().
 				Title(fmt.Sprintf("%s\nContinue?", content)).
-				Affirmative("Continue").
-				Negative("Skip").
+				Affirmative(i18n.T(keys.BtnContinue)).
+				Negative(i18n.T(keys.BtnSkip)).
 				Value(&agree),
 		),
 	)
