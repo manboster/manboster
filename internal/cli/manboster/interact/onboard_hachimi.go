@@ -7,6 +7,8 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/hachimi"
 	_ "github.com/manboster/manboster/internal/hachimi/all"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -16,14 +18,7 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 	conf := config.HachimiConfigs{}
 	var hachimiConfigs []config.HachimiConfig
 
-	confirm, err := p.Prompt(`
-Hachimi is a small language model running on your device side and it can check out LLM's behaviour and evaluate its action.
-It wouldn't active in order to save memory until you called it to handle requests in moment.
-
-If your device's available memory is lower than 1GB or you don't know what's this, please disable it.
-
-If you want to activate hachimi feature, please ensure your device have a valid Internet connection and 2GB free disk spaces.
-`, "Do you want to activate Hachimi feature?", "Yes", "No")
+	confirm, err := p.Prompt(i18n.T(keys.OnboardHachimiFeaturePrompt), i18n.T(keys.OnboardHachimiEnableQuestion), "Yes", "No")
 	if err != nil {
 		return conf, err
 	}
@@ -40,7 +35,7 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 	for {
 		hachimiConfig, err := runOnboardHachimiConfig(p, hachimiProviders)
 		if err != nil {
-			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Failed to config %q", err))
+			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardHachimiConfigError), err))
 			if err != nil {
 				return conf, err
 			}
@@ -55,13 +50,13 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 			}
 		}
 
-		ok, err := p.Prompt(fmt.Sprintf("You've added %d hachimi providers! Do you want to continue?", len(hachimiConfigs)), "", "Continue", "Exit and go on")
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardHachimiAddedCount), len(hachimiConfigs)), "", "Continue", "Exit and go on")
 		if err != nil {
 			return conf, err
 		}
 		if len(hachimiProviders) == 0 || !ok {
 			if len(hachimiProviders) == 0 && ok {
-				err := p.Alert("Manboster Configuration Wizard", "There are no more providers available for you to config...")
+				err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.OnboardHachimiNoMore))
 				if err != nil {
 					return conf, err
 				}
@@ -79,7 +74,7 @@ If you want to activate hachimi feature, please ensure your device have a valid 
 						Value: hc.Provider,
 					})
 				}
-				selected, err := p.Select("Please select the default Hachimi provider.", "The selected provider will be used by default for safety evaluation.", defaultOptions, "", func(option cli.Option) error {
+				selected, err := p.Select(i18n.T(keys.OnboardHachimiSelectDefault), i18n.T(keys.OnboardHachimiSelectHelp), defaultOptions, "", func(option cli.Option) error {
 					for _, o := range defaultOptions {
 						if o.Value == option.Value {
 							return nil
@@ -104,7 +99,7 @@ func runOnboardHachimiConfig(p cli.Provider, hachimiProviders []hachimi.Provider
 
 	conf := config.HachimiConfig{}
 	options := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
-	hachimiProviderOption, err := p.Select("Please select your hachimi's provider", "", options, "", func(option cli.Option) error {
+	hachimiProviderOption, err := p.Select(i18n.T(keys.OnboardHachimiSelectProvider), "", options, "", func(option cli.Option) error {
 		for _, provider := range hachimiProviders {
 			if provider.Name() == option.Value {
 				return nil

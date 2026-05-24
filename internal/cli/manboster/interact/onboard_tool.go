@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	_ "github.com/manboster/manboster/internal/tool/all"
 	"github.com/manboster/manboster/spec/cli"
@@ -27,7 +29,7 @@ func runOnboardToolConfig(p cli.Provider) ([]config.ToolConfig, error) {
 		toolProviders = append(toolProviders, provider)
 	}
 	options := cli.BuildOptionsWithMetadata[tool.Provider](toolProviders, nil)
-	selects, err := p.MultiSelect("Select and activate the tools you want to use", "Please select the tool you want to use, please be careful to select as they will be the tool call of AIs.", options, nil, func(options []cli.Option) error {
+	selects, err := p.MultiSelect(i18n.T(keys.OnboardToolSelectPrompt), i18n.T(keys.OnboardToolSelectHelp), options, nil, func(options []cli.Option) error {
 		if options == nil {
 			return nil
 		}

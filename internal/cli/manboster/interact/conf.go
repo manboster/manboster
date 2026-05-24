@@ -3,6 +3,8 @@ package interact
 import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/database"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -23,13 +25,13 @@ func (t entrypointType) Name() string {
 func (t entrypointType) DisplayName() string {
 	switch t {
 	case entrypointDatabase:
-		return "Database\nThis will open your database and manage chats, users and sessions. If you want to manage chat sessions, purge unused sessions or more, please choose this."
+		return i18n.T(keys.EntrypointDatabase)
 	case entrypointConfig:
-		return "Configuration\nThis will affect your model and chat provider's configuration and it displays the changes in config.yaml. If you want to manage models, default models, or modify application settings, please choose this."
+		return i18n.T(keys.EntrypointConfig)
 	case entrypointEditor:
-		return "Open Configuration yaml file in system's default editor\n(For advanced users only)"
+		return i18n.T(keys.EntrypointEditor)
 	case entrypointQuit:
-		return "Quit Manboster Configuration Wizard\nBye!"
+		return i18n.T(keys.EntrypointQuit)
 	default:
 		return ""
 	}
@@ -88,7 +90,7 @@ func runConfigEntrypoint(p cli.Provider) error {
 	})
 
 	for {
-		err := handle[entrypointType](p, form, options, "Please select what to configure", "Welcome to Manboster Configuration Wizard! Please choose the field you want to configure.")
+		err := handle[entrypointType](p, form, options, i18n.T(keys.EntrypointSelectPrompt), i18n.T(keys.EntrypointSelectHelp))
 		if err != nil {
 			return err
 		}

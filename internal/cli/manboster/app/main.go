@@ -13,6 +13,8 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/loader"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/spf13/cobra"
@@ -23,14 +25,13 @@ import (
 
 // Main is the entrypoint function that when user runs 'manboster'.
 func Main(cmd *cobra.Command, args []string) {
-	// output welcome
-	color.Cyan("Welcome to Manboster!")
-	color.Blue("[Manboster Client] Your Lobster is on the way, please wait...")
+	color.Cyan(i18n.T(keys.AppWelcome))
+	color.Blue(i18n.T(keys.AppLoading))
 
 	_, err := ctx.DaemonCtx.Search()
 	if err == nil {
-		color.Red("[Manboster Client] Another lobster is running in the daemon mode! In order to use this client, please run `manboster stop` and retry.")
-		color.Red("[Manboster Client] Quiting the application!")
+		color.Red(i18n.T(keys.AppDaemonRunning))
+		color.Red(i18n.T(keys.AppDaemonRunningQuit))
 		os.Exit(1)
 	}
 
@@ -40,13 +41,13 @@ func Main(cmd *cobra.Command, args []string) {
 func MainInner() {
 	err := config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
-		color.Yellow("[Manboster Client] config.yaml is not found, now guide you to create one...\n")
+		color.Yellow(i18n.T(keys.AppConfigNotFound))
 		interact.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])
-		color.Green("[Manboster Client] Successfully created config.yaml, open Manboster again and enjoy it!")
+		color.Green(i18n.T(keys.AppConfigCreated))
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	} else if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Client] Failed to initialize config. Error: %q", err))
+		color.Red(fmt.Sprintf(i18n.T(keys.AppConfigInitError), err))
 	}
 
 	// create a universal context for this application
@@ -57,17 +58,17 @@ func MainInner() {
 	)
 	defer stop()
 
-	color.Blue(fmt.Sprintf("[Manboster Client] Reading Configuration...")) // create a loader instance
+	color.Blue(i18n.T(keys.AppReadingConfig))
 	tool.IsLoading = true
 	loaderInstance := loader.New(new(config.Read()))
 	err = loaderInstance.Load(ctx)
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Client] Error while load using the loader: %q", err))
+		color.Red(fmt.Sprintf(i18n.T(keys.AppLoaderError), err))
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 
 	<-ctx.Done()
-	color.Yellow("[Manboster Client] Your Manboster is going to sleep, thank you for playing with it!")
+	color.Yellow(i18n.T(keys.AppGoodbye))
 	time.Sleep(1 * time.Second)
 }

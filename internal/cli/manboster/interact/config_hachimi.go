@@ -7,6 +7,8 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/hachimi"
 	_ "github.com/manboster/manboster/internal/hachimi/all"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -27,13 +29,13 @@ func (a hachimiConfigAction) Name() string {
 func (a hachimiConfigAction) DisplayName() string {
 	switch a {
 	case hachimiConfigDelete:
-		return "Delete this provider"
+		return i18n.T(keys.ActionDeleteProvider)
 	case hachimiConfigEdit:
-		return "Edit this provider"
+		return i18n.T(keys.ActionEditProvider)
 	case hachimiConfigSetDefault:
-		return "Set as default provider"
+		return i18n.T(keys.ActionSetDefault)
 	case hachimiConfigQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -80,7 +82,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 		}
 
 		var err error
-		option, err = p.Select("Select a Hachimi provider to configure.", "Please select a Hachimi provider to configure.", options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.ConfigHachimiSelectPrompt), i18n.T(keys.ConfigHachimiSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -144,11 +146,11 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigSetDefault, func() error {
 			cfg.Hachimi.Provider = selectedConfig.Provider
-			return p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Hachimi provider %q set as default!", selectedConfig.Provider))
+			return p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigHachimiSetDefault), selectedConfig.Provider))
 		})
 
 		form.Register(hachimiConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete %q?\n\nYour action is IRREVERSIBLE!", selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigHachimiDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -156,7 +158,6 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Hachimi.Hachimi = append(cfg.Hachimi.Hachimi[:selectedIndex], cfg.Hachimi.Hachimi[selectedIndex+1:]...)
-			// clear default if deleted provider was default
 			if cfg.Hachimi.Provider == selectedConfig.Provider {
 				if len(cfg.Hachimi.Hachimi) > 0 {
 					cfg.Hachimi.Provider = cfg.Hachimi.Hachimi[0].Provider
@@ -164,7 +165,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 					cfg.Hachimi.Provider = ""
 				}
 			}
-			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Hachimi provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigHachimiDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -182,7 +183,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigQuit, nilFunc)
 
-		err = handleWithPrompt[hachimiConfigAction](p, form, opts, detail, "What do you want to do with it?")
+		err = handleWithPrompt[hachimiConfigAction](p, form, opts, detail, i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return cfg.Hachimi, err
 		}

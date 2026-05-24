@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/util"
@@ -27,11 +29,11 @@ func (a llmConfigAction) Name() string {
 func (a llmConfigAction) DisplayName() string {
 	switch a {
 	case llmConfigDelete:
-		return "Delete this provider"
+		return i18n.T(keys.ActionDeleteProvider)
 	case llmConfigEdit:
-		return "Edit this provider"
+		return i18n.T(keys.ActionEditProvider)
 	case llmConfigQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -63,7 +65,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		options = append(options, addOption, quitOption)
 
 		var err error
-		option, err = p.Select("Select a LLM provider to configure.", "Please select a LLM provider to configure.", options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.ConfigLLMSelectPrompt), i18n.T(keys.ConfigLLMSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -117,7 +119,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		form := newConfigForm[llmConfigAction]()
 
 		form.Register(llmConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete %q?\n\nYour action is IRREVERSIBLE!", selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigLLMDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -125,7 +127,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 				return fmt.Errorf("cancelled")
 			}
 			cfg.LLMs = append(cfg.LLMs[:selectedIndex], cfg.LLMs[selectedIndex+1:]...)
-			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("LLM provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigLLMDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -143,7 +145,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 
 		form.Register(llmConfigQuit, nilFunc)
 
-		err = handleWithPrompt[llmConfigAction](p, form, opts, fmt.Sprintf("This LLM provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), "What do you want to do with it?")
+		err = handleWithPrompt[llmConfigAction](p, form, opts, fmt.Sprintf("This LLM provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}

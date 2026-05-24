@@ -6,6 +6,8 @@ import (
 
 	"github.com/manboster/manboster/internal/chat"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -25,11 +27,11 @@ func (a chatConfigAction) Name() string {
 func (a chatConfigAction) DisplayName() string {
 	switch a {
 	case chatConfigDelete:
-		return "Delete this provider"
+		return i18n.T(keys.ActionDeleteProvider)
 	case chatConfigEdit:
-		return "Edit this provider"
+		return i18n.T(keys.ActionEditProvider)
 	case chatConfigQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -71,7 +73,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		}
 
 		var err error
-		option, err = p.Select("Select a chat provider to configure.", "Please select a chat provider to configure.", options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.ConfigChatSelectPrompt), i18n.T(keys.ConfigChatSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -120,7 +122,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		form := newConfigForm[chatConfigAction]()
 
 		form.Register(chatConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete %q?\n\nYour action is IRREVERSIBLE!", selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigChatDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -128,7 +130,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Chats = append(cfg.Chats[:selectedIndex], cfg.Chats[selectedIndex+1:]...)
-			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Chat provider %q deleted successfully!", selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigChatDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -146,7 +148,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 
 		form.Register(chatConfigQuit, nilFunc)
 
-		err = handleWithPrompt[chatConfigAction](p, form, opts, fmt.Sprintf("This chat provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), "What do you want to do with it?")
+		err = handleWithPrompt[chatConfigAction](p, form, opts, fmt.Sprintf("This chat provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}

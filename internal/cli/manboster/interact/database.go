@@ -1,6 +1,8 @@
 package interact
 
 import (
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/spec/cli"
 )
@@ -21,13 +23,13 @@ func (s databaseConfigLandingSelection) Name() string {
 func (s databaseConfigLandingSelection) DisplayName() string {
 	switch s {
 	case databaseConfigLandingSession:
-		return "Sessions\nIt's chat sessions you made in daily chatting routine, you can purge it to save disk or do more."
+		return i18n.T(keys.DatabaseSessions)
 	case databaseConfigLandingUser:
-		return "Users\nIt helps you to grant a user to an admin or degrade it. It's all up to you to decide."
+		return i18n.T(keys.DatabaseUsers)
 	case databaseConfigLandingSoul:
-		return "Souls\nSouls is the key system prompt for you to personalize your Manbo Lobster."
+		return i18n.T(keys.DatabaseSouls)
 	case databaseConfigLandingQuit:
-		return "Quit\nBye!"
+		return i18n.T(keys.DatabaseQuit)
 	default:
 		return ""
 	}
@@ -53,5 +55,5 @@ func runDatabaseConfig(p cli.Provider, repo repository.Repository) error {
 
 	form.Register(databaseConfigLandingQuit, nilFunc)
 
-	return handle[databaseConfigLandingSelection](p, form, options, "Please select what to configure in database", "Please choose what you want to configure in database field.")
+	return handle[databaseConfigLandingSelection](p, form, options, i18n.T(keys.DatabaseSelectPrompt), i18n.T(keys.DatabaseSelectHelp))
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/cli"
 )
 
@@ -25,17 +27,17 @@ func (s configLandingSelection) Name() string {
 func (s configLandingSelection) DisplayName() string {
 	switch s {
 	case configLandingChat:
-		return "Chat Providers\nAdd, edit or delete your chat providers."
+		return i18n.T(keys.ConfigLandingChat)
 	case configLandingLLM:
-		return "LLM Providers\nAdd, edit or delete your llm providers."
+		return i18n.T(keys.ConfigLandingLLM)
 	case configLandingTool:
-		return "Tool Providers\nAdd, edit or delete your system tool providers."
+		return i18n.T(keys.ConfigLandingTool)
 	case configLandingHachimi:
-		return "Hachimi Settings\nAdd, edit or delete your Hachimi providers or modify Hachimi settings."
+		return i18n.T(keys.ConfigLandingHachimi)
 	case configLandingApp:
-		return "App Settings\nModify Manboster settings."
+		return i18n.T(keys.ConfigLandingApp)
 	case configLandingQuit:
-		return "Quit\nBye!"
+		return i18n.T(keys.ConfigLandingQuit)
 	default:
 		return ""
 	}
@@ -104,9 +106,9 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 	})
 
 	for {
-		err := handle[configLandingSelection](p, form, options, "Please select what to configure in configuration", "Please choose what you want to configure in configuration field.")
+		err := handle[configLandingSelection](p, form, options, i18n.T(keys.ConfigLandingSelectPrompt), i18n.T(keys.ConfigLandingSelectHelp))
 		if err != nil {
-			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("We encountered an error while configuring: %q", err))
+			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.WizardErrorAlert), err))
 			if err != nil {
 				return config.Config{}, err
 			}

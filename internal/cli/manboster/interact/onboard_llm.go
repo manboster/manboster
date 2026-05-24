@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/util"
@@ -19,7 +21,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 	for {
 		llmConfig, err := runOnboardLLMConfig(p, llmProviders)
 		if err != nil {
-			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Failed to config %q", err))
+			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardLLMConfigError), err))
 			if err != nil {
 				return nil, err
 			}
@@ -27,7 +29,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 		}
 		confs = append(confs, llmConfig)
 
-		ok, err := p.Prompt(fmt.Sprintf("You've added %d llm providers! Do you want to continue?", len(confs)), "", "Continue", "Exit and go on")
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardLLMAddedCount), len(confs)), "", "Continue", "Exit and go on")
 		if err != nil {
 			return confs, err
 		}
@@ -45,7 +47,7 @@ func runOnboardLLMConfig(p cli.Provider, llmProviders []llmType.Provider) (confi
 
 	conf := config.LLMConfig{}
 	options := util.BuildOptionsForConfig[llmType.Provider](llmProviders, nil)
-	llmProviderOption, err := p.Select("Next, let's pick a LLM provider. Which provider would you like to use?", "", options, "", func(option cli.Option) error {
+	llmProviderOption, err := p.Select(i18n.T(keys.OnboardLLMSelectPrompt), "", options, "", func(option cli.Option) error {
 		for _, provider := range llmProviders {
 			if provider.Config().Name() == option.Value {
 				return nil

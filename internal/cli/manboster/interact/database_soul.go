@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/cli"
@@ -22,11 +24,11 @@ func (a databaseSoulPageAction) Name() string { return string(a) }
 func (a databaseSoulPageAction) DisplayName() string {
 	switch a {
 	case databaseSoulPageEdit:
-		return "Edit this Soul's content"
+		return i18n.T(keys.SoulEditAction)
 	case databaseSoulPageDelete:
-		return "Delete this Soul"
+		return i18n.T(keys.SoulDeleteAction)
 	case databaseSoulPageQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -55,7 +57,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 
 		summary := fmt.Sprintf("%d souls loaded.", len(souls))
 
-		option, err = p.Select("Select a soul to manage.", summary, options, option.Value, func(o cli.Option) error {
+		option, err = p.Select(i18n.T(keys.SoulSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
 		if err != nil {
@@ -98,7 +100,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 		form := newConfigForm[databaseSoulPageAction]()
 
 		form.Register(databaseSoulPageEdit, func() error {
-			contentRaw, err := p.Input("Soul Content", "Edit the system prompt content.", selectedSoul.Content, false, func(input string) error {
+			contentRaw, err := p.Input(i18n.T(keys.SoulEditContent), i18n.T(keys.SoulEditContentHelp), selectedSoul.Content, false, func(input string) error {
 				if strings.TrimSpace(input) == "" {
 					return fmt.Errorf("content is required")
 				}
@@ -110,11 +112,11 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.UpdateSoulContent(ctx, selectedSoul.Name, fmt.Sprintf("%v", contentRaw)); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "Soul updated successfully!")
+			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SoulUpdatedSuccess))
 		})
 
 		form.Register(databaseSoulPageDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete soul %q? YOUR ACTION IS IRREVERSIBLE!", selectedSoul.Name), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.SoulDeleteConfirm), selectedSoul.Name), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -124,7 +126,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.DeleteSoul(ctx, selectedSoul.Name); err != nil {
 				return err
 			}
-			if err := p.Alert("Manboster Configuration Wizard", "Soul deleted successfully!"); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SoulDeletedSuccess)); err != nil {
 				return err
 			}
 			return errQuit
@@ -132,7 +134,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 
 		form.Register(databaseSoulPageQuit, nilFunc)
 
-		err = handleWithPrompt[databaseSoulPageAction](p, form, opts, detail, "What do you want to do with this soul?")
+		err = handleWithPrompt[databaseSoulPageAction](p, form, opts, detail, i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return err
 		}
@@ -140,7 +142,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 }
 
 func runDatabaseSoulCreate(ctx context.Context, p cli.Provider, repo repository.Repository) error {
-	nameRaw, err := p.Input("Soul Name", "Enter a unique name for this soul.", "", false, func(input string) error {
+	nameRaw, err := p.Input(i18n.T(keys.SoulNameInput), i18n.T(keys.SoulNameHelp), "", false, func(input string) error {
 		if strings.TrimSpace(input) == "" {
 			return fmt.Errorf("name is required")
 		}
@@ -151,7 +153,7 @@ func runDatabaseSoulCreate(ctx context.Context, p cli.Provider, repo repository.
 	}
 	name := fmt.Sprintf("%v", nameRaw)
 
-	contentRaw, err := p.Input("Soul Content", "Enter the system prompt content for this soul.", "", false, func(input string) error {
+	contentRaw, err := p.Input(i18n.T(keys.SoulContentInput), i18n.T(keys.SoulContentHelp), "", false, func(input string) error {
 		if strings.TrimSpace(input) == "" {
 			return fmt.Errorf("content is required")
 		}
@@ -162,7 +164,7 @@ func runDatabaseSoulCreate(ctx context.Context, p cli.Provider, repo repository.
 	}
 	content := fmt.Sprintf("%v", contentRaw)
 
-	scopeRaw, err := p.Input("Scope", "Enter comma-separated scopes (e.g. global,telegram).", "global", false, func(input string) error {
+	scopeRaw, err := p.Input(i18n.T(keys.SoulScopeInput), i18n.T(keys.SoulScopeHelp), "global", false, func(input string) error {
 		return nil
 	})
 	if err != nil {
@@ -183,5 +185,5 @@ func runDatabaseSoulCreate(ctx context.Context, p cli.Provider, repo repository.
 	}); err != nil {
 		return err
 	}
-	return p.Alert("Manboster Configuration Wizard", "Soul created successfully!")
+	return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SoulCreatedSuccess))
 }

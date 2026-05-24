@@ -7,6 +7,8 @@ import (
 	"github.com/manboster/manboster/internal/chat"
 	_ "github.com/manboster/manboster/internal/chat/all"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	chatType "github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/cli"
@@ -21,7 +23,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 	for {
 		chatConfig, err := runOnboardChatConfig(p, chatProviders)
 		if err != nil {
-			err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Failed to config %q", err))
+			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardChatConfigError), err))
 			if err != nil {
 				return chatConfigs, err
 			}
@@ -36,13 +38,13 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 			}
 		}
 
-		ok, err := p.Prompt(fmt.Sprintf("You've added %d chat providers! Do you want to continue?", len(chatConfigs)), "", "Continue", "Exit and go on")
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardChatAddedCount), len(chatConfigs)), "", "Continue", "Exit and go on")
 		if err != nil {
 			return chatConfigs, err
 		}
 		if len(chatProviders) == 0 || !ok {
 			if len(chatProviders) == 0 && ok {
-				err := p.Alert("Manboster Configuration Wizard", "There are no more providers available for you to config...")
+				err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.OnboardChatNoMoreProviders))
 				if err != nil {
 					return chatConfigs, err
 				}
@@ -60,7 +62,7 @@ func runOnboardChatConfig(p cli.Provider, chatProviders []chatType.Provider) (co
 
 	conf := config.ChatConfig{}
 	options := util.BuildOptionsForConfig[chatType.Provider](chatProviders, nil)
-	chatProviderOption, err := p.Select("Which platform would you like to use for your Manboster?", "", options, "", func(option cli.Option) error {
+	chatProviderOption, err := p.Select(i18n.T(keys.OnboardChatSelectPrompt), "", options, "", func(option cli.Option) error {
 		for _, provider := range chatProviders {
 			if provider.Name() == option.Value {
 				return nil

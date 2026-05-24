@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
 	"github.com/manboster/manboster/internal/repository"
@@ -26,11 +28,11 @@ func (a databaseSessionPageAction) Name() string { return string(a) }
 func (a databaseSessionPageAction) DisplayName() string {
 	switch a {
 	case databaseSessionPageEdit:
-		return "Edit this session's provider and model"
+		return i18n.T(keys.SessionEditAction)
 	case databaseSessionPageDelete:
-		return "Delete this session"
+		return i18n.T(keys.SessionDeleteAction)
 	case databaseSessionPageQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -74,7 +76,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		summary := fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(sessions), purgeNum)
 
-		option, err = p.Select("Select a session to manage.", summary, options, option.Value, func(o cli.Option) error {
+		option, err = p.Select(i18n.T(keys.SessionSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
 		if err != nil {
@@ -87,12 +89,12 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		if option.Value == _PURGE_ {
 			if purgeNum <= 0 {
-				if err := p.Alert("Manboster Configuration Wizard", "No need to purge sessions, your session list is clean and smart!"); err != nil {
+				if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionPurgeClean)); err != nil {
 					return err
 				}
 				continue
 			}
-			confirm, err := p.Prompt(fmt.Sprintf("Do you really want to DELETE %d unused sessions? YOUR ACTION IS IRREVERSIBLE!", purgeNum), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.SessionPurgeConfirm), purgeNum), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -111,11 +113,11 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				}
 			}
 			if len(purgeErrors) > 0 {
-				if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Some errors occurred during purge:\n%s", strings.Join(purgeErrors, "\n"))); err != nil {
+				if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionPurgeError), strings.Join(purgeErrors, "\n"))); err != nil {
 					return err
 				}
 			} else {
-				if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Successfully deleted %d unused sessions!", purgeNum)); err != nil {
+				if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionPurgeSuccess), purgeNum)); err != nil {
 					return err
 				}
 			}
@@ -171,7 +173,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}
 
 			providerOptions := cli.BuildOptions[llmType.Provider](activatedProviders, nil)
-			providerOpt, err := p.Select("Select the LLM provider for this session.", "", providerOptions, selectedSession.LLMProvider, func(o cli.Option) error {
+			providerOpt, err := p.Select(i18n.T(keys.SessionSelectProvider), "", providerOptions, selectedSession.LLMProvider, func(o cli.Option) error {
 				for _, pr := range activatedProviders {
 					if pr.Name() == o.Value {
 						return nil
@@ -195,7 +197,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}
 
 			modelOptions := cli.BuildModelOptions[llmType.Model](selectedProvider.Models(), nil)
-			modelOpt, err := p.Select("Select the model for this session.", "", modelOptions, selectedSession.LLMProviderModel, func(o cli.Option) error {
+			modelOpt, err := p.Select(i18n.T(keys.SessionSelectModel), "", modelOptions, selectedSession.LLMProviderModel, func(o cli.Option) error {
 				for _, m := range modelOptions {
 					if m.Value == o.Value {
 						return nil
@@ -213,7 +215,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "Successfully updated the session!")
+			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionUpdateSuccess))
 		})
 
 		form.Register(databaseSessionPageDelete, func() error {
@@ -221,7 +223,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
 				txt = fmt.Sprintf("\nThis session is bound to %d chats. Deleting it will also delete the chat information.", len(cm))
 			}
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete session %s? YOUR ACTION IS IRREVERSIBLE!%s", selectedSession.SessionID, txt), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.SessionDeleteConfirm), selectedSession.SessionID, txt), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -232,20 +234,20 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				return err
 			}
 			if err := repo.DeleteChatData(ctx, selectedSession.SessionID); err != nil {
-				if alertErr := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Error deleting chat data: %q", err)); alertErr != nil {
+				if alertErr := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionDataDeleteError), err)); alertErr != nil {
 					return alertErr
 				}
 			}
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
 				for _, c := range cm {
 					if err := repo.DeleteChat(ctx, c.ChatID, c.ChatProvider); err != nil {
-						if alertErr := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Error deleting chat %s: %q", c.ChatID, err)); alertErr != nil {
+						if alertErr := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionChatDeleteError), c.ChatID, err)); alertErr != nil {
 							return alertErr
 						}
 					}
 				}
 			}
-			if err := p.Alert("Manboster Configuration Wizard", "Successfully deleted session!"); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionDeleteSuccess)); err != nil {
 				return err
 			}
 			return errQuit
@@ -253,7 +255,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		form.Register(databaseSessionPageQuit, nilFunc)
 
-		err = handleWithPrompt[databaseSessionPageAction](p, form, opts, detail.String(), "What do you want to do with this session?")
+		err = handleWithPrompt[databaseSessionPageAction](p, form, opts, detail.String(), i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return err
 		}

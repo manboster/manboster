@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/cli"
@@ -22,13 +24,13 @@ func (a databaseUserPageAction) Name() string { return string(a) }
 func (a databaseUserPageAction) DisplayName() string {
 	switch a {
 	case databaseUserPagePromote:
-		return "Promote to Admin"
+		return i18n.T(keys.UserPromoteAction)
 	case databaseUserPageDegrade:
-		return "Degrade to Unknown"
+		return i18n.T(keys.UserDegradeAction)
 	case databaseUserPageDelete:
-		return "Delete this User"
+		return i18n.T(keys.UserDeleteAction)
 	case databaseUserPageQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -57,7 +59,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 
 		summary := fmt.Sprintf("%d users registered.", len(users))
 
-		option, err = p.Select("Select a user to manage.", summary, options, option.Value, func(o cli.Option) error {
+		option, err = p.Select(i18n.T(keys.UserSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
 		if err != nil {
@@ -69,7 +71,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		}
 
 		if len(users) == 0 {
-			if err := p.Alert("Manboster Configuration Wizard", "No users found!"); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserNoUsers)); err != nil {
 				return err
 			}
 			return nil
@@ -102,7 +104,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		form := newConfigForm[databaseUserPageAction]()
 
 		form.Register(databaseUserPagePromote, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Promote user %q to Admin?", selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserPromoteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -119,11 +121,11 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			}); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "User promoted to Admin!")
+			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserPromoteSuccess))
 		})
 
 		form.Register(databaseUserPageDegrade, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Degrade user %q to Unknown?", selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserDegradeConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -140,11 +142,11 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			}); err != nil {
 				return err
 			}
-			return p.Alert("Manboster Configuration Wizard", "User degraded to Unknown!")
+			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserDegradeSuccess))
 		})
 
 		form.Register(databaseUserPageDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete user %q? YOUR ACTION IS IRREVERSIBLE!", selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserDeleteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -154,7 +156,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.DeleteUser(ctx, selectedUser.Platform, selectedUser.UserID); err != nil {
 				return err
 			}
-			if err := p.Alert("Manboster Configuration Wizard", "User deleted successfully!"); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserDeleteSuccess)); err != nil {
 				return err
 			}
 			return errQuit
@@ -162,7 +164,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 
 		form.Register(databaseUserPageQuit, nilFunc)
 
-		err = handleWithPrompt[databaseUserPageAction](p, form, opts, detail, "What do you want to do with this user?")
+		err = handleWithPrompt[databaseUserPageAction](p, form, opts, detail, i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return err
 		}

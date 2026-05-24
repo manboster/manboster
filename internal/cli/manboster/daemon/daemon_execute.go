@@ -11,6 +11,8 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/app"
 	"github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/sevlyar/go-daemon"
 	"github.com/spf13/cobra"
 )
@@ -19,25 +21,25 @@ import (
 func startCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Reborn()
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when starting Manboster daemon, error: %v\n[Manboster Daemon]Please be sure that this daemon is not running.", err))
+		color.Red(fmt.Sprintf(i18n.T(keys.DaemonStartError), err))
 		return
 	}
 
 	if d != nil {
-		color.Green("[Manboster Daemon] Manboster daemon started, you can chat with your Lobster after a while!")
+		color.Green(i18n.T(keys.DaemonStartSuccess))
 		return
 	}
 
 	defer func(ctx *daemon.Context) {
 		err := ctx.Release()
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v", err))
+			color.Red(fmt.Sprintf(i18n.T(keys.DaemonStopError), err))
 		}
 	}(ctx.DaemonCtx)
 
 	err = config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
-		color.Red("[Manboster Daemon] There is no configuration file available, please run configuration at least once!")
+		color.Red(i18n.T(keys.DaemonNoConfig))
 		os.Exit(0)
 	} else if err != nil {
 		panic(err)
@@ -49,26 +51,24 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 func stopCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v\n Please be sure that you have started this daemon.", err))
+		color.Red(fmt.Sprintf(i18n.T(keys.DaemonStatusError), err))
 		return
 	}
 	if d != nil {
-		// stop the daemon
 		err = d.Signal(syscall.SIGTERM)
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when stopping Manboster daemon, error: %v", err))
+			color.Red(fmt.Sprintf(i18n.T(keys.DaemonStopError), err))
 			return
 		}
-		color.Green("[Manboster Daemon] Manboster daemon stopped, thank you for playing with your Lobster!")
-
+		color.Green(i18n.T(keys.DaemonStopSuccess))
 	} else {
-		color.Yellow("[Manboster Daemon] Manboster daemon stopped!")
+		color.Yellow(i18n.T(keys.DaemonStopStopped))
 	}
 }
 
 // restartCommandExecutor restarts the daemon
 func restartCommandExecutor(cmd *cobra.Command, args []string) {
-	color.Cyan("[Manboster Daemon] Restarting Manboster daemon, please wait...")
+	color.Cyan(i18n.T(keys.DaemonRestartMessage))
 	stopCommandExecutor(cmd, args)
 	time.Sleep(3 * time.Second)
 	startCommandExecutor(cmd, args)
@@ -78,19 +78,17 @@ func restartCommandExecutor(cmd *cobra.Command, args []string) {
 func statusCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
-		color.Red(fmt.Sprintf("[Manboster Daemon] An error has been occurred when getting Manboster daemon PID file, error: %v\nMaybe the daemon is not running.", err))
+		color.Red(fmt.Sprintf(i18n.T(keys.DaemonStatusError), err))
 		return
 	}
 	if d != nil {
-		// get running status
 		err = d.Signal(syscall.Signal(0))
 		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Daemon] Manboster is not running currently, please delete PID files in %s to reset daemon status or run 'manboster reset' , error: %v", config.Path("manboster.pid"), err))
+			color.Red(fmt.Sprintf(i18n.T(keys.DaemonStatusNotRunning), config.Path("manboster.pid"), err))
 			return
 		}
-
-		color.Green(fmt.Sprintf("[Manboster Daemon] Manboster daemon is running, you can view the log data in %s", config.Path("manboster.log")))
+		color.Green(fmt.Sprintf(i18n.T(keys.DaemonStatusRunning), config.Path("manboster.log")))
 	} else {
-		color.Red("[Manboster Daemon] Manboster daemon stopped!")
+		color.Red(i18n.T(keys.DaemonStopStopped))
 	}
 }

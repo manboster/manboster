@@ -5,6 +5,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/cli"
 )
 
@@ -27,12 +29,12 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	conf := config.Config{}
 
 	if err := config.Init(); err == nil {
-		prompt, err := p.Prompt("**A valid configuration file is found on your machine!**\n\nIf you want to reconfigure or create configuration in another directory, please continue. If you don't know what you want to do, please exit.", "Do you want to continue?", "Continue", "Exit")
+		prompt, err := p.Prompt(i18n.T(keys.OnboardExistingConfig), i18n.T(keys.OnboardExistingContinue), "Continue", "Exit")
 		if err != nil {
 			return config.Config{}, err
 		}
 		if !prompt {
-			return config.Config{}, fmt.Errorf("user cancelled")
+			return config.Config{}, fmt.Errorf(i18n.T(keys.OnboardUserCancelled))
 		}
 	}
 
@@ -41,7 +43,7 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 		return conf, err
 	}
 	if !allowed {
-		return conf, fmt.Errorf("you rejected the warning, in order to protect you, we skip your installation progress")
+		return conf, fmt.Errorf(i18n.T(keys.OnboardWarningRejected))
 	}
 
 	state := wizardConfigHello
@@ -51,7 +53,7 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	for state != wizardConfigSuccess {
 		switch state {
 		case wizardConfigHello:
-			err = p.Alert("Manboster Configuration Wizard", "Welcome to the Manboster Configuration Wizard. Enjoy your experience with your little Manbo!")
+			err = p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.WizardWelcome))
 			if err != nil {
 				lastState = state
 				state = wizardConfigError
@@ -142,16 +144,16 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 			state = wizardConfigSuccess
 		// If you are using GoLand or other JetBrains IDEs, please ignore this `condition is always true` error.
 		case wizardConfigError:
-			confirm, err := p.Prompt(fmt.Sprintf("We meet an error while processing wizard: %q", reportedError), "Do you want to retry?", "Retry", "Exit")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.WizardErrorRetry), reportedError), "Do you want to retry?", "Retry", "Exit")
 			if err != nil {
-				color.Red(fmt.Sprintf("[Manboster Configuration Wizard] Error while processing wizard: %q", reportedError))
+				color.Red(fmt.Sprintf(i18n.T(keys.WizardConfigError), reportedError))
 			}
 			if !confirm {
 				return conf, reportedError
 			}
 			state = lastState
 		case wizardConfigSuccess:
-			err := p.Alert("Manboster Configuration Wizard", "Successfully processed the configuration!\nWish you have a good time with your Manbo Lobster!")
+			err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.WizardSuccess))
 			if err != nil {
 				return config.Config{}, err
 			}

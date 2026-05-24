@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	_ "github.com/manboster/manboster/internal/tool/all"
 	"github.com/manboster/manboster/spec/cli"
@@ -25,11 +27,11 @@ func (a toolConfigAction) Name() string {
 func (a toolConfigAction) DisplayName() string {
 	switch a {
 	case toolConfigDelete:
-		return "Delete this provider"
+		return i18n.T(keys.ActionDeleteProvider)
 	case toolConfigEdit:
-		return "Edit this provider"
+		return i18n.T(keys.ActionEditProvider)
 	case toolConfigQuit:
-		return "Quit"
+		return i18n.T(keys.ActionQuit)
 	default:
 		return ""
 	}
@@ -73,7 +75,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		}
 
 		var err error
-		option, err = p.Select("Select a tool provider to configure.", "Please select a tool provider to configure.", options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.ConfigToolSelectPrompt), i18n.T(keys.ConfigToolSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -122,7 +124,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		form := newConfigForm[toolConfigAction]()
 
 		form.Register(toolConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf("Do you want to delete %q?\n\nYour action is IRREVERSIBLE!", selectedConfig.Name), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigToolDeleteConfirm), selectedConfig.Name), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -130,7 +132,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Tools = append(cfg.Tools[:selectedIndex], cfg.Tools[selectedIndex+1:]...)
-			if err := p.Alert("Manboster Configuration Wizard", fmt.Sprintf("Tool provider %q deleted successfully!", selectedConfig.Name)); err != nil {
+			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigToolDeleteSuccess), selectedConfig.Name)); err != nil {
 				return err
 			}
 			return errQuit
@@ -139,7 +141,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		form.Register(toolConfigEdit, func() error {
 			providerCfg := selectedProvider.Config()
 			if providerCfg == nil {
-				return p.Alert("No configuration needed", fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
+				return p.Alert(i18n.T(keys.ConfigToolNoConfig), fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
 			}
 			conf, err := EditConfig(ctx, p, providerCfg, selectedConfig.Configuration)
 			if err != nil {
@@ -152,7 +154,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 
 		form.Register(toolConfigQuit, nilFunc)
 
-		err = handleWithPrompt[toolConfigAction](p, form, opts, fmt.Sprintf("This tool provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), "What do you want to do with it?")
+		err = handleWithPrompt[toolConfigAction](p, form, opts, fmt.Sprintf("This tool provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}
