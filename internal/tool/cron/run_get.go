@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -14,8 +16,8 @@ import (
 var runGetInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "get",
-		DisplayName:  "Get Cronjob",
-		Description:  "Get details of a scheduled job by name.",
+		DisplayName:  i18n.T(keys.CronGetDisplayName),
+		Description:  i18n.T(keys.CronGetDescription),
 		Represent:    "🔎",
 		Irreversible: false,
 	},

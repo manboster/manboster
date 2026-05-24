@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -13,8 +15,8 @@ import (
 var runWebpageInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "webpage",
-		DisplayName:  "Fetch Webpage",
-		Description:  "Fetch and return the content of a webpage by URL.",
+		DisplayName:  i18n.T(keys.BrowserWebpageDisplayName),
+		Description:  i18n.T(keys.BrowserWebpageDescription),
 		Represent:    "🌐",
 		Irreversible: false,
 	},

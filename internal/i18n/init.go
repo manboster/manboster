@@ -14,6 +14,10 @@ import (
 )
 
 func Init() error {
+	if localizer != nil {
+		return nil
+	}
+
 	bundle := i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 

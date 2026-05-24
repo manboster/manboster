@@ -86,10 +86,18 @@ const (
 
 // Tool: browser
 const (
-	BrowserDisplayName          = "tool.browser.display_name"
-	BrowserDescription          = "tool.browser.description"
-	BrowserSearchDisplayName    = "tool.browser.search.display_name"
-	BrowserSearchDescription    = "tool.browser.search.description"
-	BrowserWebpageDisplayName   = "tool.browser.webpage.display_name"
-	BrowserWebpageDescription   = "tool.browser.webpage.description"
+	BrowserDisplayName                  = "tool.browser.display_name"
+	BrowserDescription                  = "tool.browser.description"
+	BrowserSearchDisplayName            = "tool.browser.search.display_name"
+	BrowserSearchDescription            = "tool.browser.search.description"
+	BrowserWebpageDisplayName           = "tool.browser.webpage.display_name"
+	BrowserWebpageDescription           = "tool.browser.webpage.description"
+	BrowserLogDownloading               = "tool.browser.log.downloading"
+	BrowserLogDownloadFailed            = "tool.browser.log.download_failed"
+	BrowserLogCloseBodyFailed           = "tool.browser.log.close_body_failed"
+	BrowserLogClosePageFailed           = "tool.browser.log.close_page_failed"
+	BrowserLogFallbackBrowser           = "tool.browser.log.fallback_browser"
+	BrowserLogPurgeOpenDocFailed        = "tool.browser.log.purge_open_doc_failed"
+	BrowserLogPurgeBodyFailed           = "tool.browser.log.purge_body_failed"
+	BrowserLogPurgeMarkdownFailed       = "tool.browser.log.purge_markdown_failed"
 )

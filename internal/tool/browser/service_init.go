@@ -7,6 +7,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-viper/mapstructure/v2"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func (s *Service) Init(ctx context.Context, conf any) error {
@@ -32,7 +34,7 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 		if err != nil {
 			err := s.DownloadBrowser(browserManager)
 			if err != nil {
-				color.Red(fmt.Sprintf("[Manboster Tool Provider] Failed to download browser: %v", err))
+				color.Red(fmt.Sprintf(i18n.T(keys.BrowserLogDownloadFailed), err))
 			}
 		} else {
 			s.isReady = true

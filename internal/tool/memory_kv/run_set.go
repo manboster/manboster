@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/tool"
@@ -16,8 +18,8 @@ import (
 var runSetInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "set",
-		DisplayName:  "Set Memory",
-		Description:  "Store a value in memory by key. Creates the key if it does not exist.",
+		DisplayName:  i18n.T(keys.MemoryKVSetDisplayName),
+		Description:  i18n.T(keys.MemoryKVSetDescription),
 		Represent:    "💾",
 		Irreversible: false,
 	},

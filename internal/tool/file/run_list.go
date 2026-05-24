@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -14,8 +16,8 @@ import (
 var runListInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "list",
-		DisplayName:  "List Directory",
-		Description:  "List files and directories inside a path in the session workspace.",
+		DisplayName:  i18n.T(keys.FileListDisplayName),
+		Description:  i18n.T(keys.FileListDescription),
 		Represent:    "📂",
 		Irreversible: false,
 	},

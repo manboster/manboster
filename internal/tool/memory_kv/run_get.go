@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -13,8 +15,8 @@ import (
 var runGetInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "get",
-		DisplayName:  "Get Memory",
-		Description:  "Retrieve a value from memory by key.",
+		DisplayName:  i18n.T(keys.MemoryKVGetDisplayName),
+		Description:  i18n.T(keys.MemoryKVGetDescription),
 		Represent:    "🔑",
 		Irreversible: false,
 	},

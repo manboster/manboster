@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -14,8 +16,8 @@ import (
 var runDeleteInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "delete",
-		DisplayName:  "Delete File",
-		Description:  "Delete a file inside the session workspace.",
+		DisplayName:  i18n.T(keys.FileDeleteDisplayName),
+		Description:  i18n.T(keys.FileDeleteDescription),
 		Represent:    "🗑️",
 		Irreversible: true,
 	},

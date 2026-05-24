@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -11,8 +13,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.file",
-	DisplayName:      "Manboster File Helper",
-	Description:      "This tool can read, write, list files, or get info about file. However, it can only read/write/getinfo within session's workspace or a shared public directory in workspace.",
+	DisplayName:      i18n.T(keys.FileDisplayName),
+	Description:      i18n.T(keys.FileDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

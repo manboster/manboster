@@ -5,6 +5,8 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
@@ -13,8 +15,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.memory.md",
-	DisplayName:      "Memory Markdown Tools",
-	Description:      "Memory Markdown Tools allows you to read and write chat-specific markdown file in maximum of 64KB, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
+	DisplayName:      i18n.T(keys.MemoryMDDisplayName),
+	Description:      i18n.T(keys.MemoryMDDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

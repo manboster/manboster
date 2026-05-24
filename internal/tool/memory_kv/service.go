@@ -5,6 +5,8 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
@@ -13,8 +15,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.memory.kv",
-	DisplayName:      "Memory KV Tools",
-	Description:      "Memory KV Tools allows you to storage the memory with Key-Value into database and read or write it anytime.",
+	DisplayName:      i18n.T(keys.MemoryKVDisplayName),
+	Description:      i18n.T(keys.MemoryKVDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

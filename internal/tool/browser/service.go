@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -11,8 +13,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.browser",
-	DisplayName:      "Manboster Web Browser Tool",
-	Description:      "Manboster Web Browser Tool gives unlimited ability for models to search for the Internet, capture webpages, surfing the Internet or download files. Also, you can use CloudFlare's browser use to proxy in order to hide real IP. If there is something you don't know, please use search to search for it.",
+	DisplayName:      i18n.T(keys.BrowserDisplayName),
+	Description:      i18n.T(keys.BrowserDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

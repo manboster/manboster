@@ -6,6 +6,6 @@ import (
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
-//go:embed locales/*.json
+//go:embed locales/*
 var localeFS embed.FS // embedded locales application
 var localizer *i18n.Localizer

@@ -7,10 +7,12 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func (s *Service) DownloadBrowser(m *launcher.Browser) error {
-	color.Yellow("[Manboster Tool Provider] Could not get an available browser from your machine, now downloading...")
+	color.Yellow(i18n.T(keys.BrowserLogDownloading))
 	err := m.Download()
 	if err != nil {
 		return err
@@ -52,7 +54,7 @@ func (s *Service) doWebSearch(ctx context.Context, keyword string, searchEngine 
 	}
 	str, err := s.BasicScrap(ctx, u, respType)
 	if err != nil {
-		color.Yellow("[Manboster Tool Provider] We could not get content directly, opening the browser...")
+		color.Yellow(i18n.T(keys.BrowserLogFallbackBrowser))
 		return "", err
 	}
 	return str, nil

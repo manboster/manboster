@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -12,8 +14,8 @@ import (
 var runDateInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "date",
-		DisplayName:  "Get Date",
-		Description:  "Get this machine's current date in format like 2026-01-11",
+		DisplayName:  i18n.T(keys.DateGetDisplayName),
+		Description:  i18n.T(keys.DateGetDescription),
 		Represent:    "📅",
 		Irreversible: false,
 	},

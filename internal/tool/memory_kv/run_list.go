@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -13,8 +15,8 @@ import (
 var runListInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "list",
-		DisplayName:  "List Memory Keys",
-		Description:  "List all stored memory keys.",
+		DisplayName:  i18n.T(keys.MemoryKVListDisplayName),
+		Description:  i18n.T(keys.MemoryKVListDescription),
 		Represent:    "📋",
 		Irreversible: false,
 	},

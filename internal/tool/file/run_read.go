@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -14,8 +16,8 @@ import (
 var runReadInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "read",
-		DisplayName:  "Read File",
-		Description:  "Read the content of a file inside the session workspace.",
+		DisplayName:  i18n.T(keys.FileReadDisplayName),
+		Description:  i18n.T(keys.FileReadDescription),
 		Represent:    "📖",
 		Irreversible: false,
 	},

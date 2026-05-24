@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -16,8 +18,8 @@ import (
 var runReplaceInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "replace",
-		DisplayName:  "Replace in File",
-		Description:  "Replace occurrences of a specific text in a file. Set line to 0 to replace all occurrences, or specify a line number to restrict replacement to that line.",
+		DisplayName:  i18n.T(keys.FileReplaceDisplayName),
+		Description:  i18n.T(keys.FileReplaceDescription),
 		Represent:    "🔄",
 		Irreversible: true,
 	},

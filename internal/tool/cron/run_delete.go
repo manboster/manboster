@@ -3,6 +3,8 @@ package cron
 import (
 	"context"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -12,8 +14,8 @@ import (
 var runDeleteInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "delete",
-		DisplayName:  "Delete Cronjob",
-		Description:  "Delete a scheduled job by name.",
+		DisplayName:  i18n.T(keys.CronDeleteDisplayName),
+		Description:  i18n.T(keys.CronDeleteDescription),
 		Represent:    "🗑️",
 		Irreversible: true,
 	},

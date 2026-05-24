@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -13,8 +15,8 @@ import (
 var runOSInfoInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "os-info",
-		DisplayName:  "OS Information",
-		Description:  "Get system information including CPU, memory, disk, and OS details.",
+		DisplayName:  i18n.T(keys.SystemOSInfoDisplayName),
+		Description:  i18n.T(keys.SystemOSInfoDescription),
 		Represent:    "🖥️",
 		Irreversible: false,
 	},

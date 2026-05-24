@@ -70,5 +70,13 @@
   "tool.browser.search.display_name": "网页搜索",
   "tool.browser.search.description": "通过搜索引擎搜索互联网并返回结果。",
   "tool.browser.webpage.display_name": "获取网页",
-  "tool.browser.webpage.description": "通过 URL 获取并返回指定网页的内容。"
+  "tool.browser.webpage.description": "通过 URL 获取并返回指定网页的内容。",
+  "tool.browser.log.downloading": "[浏览器] 未检测到本地浏览器，正在下载...",
+  "tool.browser.log.download_failed": "[浏览器] 浏览器下载失败：%v",
+  "tool.browser.log.close_body_failed": "[浏览器] 关闭响应体失败",
+  "tool.browser.log.close_page_failed": "[浏览器] 关闭页面失败",
+  "tool.browser.log.fallback_browser": "[浏览器] 直接获取内容失败，正在切换至浏览器模式...",
+  "tool.browser.log.purge_open_doc_failed": "[浏览器] 处理响应时打开文档失败",
+  "tool.browser.log.purge_body_failed": "[浏览器] 处理响应时提取 body 失败",
+  "tool.browser.log.purge_markdown_failed": "[浏览器] HTML 转 Markdown 失败"
 }

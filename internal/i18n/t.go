@@ -6,6 +6,10 @@ import (
 
 func T(messageID string, args ...any) string {
 	if localizer == nil {
+		err := Init()
+		if err != nil {
+			return ""
+		}
 		return messageID
 	}
 

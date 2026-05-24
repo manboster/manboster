@@ -70,5 +70,13 @@
   "tool.browser.search.display_name": "Web Search",
   "tool.browser.search.description": "Search the web using a search engine and return the results.",
   "tool.browser.webpage.display_name": "Fetch Webpage",
-  "tool.browser.webpage.description": "Fetch and return the content of a webpage by URL."
+  "tool.browser.webpage.description": "Fetch and return the content of a webpage by URL.",
+  "tool.browser.log.downloading": "[Browser] No local browser found, downloading now...",
+  "tool.browser.log.download_failed": "[Browser] Failed to download browser: %v",
+  "tool.browser.log.close_body_failed": "[Browser] Failed to close response body",
+  "tool.browser.log.close_page_failed": "[Browser] Failed to close page",
+  "tool.browser.log.fallback_browser": "[Browser] Could not fetch content directly, falling back to browser...",
+  "tool.browser.log.purge_open_doc_failed": "[Browser] Failed to open document while processing response",
+  "tool.browser.log.purge_body_failed": "[Browser] Failed to extract body while processing response",
+  "tool.browser.log.purge_markdown_failed": "[Browser] Failed to convert HTML to markdown"
 }

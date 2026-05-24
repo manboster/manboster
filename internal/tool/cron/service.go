@@ -5,6 +5,8 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
@@ -14,8 +16,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.cron",
-	DisplayName:      "Cronjob",
-	Description:      "Cronjob allows you to execute command at a constant time or delay, you can even use crontab expressions.",
+	DisplayName:      i18n.T(keys.CronDisplayName),
+	Description:      i18n.T(keys.CronDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

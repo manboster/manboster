@@ -9,6 +9,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/stealth"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func (s *Service) BasicScrap(ctx context.Context, url string, respType ResponseType) (string, error) {
@@ -25,7 +27,7 @@ func (s *Service) BasicScrap(ctx context.Context, url string, respType ResponseT
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			color.Yellow("[Manboster Tool Provider] We could not close request the body when getting the content")
+			color.Yellow(i18n.T(keys.BrowserLogCloseBodyFailed))
 		}
 	}(resp.Body)
 
@@ -51,7 +53,7 @@ func (s *Service) BrowserScrap(ctx context.Context, url string, respType Respons
 	defer func(p *rod.Page) {
 		err := p.Close()
 		if err != nil {
-			color.Yellow("[Manboster Tool Provider] We could not close the page")
+			color.Yellow(i18n.T(keys.BrowserLogClosePageFailed))
 		}
 	}(p)
 

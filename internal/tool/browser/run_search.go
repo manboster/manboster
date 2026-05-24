@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -13,8 +15,8 @@ import (
 var runSearchInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "search",
-		DisplayName:  "Web Search",
-		Description:  "Search the web using a search engine and return the results.",
+		DisplayName:  i18n.T(keys.BrowserSearchDisplayName),
+		Description:  i18n.T(keys.BrowserSearchDescription),
 		Represent:    "🔍",
 		Irreversible: false,
 	},

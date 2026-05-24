@@ -5,6 +5,8 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -12,8 +14,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.system",
-	DisplayName:      "System Info Tool",
-	Description:      "System Info Tool can get system information and current running status.",
+	DisplayName:      i18n.T(keys.SystemDisplayName),
+	Description:      i18n.T(keys.SystemDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -15,8 +17,8 @@ import (
 var runProcessListInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "process-list",
-		DisplayName:  "List Processes",
-		Description:  "List all running processes sorted by CPU usage.",
+		DisplayName:  i18n.T(keys.SystemProcessListDisplayName),
+		Description:  i18n.T(keys.SystemProcessListDescription),
 		Represent:    "📋",
 		Irreversible: false,
 	},
@@ -30,8 +32,8 @@ var runProcessListInfo = tool.FactoryRegisterInfo[NameType]{
 var runProcessInfoInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "process-info",
-		DisplayName:  "Process Info",
-		Description:  "Get detailed information about a specific process by PID.",
+		DisplayName:  i18n.T(keys.SystemProcessInfoDisplayName),
+		Description:  i18n.T(keys.SystemProcessInfoDescription),
 		Represent:    "🔎",
 		Irreversible: false,
 	},
@@ -45,8 +47,8 @@ var runProcessInfoInfo = tool.FactoryRegisterInfo[NameType]{
 var runProcessKillInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "process_kill",
-		DisplayName:  "Kill Process",
-		Description:  "Kill a running process by PID.",
+		DisplayName:  i18n.T(keys.SystemProcessKillDisplayName),
+		Description:  i18n.T(keys.SystemProcessKillDescription),
 		Represent:    "🔴",
 		Irreversible: true,
 	},

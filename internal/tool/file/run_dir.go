@@ -3,6 +3,8 @@ package file
 import (
 	"context"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -12,8 +14,8 @@ import (
 var runDirInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "dir",
-		DisplayName:  "Get Workspace Dir",
-		Description:  "Get the absolute path of the current session workspace directory.",
+		DisplayName:  i18n.T(keys.FileDirDisplayName),
+		Description:  i18n.T(keys.FileDirDescription),
 		Represent:    "🗂️",
 		Irreversible: false,
 	},

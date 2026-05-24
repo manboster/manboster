@@ -5,6 +5,8 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -12,8 +14,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.datetime",
-	DisplayName:      "Get DateTime",
-	Description:      "Datetime allows you to get current time and date of this machine.",
+	DisplayName:      i18n.T(keys.DatetimeDisplayName),
+	Description:      i18n.T(keys.DatetimeDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

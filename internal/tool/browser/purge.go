@@ -6,6 +6,8 @@ import (
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 )
 
 func (s *Service) purgeData(respStr string, respType ResponseType) string {
@@ -15,12 +17,12 @@ func (s *Service) purgeData(respStr string, respType ResponseType) string {
 	case ResponseTypeBody:
 		doc, err := goquery.NewDocumentFromReader(strings.NewReader(respStr))
 		if err != nil {
-			color.Yellow("[Manboster Tool Provider] Could not open document when purging data")
+			color.Yellow(i18n.T(keys.BrowserLogPurgeOpenDocFailed))
 			return respStr
 		}
 		html, err := doc.Find("body").Html()
 		if err != nil {
-			color.Yellow("[Manboster Tool Provider] Could not find body when purging data")
+			color.Yellow(i18n.T(keys.BrowserLogPurgeBodyFailed))
 			return respStr
 		}
 		return html
@@ -28,7 +30,7 @@ func (s *Service) purgeData(respStr string, respType ResponseType) string {
 		conv := md.NewConverter("", true, nil)
 		markdown, err := conv.ConvertString(respStr)
 		if err != nil {
-			color.Yellow("[Manboster Tool Provider] Could not convert from html to markdown")
+			color.Yellow(i18n.T(keys.BrowserLogPurgeMarkdownFailed))
 			return respStr
 		}
 		return markdown

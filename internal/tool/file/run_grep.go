@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -16,8 +18,8 @@ import (
 var runGrepInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "grep",
-		DisplayName:  "Grep File",
-		Description:  "Search for a keyword in a file and return all matching lines with their line numbers.",
+		DisplayName:  i18n.T(keys.FileGrepDisplayName),
+		Description:  i18n.T(keys.FileGrepDescription),
 		Represent:    "🔍",
 		Irreversible: false,
 	},

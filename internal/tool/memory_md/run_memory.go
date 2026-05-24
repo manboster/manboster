@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/plugin"
@@ -16,8 +18,8 @@ import (
 var runGetInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "get",
-		DisplayName:  "Get Markdown Memory",
-		Description:  "Read the chat-specific markdown memory file.",
+		DisplayName:  i18n.T(keys.MemoryMDGetDisplayName),
+		Description:  i18n.T(keys.MemoryMDGetDescription),
 		Represent:    "📖",
 		Irreversible: false,
 	},
@@ -31,8 +33,8 @@ var runGetInfo = tool.FactoryRegisterInfo[NameType]{
 var runSetInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
 		Name:         "set",
-		DisplayName:  "Set Markdown Memory",
-		Description:  "Write markdown content to the chat-specific memory file. Maximum 64KB.",
+		DisplayName:  i18n.T(keys.MemoryMDSetDisplayName),
+		Description:  i18n.T(keys.MemoryMDSetDescription),
 		Represent:    "✏️",
 		Irreversible: false,
 	},
