@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
@@ -19,24 +18,21 @@ func Init() error {
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
 	// load embedded locales
-	entries, err := fs.ReadDir(localeFS, "locales")
-	if err != nil {
-		return err
-	}
+	// walk for subdirectories
+	err := fs.WalkDir(localeFS, "locales", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 
-	// go for locales files
-	for _, entry := range entries {
-		// check out json files
-		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
-			filePath := filepath.Join("locales", entry.Name())
-
-			_, err := bundle.LoadMessageFileFS(localeFS, filePath)
-			if err != nil {
-				color.Yellow(fmt.Sprintf("[Manboster i18n] Error loading i18n: %v", err))
-				continue
+		// process json file
+		if !d.IsDir() && strings.HasSuffix(d.Name(), ".json") {
+			_, loadErr := bundle.LoadMessageFileFS(localeFS, path)
+			if loadErr != nil {
+				color.Yellow(fmt.Sprintf("[Manboster i18n] Warning: failed to load translation file %s: %v", path, loadErr))
 			}
 		}
-	}
+		return nil
+	})
 
 	userLocales, err := locale.GetLocales()
 	if err != nil {

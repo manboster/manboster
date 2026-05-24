@@ -1,0 +1,130 @@
+package keys
+
+// CLI: manboster app
+const (
+	CLIManbosterWelcome             = "cli.manboster.welcome"
+	CLIManbosterLoading             = "cli.manboster.loading"
+	CLIManbosterDaemonRunningError  = "cli.manboster.daemon_running_error"
+	CLIManbosterQuiting             = "cli.manboster.quiting"
+	CLIManbosterConfigNotFound      = "cli.manboster.config_not_found"
+	CLIManbosterConfigCreatedSuccess = "cli.manboster.config_created_success"
+	CLIManbosterConfigInitError     = "cli.manboster.config_init_error"
+	CLIManbosterReadingConfig       = "cli.manboster.reading_config"
+	CLIManbosterLoaderError         = "cli.manboster.loader_error"
+	CLIManbosterGoodbye             = "cli.manboster.goodbye"
+)
+
+// CLI: daemon
+const (
+	CLIDaemonStartError      = "cli.daemon.start_error"
+	CLIDaemonStartSuccess    = "cli.daemon.start_success"
+	CLIDaemonStopError       = "cli.daemon.stop_error"
+	CLIDaemonStopSuccess     = "cli.daemon.stop_success"
+	CLIDaemonRestartMessage  = "cli.daemon.restart_message"
+	CLIDaemonStatusRunning   = "cli.daemon.status_running"
+	CLIDaemonStatusStopped   = "cli.daemon.status_stopped"
+	CLIDaemonStatusNotRunning = "cli.daemon.status_not_running"
+	CLIDaemonStatusError     = "cli.daemon.status_error"
+	CLIDaemonLogError        = "cli.daemon.log_error"
+	CLIDaemonLogReading      = "cli.daemon.log_reading"
+	CLIDaemonNoConfig        = "cli.daemon.no_config"
+)
+
+// CLI: config wizard
+const (
+	CLIConfigDaemonRunningError  = "cli.config.daemon_running_error"
+	CLIConfigInitError           = "cli.config.init_error"
+	CLIConfigError               = "cli.config.error"
+	CLIConfigEditNotFound        = "cli.config.edit_not_found"
+	CLIConfigEditCreatePrompt    = "cli.config.edit_create_prompt"
+	CLIConfigEditCancelled       = "cli.config.edit_cancelled"
+	CLIConfigEditInitError       = "cli.config.edit_init_error"
+	CLIConfigEditOpenError       = "cli.config.edit_open_error"
+	CLIConfigOpenNotFound        = "cli.config.open_not_found"
+	CLIConfigOpenInitError       = "cli.config.open_init_error"
+	CLIConfigOpenError           = "cli.config.open_error"
+	CLIConfigOnboardError        = "cli.config.onboard_error"
+	CLIConfigOnboardValidateError = "cli.config.onboard_validate_error"
+	CLIConfigOnboardWriteError   = "cli.config.onboard_write_error"
+	CLIConfigOnboardSuccess      = "cli.config.onboard_success"
+	CLIConfigSelectPrompt        = "cli.config.select_prompt"
+	CLIConfigSelectHelp          = "cli.config.select_help"
+	CLIConfigWizardError         = "cli.config.wizard_error"
+	CLIConfigChatSelectPrompt    = "cli.config.chat_select_prompt"
+	CLIConfigChatSelectHelp      = "cli.config.chat_select_help"
+	CLIConfigChatDeleteConfirm   = "cli.config.chat_delete_confirm"
+	CLIConfigChatDeleteSuccess   = "cli.config.chat_delete_success"
+	CLIConfigChatDeleteCancelled = "cli.config.chat_delete_cancelled"
+	CLIConfigLLMSelectPrompt     = "cli.config.llm_select_prompt"
+	CLIConfigLLMSelectHelp       = "cli.config.llm_select_help"
+	CLIConfigLLMDeleteConfirm    = "cli.config.llm_delete_confirm"
+	CLIConfigLLMDeleteSuccess    = "cli.config.llm_delete_success"
+	CLIConfigLLMDeleteCancelled  = "cli.config.llm_delete_cancelled"
+	CLIConfigToolSelectPrompt    = "cli.config.tool_select_prompt"
+	CLIConfigToolSelectHelp      = "cli.config.tool_select_help"
+	CLIConfigToolDeleteConfirm   = "cli.config.tool_delete_confirm"
+	CLIConfigToolDeleteSuccess   = "cli.config.tool_delete_success"
+	CLIConfigToolDeleteCancelled = "cli.config.tool_delete_cancelled"
+	CLIConfigToolNoConfig        = "cli.config.tool_no_config"
+	CLIConfigHachimiSelectPrompt  = "cli.config.hachimi_select_prompt"
+	CLIConfigHachimiSelectHelp    = "cli.config.hachimi_select_help"
+	CLIConfigHachimiDeleteConfirm = "cli.config.hachimi_delete_confirm"
+	CLIConfigHachimiDeleteSuccess = "cli.config.hachimi_delete_success"
+	CLIConfigHachimiSetDefault    = "cli.config.hachimi_set_default"
+)
+
+// CLI: onboard wizard
+const (
+	CLIOnboardExistingConfigPrompt = "cli.onboard.existing_config_prompt"
+	CLIOnboardUserCancelled        = "cli.onboard.user_cancelled"
+	CLIOnboardWarningRejected      = "cli.onboard.warning_rejected"
+	CLIOnboardWelcome              = "cli.onboard.welcome"
+	CLIOnboardWelcomeMsg           = "cli.onboard.welcome_msg"
+	CLIOnboardWizardErrorPrompt    = "cli.onboard.wizard_error_prompt"
+	CLIOnboardWizardErrorRetry     = "cli.onboard.wizard_error_retry"
+	CLIOnboardSuccess              = "cli.onboard.success"
+	CLIOnboardSuccessMsg           = "cli.onboard.success_msg"
+	CLIOnboardChatSelectPrompt     = "cli.onboard.chat_select_prompt"
+	CLIOnboardChatAddedCount       = "cli.onboard.chat_added_count"
+	CLIOnboardChatNoMoreProviders  = "cli.onboard.chat_no_more_providers"
+	CLIOnboardLLMSelectPrompt      = "cli.onboard.llm_select_prompt"
+	CLIOnboardLLMAddedCount        = "cli.onboard.llm_added_count"
+	CLIOnboardAppSelectProvider    = "cli.onboard.app_select_provider"
+	CLIOnboardAppSelectModel       = "cli.onboard.app_select_model"
+	CLIOnboardHachimiFeaturePrompt = "cli.onboard.hachimi_feature_prompt"
+	CLIOnboardHachimiEnableQuestion = "cli.onboard.hachimi_enable_question"
+	CLIOnboardHachimiAddedCount    = "cli.onboard.hachimi_added_count"
+	CLIOnboardHachimiSelectDefault = "cli.onboard.hachimi_select_default"
+	CLIOnboardHachimiSelectProvider = "cli.onboard.hachimi_select_provider"
+	CLIOnboardToolSelectPrompt     = "cli.onboard.tool_select_prompt"
+	CLIOnboardToolSelectHelp       = "cli.onboard.tool_select_help"
+	CLIOnboardPreviewTitle         = "cli.onboard.preview_title"
+	CLIOnboardPreviewChatCount     = "cli.onboard.preview_chat_count"
+	CLIOnboardPreviewLLMCount      = "cli.onboard.preview_llm_count"
+	CLIOnboardPreviewToolCount     = "cli.onboard.preview_tool_count"
+	CLIOnboardPreviewHachimiEnabled = "cli.onboard.preview_hachimi_enabled"
+	CLIOnboardPreviewHachimiDisabled = "cli.onboard.preview_hachimi_disabled"
+	CLIOnboardPreviewConfirm       = "cli.onboard.preview_confirm"
+	CLIOnboardWriteConfirm         = "cli.onboard.write_confirm"
+	CLIOnboardWritePathPrompt      = "cli.onboard.write_path_prompt"
+	CLIOnboardWritePathHelp        = "cli.onboard.write_path_help"
+	CLIOnboardWriteSuccess         = "cli.onboard.write_success"
+)
+
+// Config validation
+const (
+	ConfigValidateUnsupportedVersion      = "config.validate.unsupported_version"
+	ConfigValidateOutdatedVersion         = "config.validate.outdated_version"
+	ConfigValidateMissingChat             = "config.validate.missing_chat"
+	ConfigValidateMissingLLM              = "config.validate.missing_llm"
+	ConfigValidateHachimiNoProviders      = "config.validate.hachimi_no_providers"
+	ConfigValidateMissingDBPath           = "config.validate.missing_db_path"
+	ConfigValidateMissingDefaultLLMProvider = "config.validate.missing_default_llm_provider"
+	ConfigValidateMissingDefaultLLMModel  = "config.validate.missing_default_llm_model"
+)
+
+// Engine: onboard
+const (
+	EngineOnboardRetryLimitExceeded = "engine.onboard.retry_limit_exceeded"
+	EngineOnboardPairCodeMessage    = "engine.onboard.pair_code_message"
+)
