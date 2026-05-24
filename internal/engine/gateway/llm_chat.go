@@ -21,7 +21,7 @@ func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, cur
 	}
 
 	name := "llmChat_" + currentProvider.Name() + "_" + currentModel.Name + "_" + strconv.FormatInt(time.Now().Unix(), 10)
-	err := withRetry(ctx, name, 3, func(ctx context.Context) error {
+	err := withRetry(ctx, name, 7, func(ctx context.Context) error {
 		color.Blue(fmt.Sprintf("[Manboster Gateway] Fetching message response from LLMProvider %q, model %q", currentProvider.DisplayName(), currentModel.DisplayName))
 		// we make timeout requests.
 		timeoutCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)

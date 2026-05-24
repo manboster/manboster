@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/fatih/color"
@@ -25,7 +26,8 @@ func withRetry(ctx context.Context, name string, times int, action func(ctx cont
 
 		color.Red(fmt.Sprintf("[Manboster Gateway] %s failed on try %d, error: %q", name, tries, err))
 		if tries < times {
-			time.Sleep(time.Second * time.Duration(tries))
+			t := math.Pow(2, float64(tries))
+			time.Sleep(time.Duration(t) * time.Second)
 		}
 	}
 	return fmt.Errorf("all %d attempts failed for %s, last error: %w", times, name, err)
