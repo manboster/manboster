@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
@@ -38,7 +39,7 @@ var runProcessInfoInfo = tool.FactoryRegisterInfo[NameType]{
 	Run:            runProcessInfo,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
-	ClientRenderer: tool.NilClientRendererFunc,
+	ClientRenderer: renderProcessInfo,
 }
 
 var runProcessKillInfo = tool.FactoryRegisterInfo[NameType]{
@@ -53,7 +54,7 @@ var runProcessKillInfo = tool.FactoryRegisterInfo[NameType]{
 	Run:            runProcessKill,
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
-	ClientRenderer: tool.NilClientRendererFunc,
+	ClientRenderer: renderProcessKill,
 }
 
 func runProcessList(ctx context.Context, args string) (*plugin.RunResponse, error) {
@@ -93,4 +94,20 @@ func runProcessKill(ctx context.Context, args string) (*plugin.RunResponse, erro
 		return nil, fmt.Errorf("failed to kill process: %w", err)
 	}
 	return &plugin.RunResponse{Response: "success"}, nil
+}
+
+func renderProcessInfo(args string) string {
+	arg, err := util.Unmarshal[ProcessInfoArgs](args)
+	if err != nil {
+		return ""
+	}
+	return strconv.Itoa(arg.PID)
+}
+
+func renderProcessKill(args string) string {
+	arg, err := util.Unmarshal[ProcessKillArgs](args)
+	if err != nil {
+		return ""
+	}
+	return strconv.Itoa(arg.PID)
 }
