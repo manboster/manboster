@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/repository/types"
@@ -18,7 +17,8 @@ import (
 // Guard is core component of Manboster gatekeeper service.
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	executeGroup := toolProvider.CacheGroup(fmt.Sprintf("%s", req.ToolArgs))
-	ud := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), msg.UserID, sid, toolProvider.Name(), executeGroup)
+	overallUd := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.ChatID, sid)
+	ud := overallUd + fmt.Sprintf(":%s:%s", toolProvider.Name(), executeGroup)
 	err := s.CheckSession(ud)
 	if err != nil {
 		return false, err
@@ -26,6 +26,18 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 	requireUserType := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
 	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
+
+	m, mT := s.ignoranceSessionManager.GetMark(overallUd)
+	if m && mT == ignorance.MarkCancelAll {
+		return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
+	}
+	if m && mT == ignorance.MarkHachimiAll {
+		// run hachimi here...
+		return s.HachimiHandler(ctx, instance, msg, toolProvider, req, ud)
+	}
+	if m && mT == ignorance.MarkContinueAll {
+		return true, nil
+	}
 
 	mark, markType := s.ignoranceSessionManager.GetMark(ud)
 	if (mark && markType == ignorance.MarkHachimi && requireUserType <= actualUserType) || msg.MessageType&chat.MessageFromCron != 0 {
@@ -42,12 +54,26 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		selection = selectionNoHachimi
 	}
 
-	return s.Select(ctx, instance, msg, selection, util.DescribeToHuman(req, toolProvider), func(cb *chat.SelectionCallbackPayload) (bool, error) {
-		id := fmt.Sprintf("%s:%s:%s:%s:%s", instance.Name(), cb.SelectionBy, sid, toolProvider.Name(), executeGroup)
+	return s.Select(ctx, instance, msg, selection, util.DescribeToHuman(req, toolProvider), func(msg *chat.Message) (bool, error) {
+		cb := msg.SelectionCallback
+		overallId := fmt.Sprintf("%s:%s:%s", instance.Name(), msg.ChatID, sid)
+		id := overallId + fmt.Sprintf(":%s:%s", toolProvider.Name(), executeGroup)
 
 		err = s.CheckSession(id)
 		if err != nil {
 			return false, err
+		}
+
+		m, mT := s.ignoranceSessionManager.GetMark(overallId)
+		if m && mT == ignorance.MarkCancelAll {
+			return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
+		}
+		if m && mT == ignorance.MarkHachimiAll {
+			// run hachimi here...
+			return s.HachimiHandler(ctx, instance, msg, toolProvider, req, id)
+		}
+		if m && mT == ignorance.MarkContinueAll {
+			return true, nil
 		}
 
 		mark, markType := s.ignoranceSessionManager.GetMark(id)
@@ -70,63 +96,73 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		// set TTL based on tools required user permission
 		switch minPermission {
 		case types.UserUnknown:
-			ttl = 60 * 60 // 1 hour
+			ttl = 60 * 240 // 4 hours
 		case types.UserAdmin:
-			ttl = 60 * 30 // 30 minutes
+			ttl = 60 * 120 // 2 hours
 		case types.UserRoot:
-			ttl = 60 * 15 // 15 minutes
+			ttl = 60 * 30 // 30 minutes
 		default:
 		}
+
+		respMsg := msg.Clone()
+		respMsg.MessageType = chat.MessageText
+		respMsg.Text = &chat.TextPayload{}
+		respMsg.Reply = nil
 
 		// get resp based on
 		switch guardSelectType(cb.SelectionValue) {
 		case guardSelectHachimi:
-			respMsg := msg.Clone()
-			respMsg.MessageType = chat.MessageText
-			respMsg.Text = &chat.TextPayload{
-				Text: "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!",
-			}
-			respMsg.Reply = nil
+			respMsg.Text.Text = "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!"
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
 			}
 			s.ignoranceSessionManager.SetMark(id, true, ttl, ignorance.MarkHachimi)
-
-			go func(instance chat.Provider, rMsg *chat.Message) {
-				err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
-				if err != nil {
-					color.Yellow("[Manboster Gatekeeper] Failed to recall result")
-				}
-			}(instance, respMsg)
+			go s.Recall(ctx, instance, respMsg)
+			return true, nil
+		case guardSelectHachimiAll:
+			respMsg.Text.Text = "🐱 You activated hachimi, it will help you handle this tool in next " + strconv.Itoa(ttl/60) + " minutes, enjoy your time!"
+			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
+			if err != nil {
+				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
+			}
+			s.ignoranceSessionManager.SetMark(overallId, true, 60*60, ignorance.MarkHachimiAll)
+			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectIgnore:
-			respMsg := msg.Clone()
-			respMsg.MessageType = chat.MessageText
-			respMsg.Text = &chat.TextPayload{
-				Text: "⚠️ You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes.",
-			}
-			respMsg.Reply = nil
+			respMsg.Text.Text = "⚠️ You ignored this tool call, it will automatically allow in next " + strconv.Itoa(ttl/60) + " minutes."
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
 			}
 			s.ignoranceSessionManager.SetMark(id, true, ttl, ignorance.MarkIgnore)
-
-			go func(instance chat.Provider, rMsg *chat.Message) {
-				err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
-				if err != nil {
-					color.Yellow("[Manboster Gatekeeper] Failed to recall result")
-				}
-			}(instance, respMsg)
+			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectContinue:
+			return true, nil
+		case guardSelectContinueAll:
+			respMsg.Text.Text = "⚠️ You ignored all tool calls in this session! it will automatically allow in next 10 minutes."
+			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
+			if err != nil {
+				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
+			}
+			s.ignoranceSessionManager.SetMark(overallId, true, ttl, ignorance.MarkContinueAll)
+			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectCancel:
 			return false, fmt.Errorf("user manually canceled your request")
 		case guardSelectCancelIgnore:
 			s.ignoranceSessionManager.SetMark(id, true, 15*60, ignorance.MarkCancel)
-			return false, fmt.Errorf("user manually canceled your request")
+			return false, fmt.Errorf("user manually canceled your request for this tool call for 15 minutes")
+		case guardSelectCancelAll:
+			respMsg.Text.Text = "❌ You rejected all tool calls in this session! it will automatically deny in next 10 minutes."
+			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
+			if err != nil {
+				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
+			}
+			s.ignoranceSessionManager.SetMark(overallId, true, ttl, ignorance.MarkCancelAll)
+			go s.Recall(ctx, instance, respMsg)
+			return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
 		default:
 			return false, fmt.Errorf("invalid selection value: %v", cb.SelectionValue)
 		}

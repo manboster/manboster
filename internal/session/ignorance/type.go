@@ -12,7 +12,10 @@ type mark struct {
 type MarkType string
 
 const (
-	MarkCancel  MarkType = "cAnCel"
-	MarkIgnore  MarkType = "ignore"
-	MarkHachimi MarkType = "hachimi"
+	MarkCancel      MarkType = "cAnCel"
+	MarkIgnore      MarkType = "ignore"
+	MarkHachimi     MarkType = "hachimi"
+	MarkHachimiAll  MarkType = "hachimi_all"
+	MarkContinueAll MarkType = "ignore_all"
+	MarkCancelAll   MarkType = "cancel_all"
 )

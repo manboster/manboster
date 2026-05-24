@@ -12,7 +12,7 @@ const (
 	guardSelectHachimiAll   guardSelectType = "hachimi_all"
 	guardSelectIgnore       guardSelectType = "ignore"
 	guardSelectContinueAll  guardSelectType = "continue_all"
-	guardSelectIgnoreAll    guardSelectType = "ignore_all"
+	guardSelectCancelAll    guardSelectType = "cancel_all"
 )
 
 var selectionNoHachimi = []chat.Selection{
@@ -38,7 +38,7 @@ var selectionNoHachimi = []chat.Selection{
 	},
 	{
 		Name:  "Cancel all in 10 minutes",
-		Value: string(guardSelectIgnoreAll),
+		Value: string(guardSelectCancelAll),
 	},
 }
 
@@ -73,7 +73,7 @@ var selectionWithHachimi = []chat.Selection{
 	},
 	{
 		Name:  "Cancel all in 10 minutes",
-		Value: string(guardSelectIgnoreAll),
+		Value: string(guardSelectCancelAll),
 	},
 }
 

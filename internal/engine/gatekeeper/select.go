@@ -8,7 +8,7 @@ import (
 	"github.com/manboster/manboster/spec/chat"
 )
 
-func (s *Service) Select(ctx context.Context, instance chat.Provider, msg *chat.Message, selection []chat.Selection, prompt string, callback func(cb *chat.SelectionCallbackPayload) (bool, error)) (bool, error) {
+func (s *Service) Select(ctx context.Context, instance chat.Provider, msg *chat.Message, selection []chat.Selection, prompt string, callback func(msg *chat.Message) (bool, error)) (bool, error) {
 	selectMsg := msg.Clone()
 	selectMsg.MessageType = chat.MessageSelection | chat.MessageText
 	selectMsg.Selection = &chat.SelectionPayload{
@@ -27,5 +27,5 @@ func (s *Service) Select(ctx context.Context, instance chat.Provider, msg *chat.
 		return false, fmt.Errorf("failed to get selection callback")
 	}
 
-	return callback(resp.SelectionCallback)
+	return callback(resp)
 }

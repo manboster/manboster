@@ -47,7 +47,8 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 		txt.WriteString(fmt.Sprintf("🐱⚠️ **Hachimi thinks this tool call is unsafe! Please look at it carefully and decide!**\n"))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
 		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: `%s`\n", resp.Reason))
-		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(cb *chat.SelectionCallbackPayload) (bool, error) {
+		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(msg *chat.Message) (bool, error) {
+			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
 			case "allow":
 				s.ignoranceSessionManager.SetHachimiCache(desc, true)
@@ -63,7 +64,8 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 		txt.WriteString(fmt.Sprintf("**Hachimi thinks this tool call is suspicious! Please look at it carefully and decide!**\n"))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
 		txt.WriteString(fmt.Sprintf("\nHachimi reports reason: %s\n", resp.Reason))
-		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(cb *chat.SelectionCallbackPayload) (bool, error) {
+		return s.Select(ctx, instance, msg, selectionHachimi, txt.String(), func(msg *chat.Message) (bool, error) {
+			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
 			case "allow":
 				s.ignoranceSessionManager.SetHachimiCache(desc, true)
