@@ -46,7 +46,7 @@ var runProcessInfoInfo = tool.FactoryRegisterInfo[NameType]{
 
 var runProcessKillInfo = tool.FactoryRegisterInfo[NameType]{
 	Meta: schema.MetaData{
-		Name:         "process_kill",
+		Name:         "process-kill",
 		DisplayName:  i18n.T(keys.SystemProcessKillDisplayName),
 		Description:  i18n.T(keys.SystemProcessKillDescription),
 		Represent:    "🔴",

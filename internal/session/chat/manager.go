@@ -12,6 +12,7 @@ type Manager struct {
 type data struct {
 	Counter int
 	MsgId   string
+	MsgData string
 }
 
 func New() *Manager {

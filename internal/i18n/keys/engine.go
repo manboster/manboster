@@ -2,23 +2,23 @@ package keys
 
 // Engine: handler
 const (
-	EngineHandlerToolCallLimit  = "engine.handler.tool_call_limit"
-	EngineHandlerCompactWait    = "engine.handler.compact_wait"
-	EngineHandlerCompactNoNeed  = "engine.handler.compact_no_need"
-	EngineHandlerCompactError   = "engine.handler.compact_error"
-	EngineHandlerReject         = "engine.handler.reject"
-	EngineHandlerSelectionGone  = "engine.handler.selection_gone"
+	EngineHandlerToolCallLimit = "engine.handler.tool_call_limit"
+	EngineHandlerCompactWait   = "engine.handler.compact_wait"
+	EngineHandlerCompactNoNeed = "engine.handler.compact_no_need"
+	EngineHandlerCompactError  = "engine.handler.compact_error"
+	EngineHandlerReject        = "engine.handler.reject"
+	EngineHandlerSelectionGone = "engine.handler.selection_gone"
 )
 
 // Engine: onboard handler
 const (
-	EngineOnboardWelcome        = "engine.onboard.welcome"
-	EngineOnboardInstruction    = "engine.onboard.instruction"
-	EngineOnboardStep1          = "engine.onboard.step1"
-	EngineOnboardStep1Note      = "engine.onboard.step1_note"
-	EngineOnboardStep2          = "engine.onboard.step2"
-	EngineOnboardStep3          = "engine.onboard.step3"
-	EngineOnboardWish           = "engine.onboard.wish"
+	EngineOnboardWelcome     = "engine.onboard.welcome"
+	EngineOnboardInstruction = "engine.onboard.instruction"
+	EngineOnboardStep1       = "engine.onboard.step1"
+	EngineOnboardStep1Note   = "engine.onboard.step1_note"
+	EngineOnboardStep2       = "engine.onboard.step2"
+	EngineOnboardStep3       = "engine.onboard.step3"
+	EngineOnboardWish        = "engine.onboard.wish"
 )
 
 // Engine: onboard pair
@@ -31,16 +31,16 @@ const (
 
 // Engine: gatekeeper buttons
 const (
-	GatekeeperContinueOnce      = "engine.gatekeeper.continue_once"
-	GatekeeperContinueAll       = "engine.gatekeeper.continue_all"
-	GatekeeperShutUp            = "engine.gatekeeper.shut_up"
-	GatekeeperCancelOnce        = "engine.gatekeeper.cancel_once"
-	GatekeeperCancelIgnore      = "engine.gatekeeper.cancel_ignore"
-	GatekeeperCancelAll         = "engine.gatekeeper.cancel_all"
-	GatekeeperHandleHachimi     = "engine.gatekeeper.handle_hachimi"
-	GatekeeperHandleHachimiAll  = "engine.gatekeeper.handle_hachimi_all"
-	GatekeeperAllow             = "engine.gatekeeper.allow"
-	GatekeeperDeny              = "engine.gatekeeper.deny"
+	GatekeeperContinueOnce     = "engine.gatekeeper.continue_once"
+	GatekeeperContinueAll      = "engine.gatekeeper.continue_all"
+	GatekeeperShutUp           = "engine.gatekeeper.shut_up"
+	GatekeeperCancelOnce       = "engine.gatekeeper.cancel_once"
+	GatekeeperCancelIgnore     = "engine.gatekeeper.cancel_ignore"
+	GatekeeperCancelAll        = "engine.gatekeeper.cancel_all"
+	GatekeeperHandleHachimi    = "engine.gatekeeper.handle_hachimi"
+	GatekeeperHandleHachimiAll = "engine.gatekeeper.handle_hachimi_all"
+	GatekeeperAllow            = "engine.gatekeeper.allow"
+	GatekeeperDeny             = "engine.gatekeeper.deny"
 )
 
 // Engine: command - pair
@@ -54,38 +54,38 @@ const (
 
 // Engine: command - start
 const (
-	CmdStartWelcome     = "engine.cmd.start_welcome"
-	CmdStartFirstUse    = "engine.cmd.start_first_use"
-	CmdStartNotYours    = "engine.cmd.start_not_yours"
-	CmdStartCommands    = "engine.cmd.start_commands"
+	CmdStartWelcome  = "engine.cmd.start_welcome"
+	CmdStartFirstUse = "engine.cmd.start_first_use"
+	CmdStartNotYours = "engine.cmd.start_not_yours"
+	CmdStartCommands = "engine.cmd.start_commands"
 )
 
 // Engine: command - help
 const (
-	CmdHelpHeader       = "engine.cmd.help_header"
-	CmdHelpVersion      = "engine.cmd.help_version"
-	CmdHelpID           = "engine.cmd.help_id"
-	CmdHelpHelp         = "engine.cmd.help_help"
-	CmdHelpOp           = "engine.cmd.help_op"
-	CmdHelpDeop         = "engine.cmd.help_deop"
-	CmdHelpStatus       = "engine.cmd.help_status"
-	CmdHelpSave         = "engine.cmd.help_save"
-	CmdHelpNew          = "engine.cmd.help_new"
-	CmdHelpCompact      = "engine.cmd.help_compact"
-	CmdHelpModel        = "engine.cmd.help_model"
-	CmdHelpModels       = "engine.cmd.help_models"
-	CmdHelpSession      = "engine.cmd.help_session"
-	CmdHelpSessions     = "engine.cmd.help_sessions"
-	CmdHelpProvider     = "engine.cmd.help_provider"
-	CmdHelpProviders    = "engine.cmd.help_providers"
-	CmdHelpStart        = "engine.cmd.help_start"
-	CmdHelpPair         = "engine.cmd.help_pair"
-	CmdHelpCancel       = "engine.cmd.help_cancel"
+	CmdHelpHeader    = "engine.cmd.help_header"
+	CmdHelpVersion   = "engine.cmd.help_version"
+	CmdHelpID        = "engine.cmd.help_id"
+	CmdHelpHelp      = "engine.cmd.help_help"
+	CmdHelpOp        = "engine.cmd.help_op"
+	CmdHelpDeop      = "engine.cmd.help_deop"
+	CmdHelpStatus    = "engine.cmd.help_status"
+	CmdHelpSave      = "engine.cmd.help_save"
+	CmdHelpNew       = "engine.cmd.help_new"
+	CmdHelpCompact   = "engine.cmd.help_compact"
+	CmdHelpModel     = "engine.cmd.help_model"
+	CmdHelpModels    = "engine.cmd.help_models"
+	CmdHelpSession   = "engine.cmd.help_session"
+	CmdHelpSessions  = "engine.cmd.help_sessions"
+	CmdHelpProvider  = "engine.cmd.help_provider"
+	CmdHelpProviders = "engine.cmd.help_providers"
+	CmdHelpStart     = "engine.cmd.help_start"
+	CmdHelpPair      = "engine.cmd.help_pair"
+	CmdHelpCancel    = "engine.cmd.help_cancel"
 )
 
 // Engine: command - default
 const (
-	CmdDefaultInvalid   = "engine.cmd.default_invalid"
+	CmdDefaultInvalid = "engine.cmd.default_invalid"
 )
 
 // Engine: command - session not active
@@ -95,12 +95,12 @@ const (
 
 // Engine: command - save
 const (
-	CmdSaveSuccess      = "engine.cmd.save_success"
+	CmdSaveSuccess = "engine.cmd.save_success"
 )
 
 // Engine: command - new
 const (
-	CmdNewSuccess       = "engine.cmd.new_success"
+	CmdNewSuccess = "engine.cmd.new_success"
 )
 
 // Engine: command - model
@@ -133,16 +133,16 @@ const (
 
 // Engine: command - status
 const (
-	CmdStatusHeader         = "engine.cmd.status_header"
-	CmdStatusSummary        = "engine.cmd.status_summary"
-	CmdStatusSouls          = "engine.cmd.status_souls"
-	CmdStatusTokens         = "engine.cmd.status_tokens"
-	CmdStatusCost           = "engine.cmd.status_cost"
-	CmdStatusInputPrice     = "engine.cmd.status_input_price"
-	CmdStatusOutputPrice    = "engine.cmd.status_output_price"
-	CmdStatusModelUsage     = "engine.cmd.status_model_usage"
-	CmdStatusContext        = "engine.cmd.status_context"
-	CmdStatusFullHint       = "engine.cmd.status_full_hint"
+	CmdStatusHeader      = "engine.cmd.status_header"
+	CmdStatusSummary     = "engine.cmd.status_summary"
+	CmdStatusSouls       = "engine.cmd.status_souls"
+	CmdStatusTokens      = "engine.cmd.status_tokens"
+	CmdStatusCost        = "engine.cmd.status_cost"
+	CmdStatusInputPrice  = "engine.cmd.status_input_price"
+	CmdStatusOutputPrice = "engine.cmd.status_output_price"
+	CmdStatusModelUsage  = "engine.cmd.status_model_usage"
+	CmdStatusContext     = "engine.cmd.status_context"
+	CmdStatusFullHint    = "engine.cmd.status_full_hint"
 )
 
 // Engine: command - op/deop
@@ -169,21 +169,23 @@ const (
 
 // Engine: gateway LLM error messages
 const (
-	GatewayLLMErrorDefault  = "engine.gateway.llm_error_default"
+	GatewayLLMErrorDefault   = "engine.gateway.llm_error_default"
 	GatewayLLMErrorRateLimit = "engine.gateway.llm_error_rate_limit"
-	GatewayLLMErrorDown     = "engine.gateway.llm_error_down"
-	GatewayLLMErrorTimeout  = "engine.gateway.llm_error_timeout"
-	GatewayLLMErrorAuth     = "engine.gateway.llm_error_auth"
+	GatewayLLMErrorDown      = "engine.gateway.llm_error_down"
+	GatewayLLMErrorTimeout   = "engine.gateway.llm_error_timeout"
+	GatewayLLMErrorAuth      = "engine.gateway.llm_error_auth"
 	GatewayLLMErrorCancelled = "engine.gateway.llm_error_cancelled"
 )
 const (
-	GatekeeperHachimiActivated     = "engine.gatekeeper.hachimi_activated"
-	GatekeeperShutUpMsg            = "engine.gatekeeper.shut_up_msg"
-	GatekeeperContinueAllMsg       = "engine.gatekeeper.continue_all_msg"
-	GatekeeperCancelAllMsg         = "engine.gatekeeper.cancel_all_msg"
-	GatekeeperHachimiUnsafe        = "engine.gatekeeper.hachimi_unsafe"
-	GatekeeperHachimiSuspicious    = "engine.gatekeeper.hachimi_suspicious"
-	GatekeeperHachimiReason        = "engine.gatekeeper.hachimi_reason"
+	GatekeeperHachimiActivated  = "engine.gatekeeper.hachimi_activated"
+	GatekeeperShutUpMsg         = "engine.gatekeeper.shut_up_msg"
+	GatekeeperContinueAllMsg    = "engine.gatekeeper.continue_all_msg"
+	GatekeeperCancelAllMsg      = "engine.gatekeeper.cancel_all_msg"
+	GatekeeperHachimiUnsafe     = "engine.gatekeeper.hachimi_unsafe"
+	GatekeeperHachimiSuspicious = "engine.gatekeeper.hachimi_suspicious"
+	GatekeeperHachimiReason     = "engine.gatekeeper.hachimi_reason"
+	GatekeeperRejectMsg         = "engine.gatekeeper.reject_msg"
+	GateKeeperValidateRejectMsg = "engine.gatekeeper.validate_msg"
 )
 
 // Engine: util describe

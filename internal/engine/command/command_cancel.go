@@ -11,6 +11,11 @@ func (h *Handler) cmdCancel(ctx context.Context, instance chat.Provider, msg *ch
 	msg.MessageType = chat.MessageText
 	sessData, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
 
+	isDisplay := false
+	if val, ok := ctx.Value("d").(bool); ok {
+		isDisplay = val
+	}
+
 	var text string
 	if avail {
 		if sessData.Active {
@@ -27,5 +32,8 @@ func (h *Handler) cmdCancel(ctx context.Context, instance chat.Provider, msg *ch
 		Text: text,
 	}
 
-	return instance.SendMessage(ctx, msg)
+	if isDisplay {
+		return instance.SendMessage(ctx, msg)
+	}
+	return nil
 }

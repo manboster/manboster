@@ -123,12 +123,14 @@
   "engine.gateway.llm_error_cancelled": "[Manboster] You cancelled provider %s's request.",
 
   "engine.gatekeeper.hachimi_activated": "🐱 You activated Hachimi. It will handle this tool for the next %d minutes, enjoy your time!",
-  "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next %d minutes.",
+  "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next %d minutes in tool call `%q`.",
   "engine.gatekeeper.continue_all_msg": "⚠️ You allowed all tool calls in this session! They will automatically allow for the next 10 minutes.",
   "engine.gatekeeper.cancel_all_msg": "❌ You rejected all tool calls in this session! They will automatically deny for the next 10 minutes.",
   "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi thinks this tool call is unsafe! Please review it carefully and decide.**\n",
   "engine.gatekeeper.hachimi_suspicious": "**Hachimi thinks this tool call is suspicious! Please review it carefully and decide.**\n",
   "engine.gatekeeper.hachimi_reason": "\nHachimi reports reason: `%s`\n",
+  "engine.gatekeeper.reject_msg": "❌Gatekeeper Rejected the tool call `%s`: %q",
+  "engine.gatekeeper.validate_msg": "❌ Gatekeeper Rejected `%s`, params validate failed: %q",
 
   "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
   "engine.describe.with_params": "with params: %s",

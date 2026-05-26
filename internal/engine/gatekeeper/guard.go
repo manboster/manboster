@@ -131,7 +131,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectIgnore:
-			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperShutUpMsg), ttl/60)
+			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperShutUpMsg), ttl/60, toolProvider.Name())
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")

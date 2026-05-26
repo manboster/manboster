@@ -3,6 +3,7 @@ package loader
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/fatih/color"
@@ -11,6 +12,8 @@ import (
 	"github.com/manboster/manboster/internal/tool"
 	_ "github.com/manboster/manboster/internal/tool/all"
 )
+
+var reg = regexp.MustCompile(`^[a-zA-Z0-9.-]+$`)
 
 func LoadToolCallProvider(ctx context.Context, provider tool.Provider, conf config.ToolConfig) (tool.Provider, error) {
 	err := provider.Init(ctx, conf.Configuration)
@@ -40,6 +43,13 @@ func LoadToolCallProviders(ctx context.Context, cfg *config.Config) ([]tool.Prov
 	allToolCallProviders := tool.AvailProviders()
 	for _, conf := range cfg.Tools {
 		provider, err := tool.GetProvider(conf.Name)
+
+		// add error checker
+		if !reg.MatchString(conf.Name) {
+			color.Red(fmt.Sprintf("[Manboster Loader] tool call value should not contain other characters except '-' and '.': %q", conf.Name))
+			continue
+		}
+
 		if err != nil {
 			// find namespaces and then run
 			mark := false

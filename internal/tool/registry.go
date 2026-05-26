@@ -2,6 +2,7 @@ package tool
 
 import (
 	"fmt"
+	"regexp"
 	"sync"
 )
 
@@ -13,11 +14,17 @@ var (
 	mu               sync.RWMutex
 )
 
+var reg = regexp.MustCompile(`^[a-zA-Z0-9.-]+$`)
+
 func Register(name string, factory ProviderFactory) {
 	mu.Lock()
 	defer mu.Unlock()
+	// add error checker
+	if !reg.MatchString(name) {
+		panic(fmt.Sprintf("[Manboster Tool Registry] tool call value should not contain other characters except '-' and '.': %q", name))
+	}
 	if _, duplicant := providerRegistry[name]; duplicant {
-		panic(fmt.Sprintf("[Manboster Chat Registry] Register called twice for provider %s", name))
+		panic(fmt.Sprintf("[Manboster Tool Registry] Register called twice for provider %s", name))
 	}
 	providerRegistry[name] = factory
 }

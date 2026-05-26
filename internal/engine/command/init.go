@@ -88,7 +88,8 @@ func (h *Handler) Init() {
 	})
 
 	h.provider.Register(chat.CommandCancel, func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
-		return h.cmdCancel(ctx, instance, msg, sessionId)
+		ctxWithValues := context.WithValue(ctx, "d", true)
+		return h.cmdCancel(ctxWithValues, instance, msg, sessionId)
 	})
 
 	h.provider.Default(func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
