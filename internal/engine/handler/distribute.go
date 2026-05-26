@@ -17,6 +17,7 @@ func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provi
 	var txt strings.Builder
 	respMsg := msg.Clone()
 	respMsg.Reply = nil
+	respMsg.MessageType = chat.MessageText
 	respMsg.Text = &chat.TextPayload{}
 
 	if err == nil {

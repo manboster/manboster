@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -68,4 +70,29 @@ func (e *Engine) BuildMessageRunner(instance chat.Provider, sessionId string) {
 			color.Yellow("[Manboster Engine] We encountered an error while handling runner via %s, error: %q", instance.DisplayName(), err)
 		}
 	}()
+}
+
+func (e *Engine) MessageNotifyRunner(ctx context.Context, ch chan int, instance chat.Provider, msg *chat.Message) {
+	for {
+		select {
+		case times, ok := <-ch:
+			if !ok {
+				return
+			}
+			respMsg := msg.Clone()
+			msg.Reply = nil
+			msg.MessageType = chat.MessageText
+			msg.Text = &chat.TextPayload{
+				Text: fmt.Sprintf(i18n.T(keys.GatewayLLMTryTimes), times),
+			}
+
+			err := e.gateway.SendMessage(ctx, instance, respMsg)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Engine] we encountered an error while sending message: %q", err))
+				return
+			}
+		case <-ctx.Done():
+			return
+		}
+	}
 }

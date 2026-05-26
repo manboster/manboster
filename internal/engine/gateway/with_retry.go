@@ -9,7 +9,7 @@ import (
 	"github.com/fatih/color"
 )
 
-func withRetry(ctx context.Context, name string, times int, action func(ctx context.Context) error) error {
+func withRetry(ctx context.Context, name string, times int, action func(ctx context.Context) error, timesCh chan int) error {
 	var err error
 
 	for tries := 1; tries <= times; tries++ {
@@ -29,6 +29,13 @@ func withRetry(ctx context.Context, name string, times int, action func(ctx cont
 			t := math.Pow(2, float64(tries))
 			time.Sleep(time.Duration(t) * time.Second)
 		}
+
+		if timesCh != nil {
+			timesCh <- tries
+		}
+	}
+	if timesCh != nil {
+		close(timesCh)
 	}
 	return fmt.Errorf("all %d attempts failed for %s, last error: %w", times, name, err)
 }

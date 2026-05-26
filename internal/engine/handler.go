@@ -94,7 +94,9 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 			return nil
 		}
 
-		event, err := e.gateway.LLMChat(ctx, p, m, msgList)
+		respCh := make(chan int, 10)
+		event, err := e.gateway.LLMChat(ctx, p, m, msgList, respCh)
+		go e.MessageNotifyRunner(ctx, respCh, instance, msg)
 		errChat := e.gateway.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
 		if errChat != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", errChat))

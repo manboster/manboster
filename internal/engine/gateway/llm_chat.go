@@ -14,12 +14,11 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, currentModel llm.Model, msgList []llm.Message) (*llm.Event, error) {
+func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, currentModel llm.Model, msgList []llm.Message, ch chan int) (*llm.Event, error) {
 	var event = &llm.Event{}
 	if ctx.Err() != nil {
 		return nil, ctx.Err()
 	}
-
 	name := "llmChat_" + currentProvider.Name() + "_" + currentModel.Name + "_" + strconv.FormatInt(time.Now().Unix(), 10)
 	err := withRetry(ctx, name, 7, func(ctx context.Context) error {
 		color.Blue(fmt.Sprintf("[Manboster Gateway] Fetching message response from LLMProvider %q, model %q", currentProvider.DisplayName(), currentModel.DisplayName))
@@ -31,7 +30,8 @@ func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, cur
 		event, errChat = currentProvider.Chat(timeoutCtx, currentModel.Name, s.toolProviders, msgList)
 
 		return errChat
-	})
+	}, ch)
+
 	if err != nil {
 		return nil, err
 	}

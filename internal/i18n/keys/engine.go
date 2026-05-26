@@ -175,6 +175,7 @@ const (
 	GatewayLLMErrorTimeout   = "engine.gateway.llm_error_timeout"
 	GatewayLLMErrorAuth      = "engine.gateway.llm_error_auth"
 	GatewayLLMErrorCancelled = "engine.gateway.llm_error_cancelled"
+	GatewayLLMTryTimes       = "engine.gateway.trytimes"
 )
 const (
 	GatekeeperHachimiActivated  = "engine.gatekeeper.hachimi_activated"

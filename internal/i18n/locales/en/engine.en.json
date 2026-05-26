@@ -121,6 +121,7 @@
   "engine.gateway.llm_error_timeout": "[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.",
   "engine.gateway.llm_error_auth": "[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.",
   "engine.gateway.llm_error_cancelled": "[Manboster] You cancelled provider %s's request.",
+  "engine.gateway.trytimes": "[Manboster] The request of LLM provider encounters an error, now retry, %d times...",
 
   "engine.gatekeeper.hachimi_activated": "🐱 You activated Hachimi. It will handle this tool for the next %d minutes, enjoy your time!",
   "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next %d minutes in tool call `%q`.",
@@ -134,5 +135,5 @@
 
   "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
   "engine.describe.with_params": "with params: %s",
-  "engine.describe.continue": ", do you want to continue?"
+  "engine.describe.continue": ", do you want to continue?",
 }

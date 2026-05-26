@@ -33,5 +33,5 @@ func (s *Service) LLMQuickChat(ctx context.Context, currentProvider llm.Provider
 			},
 		},
 	}
-	return s.LLMChat(ctx, currentProvider, currentModel, msgList)
+	return s.LLMChat(ctx, currentProvider, currentModel, msgList, make(chan int, 10))
 }
