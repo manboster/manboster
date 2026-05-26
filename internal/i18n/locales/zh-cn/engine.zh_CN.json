@@ -121,6 +121,7 @@
   "engine.gateway.llm_error_timeout": "[Manboster] 您与服务商 %s 之间似乎存在连接问题，请检查网络连接后重试。",
   "engine.gateway.llm_error_auth": "[Manboster] 服务商 %s 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
   "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 %s 的请求。",
+  "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 %d 次...",
 
   "engine.gatekeeper.hachimi_activated": "🐱 您已启用 Hachimi，它将在接下来 %d 分钟内帮您处理此工具调用，请放心使用！",
   "engine.gatekeeper.shut_up_msg": "⚠️ 在接下来 %d 分钟内将自动允许 %q 工具的调用！",
