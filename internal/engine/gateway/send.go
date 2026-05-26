@@ -22,7 +22,7 @@ func (s *Service) SendMessage(ctx context.Context, instance chat.Provider, msg *
 		defer cancel()
 
 		return instance.SendMessage(timeoutCtx, msg)
-	})
+	}, nil)
 
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Failed to send message to provider %q, error: %q", instance.DisplayName(), err))

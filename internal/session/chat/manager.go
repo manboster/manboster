@@ -18,5 +18,6 @@ type data struct {
 func New() *Manager {
 	return &Manager{
 		SessionChatLocks: make(map[string]*sync.Mutex),
+		SessionChatData:  make(map[string]data),
 	}
 }

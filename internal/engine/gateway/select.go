@@ -29,7 +29,7 @@ func (s *Service) SendSelect(ctx context.Context, instance chat.Provider, msg *c
 		defer cancel()
 
 		return instance.Select(timeoutCtx, sid, msg)
-	})
+	}, nil)
 
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Gateway] failed to get selection from %q: %q", instance.DisplayName(), err))

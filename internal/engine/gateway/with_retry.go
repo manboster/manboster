@@ -29,9 +29,8 @@ func withRetry(ctx context.Context, name string, times int, action func(ctx cont
 			t := math.Pow(2, float64(tries))
 			time.Sleep(time.Duration(t) * time.Second)
 		}
-
 		if timesCh != nil {
-			timesCh <- tries
+			timesCh <- tries + 1
 		}
 	}
 	if timesCh != nil {

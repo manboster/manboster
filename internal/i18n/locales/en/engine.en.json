@@ -135,5 +135,5 @@
 
   "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
   "engine.describe.with_params": "with params: %s",
-  "engine.describe.continue": ", do you want to continue?",
+  "engine.describe.continue": ", do you want to continue?"
 }

@@ -80,9 +80,9 @@ func (e *Engine) MessageNotifyRunner(ctx context.Context, ch chan int, instance 
 				return
 			}
 			respMsg := msg.Clone()
-			msg.Reply = nil
-			msg.MessageType = chat.MessageText
-			msg.Text = &chat.TextPayload{
+			respMsg.Reply = nil
+			respMsg.MessageType = chat.MessageText
+			respMsg.Text = &chat.TextPayload{
 				Text: fmt.Sprintf(i18n.T(keys.GatewayLLMTryTimes), times),
 			}
 

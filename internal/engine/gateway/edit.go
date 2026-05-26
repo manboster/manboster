@@ -20,6 +20,6 @@ func (s *Service) EditMessage(ctx context.Context, instance chat.Provider, msg *
 		defer cancel()
 
 		return instance.EditMessage(timeoutCtx, msg)
-	})
+	}, nil)
 	return err
 }

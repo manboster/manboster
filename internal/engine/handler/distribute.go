@@ -48,16 +48,18 @@ func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provi
 	count := h.sessionManager.Chat.GetToolCallCounts(sid)
 	if count%10 == 0 {
 		respMsg.Text.Text = txt.String()
+		err = h.gateway.SendMessage(ctx, instance, respMsg)
 		h.sessionManager.Chat.ResetTool(sid, respMsg.MessageID)
 		h.sessionManager.Chat.SetToolMsgData(sid, txt.String())
-		return h.gateway.SendMessage(ctx, instance, respMsg)
+		return err
 	}
 
 	msgId := h.sessionManager.Chat.GetToolMsgId(sid)
 	data := h.sessionManager.Chat.GetToolMsgData(sid)
 	respMsg.Text.Text = data + "\n" + txt.String()
+	h.sessionManager.Chat.SetToolMsgData(sid, respMsg.Text.Text)
 
-	respMsg.MessageType = chat.MessageUnknown
+	respMsg.MessageType |= chat.MessageUnknown
 	respMsg.MessageID = msgId
 	return h.gateway.EditMessage(ctx, instance, respMsg)
 }
