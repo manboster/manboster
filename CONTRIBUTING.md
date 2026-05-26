@@ -1,6 +1,6 @@
 # Manboster Contributing Guideline
 
-*Rev 4; May 24, 2026*
+*Rev 4.1; May 26, 2026*
 
 ## TL;DR
 
@@ -13,7 +13,7 @@ If you are a first-time contributor, please look for the `good-first-issue` labe
 ## QuickStart
 
 1. Fork and clone the repository: `git clone git@github.com:/yourname/manboster.git`
-2. Run `go get`
+2. Run `go mod download`
 3. Use `make run` to start Manboster!
 4. Edit code and push them onto GitHub
 5. Open a PR and wait for merge!
@@ -93,6 +93,8 @@ If you continuously contribute high-quality codes, I'm happy to invite you to jo
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 4.1: Fixed typo, Updated on 2026.5.26
 
 Rev 4: Simplify Contributing Guideline in order to boost the community, Updated on 2026.5.24
 
