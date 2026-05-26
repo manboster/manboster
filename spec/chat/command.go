@@ -26,18 +26,3 @@ const (
 	CommandReset     CommandType = "reset"     // reset hachimi and all pending statuses in this session
 	CommandRetry     CommandType = "retry"     // retry the failed request
 )
-
-func IsPublicCommand(commandType CommandType) bool {
-	return commandType == CommandId || commandType == CommandPair || commandType == CommandVersion
-}
-
-// IsSessionRequiredCommand returns whether the command need a Session ID. CommandCancel is included because it needs a sessionId lookup
-func IsSessionRequiredCommand(commandType CommandType) bool {
-	return commandType == CommandCompact || commandType == CommandCancel ||
-		commandType == CommandNew || commandType == CommandSave ||
-		commandType == CommandStatus || commandType == CommandProvider ||
-		commandType == CommandProviders || commandType == CommandModels ||
-		commandType == CommandModel || commandType == CommandSessions ||
-		commandType == CommandSession || commandType == CommandReset ||
-		commandType == CommandRetry
-}
