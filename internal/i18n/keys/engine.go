@@ -195,3 +195,7 @@ const (
 	DescribeWithParams  = "engine.describe.with_params"
 	DescribeContinue    = "engine.describe.continue"
 )
+
+const (
+	EngineChatDataCompactSuccess = "engine.chatdata.compact_success"
+)

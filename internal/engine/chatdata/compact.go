@@ -8,6 +8,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config/prompt"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
@@ -119,7 +121,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	respMessage := mesg.Clone()
 	respMessage.MessageType = chat.MessageText
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf("Compacted session `%s` and created a new session `%s`.\nCompacted summary data:\n```%s```\nOld session is saved. If you want to bind other chats to this new session, please run `/session %s` in that chat.", sessionId, newSessionID, compactedMessage, newSessionID),
+		Text: fmt.Sprintf(i18n.T(keys.EngineChatDataCompactSuccess), sessionId, newSessionID, compactedMessage, newSessionID),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }

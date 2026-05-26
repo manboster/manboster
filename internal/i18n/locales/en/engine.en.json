@@ -135,5 +135,7 @@
 
   "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
   "engine.describe.with_params": "with params: %s",
-  "engine.describe.continue": ", do you want to continue?"
+  "engine.describe.continue": ", do you want to continue?",
+
+  "engine.chatdata.compact_success": "Compacted session `%s` and created a new session `%s`.\\nCompacted summary data:\\n```%s```\\nOld session is saved. If you want to bind other chats to this new session, please run `/session %s` in that chat."
 }
