@@ -132,6 +132,7 @@
   "engine.gatekeeper.hachimi_reason": "\nHachimi 报告原因：`%s`\n",
   "engine.gatekeeper.reject_msg": "❌守门员拒绝了大模型调用`%s`工具的请求：%q",
   "engine.gatekeeper.validate_msg": "❌ 守门员拒绝了大模型调用`%s`工具的请求，输入参数校验失败！原因：%q",
+  "engine.gatekeeper.hachimi_handled": "🐱✅ Hachimi 认为这个操作安全，自动放行了。",
 
   "engine.describe.to_human": "🤖❓ 模型想要调用工具 `%s`（`%s`）",
   "engine.describe.with_params": "，参数：%s",

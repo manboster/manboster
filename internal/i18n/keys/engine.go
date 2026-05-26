@@ -186,7 +186,8 @@ const (
 	GatekeeperHachimiSuspicious = "engine.gatekeeper.hachimi_suspicious"
 	GatekeeperHachimiReason     = "engine.gatekeeper.hachimi_reason"
 	GatekeeperRejectMsg         = "engine.gatekeeper.reject_msg"
-	GateKeeperValidateRejectMsg = "engine.gatekeeper.validate_msg"
+	GatekeeperValidateRejectMsg = "engine.gatekeeper.validate_msg"
+	GatekeeperHachimiHandled    = "engine.gatekeeper.hachimi_handled"
 )
 
 // Engine: util describe

@@ -61,7 +61,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			err = schema.Validate(intf, *toolProvider.Args())
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Handler] Validate `%s` failed: %q", req.ToolName, err))
-				result := fmt.Sprintf(i18n.T(keys.GateKeeperValidateRejectMsg), req.ToolName, err.Error())
+				result := fmt.Sprintf(i18n.T(keys.GatekeeperValidateRejectMsg), req.ToolName, err.Error())
 				callMsg.Text = &chat.TextPayload{
 					Text: result,
 				}

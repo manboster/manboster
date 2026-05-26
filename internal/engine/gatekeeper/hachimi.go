@@ -15,7 +15,11 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, id string) (bool, error) {
+func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, mes *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, id string) (bool, error) {
+	msg := mes.Clone()
+	msg.MessageType = chat.MessageText
+	msg.Text = &chat.TextPayload{}
+
 	if !*s.hachimiLoaded || s.hachimiProvider == nil {
 		color.Yellow("[Manboster Gatekeeper] Hachimi is not loaded!")
 		return true, nil
@@ -81,6 +85,12 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, ms
 	case hachimi.ResponseStatusSafe:
 		s.ignoranceSessionManager.SetHachimiCache(desc, true)
 		color.Blue("[Manboster Gatekeeper] Hachimi thinks it's safe to go!")
+		msg.Text.Text = i18n.T(keys.GatekeeperHachimiHandled)
+		err := s.gatewayService.SendMessage(ctx, instance, msg)
+		if err != nil {
+			color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
+		}
+		go s.Recall(ctx, instance, msg)
 		return true, nil
 	default:
 		return false, fmt.Errorf("unexpected response type: %v", resp.Type)
