@@ -1,0 +1,7 @@
+{
+  "tool.file.write_mode": "File write mode",
+  "tool.file.write_mode.desc": "File access mode. 'readonly' blocks writes and deletes; 'readwrite' allows them inside the workspace.",
+
+  "tool.browser.mode": "Browser mode",
+  "tool.browser.mode.desc": "Browser launch mode. Use 'headless' for servers; use 'headful' only when a desktop UI is available."
+}

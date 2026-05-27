@@ -1,6 +1,8 @@
 package openrouter
 
 import (
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/llm/oai_compat"
 	"github.com/manboster/manboster/spec/config"
 )
@@ -33,7 +35,7 @@ func (c *Config) Name() string {
 }
 
 func (c *Config) DisplayName() string {
-	return "OpenRouter"
+	return i18n.T(keys.LLMOpenRouterProvider)
 }
 
 func (c *Config) Validate() error {

@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/llm"
@@ -48,7 +50,7 @@ func (c *Config) Name() string {
 }
 
 func (c *Config) DisplayName() string {
-	return "OpenAI compatible API"
+	return i18n.T(keys.LLMOAICompatProvider)
 }
 
 func (c *Config) Validate() error {

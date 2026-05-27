@@ -1,11 +1,6 @@
 {
-  "config.chat.telegram.bot_token_desc": "您的 Telegram Bot Token。如果还没有，可以通过 @BotFather 获取。",
-  "config.chat.telegram.collapse_length_desc": "消息超过此长度时，将折叠为可展开的引用块。",
-  "config.chat.telegram.reaction_status_desc": "Emoji 反应通知偏好设置。\n- enabled：处理消息时添加 Emoji 反应。\n- clean：模型处理完成后自动移除反应。\n- disabled：不添加任何 Emoji 反应。",
   "config.hachimi.gguf.model_type_desc": "如果使用的是安全防护模型，请选择 'safeguard'，否则保持默认即可。",
   "config.hachimi.gguf.context_length_desc": "Hachimi 可处理的上下文长度。可用内存较低时请选择较小的值，上下文越大可处理的消息越长。如不确定，保持默认即可。",
-  "config.tool.file.write_mode_desc": "文件访问模式。'readonly' 禁止写入和删除；'readwrite' 允许在工作区内进行写入和删除操作。",
-  "config.tool.browser.mode_desc": "浏览器启动模式。服务器环境请使用 'headless'；仅在有桌面 UI 的环境下才使用 'headful'。",
   "config.validate.unsupported_version": "不支持该配置版本。",
   "config.validate.outdated_version": "配置版本已过期，请升级。",
   "config.validate.missing_chat": "未配置任何聊天服务商。",

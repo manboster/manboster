@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	Mode string `json:"mode" yaml:"mode" mapstructure:"mode" manboconfig:"name:file write mode;default:readonly;desc:File access mode. readonly blocks writes and deletes; readwrite allows them inside the workspace.;desc_id:config.tool.file.write_mode_desc" enum:"readonly,readwrite"`
+	Mode string `json:"mode" yaml:"mode" mapstructure:"mode" manboconfig:"default:readonly;id:tool.file.write_mode" enum:"readonly,readwrite"`
 }
 
 func (c *Config) Name() string {

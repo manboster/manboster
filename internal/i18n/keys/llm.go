@@ -2,11 +2,13 @@ package keys
 
 // Config args descriptions: LLM providers
 const (
+	LLMOpenRouterProvider   = "llm.openrouter.provider"
 	LLMOpenRouterAPIKeyDesc = "llm.openrouter.api_key.desc"
 	LLMOpenRouterAPIKeyName = "llm.openrouter.api_key"
 )
 
 const (
+	LLMOAICompatProvider = "llm.oai_compat.provider"
 	LLMOAICompatName     = "llm.oai_compat.name"
 	LLMOAICompatNameDesc = "llm.oai_compat.name.desc"
 

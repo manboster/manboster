@@ -1,0 +1,12 @@
+{
+  "chat.telegram.provider": "Telegram (电报)",
+  
+  "chat.telegram.bot_token": "你的 Telegram 机器人令牌",
+  "chat.telegram.bot_token.desc": "你的 Telegram Bot Token。如果你没有这个的话，可以在 Telegram 中通过 @BotFather 获取。",
+
+  "chat.telegram.collapse_length": "最大消息显示长度",
+  "chat.telegram.collapse_length.desc": "消息超过此长度时，将折叠为可展开的引用块。",
+
+  "chat.telegram.reaction_status": "Reaction 反应偏好设置",
+  "chat.telegram.reaction_status.desc": "Emoji 反应通知偏好设置。\n- enabled：处理消息时会添加 Emoji Reaction 且结束后不会移除。\n- clean：模型处理完成后会自动移除对应的 Reaction。\n- disabled：不添加任何 Emoji Reaction。"
+}

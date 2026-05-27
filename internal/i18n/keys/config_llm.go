@@ -1,24 +1,5 @@
 package keys
 
-// Config args descriptions: Chat providers
-const (
-	ChatTelegramBotTokenDesc       = "config.chat.telegram.bot_token_desc"
-	ChatTelegramCollapseLengthDesc = "config.chat.telegram.collapse_length_desc"
-	ChatTelegramReactionStatusDesc = "config.chat.telegram.reaction_status_desc"
-)
-
-// Config args descriptions: Hachimi
-const (
-	HachimiGGUFModelTypeDesc  = "config.hachimi.gguf.model_type_desc"
-	HachimiGGUFContextLenDesc = "config.hachimi.gguf.context_length_desc"
-)
-
-// Config args descriptions: Tools
-const (
-	ToolFileWriteModeDesc = "config.tool.file.write_mode_desc"
-	ToolBrowserModeDesc   = "config.tool.browser.mode_desc"
-)
-
 // Config validation
 const (
 	ConfigValidateUnsupportedVersion        = "config.validate.unsupported_version"

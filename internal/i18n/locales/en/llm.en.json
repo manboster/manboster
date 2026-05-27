@@ -1,7 +1,9 @@
 {
+  "llm.openrouter.provider": "OpenRouter",
   "llm.openrouter.api_key": "Your OpenRouter API Key",
   "llm.openrouter.api_key.desc": "Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.",
 
+  "llm.oai_compat.provider": "OpenAI compatible APIs",
   "llm.oai_compat.name": "Your Provider's name",
   "llm.oai_compat.name.desc": "The name of your provider.\nYou can enter what you want but no spaces in your string.",
 

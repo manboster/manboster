@@ -1,7 +1,9 @@
 {
+  "llm.openrouter.provider": "OpenRouter",
   "llm.openrouter.api_key": "OpenRouter API 密钥",
   "llm.openrouter.api_key.desc": "你的 OpenRouter API Key。\n如果你还没有一个key的话，你可以去 https://openrouter.ai/workspaces/default/keys 创建一个。",
 
+  "llm.oai_compat.provider": "OpenAI 兼容 API",
   "llm.oai_compat.name": "服务提供商的名称",
   "llm.oai_compat.name.desc": "服务提供商的标识名称。\n你可以自由填写，但是不能包含空格。",
 

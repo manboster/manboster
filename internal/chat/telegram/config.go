@@ -11,9 +11,9 @@ import (
 
 // Config configures their Telegram bot.
 type Config struct {
-	BotToken             string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required;secret;name:Telegram Bot Token;desc:Your Telegram Bot Token, if you don't have one，you can get it from @BotFather.;desc_id:config.chat.telegram.bot_token_desc"` // Telegram requires your bot token to authenticate their server.
-	CollapseMsgLength    int16  `yaml:"collapse_msg_length" json:"collapse_msg_length" mapstructure:"collapse_msg_length" manboconfig:"required;secret;name:Collapse Message Length;desc:The length to collapse message with an expandable quote when telegram's message is longer than of which.;desc_id:config.chat.telegram.collapse_length_desc;default:500"`
-	ReactionNotifyStatus string `yaml:"reaction_notify_status" json:"reaction_notify_status" mapstructure:"reaction_notify_status" manboconfig:"required;name:Reaction Notify Status;desc:The preferences of select a notification.\nThe default value is enabled.\nEnable means emoji reaction will be enabled on your message when processing, if you choose 'clean', it would be cleared after the model successfully process your message. Disable means no emoji reaction on your message when processing.;desc_id:config.chat.telegram.reaction_status_desc;default:enabled" enum:"disabled,enabled,clean"`
+	BotToken             string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required;secret;id:chat.telegram.bot_token"` // Telegram requires your bot token to authenticate their server.
+	CollapseMsgLength    int16  `yaml:"collapse_msg_length" json:"collapse_msg_length" mapstructure:"collapse_msg_length" manboconfig:"required;id:chat.telegram.collapse_length;default:500"`
+	ReactionNotifyStatus string `yaml:"reaction_notify_status" json:"reaction_notify_status" mapstructure:"reaction_notify_status" manboconfig:"required;id:chat.telegram.reaction_status;default:enabled" enum:"disabled,enabled,clean"`
 }
 
 // Args return args to write

@@ -1,11 +1,6 @@
 {
-  "config.chat.telegram.bot_token_desc": "Your Telegram Bot Token. If you don't have one, you can get it from @BotFather.",
-  "config.chat.telegram.collapse_length_desc": "The message length threshold above which the message will be collapsed into an expandable quote.",
-  "config.chat.telegram.reaction_status_desc": "Emoji reaction notification preference.\n- enabled: an emoji reaction is added to your message while processing.\n- clean: the reaction is removed after the model finishes processing.\n- disabled: no emoji reaction.",
   "config.hachimi.gguf.model_type_desc": "If you are using safeguard models, please select 'safeguard'. Otherwise, leave it as is.",
   "config.hachimi.gguf.context_length_desc": "How much context Hachimi can process. If your available RAM is low, choose a smaller value. A larger context allows longer messages. If you are unsure, leave it as is.",
-  "config.tool.file.write_mode_desc": "File access mode. 'readonly' blocks writes and deletes; 'readwrite' allows them inside the workspace.",
-  "config.tool.browser.mode_desc": "Browser launch mode. Use 'headless' for servers; use 'headful' only when a desktop UI is available.",
   "config.validate.unsupported_version": "Unsupported config version.",
   "config.validate.outdated_version": "Config version is outdated.",
   "config.validate.missing_chat": "No chat provider configured.",
