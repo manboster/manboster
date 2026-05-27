@@ -14,5 +14,11 @@
   "llm.oai_compat.base_url.desc": "调用 API 所使用的地址。\n如果没有，请联系你的服务提供商获取这个地址。",
 
   "llm.oai_compat.api_key": "API 密钥",
-  "llm.oai_compat.api_key.desc": "您的 API Key。\n如果还没有，请前往服务商的 API Key 管理页面创建。"
+  "llm.oai_compat.api_key.desc": "您的 API Key。\n如果还没有，请前往服务商的 API Key 管理页面创建。",
+
+  "llm.oai_compat.setup.credential_error": "无法根据您的凭据获取信息！",
+  "llm.oai_compat.setup.credential_error_msg": "建议检查您的网络连接和凭据。如果网络较差或确信凭据无误，请按回车手动添加模型；否则请按 Ctrl+C 退出。",
+  "llm.oai_compat.setup.model_select_prompt": "选择模型",
+  "llm.oai_compat.setup.model_select_help": "请选择您的 API 支持的模型。之后可通过 `manboster config` 修改默认值。",
+  "llm.oai_compat.setup.other_model": "其他模型"
 }

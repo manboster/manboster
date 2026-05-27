@@ -21,3 +21,12 @@ const (
 	LLMOAICompatAPIKeyName = "llm.oai_compat.api_key"
 	LLMOAICompatAPIKeyDesc = "llm.oai_compat.api_key.desc"
 )
+
+// OAI compat setup
+const (
+	OAICompatSetupCredentialError    = "llm.oai_compat.setup.credential_error"
+	OAICompatSetupCredentialErrorMsg = "llm.oai_compat.setup.credential_error_msg"
+	OAICompatSetupModelSelectPrompt  = "llm.oai_compat.setup.model_select_prompt"
+	OAICompatSetupModelSelectHelp    = "llm.oai_compat.setup.model_select_help"
+	OAICompatSetupOtherModel         = "llm.oai_compat.setup.other_model"
+)

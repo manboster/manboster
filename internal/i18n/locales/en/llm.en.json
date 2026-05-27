@@ -14,5 +14,11 @@
   "llm.oai_compat.base_url.desc": "The URL used to call the API.\nIf you don't have one, please head to your provider and ask for it.",
 
   "llm.oai_compat.api_key": "API Key",
-  "llm.oai_compat.api_key.desc": "Your API Key.\nIf you don't have one, please go to your provider's API Key management page and create one."
+  "llm.oai_compat.api_key.desc": "Your API Key.\nIf you don't have one, please go to your provider's API Key management page and create one.",
+
+  "llm.oai_compat.setup.credential_error": "Oops! We can't get information based on your credentials!",
+  "llm.oai_compat.setup.credential_error_msg": "We strongly recommend you check your Internet connection and credentials. If you have a poor connection or believe your credentials are correct, press Enter to add models manually. Otherwise, press Ctrl+C to exit.",
+  "llm.oai_compat.setup.model_select_prompt": "Models",
+  "llm.oai_compat.setup.model_select_help": "Please select models available from your API. You can change defaults later by running `manboster config`.",
+  "llm.oai_compat.setup.other_model": "Other Model"
 }

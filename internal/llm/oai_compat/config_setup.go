@@ -31,7 +31,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	}
 
 	if err != nil {
-		err = p.Alert(i18n.T(keys.OAICompatCredentialError), i18n.T(keys.OAICompatCredentialErrorMsg))
+		err = p.Alert(i18n.T(keys.OAICompatSetupCredentialError), i18n.T(keys.OAICompatSetupCredentialErrorMsg))
 		modelValues = append(modelValues, CustomModel)
 		if err != nil {
 			return err
@@ -39,11 +39,11 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	} else {
 		options := cli.BuildStringOptions(models, modelValues)
 		options = append(options, cli.Option{
-			Key:   i18n.T(keys.OAICompatOtherModel),
+			Key:   i18n.T(keys.OAICompatSetupOtherModel),
 			Value: CustomModel,
 		})
 
-		modelOptions, err := p.MultiSelect(i18n.T(keys.OAICompatModelSelectPrompt), i18n.T(keys.OAICompatModelSelectHelp), options, modelValues, func(options []cli.Option) error {
+		modelOptions, err := p.MultiSelect(i18n.T(keys.OAICompatSetupModelSelectPrompt), i18n.T(keys.OAICompatSetupModelSelectHelp), options, modelValues, func(options []cli.Option) error {
 			for _, option := range options {
 				opt := option
 				mark := false

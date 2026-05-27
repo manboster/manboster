@@ -1,0 +1,11 @@
+{
+  "ui.btn.yes": "Yes",
+  "ui.btn.no": "No",
+  "ui.btn.skip": "Skip",
+  "ui.btn.continue": "Continue",
+  "ui.btn.exit": "Exit",
+  "ui.btn.exit_now": "Exit Now",
+  "ui.btn.retry": "Retry",
+  "ui.question.want_to_retry": "Do you want to retry?",
+  "ui.question.want_to_continue": "Do you want to continue?",
+  }

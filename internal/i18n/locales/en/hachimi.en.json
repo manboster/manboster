@@ -1,0 +1,16 @@
+{
+  "hachimi.gguf.provider": "local GGUF Runtime",
+  "hachimi.gguf.model_type": "Model Type",
+  "hachimi.gguf.model_type.desc": "If you are using safeguard models, please select 'safeguard'. Otherwise, leave it as is.",
+  "hachimi.gguf.context_length": "Model context length",
+  "hachimi.gguf.context_length.desc": "How much context Hachimi can process. If your available RAM is low, choose a smaller value. A larger context allows longer messages. If you are unsure, leave it as is.",
+
+  "hachimi.gguf.setup.prompt": "Do you want to enter model details manually?\n\nIf you are unsure, please select 'No'.",
+  "hachimi.gguf.setup.question": "Do you want to enter model details manually?",
+  "hachimi.gguf.setup.url_input": "GGUF File URL",
+  "hachimi.gguf.setup.url_help": "Please enter a valid URL to download the GGUF file.",
+  "hachimi.gguf.setup.sha256_input": "SHA256",
+  "hachimi.gguf.setup.sha256_help": "Please enter a valid SHA256 hash. If you are unsure, leave it empty.",
+  "hachimi.gguf.setup.success": "Hachimi config saved successfully!",
+  "hachimi.gguf.setup.auto_set_msg": "Automatically configured with 'Qwen3-Guard Gen 0.6B'.",
+}

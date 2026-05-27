@@ -16,8 +16,8 @@ import (
 type Config struct {
 	GGUFurl       string       `json:"gguf_url" yaml:"gguf_url" mapstructure:"gguf_url" manboconfig:"skip"`
 	GGUFsha256    string       `json:"gguf_sha256" yaml:"gguf_sha256" mapstructure:"gguf_sha256" manboconfig:"skip"`
-	ModelType     ModelType    `json:"model_type" yaml:"model_type" mapstructure:"model_type" manboconfig:"required;enum;name:Model Type;desc:If you are using safeguard models, please select 'safeguard', otherwise, please leave it as is.;desc_id:config.hachimi.gguf.model_type_desc;default:llm" enum:"safeguard,llm"`
-	ContextLength ModelCtxType `json:"context_length" yaml:"context_length" mapstructure:"context_length" manboconfig:"required;enum;name:Model context length;desc:This value means how long context your hachimi can process, if your available RAM is low, please choose smaller one. The model's context is larger, the message can send is longer. If you don't know what's this, please leave it as is.;desc_id:config.hachimi.gguf.context_length_desc;default:medium" enum:"low,medium,high,x-high"`
+	ModelType     ModelType    `json:"model_type" yaml:"model_type" mapstructure:"model_type" manboconfig:"required;enum;id:hachimi.gguf.model_type;default:llm" enum:"safeguard,llm"`
+	ContextLength ModelCtxType `json:"context_length" yaml:"context_length" mapstructure:"context_length" manboconfig:"required;enum;id:hachimi.gguf.context_length;default:medium" enum:"low,medium,high,x-high"`
 }
 
 type ModelType string
@@ -32,7 +32,7 @@ func (c *Config) Name() string {
 }
 
 func (c *Config) DisplayName() string {
-	return "hachimi gguf runtime"
+	return i18n.T(keys.HachimiGGUFProvider)
 }
 
 func (c *Config) Args() *config.Args {
@@ -64,7 +64,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 	}
 
 	if confirm {
-		ggufURL, err := p.Input(i18n.T(keys.HachimiGGUFURLInput), i18n.T(keys.HachimiGGUFURLHelp), "", false, func(input string) error {
+		ggufURL, err := p.Input(i18n.T(keys.HachimiGGUFSetupURLInput), i18n.T(keys.HachimiGGUFSetupURLHelp), "", false, func(input string) error {
 			_, err := url.ParseRequestURI(input)
 			if err != nil {
 				return err
@@ -79,7 +79,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 			return err
 		}
 
-		sha256, err := p.Input(i18n.T(keys.HachimiGGUFSHA256Input), i18n.T(keys.HachimiGGUFSHA256Help), "", false, func(input string) error { return nil })
+		sha256, err := p.Input(i18n.T(keys.HachimiGGUFSetupSHA256Input), i18n.T(keys.HachimiGGUFSetupSHA256Help), "", false, func(input string) error { return nil })
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 		return p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.HachimiGGUFSetupSuccess))
 	}
 
-	err = p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.HachimiGGUFAutoSetMsg))
+	err = p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.HachimiGGUFSetupAutoSetMsg))
 	if err != nil {
 		return err
 	}
