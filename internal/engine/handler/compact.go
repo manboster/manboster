@@ -20,7 +20,7 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 	respMessage.MessageType = chat.MessageText
 	text := ""
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf(i18n.T(keys.EngineHandlerCompactWait), sessionId),
+		Text: i18n.Te(keys.EngineHandlerCompactWait, sessionId, nil),
 	}
 	err := instance.SendMessage(ctx, respMessage)
 	if err != nil {

@@ -113,7 +113,9 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		// get resp based on
 		switch guardSelectType(cb.SelectionValue) {
 		case guardSelectHachimi:
-			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperHachimiActivated), ttl/60)
+			respMsg.Text.Text = i18n.T(keys.GatekeeperHachimiActivated, map[string]any{
+				"Next": ttl / 60,
+			})
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
@@ -122,7 +124,9 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectHachimiAll:
-			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperHachimiActivated), ttl/60)
+			respMsg.Text.Text = i18n.T(keys.GatekeeperHachimiActivated, map[string]any{
+				"Next": 3600,
+			})
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send hachimi prompt message")
@@ -131,7 +135,10 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			go s.Recall(ctx, instance, respMsg)
 			return true, nil
 		case guardSelectIgnore:
-			respMsg.Text.Text = fmt.Sprintf(i18n.T(keys.GatekeeperShutUpMsg), ttl/60, toolProvider.Name())
+			respMsg.Text.Text = i18n.T(keys.GatekeeperShutUpMsg, map[string]any{
+				"Next": ttl / 60,
+				"Name": toolProvider.DisplayName(),
+			})
 			err := s.gatewayService.SendMessage(ctx, instance, respMsg)
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")

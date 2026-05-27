@@ -1,6 +1,6 @@
 {
   "engine.handler.tool_call_limit": "模型对同一工具调用次数过多，或模型调用连续失败，已自动中断以避免消耗无效 token 和时间。",
-  "engine.handler.compact_wait": "正在压缩会话 `%s`，请稍候...",
+  "engine.handler.compact_wait": "正在压缩会话 `{{ .Name }}`，请稍候...",
   "engine.handler.compact_no_need": "当前上下文较短，无需压缩。",
   "engine.handler.compact_error": "压缩会话时发生错误。",
   "engine.handler.reject": "访问被拒绝，您无权使用此机器人或该命令。\n如果您认为这是误操作，请联系机器人所有者。",

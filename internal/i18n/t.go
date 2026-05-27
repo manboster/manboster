@@ -46,6 +46,5 @@ func Te(messageID string, name string, err error) string {
 	if name != "" {
 		arr["Name"] = name
 	}
-	arr["MessageID"] = messageID
 	return T(messageID, arr)
 }

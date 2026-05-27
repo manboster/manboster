@@ -61,7 +61,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 			err = schema.Validate(intf, *toolProvider.Args())
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Handler] Validate `%s` failed: %q", req.ToolName, err))
-				result := fmt.Sprintf(i18n.T(keys.GatekeeperValidateRejectMsg), req.ToolName, err.Error())
+				result := i18n.Te(keys.GatekeeperValidateRejectMsg, req.ToolName, err)
 				callMsg.Text = &chat.TextPayload{
 					Text: result,
 				}
@@ -82,7 +82,7 @@ func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, ms
 		isOK, err := h.gatekeeperService.Guard(ctx, instance, msg, toolProvider, req, sid)
 		if !isOK {
 			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
-			result := fmt.Sprintf(i18n.T(keys.GatekeeperRejectMsg), req.ToolName, err)
+			result := i18n.Te(keys.GatekeeperRejectMsg, req.ToolName, err)
 
 			callMsg.Text = &chat.TextPayload{
 				Text: result,

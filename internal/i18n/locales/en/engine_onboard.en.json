@@ -8,6 +8,6 @@
   "engine.onboard.wish": "Wish you a wonderful journey with your Lobster!",
   "engine.onboard.pair_success": "Successfully paired!",
   "engine.onboard.pair_success_msg": "\nEnjoy using your personal Lobster!",
-  "engine.onboard.pair_user_error": " But we failed to create the user! Error: %s",
+  "engine.onboard.pair_user_error": " But we failed to create the user! Error: {{ .Error }}",
   "engine.onboard.pair_failed": "Pairing failed. Invalid pair code, please check your code."
 }

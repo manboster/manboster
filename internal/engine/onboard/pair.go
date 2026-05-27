@@ -26,7 +26,7 @@ func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Me
 			Type:     types.UserRoot,
 		})
 		if err != nil {
-			text += fmt.Sprintf(i18n.T(keys.EngineOnboardPairUserError), err.Error())
+			text += i18n.Te(keys.EngineOnboardPairUserError, "", err)
 			return fmt.Errorf(text)
 		}
 

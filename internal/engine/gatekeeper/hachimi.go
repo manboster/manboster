@@ -2,6 +2,7 @@ package gatekeeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -52,7 +53,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 		var txt strings.Builder
 		txt.WriteString(i18n.T(keys.GatekeeperHachimiUnsafe))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
-		txt.WriteString(fmt.Sprintf(i18n.T(keys.GatekeeperHachimiReason), resp.Reason))
+		txt.WriteString(i18n.Te(keys.GatekeeperHachimiReason, "", errors.New(resp.Reason)))
 		return s.Select(ctx, instance, msg, buildSelectionHachimi(), txt.String(), func(msg *chat.Message) (bool, error) {
 			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
@@ -69,7 +70,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 		var txt strings.Builder
 		txt.WriteString(i18n.T(keys.GatekeeperHachimiSuspicious))
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
-		txt.WriteString(fmt.Sprintf(i18n.T(keys.GatekeeperHachimiReason), resp.Reason))
+		txt.WriteString(i18n.Te(keys.GatekeeperHachimiReason, "", errors.New(resp.Reason)))
 		return s.Select(ctx, instance, msg, buildSelectionHachimi(), txt.String(), func(msg *chat.Message) (bool, error) {
 			cb := msg.SelectionCallback
 			switch cb.SelectionValue {
