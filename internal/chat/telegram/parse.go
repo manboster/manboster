@@ -95,7 +95,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	msg.MessageType = chat.MessageText
 	if m.Text != "" {
 		msg.Text = &chat.TextPayload{
-			Text: m.Text,
+			Text: text,
 		}
 		msg.MessageType |= chat.MessageText
 	}
@@ -103,7 +103,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	if m.Photo != nil {
 		if m.Photo.Caption != "" {
 			msg.Text = &chat.TextPayload{
-				Text: m.Text,
+				Text: text,
 			}
 			msg.MessageType |= chat.MessageText
 		}
@@ -112,7 +112,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	if m.Video != nil {
 		if m.Video.Caption != "" {
 			msg.Text = &chat.TextPayload{
-				Text: m.Video.Caption,
+				Text: text,
 			}
 			msg.MessageType |= chat.MessageText
 		}
@@ -121,7 +121,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	if m.Audio != nil {
 		if m.Audio.Caption != "" {
 			msg.Text = &chat.TextPayload{
-				Text: m.Audio.Caption,
+				Text: text,
 			}
 			msg.MessageType |= chat.MessageText
 		}
@@ -130,7 +130,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message) error {
 	if m.Document != nil {
 		if m.Document.Caption != "" {
 			msg.Text = &chat.TextPayload{
-				Text: m.Document.Caption,
+				Text: text,
 			}
 			msg.MessageType |= chat.MessageText
 		}
