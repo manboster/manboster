@@ -2,7 +2,6 @@ package daemon
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"syscall"
 	"time"
@@ -21,7 +20,7 @@ import (
 func startCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Reborn()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStartError), err))
+		color.Red(i18n.Te(keys.AppDaemonStartError, "", err))
 		return
 	}
 
@@ -33,7 +32,7 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 	defer func(ctx *daemon.Context) {
 		err := ctx.Release()
 		if err != nil {
-			color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStopError), err))
+			color.Red(i18n.Te(keys.AppDaemonStopError, "", err))
 		}
 	}(ctx.DaemonCtx)
 
@@ -51,13 +50,13 @@ func startCommandExecutor(cmd *cobra.Command, args []string) {
 func stopCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStatusError), err))
+		color.Red(i18n.Te(keys.AppDaemonStatusError, "", err))
 		return
 	}
 	if d != nil {
 		err = d.Signal(syscall.SIGTERM)
 		if err != nil {
-			color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStopError), err))
+			color.Red(i18n.Te(keys.AppDaemonStopError, "", err))
 			return
 		}
 		color.Green(i18n.T(keys.AppDaemonStopSuccess))
@@ -78,16 +77,16 @@ func restartCommandExecutor(cmd *cobra.Command, args []string) {
 func statusCommandExecutor(cmd *cobra.Command, args []string) {
 	d, err := ctx.DaemonCtx.Search()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStatusError), err))
+		color.Red(i18n.Te(keys.AppDaemonStatusError, "", err))
 		return
 	}
 	if d != nil {
 		err = d.Signal(syscall.Signal(0))
 		if err != nil {
-			color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonStatusNotRunning), config.Path("manboster.pid"), err))
+			color.Red(i18n.Te(keys.AppDaemonStatusNotRunning, config.Path("manboster.pid"), err))
 			return
 		}
-		color.Green(fmt.Sprintf(i18n.T(keys.AppDaemonStatusRunning), config.Path("manboster.log")))
+		color.Green(i18n.Te(keys.AppDaemonStatusRunning, config.Path("manboster.log"), nil))
 	} else {
 		color.Red(i18n.T(keys.AppDaemonStopStopped))
 	}

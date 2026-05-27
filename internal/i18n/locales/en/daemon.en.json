@@ -1,14 +1,14 @@
 {
-  "daemon.start_error": "[Daemon] Failed to start daemon: %v\nPlease make sure the daemon is not already running.",
-  "daemon.start_success": "[Daemon] Daemon started. You can chat with your Lobster after a moment!",
-  "daemon.stop_success": "[Daemon] Daemon stopped. Thank you for playing with your Lobster!",
-  "daemon.stop_stopped": "[Daemon] Daemon is already stopped.",
-  "daemon.stop_error": "[Daemon] Failed to stop daemon: %v",
-  "daemon.restart_message": "[Daemon] Restarting daemon, please wait...",
-  "daemon.status_running": "[Daemon] Daemon is running. View logs at %s",
-  "daemon.status_not_running": "[Daemon] Daemon is not running. Delete PID files in %s to reset, or run 'manboster reset'. Error: %v",
-  "daemon.status_error": "[Daemon] Failed to get daemon PID file: %v\nThe daemon may not be running.",
-  "daemon.no_config": "[Daemon] No configuration file found. Please run the setup wizard first.",
-  "daemon.log_error": "[Daemon] Failed to tail log file: %v",
-  "daemon.log_reading": ">>> Reading log file..."
+  "app.daemon.start_error": "[Manboster Daemon] Failed to start daemon: {{ .Error }}\nPlease make sure the daemon is not already running.",
+  "app.daemon.start_success": "[Manboster Daemon] Daemon started. You can chat with your Lobster after a moment!",
+  "app.daemon.stop_success": "[Manboster Daemon] Daemon stopped. Thank you for playing with your Lobster!",
+  "app.daemon.stop_stopped": "[Manboster Daemon] Daemon is already stopped.",
+  "app.daemon.stop_error": "[Manboster Daemon] Failed to stop daemon: {{ .Error }}",
+  "app.daemon.restart_message": "[Manboster Daemon] Restarting daemon, please wait...",
+  "app.daemon.status_running": "[Manboster Daemon] Daemon is running. View logs at {{ .Name }}",
+  "app.daemon.status_not_running": "[Manboster Daemon] Daemon is not running. Delete PID files in {{ .Name }} to reset, or run 'manboster reset'. Error: {{ .Error }}",
+  "app.daemon.status_error": "[Manboster Daemon] Failed to get daemon PID file: {{ .Error }}\nThe daemon may not be running.",
+  "app.daemon.no_config": "[Manboster Daemon] No configuration file found. Please run the setup wizard first.",
+  "app.daemon.log_error": "[Manboster Daemon] Failed to tail log file: {{ .Error }}",
+  "app.daemon.log_reading": ">>> Reading log file..."
 }
