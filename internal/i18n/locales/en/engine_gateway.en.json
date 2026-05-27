@@ -1,9 +1,9 @@
 {
-  "engine.gateway.llm_error_default": "[Manboster] Failed to get message from LLMProvider %q, model %q, get error: %s\nYou can resend your message or check the API's availability.",
-  "engine.gateway.llm_error_rate_limit": "[Manboster] Provider %s, Model %s has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.",
-  "engine.gateway.llm_error_down": "[Manboster] Provider %s has been down, please check your provider's status page, or change providers and try again later.",
-  "engine.gateway.llm_error_timeout": "[Manboster] It seems that there is a connection issue between you and provider %s, please check your internet connection and try again.",
-  "engine.gateway.llm_error_auth": "[Manboster] Access denied or unauthorized in provider %s, please check your API key or other credentials is valid.",
-  "engine.gateway.llm_error_cancelled": "[Manboster] You cancelled provider %s's request.",
-  "engine.gateway.trytimes": "[Manboster] The request of LLM provider encounters an error, now retry, %d times..."
+  "engine.gateway.llm_error_default": "[Manboster] Failed to get message from LLMProvider {{ .Name }}, model {{ .Model }}, get error: {{ .Error }}\nYou can resend your message or check the API's availability.",
+  "engine.gateway.llm_error_rate_limit": "[Manboster] Provider {{ .Name }}, Model {{ .Model }} has been suffering a very high traffic and triggered rate limit, please try again later or change provider's models.",
+  "engine.gateway.llm_error_down": "[Manboster] Provider {{ .Name }} has been down, please check your provider's status page, or change providers and try again later.",
+  "engine.gateway.llm_error_timeout": "[Manboster] It seems that there is a connection issue between you and provider {{ .Name }}, please check your internet connection and try again.",
+  "engine.gateway.llm_error_auth": "[Manboster] Access denied or unauthorized in provider {{ .Name }}, please check your API key or other credentials is valid.",
+  "engine.gateway.llm_error_cancelled": "[Manboster] You cancelled provider {{ .Name }}'s request.",
+  "engine.gateway.trytimes": "[Manboster] The request of LLM provider encounters an error, now retry, {{ .Count }} times..."
 }

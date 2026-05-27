@@ -5,8 +5,9 @@
   "engine.gatekeeper.cancel_once": "Cancel this time",
   "engine.gatekeeper.cancel_ignore": "Cancel for 15 minutes",
   "engine.gatekeeper.cancel_all": "Cancel all in 10 minutes",
-  "engine.gatekeeper.handle_hachimi": "Hand off to Hachimi",
-  "engine.gatekeeper.handle_hachimi_all": "Hand all off to Hachimi for an hour",
+  "engine.gatekeeper.handle_hachimi": "Hand to Hachimi",
+  "engine.gatekeeper.handle_hachimi_all": "Hand all to Hachimi for an hour",
+
   "engine.gatekeeper.allow": "Allow",
   "engine.gatekeeper.deny": "Deny",
 

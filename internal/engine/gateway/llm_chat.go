@@ -50,17 +50,24 @@ func (s *Service) HandleLLMChatError(ctx context.Context, instance chat.Provider
 	color.Red(fmt.Sprintf("[Manboster Gateway] Failed to get message from LLMProvider %q, model %q, get error: %q", llmProviderDisplayName, llmModelDisplayName, err))
 	// now we have to wrap this into friendly prompt
 	tips := fmt.Sprintf("%+v", err)
-	text := fmt.Sprintf(i18n.T(keys.GatewayLLMErrorDefault), llmProviderDisplayName, llmModelDisplayName, err)
+	text := fmt.Sprintf(i18n.T(keys.GatewayLLMErrorDefault, map[string]any{
+		"Name":  llmModelDisplayName,
+		"Model": llmProviderDisplayName,
+		"Error": tips,
+	}))
 	if strings.Contains(tips, "429") {
-		text = fmt.Sprintf(i18n.T(keys.GatewayLLMErrorRateLimit), llmProviderDisplayName, llmModelDisplayName)
+		text = i18n.T(keys.GatewayLLMErrorRateLimit, map[string]any{
+			"Name":  llmProviderDisplayName,
+			"Model": llmModelDisplayName,
+		})
 	} else if strings.Contains(tips, "500") || strings.Contains(tips, "502") || strings.Contains(tips, "503") || strings.Contains(tips, "501") {
-		text = fmt.Sprintf(i18n.T(keys.GatewayLLMErrorDown), llmProviderDisplayName)
+		text = i18n.Te(keys.GatewayLLMErrorDown, llmProviderDisplayName, nil)
 	} else if strings.Contains(tips, "context deadline exceeded") {
-		text = fmt.Sprintf(i18n.T(keys.GatewayLLMErrorTimeout), llmProviderDisplayName)
+		text = i18n.Te(keys.GatewayLLMErrorTimeout, llmProviderDisplayName, nil)
 	} else if strings.Contains(tips, "403") || strings.Contains(tips, "401") {
-		text = fmt.Sprintf(i18n.T(keys.GatewayLLMErrorAuth), llmProviderDisplayName)
+		text = i18n.Te(keys.GatewayLLMErrorAuth, llmProviderDisplayName, nil)
 	} else if strings.Contains(tips, "cancel") {
-		text = fmt.Sprintf(i18n.T(keys.GatewayLLMErrorCancelled), llmProviderDisplayName)
+		text = i18n.Te(keys.GatewayLLMErrorCancelled, llmProviderDisplayName, nil)
 	}
 	respMessage.Text = &chat.TextPayload{
 		Text: text,

@@ -1,9 +1,9 @@
 {
-  "engine.gateway.llm_error_default": "[Manboster] 从 LLM 服务商 %q（模型 %q）获取消息失败，错误：%s\n您可以重新发送消息，或检查 API 的可用性。",
-  "engine.gateway.llm_error_rate_limit": "[Manboster] 服务商 %s（模型 %s）当前流量过高并触发了限流，请稍后重试或更换模型。",
-  "engine.gateway.llm_error_down": "[Manboster] 服务商 %s 当前不可用，请查看服务商的状态页面，或更换服务商后重试。",
-  "engine.gateway.llm_error_timeout": "[Manboster] 您与服务商 %s 之间似乎存在连接问题，请检查网络连接后重试。",
-  "engine.gateway.llm_error_auth": "[Manboster] 服务商 %s 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
-  "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 %s 的请求。",
-  "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 %d 次..."
+  "engine.gateway.llm_error_default": "[Manboster] 从 LLM 服务商 {{ .Name }}（模型 {{ .Model }}）获取消息失败，错误：{{ .Error }}\n您可以重新发送消息，或检查 API 的可用性。",
+  "engine.gateway.llm_error_rate_limit": "[Manboster] 服务商 {{ .Name }}（模型 {{ .Model }}）当前流量过高并触发了限流，请稍后重试或更换模型。",
+  "engine.gateway.llm_error_down": "[Manboster] 服务商 {{ .Name }} 当前不可用，请查看服务商的状态页面，或更换服务商后重试。",
+  "engine.gateway.llm_error_timeout": "[Manboster] 您与服务商 {{ .Name }} 之间似乎存在连接问题，请检查网络连接后重试。",
+  "engine.gateway.llm_error_auth": "[Manboster] 服务商 {{ .Name }} 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
+  "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 {{ .Name }} 的请求。",
+  "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 {{ .Count }} 次..."
 }

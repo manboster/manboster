@@ -83,7 +83,7 @@ func (e *Engine) MessageNotifyRunner(ctx context.Context, ch chan int, instance 
 			respMsg.Reply = nil
 			respMsg.MessageType = chat.MessageText
 			respMsg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf(i18n.T(keys.GatewayLLMTryTimes), times),
+				Text: i18n.T(keys.GatewayLLMTryTimes, times),
 			}
 
 			err := e.gateway.SendMessage(ctx, instance, respMsg)

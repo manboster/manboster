@@ -7,6 +7,7 @@
   "engine.gatekeeper.cancel_all": "10 分钟内全拒绝",
   "engine.gatekeeper.handle_hachimi": "让 Hachimi 来处理",
   "engine.gatekeeper.handle_hachimi_all": "1小时内全让 Hachimi 处理",
+
   "engine.gatekeeper.allow": "允许",
   "engine.gatekeeper.deny": "拒绝",
 
