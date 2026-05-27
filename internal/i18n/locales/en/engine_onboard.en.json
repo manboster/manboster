@@ -1,0 +1,13 @@
+{
+  "engine.onboard.welcome": "Welcome to Manboster!\n",
+  "engine.onboard.instruction": "Before you start chatting, you need to adopt this Lobster to prevent unauthorized access. Here is what you need to do:\n",
+  "engine.onboard.step1": "1. Open the Manboster window and look for something like `[Manboster Engine] !!! Your Pair Code is xxxxxx! You can enter '/pair xxxxxx' in your dialog window to adopt this Lobster! !!!`.\n",
+  "engine.onboard.step1_note": "(If you can't find that window, or you are running Manboster in daemon mode, open your terminal and run 'manboster log' to view live logs.)\n",
+  "engine.onboard.step2": "2. Take that 6-digit code and send it with `/pair`, like `/pair [your 6-digit code]`.\n",
+  "engine.onboard.step3": "3. Let the Lobster validate it. Once confirmed, you can chat freely!\n",
+  "engine.onboard.wish": "Wish you a wonderful journey with your Lobster!",
+  "engine.onboard.pair_success": "Successfully paired!",
+  "engine.onboard.pair_success_msg": "\nEnjoy using your personal Lobster!",
+  "engine.onboard.pair_user_error": " But we failed to create the user! Error: %s",
+  "engine.onboard.pair_failed": "Pairing failed. Invalid pair code, please check your code."
+}

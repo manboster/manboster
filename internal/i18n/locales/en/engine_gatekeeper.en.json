@@ -1,0 +1,23 @@
+{
+  "engine.gatekeeper.continue_once": "Continue this time",
+  "engine.gatekeeper.continue_all": "Continue all in 10 minutes",
+  "engine.gatekeeper.shut_up": "Mute for a moment",
+  "engine.gatekeeper.cancel_once": "Cancel this time",
+  "engine.gatekeeper.cancel_ignore": "Cancel for 15 minutes",
+  "engine.gatekeeper.cancel_all": "Cancel all in 10 minutes",
+  "engine.gatekeeper.handle_hachimi": "Hand off to Hachimi",
+  "engine.gatekeeper.handle_hachimi_all": "Hand all off to Hachimi for an hour",
+  "engine.gatekeeper.allow": "Allow",
+  "engine.gatekeeper.deny": "Deny",
+
+  "engine.gatekeeper.hachimi_activated": "🐱 You activated Hachimi. It will handle this tool for the next %d minutes, enjoy your time!",
+  "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next %d minutes in tool call `%q`.",
+  "engine.gatekeeper.continue_all_msg": "⚠️ You allowed all tool calls in this session! They will automatically allow for the next 10 minutes.",
+  "engine.gatekeeper.cancel_all_msg": "❌ You rejected all tool calls in this session! They will automatically deny for the next 10 minutes.",
+  "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi thinks this tool call is unsafe! Please review it carefully and decide.**\n",
+  "engine.gatekeeper.hachimi_suspicious": "**Hachimi thinks this tool call is suspicious! Please review it carefully and decide.**\n",
+  "engine.gatekeeper.hachimi_reason": "\nHachimi reports reason: `%s`\n",
+  "engine.gatekeeper.reject_msg": "❌Gatekeeper Rejected the tool call `%s`: %q",
+  "engine.gatekeeper.validate_msg": "❌ Gatekeeper Rejected `%s`, params validate failed: %q",
+  "engine.gatekeeper.hachimi_handled": "🐱✅ Hachimi thinks this tool call is safe to go so it grants permission."
+}

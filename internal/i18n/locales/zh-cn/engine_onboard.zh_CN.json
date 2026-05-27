@@ -1,0 +1,13 @@
+{
+  "engine.onboard.welcome": "欢迎使用 Manboster！\n",
+  "engine.onboard.instruction": "在开始聊天之前，您需要完成配对以防止未授权访问。操作步骤如下：\n",
+  "engine.onboard.step1": "1. 打开 Manboster 窗口，找到类似 `[Manboster Engine] !!! 您的配对码是 xxxxxx！请在对话窗口中输入 '/pair xxxxxx' 完成配对！!!!` 的提示。\n",
+  "engine.onboard.step1_note": "（如果找不到该窗口，或您以守护进程模式运行 Manboster，请打开终端执行 'manboster log' 查看实时日志。）\n",
+  "engine.onboard.step2": "2. 获取上述 6 位数字码，发送 `/pair [您的 6 位数字码]` 完成配对。\n",
+  "engine.onboard.step3": "3. 等待验证通过后，即可自由与您的 Lobster 对话！\n",
+  "engine.onboard.wish": "祝您与 Lobster 相处愉快！",
+  "engine.onboard.pair_success": "配对成功！",
+  "engine.onboard.pair_success_msg": "\n尽情享受您的专属 Lobster 吧！",
+  "engine.onboard.pair_user_error": " 但创建用户时失败了！错误：%s",
+  "engine.onboard.pair_failed": "配对失败，配对码无效，请检查后重试。"
+}

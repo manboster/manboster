@@ -1,0 +1,23 @@
+{
+  "engine.gatekeeper.continue_once": "本次同意",
+  "engine.gatekeeper.continue_all": "全部同意 10 分钟",
+  "engine.gatekeeper.shut_up": "同意一段时间",
+  "engine.gatekeeper.cancel_once": "本次拒绝",
+  "engine.gatekeeper.cancel_ignore": "15 分钟内都拒绝",
+  "engine.gatekeeper.cancel_all": "10 分钟内全拒绝",
+  "engine.gatekeeper.handle_hachimi": "让 Hachimi 来处理",
+  "engine.gatekeeper.handle_hachimi_all": "1小时内全让 Hachimi 处理",
+  "engine.gatekeeper.allow": "允许",
+  "engine.gatekeeper.deny": "拒绝",
+
+  "engine.gatekeeper.hachimi_activated": "🐱 您已启用 Hachimi，它将在接下来 %d 分钟内帮您处理此工具调用，请放心使用！",
+  "engine.gatekeeper.shut_up_msg": "⚠️ 在接下来 %d 分钟内将自动允许 %q 工具的调用！",
+  "engine.gatekeeper.continue_all_msg": "⚠️ 你已允许本会话内的所有工具调用！接下来 10 分钟内将自动允许。",
+  "engine.gatekeeper.cancel_all_msg": "❌ 你已拒绝本会话内的所有工具调用！接下来 10 分钟内将自动拒绝。",
+  "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi 认为此工具调用不安全！请仔细查看并决定是否允许。**\n",
+  "engine.gatekeeper.hachimi_suspicious": "**Hachimi 认为此工具调用存在可疑行为！请仔细查看并决定是否允许。**\n",
+  "engine.gatekeeper.hachimi_reason": "\nHachimi 报告原因：`%s`\n",
+  "engine.gatekeeper.reject_msg": "❌守门员拒绝了大模型调用`%s`工具的请求：%q",
+  "engine.gatekeeper.validate_msg": "❌ 守门员拒绝了大模型调用`%s`工具的请求，输入参数校验失败！原因：%q",
+  "engine.gatekeeper.hachimi_handled": "🐱✅ Hachimi 认为这个操作安全，自动放行了。"
+}
