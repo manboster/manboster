@@ -96,19 +96,19 @@ const (
 
 // cli.config: config run (command_run)
 const (
-	CliConfigRunDaemonRunning   = "cli.config.config_run.daemon_running"
-	CliConfigRunInitError       = "cli.config.config_run.init_error"
-	CliConfigRunError           = "cli.config.config_run.error"
-	CliConfigEditNotFound       = "cli.config.config_run.edit_not_found"
-	CliConfigEditCreatePrompt   = "cli.config.config_run.edit_create_prompt"
-	CliConfigEditCancelled      = "cli.config.config_run.edit_cancelled"
-	CliConfigEditOpenError      = "cli.config.config_run.edit_open_error"
-	CliConfigOpenNotFound       = "cli.config.config_run.open_not_found"
-	CliConfigOpenError          = "cli.config.config_run.open_error"
-	CliConfigOnboardError       = "cli.config.config_run.onboard_error"
-	CliConfigOnboardValidateErr = "cli.config.config_run.onboard_validate_error"
-	CliConfigOnboardWriteError  = "cli.config.config_run.onboard_write_error"
-	CliConfigOnboardSuccess     = "cli.config.config_run.onboard_success"
+	CliConfigRunDaemonRunning   = "cli.config.run.daemon_running"
+	CliConfigRunInitError       = "cli.config.run.init_error"
+	CliConfigRunError           = "cli.config.run.error"
+	CliConfigEditNotFound       = "cli.config.run.edit_not_found"
+	CliConfigEditCreatePrompt   = "cli.config.run.edit_create_prompt"
+	CliConfigEditCancelled      = "cli.config.run.edit_cancelled"
+	CliConfigEditOpenError      = "cli.config.run.edit_open_error"
+	CliConfigOpenNotFound       = "cli.config.run.open_not_found"
+	CliConfigOpenError          = "cli.config.run.open_error"
+	CliConfigOnboardError       = "cli.config.run.onboard_error"
+	CliConfigOnboardValidateErr = "cli.config.run.onboard_validate_error"
+	CliConfigOnboardWriteError  = "cli.config.run.onboard_write_error"
+	CliConfigOnboardSuccess     = "cli.config.run.onboard_success"
 )
 
 // cli.config: shared option labels

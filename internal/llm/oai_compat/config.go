@@ -14,11 +14,11 @@ var re = regexp.MustCompile(`^[a-zA-Z0-9]+$`)
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name" manboconfig:"required;name:Your Provider's name;desc:The name of your provider.\nYou can enter what you want but no spaces in your string.;desc_id:config.llm.oai_compat.name_desc"`
-	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name" manboconfig:"required;name:Your Provider's Display name;desc:The name that will display on your application if you don't know what's this, please leave it empty.;desc_id:config.llm.oai_compat.display_name_desc"`
-	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url" manboconfig:"required;name:API BaseURL;desc:The URL used to call API.\nIf you don't have one please head to your provider and ask for it.;desc_id:config.llm.oai_compat.base_url_desc"`          // this is dynamic when you choose oai_compat systems
-	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key" manboconfig:"required;secret;name:API Key;desc:Your API Key.\nIf you don't have one, please go to your provider's API Key manage page and create one.;desc_id:config.llm.oai_compat.api_key_desc"` // your apikey
-	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model" manboconfig:"skip"`                                                                                                                                           // your wanted model's information like anthropic/claude-sonnet-4.5
+	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name" manboconfig:"required;id:llm.oai_compat.name"`
+	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name" manboconfig:"id:llm.oai_compat.display_name"`
+	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url" manboconfig:"required;id:llm.oai_compat.base_url"`         // this is dynamic when you choose oai_compat systems
+	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key" manboconfig:"required;secret;desc_id:llm.oai_compat.api_key"` // your apikey
+	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model" manboconfig:"skip"`                                                 // your wanted model's information like anthropic/claude-sonnet-4.5
 	Headers             map[string]string `json:"headers" mapstructure:"headers" yaml:"headers" manboconfig:"skip"`
 }
 

@@ -62,8 +62,12 @@ func ArgsFromStruct(s interface{}) *Args {
 		}
 
 		desc := tag["desc"]
-		if tag["desc_id"] != "" {
-			desc = i18n.T(tag["desc_id"])
+		if tag["id"] != "" {
+			desc = i18n.T(tag["id"] + ".desc")
+		}
+		dpName := tag["name"]
+		if tag["id"] != "" {
+			dpName = i18n.T(tag["id"])
 		}
 
 		arg := &schema.Args{
@@ -78,7 +82,7 @@ func ArgsFromStruct(s interface{}) *Args {
 		node := ArgsNode{
 			Arg:         arg,
 			IsSecret:    tag["secret"] == "true",
-			DisplayName: tag["name"],
+			DisplayName: dpName,
 		}
 
 		if d := tag["default"]; d != "" {

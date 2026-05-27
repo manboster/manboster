@@ -1,9 +1,4 @@
 {
-  "config.llm.openrouter.api_key_desc": "您的 OpenRouter API Key。\n如果还没有，请前往 https://openrouter.ai/workspaces/default/keys 创建。",
-  "config.llm.oai_compat.name_desc": "服务商的标识名称。\n可以自由填写，但不能包含空格。",
-  "config.llm.oai_compat.display_name_desc": "在应用中显示的服务商名称。如果不确定，可以留空。",
-  "config.llm.oai_compat.base_url_desc": "调用 API 所使用的地址。\n如果没有，请联系您的服务商获取。",
-  "config.llm.oai_compat.api_key_desc": "您的 API Key。\n如果还没有，请前往服务商的 API Key 管理页面创建。",
   "config.chat.telegram.bot_token_desc": "您的 Telegram Bot Token。如果还没有，可以通过 @BotFather 获取。",
   "config.chat.telegram.collapse_length_desc": "消息超过此长度时，将折叠为可展开的引用块。",
   "config.chat.telegram.reaction_status_desc": "Emoji 反应通知偏好设置。\n- enabled：处理消息时添加 Emoji 反应。\n- clean：模型处理完成后自动移除反应。\n- disabled：不添加任何 Emoji 反应。",

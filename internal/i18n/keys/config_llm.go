@@ -1,14 +1,5 @@
 package keys
 
-// Config args descriptions: LLM providers
-const (
-	LLMOpenRouterAPIKeyDesc     = "config.llm.openrouter.api_key_desc"
-	LLMOAICompatNameDesc        = "config.llm.oai_compat.name_desc"
-	LLMOAICompatDisplayNameDesc = "config.llm.oai_compat.display_name_desc"
-	LLMOAICompatBaseURLDesc     = "config.llm.oai_compat.base_url_desc"
-	LLMOAICompatAPIKeyDesc      = "config.llm.oai_compat.api_key_desc"
-)
-
 // Config args descriptions: Chat providers
 const (
 	ChatTelegramBotTokenDesc       = "config.chat.telegram.bot_token_desc"

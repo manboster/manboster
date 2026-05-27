@@ -1,9 +1,4 @@
 {
-  "config.llm.openrouter.api_key_desc": "Your OpenRouter API Key.\nIf you don't have one, please open https://openrouter.ai/workspaces/default/keys to create one.",
-  "config.llm.oai_compat.name_desc": "The name of your provider.\nYou can enter what you want but no spaces in your string.",
-  "config.llm.oai_compat.display_name_desc": "The name that will display on your application. If you don't know what this is, please leave it empty.",
-  "config.llm.oai_compat.base_url_desc": "The URL used to call the API.\nIf you don't have one, please head to your provider and ask for it.",
-  "config.llm.oai_compat.api_key_desc": "Your API Key.\nIf you don't have one, please go to your provider's API Key management page and create one.",
   "config.chat.telegram.bot_token_desc": "Your Telegram Bot Token. If you don't have one, you can get it from @BotFather.",
   "config.chat.telegram.collapse_length_desc": "The message length threshold above which the message will be collapsed into an expandable quote.",
   "config.chat.telegram.reaction_status_desc": "Emoji reaction notification preference.\n- enabled: an emoji reaction is added to your message while processing.\n- clean: the reaction is removed after the model finishes processing.\n- disabled: no emoji reaction.",
