@@ -38,7 +38,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 			}
 		}
 
-		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardChatAddedCount), len(chatConfigs)), "", i18n.T(keys.BtnContinue), i18n.T(keys.BtnExit))
+		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardChatAddedCount), len(chatConfigs)), "", i18n.T(keys.UIBtnContinue), i18n.T(keys.UIBtnExit))
 		if err != nil {
 			return chatConfigs, err
 		}

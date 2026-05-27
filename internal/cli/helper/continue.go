@@ -17,8 +17,8 @@ func ContinueConfirm(ctx context.Context, content string) bool {
 		huh.NewGroup(
 			huh.NewConfirm().
 				Title(fmt.Sprintf("%s\nContinue?", content)).
-				Affirmative(i18n.T(keys.BtnContinue)).
-				Negative(i18n.T(keys.BtnSkip)).
+				Affirmative(i18n.T(keys.UIBtnContinue)).
+				Negative(i18n.T(keys.UIBtnSkip)).
 				Value(&agree),
 		),
 	)

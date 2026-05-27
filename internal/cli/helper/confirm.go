@@ -18,7 +18,7 @@ func ConfirmForm(ctx context.Context, tips string, confirmTitle string, confirmC
 			huh.NewConfirm().
 				Title(confirmTitle).
 				Affirmative(confirmContent).
-				Negative(i18n.T(keys.BtnExitNow)).
+				Negative(i18n.T(keys.UIBtnExitNow)).
 				Value(&agree),
 		),
 	)

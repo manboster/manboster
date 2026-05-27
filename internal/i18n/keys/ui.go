@@ -2,17 +2,17 @@ package keys
 
 // Shared confirm/deny button labels
 const (
-	BtnYes      = "ui.btn.yes"
-	BtnNo       = "ui.btn.no"
-	BtnSkip     = "ui.btn.skip"
-	BtnContinue = "ui.btn.continue"
-	BtnExit     = "ui.btn.exit"
-	BtnExitNow  = "ui.btn.exit_now"
-	BtnRetry    = "ui.btn.retry"
+	UIBtnYes      = "ui.btn.yes"
+	UIBtnNo       = "ui.btn.no"
+	UIBtnSkip     = "ui.btn.skip"
+	UIBtnContinue = "ui.btn.continue"
+	UIBtnExit     = "ui.btn.exit"
+	UIBtnExitNow  = "ui.btn.exit_now"
+	UIBtnRetry    = "ui.btn.retry"
 )
 
 // Shared question subtitles
 const (
-	QuestionWantToRetry    = "ui.question.want_to_retry"
-	QuestionWantToContinue = "ui.question.want_to_continue"
+	UIQuestionWantToRetry    = "ui.question.want_to_retry"
+	UIQuestionWantToContinue = "ui.question.want_to_continue"
 )

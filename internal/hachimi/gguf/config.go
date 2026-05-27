@@ -58,7 +58,7 @@ func (c *Config) Validate() error {
 }
 
 func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
-	confirm, err := p.Prompt(i18n.T(keys.HachimiGGUFSetupPrompt), i18n.T(keys.HachimiGGUFSetupQuestion), i18n.T(keys.BtnYes), i18n.T(keys.BtnNo))
+	confirm, err := p.Prompt(i18n.T(keys.HachimiGGUFSetupPrompt), i18n.T(keys.HachimiGGUFSetupQuestion), i18n.T(keys.UIBtnYes), i18n.T(keys.UIBtnNo))
 	if err != nil {
 		return err
 	}

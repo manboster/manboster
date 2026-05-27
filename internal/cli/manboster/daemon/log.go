@@ -35,11 +35,11 @@ func logCommandExecutor(cmd *cobra.Command, args []string) {
 
 	t, err := tail.TailFile(logPath, cfg)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.DaemonLogError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.AppDaemonLogError), err))
 		return
 	}
 
-	color.Cyan(i18n.T(keys.DaemonLogReading))
+	color.Cyan(i18n.T(keys.AppDaemonLogReading))
 
 	for line := range t.Lines {
 		fmt.Println(line.Text)

@@ -29,7 +29,7 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 	conf := config.Config{}
 
 	if err := config.Init(); err == nil {
-		prompt, err := p.Prompt(i18n.T(keys.OnboardExistingConfig), i18n.T(keys.OnboardExistingContinue), i18n.T(keys.BtnContinue), i18n.T(keys.BtnExit))
+		prompt, err := p.Prompt(i18n.T(keys.OnboardExistingConfig), i18n.T(keys.OnboardExistingContinue), i18n.T(keys.UIBtnContinue), i18n.T(keys.UIBtnExit))
 		if err != nil {
 			return config.Config{}, err
 		}
@@ -144,7 +144,7 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 			state = wizardConfigSuccess
 		// If you are using GoLand or other JetBrains IDEs, please ignore this `condition is always true` error.
 		case wizardConfigError:
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliWizardErrorRetry), reportedError), i18n.T(keys.QuestionWantToRetry), i18n.T(keys.BtnRetry), i18n.T(keys.BtnExit))
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliWizardErrorRetry), reportedError), i18n.T(keys.UIQuestionWantToRetry), i18n.T(keys.UIBtnRetry), i18n.T(keys.UIBtnExit))
 			if err != nil {
 				color.Red(fmt.Sprintf(i18n.T(keys.CliWizardConfigError), reportedError))
 			}
