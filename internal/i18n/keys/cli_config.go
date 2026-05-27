@@ -144,6 +144,7 @@ const (
 	CliConfigSessionSelectModel     = "cli.config.session.select_model"
 	CliConfigSessionUpdateSuccess   = "cli.config.session.update_success"
 	CliConfigSessionDeleteConfirm   = "cli.config.session.delete_confirm"
+	CliConfigSessionDeleteBounds    = "cli.config.session.delete_bounds"
 	CliConfigSessionDeleteSuccess   = "cli.config.session.delete_success"
 	CliConfigSessionPurgeConfirm    = "cli.config.session.purge_confirm"
 	CliConfigSessionPurgeSuccess    = "cli.config.session.purge_success"

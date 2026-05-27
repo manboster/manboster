@@ -94,7 +94,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				}
 				continue
 			}
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeConfirm), purgeNum), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.T(keys.CliConfigSessionPurgeConfirm, purgeNum), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -113,11 +113,11 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				}
 			}
 			if len(purgeErrors) > 0 {
-				if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeError), strings.Join(purgeErrors, "\n"))); err != nil {
+				if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigSessionPurgeError, strings.Join(purgeErrors, "\n"), nil)); err != nil {
 					return err
 				}
 			} else {
-				if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeSuccess), purgeNum)); err != nil {
+				if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigSessionPurgeSuccess, purgeNum)); err != nil {
 					return err
 				}
 			}
@@ -221,9 +221,9 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 		form.Register(databaseSessionPageDelete, func() error {
 			txt := ""
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
-				txt = fmt.Sprintf("\nThis session is bound to %d chats. Deleting it will also delete the chat information.", len(cm))
+				txt = "\n" + i18n.T(keys.CliConfigSessionDeleteBounds, len(cm))
 			}
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigSessionDeleteConfirm), selectedSession.SessionID, txt), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigSessionDeleteConfirm, selectedSession.SessionID, nil)+txt, "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -234,14 +234,14 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				return err
 			}
 			if err := repo.DeleteChatData(ctx, selectedSession.SessionID); err != nil {
-				if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionDataDeleteError), err)); alertErr != nil {
+				if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigSessionDataDeleteError, "", err)); alertErr != nil {
 					return alertErr
 				}
 			}
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
 				for _, c := range cm {
 					if err := repo.DeleteChat(ctx, c.ChatID, c.ChatProvider); err != nil {
-						if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionChatDeleteError), c.ChatID, err)); alertErr != nil {
+						if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigSessionChatDeleteError, c.ChatID, err)); alertErr != nil {
 							return alertErr
 						}
 					}

@@ -104,7 +104,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		form := newConfigForm[databaseUserPageAction]()
 
 		form.Register(databaseUserPagePromote, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigUserPromoteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigUserPromoteConfirm, selectedUser.UserID, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -125,7 +125,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		})
 
 		form.Register(databaseUserPageDegrade, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigUserDegradeConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigUserDegradeConfirm, selectedUser.UserID, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}

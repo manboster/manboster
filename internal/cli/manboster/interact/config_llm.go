@@ -119,7 +119,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		form := newConfigForm[llmConfigAction]()
 
 		form.Register(llmConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigLLMDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigLLMDeleteConfirm, selectedConfig.Provider, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -127,7 +127,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 				return fmt.Errorf("cancelled")
 			}
 			cfg.LLMs = append(cfg.LLMs[:selectedIndex], cfg.LLMs[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigLLMDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigLLMDeleteSuccess, selectedConfig.Provider, nil)); err != nil {
 				return err
 			}
 			return errQuit

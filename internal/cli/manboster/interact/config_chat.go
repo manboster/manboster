@@ -122,7 +122,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		form := newConfigForm[chatConfigAction]()
 
 		form.Register(chatConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigChatDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigChatDeleteConfirm, selectedConfig.Provider, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -130,7 +130,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Chats = append(cfg.Chats[:selectedIndex], cfg.Chats[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigChatDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigChatDeleteSuccess, selectedConfig.Provider, nil)); err != nil {
 				return err
 			}
 			return errQuit

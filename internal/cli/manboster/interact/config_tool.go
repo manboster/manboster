@@ -124,7 +124,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		form := newConfigForm[toolConfigAction]()
 
 		form.Register(toolConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigToolDeleteConfirm), selectedConfig.Name), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigToolDeleteConfirm, selectedConfig.Name, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -132,7 +132,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Tools = append(cfg.Tools[:selectedIndex], cfg.Tools[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigToolDeleteSuccess), selectedConfig.Name)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigToolDeleteSuccess, selectedConfig.Name, nil)); err != nil {
 				return err
 			}
 			return errQuit

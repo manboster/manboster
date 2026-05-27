@@ -146,11 +146,11 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigSetDefault, func() error {
 			cfg.Hachimi.Provider = selectedConfig.Provider
-			return p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigHachimiSetDefault), selectedConfig.Provider))
+			return p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigHachimiSetDefault, selectedConfig.Provider, nil))
 		})
 
 		form.Register(hachimiConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigHachimiDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigHachimiDeleteConfirm, selectedConfig.Provider, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -165,7 +165,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 					cfg.Hachimi.Provider = ""
 				}
 			}
-			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigHachimiDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigHachimiDeleteSuccess, selectedConfig.Provider, nil)); err != nil {
 				return err
 			}
 			return errQuit

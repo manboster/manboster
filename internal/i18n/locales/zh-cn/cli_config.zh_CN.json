@@ -105,10 +105,11 @@
   "cli.config.session.select_model": "请选择此会话使用的模型：",
   "cli.config.session.update_success": "会话更新成功！",
   "cli.config.session.delete_confirm": "确定要删除会话 {{ .Name }} 吗？此操作不可撤销！",
+  "cli.config.session.delete_bounds": "这个会话绑定了 {{ .Count }} 个聊天！",
   "cli.config.session.delete_success": "会话已删除。",
   "cli.config.session.purge_confirm": "确定要删除 {{ .Count }} 个无用会话吗？此操作不可撤销！",
-  "cli.config.session.purge_success": "已成功删除 {{ .Count }} 个无用会话！",
-  "cli.config.session.purge_error": "清理过程中发生部分错误：\n{{ .Error }}",
+  "cli.config.session.purge_success": "成功删除了 {{ .Count }} 个无用会话！",
+  "cli.config.session.purge_error": "清理过程中发生错误：\n{{ .Error }}",
   "cli.config.session.purge_clean": "没有需要清理的会话，列表已是最新状态！",
   "cli.config.session.chat_delete_error": "删除聊天 {{ .Name }} 失败：{{ .Error }}",
   "cli.config.session.data_delete_error": "删除聊天数据失败：{{ .Error }}"

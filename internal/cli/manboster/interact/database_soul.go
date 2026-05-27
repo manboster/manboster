@@ -116,7 +116,7 @@ func runDatabaseSoulConfig(p cli.Provider, repo repository.Repository) error {
 		})
 
 		form.Register(databaseSoulPageDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigSoulDeleteConfirm), selectedSoul.Name), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigSoulDeleteConfirm, selectedSoul.Name, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}

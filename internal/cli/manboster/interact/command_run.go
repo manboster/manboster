@@ -26,13 +26,13 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 
 	err = config.Init()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
+		color.Red(i18n.Te(keys.CliConfigRunInitError, "", err))
 		return
 	}
 
 	err = runConfigEntrypoint(huh.Huh{})
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunError), err))
+		color.Red(i18n.Te(keys.CliConfigRunError, "", err))
 	}
 }
 
@@ -51,14 +51,14 @@ func configCmdEditRun(cmd *cobra.Command, args []string) {
 				return
 			}
 		} else {
-			color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
+			color.Red(i18n.Te(keys.CliConfigRunInitError, "", err))
 			return
 		}
 	}
 	p := config.Path("config.yaml")
 	err = openEditor(p)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigEditOpenError), err))
+		color.Red(i18n.Te(keys.CliConfigEditOpenError, "", err))
 		return
 	}
 }
@@ -70,14 +70,14 @@ func configCmdOpenRun(cmd *cobra.Command, args []string) {
 		if errors.Is(err, config.ErrNoConfig) {
 			color.Red(i18n.T(keys.CliConfigOpenNotFound))
 		} else {
-			color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
+			color.Red(i18n.Te(keys.CliConfigRunInitError, "", err))
 		}
 		return
 	}
 	p := config.Path("config.yaml")
 	err = openWithSystemDefault(p)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOpenError), err))
+		color.Red(i18n.Te(keys.CliConfigOpenError, "", err))
 		return
 	}
 }
@@ -86,19 +86,19 @@ func configCmdOpenRun(cmd *cobra.Command, args []string) {
 func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 	cfg, err := runOnboardConfig(huh.Huh{})
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardError), err))
+		color.Red(i18n.Te(keys.CliConfigOnboardError, "", err))
 		os.Exit(1)
 		return
 	}
 
 	err = cfg.Validate()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardValidateErr), err))
+		color.Red(i18n.Te(keys.CliConfigOnboardValidateErr, "", err))
 		return
 	}
 	err = config.Write(cfg, config.Path("config.yaml"))
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardWriteError), err))
+		color.Red(i18n.Te(keys.CliConfigOnboardWriteError, "", err))
 		os.Exit(1)
 		return
 	}
