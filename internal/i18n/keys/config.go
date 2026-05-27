@@ -11,21 +11,33 @@ const (
 
 // Config args descriptions: Chat providers
 const (
-	ChatTelegramBotTokenDesc          = "config.chat.telegram.bot_token_desc"
-	ChatTelegramCollapseLengthDesc    = "config.chat.telegram.collapse_length_desc"
-	ChatTelegramReactionStatusDesc    = "config.chat.telegram.reaction_status_desc"
+	ChatTelegramBotTokenDesc       = "config.chat.telegram.bot_token_desc"
+	ChatTelegramCollapseLengthDesc = "config.chat.telegram.collapse_length_desc"
+	ChatTelegramReactionStatusDesc = "config.chat.telegram.reaction_status_desc"
 )
 
 // Config args descriptions: Hachimi
 const (
-	HachimiGGUFModelTypeDesc    = "config.hachimi.gguf.model_type_desc"
-	HachimiGGUFContextLenDesc   = "config.hachimi.gguf.context_length_desc"
+	HachimiGGUFModelTypeDesc  = "config.hachimi.gguf.model_type_desc"
+	HachimiGGUFContextLenDesc = "config.hachimi.gguf.context_length_desc"
 )
 
 // Config args descriptions: Tools
 const (
 	ToolFileWriteModeDesc = "config.tool.file.write_mode_desc"
 	ToolBrowserModeDesc   = "config.tool.browser.mode_desc"
+)
+
+// Config validation
+const (
+	ConfigValidateUnsupportedVersion        = "config.validate.unsupported_version"
+	ConfigValidateOutdatedVersion           = "config.validate.outdated_version"
+	ConfigValidateMissingChat               = "config.validate.missing_chat"
+	ConfigValidateMissingLLM                = "config.validate.missing_llm"
+	ConfigValidateHachimiNoProviders        = "config.validate.hachimi_no_providers"
+	ConfigValidateMissingDBPath             = "config.validate.missing_db_path"
+	ConfigValidateMissingDefaultLLMProvider = "config.validate.missing_default_llm_provider"
+	ConfigValidateMissingDefaultLLMModel    = "config.validate.missing_default_llm_model"
 )
 
 // Shared confirm/deny button labels
@@ -41,7 +53,7 @@ const (
 
 // Shared question subtitles
 const (
-	QuestionWantToRetry   = "question.want_to_retry"
+	QuestionWantToRetry    = "question.want_to_retry"
 	QuestionWantToContinue = "question.want_to_continue"
 )
 
