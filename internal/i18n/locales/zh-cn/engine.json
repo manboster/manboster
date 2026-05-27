@@ -5,7 +5,6 @@
   "engine.handler.compact_error": "压缩会话时发生错误。",
   "engine.handler.reject": "访问被拒绝，您无权使用此机器人或该命令。\n如果您认为这是误操作，请联系机器人所有者。",
   "engine.handler.selection_gone": "该选项会话已不存在或已超时，请重试。",
-
   "engine.onboard.welcome": "欢迎使用 Manboster！\n",
   "engine.onboard.instruction": "在开始聊天之前，您需要完成配对以防止未授权访问。操作步骤如下：\n",
   "engine.onboard.step1": "1. 打开 Manboster 窗口，找到类似 `[Manboster Engine] !!! 您的配对码是 xxxxxx！请在对话窗口中输入 '/pair xxxxxx' 完成配对！!!!` 的提示。\n",
@@ -13,12 +12,10 @@
   "engine.onboard.step2": "2. 获取上述 6 位数字码，发送 `/pair [您的 6 位数字码]` 完成配对。\n",
   "engine.onboard.step3": "3. 等待验证通过后，即可自由与您的 Lobster 对话！\n",
   "engine.onboard.wish": "祝您与 Lobster 相处愉快！",
-
   "engine.onboard.pair_success": "配对成功！",
   "engine.onboard.pair_success_msg": "\n尽情享受您的专属 Lobster 吧！",
   "engine.onboard.pair_user_error": " 但创建用户时失败了！错误：%s",
   "engine.onboard.pair_failed": "配对失败，配对码无效，请检查后重试。",
-
   "engine.gatekeeper.continue_once": "本次继续",
   "engine.gatekeeper.continue_all": "10 分钟内全部继续",
   "engine.gatekeeper.shut_up": "暂时静默",
@@ -29,18 +26,15 @@
   "engine.gatekeeper.handle_hachimi_all": "一小时内全部交由 Hachimi 处理",
   "engine.gatekeeper.allow": "允许",
   "engine.gatekeeper.deny": "拒绝",
-
   "engine.cmd.pair_no_code": "未提供配对码。",
   "engine.cmd.pair_invalid_num": "输入内容不是有效数字。",
   "engine.cmd.pair_invalid_range": "数字超出有效范围。",
   "engine.cmd.pair_success": "配对成功！",
   "engine.cmd.pair_no_need": "无需配对。",
-
   "engine.cmd.start_welcome": "欢迎使用 Manboster！\n",
   "engine.cmd.start_first_use": "如果这是您第一次使用，请发送一条消息以触发配对流程。\n",
   "engine.cmd.start_not_yours": "如果这个 Lobster 不属于您，请联系所有者获取访问权限。\n",
   "engine.cmd.start_commands": "您也可以使用以下命令：\n",
-
   "engine.cmd.help_header": "Manboster 帮助命令：\n\n",
   "engine.cmd.help_version": "/version - 获取当前版本信息\n",
   "engine.cmd.help_id": "/id - 获取当前用户和聊天 ID\n",
@@ -60,34 +54,26 @@
   "engine.cmd.help_start": "/start - 显示欢迎消息\n",
   "engine.cmd.help_pair": "/pair - 使用 `/pair xxxxxx` 与您的 Lobster 配对\n",
   "engine.cmd.help_cancel": "/cancel - 取消当前待处理的请求",
-
   "engine.cmd.default_invalid": "抱歉，这不是有效的命令，请检查是否有拼写错误。",
-
   "engine.cmd.session_not_active": "当前没有活跃会话，无需操作。",
-
   "engine.cmd.save_success": "已保存会话 `%s`，并创建新会话 `%s`（服务商：`%s`，模型：`%s`）。\n如需切换服务商或模型，请使用 `/provider` 或 `/model`。如需删除并新建会话，请使用 `/new`。",
-
   "engine.cmd.new_success": "已删除会话 `%s`，并创建新会话 `%s`（服务商：`%s`，模型：`%s`）。\n如需切换服务商或模型，请使用 `/provider` 或 `/model`。如需保存并新建会话，请使用 `/save`。",
-
   "engine.cmd.model_list": "可用模型列表（使用 `/status` 查看当前模型，`/model [id]` 切换）：\n",
   "engine.cmd.model_invalid": "输入无效。\n",
   "engine.cmd.model_not_found": "未找到名为 `%s` 的模型。",
   "engine.cmd.model_update_error": "更新会话模型时发生错误。",
   "engine.cmd.model_success": "已成功将本会话模型切换为 `%s`。",
-
   "engine.cmd.provider_list": "可用服务商列表（使用 `/status` 查看当前服务商，`/provider [name]` 切换，将自动选择该服务商的第一个模型）：\n",
   "engine.cmd.provider_invalid": "输入无效。\n",
   "engine.cmd.provider_not_found": "未找到该服务商。",
   "engine.cmd.provider_update_error": "更新会话服务商时发生错误。",
   "engine.cmd.provider_success": "已成功将本会话服务商切换为 `%s`，模型 `%s`。",
-
   "engine.cmd.session_list": "会话列表（最多显示 20 条最新记录，使用 `/status` 查看当前会话 ID）：\n",
   "engine.cmd.session_data_error": "获取会话数据时发生错误。",
   "engine.cmd.session_not_found": "您输入的会话 ID 不存在。",
   "engine.cmd.session_get_error": "获取会话时发生错误。",
   "engine.cmd.session_update_error": "切换会话时发生错误。",
   "engine.cmd.session_success": "已成功切换至会话 `%s`。",
-
   "engine.cmd.status_header": "会话 `%s` 当前状态：\n",
   "engine.cmd.status_summary": "已对话 %d 次（调用大模型 %d 次），服务商：`%s`，模型：`%s`\n",
   "engine.cmd.status_souls": "使用 %d 个 Soul：`%s`\n",
@@ -98,7 +84,6 @@
   "engine.cmd.status_model_usage": "本会话模型使用情况：\n",
   "engine.cmd.status_context": "当前上下文长度：`%d / %d`（`%.2f%%`）",
   "engine.cmd.status_full_hint": "\n查看完整状态请运行 `/status full`。",
-
   "engine.cmd.op_not_found": "未找到您要授权的用户。",
   "engine.cmd.op_already_admin": "该用户已经是管理员。",
   "engine.cmd.op_create_error": "创建用户时发生错误。",
@@ -107,14 +92,12 @@
   "engine.cmd.deop_success": "已成功撤销 %s 的权限。",
   "engine.cmd.deop_not_found": "未找到您要降权的用户。",
   "engine.cmd.deop_find_error": "查找用户时发生错误。",
-
   "engine.load.unstable": "[Manboster Engine] 您正在使用非稳定版本。",
   "engine.load.rc": "[Manboster Engine] 您正在使用候选发布版（RC）！此版本仍有少量 Bug 待修复，欢迎反馈问题，稳定版即将到来！",
   "engine.load.beta": "[Manboster Engine] 您正在使用 Beta 版！新功能已上线但仍有工作待完成，欢迎反馈 Bug。",
   "engine.load.alpha": "[Manboster Engine] 您正在使用 Alpha 版！功能仍在实验阶段，非常欢迎反馈 Bug。",
   "engine.load.canary": "[Manboster Engine] 您正在使用 Canary 版！感谢您的尝鲜精神，但请勿在此版本中存储任何重要信息！",
   "engine.load.canary_warn": "[Manboster Engine] 此版本出现 Bug 属正常现象，欢迎提交 Issue，提交前请先确认该问题是否已被修复。",
-
   "engine.gateway.llm_error_default": "[Manboster] 从 LLM 服务商 %q（模型 %q）获取消息失败，错误：%s\n您可以重新发送消息，或检查 API 的可用性。",
   "engine.gateway.llm_error_rate_limit": "[Manboster] 服务商 %s（模型 %s）当前流量过高并触发了限流，请稍后重试或更换模型。",
   "engine.gateway.llm_error_down": "[Manboster] 服务商 %s 当前不可用，请查看服务商的状态页面，或更换服务商后重试。",
@@ -122,7 +105,6 @@
   "engine.gateway.llm_error_auth": "[Manboster] 服务商 %s 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
   "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 %s 的请求。",
   "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 %d 次...",
-
   "engine.gatekeeper.hachimi_activated": "🐱 您已启用 Hachimi，它将在接下来 %d 分钟内帮您处理此工具调用，请放心使用！",
   "engine.gatekeeper.shut_up_msg": "⚠️ 在接下来 %d 分钟内将自动允许 %q 工具的调用！",
   "engine.gatekeeper.continue_all_msg": "⚠️ 你已允许本会话内的所有工具调用！接下来 10 分钟内将自动允许。",
@@ -133,8 +115,8 @@
   "engine.gatekeeper.reject_msg": "❌守门员拒绝了大模型调用`%s`工具的请求：%q",
   "engine.gatekeeper.validate_msg": "❌ 守门员拒绝了大模型调用`%s`工具的请求，输入参数校验失败！原因：%q",
   "engine.gatekeeper.hachimi_handled": "🐱✅ Hachimi 认为这个操作安全，自动放行了。",
-
   "engine.describe.to_human": "🤖❓ 模型想要调用工具 `%s`（`%s`）",
   "engine.describe.with_params": "，参数：%s",
-  "engine.describe.continue": "，是否允许？"
+  "engine.describe.continue": "，是否允许？",
+  "engine.chatdata.compact_success": ""
 }

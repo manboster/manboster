@@ -1,0 +1,8 @@
+{
+  "wizard.title": "Manboster 配置向导",
+  "wizard.error_alert": "配置过程中发生错误：%v",
+  "wizard.welcome": "欢迎使用 Manboster 配置向导，祝您和您的虾头小助手相处愉快！",
+  "wizard.success": "配置完成！享受你的虾头小助手吧！",
+  "wizard.error_retry": "向导处理过程中发生错误：%v",
+  "wizard.config_error": "配置过程中发生错误：%v"
+}

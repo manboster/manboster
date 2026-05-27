@@ -4,17 +4,21 @@
   "config.llm.oai_compat.display_name_desc": "在应用中显示的服务商名称。如果不确定，可以留空。",
   "config.llm.oai_compat.base_url_desc": "调用 API 所使用的地址。\n如果没有，请联系您的服务商获取。",
   "config.llm.oai_compat.api_key_desc": "您的 API Key。\n如果还没有，请前往服务商的 API Key 管理页面创建。",
-
   "config.chat.telegram.bot_token_desc": "您的 Telegram Bot Token。如果还没有，可以通过 @BotFather 获取。",
   "config.chat.telegram.collapse_length_desc": "消息超过此长度时，将折叠为可展开的引用块。",
   "config.chat.telegram.reaction_status_desc": "Emoji 反应通知偏好设置。\n- enabled：处理消息时添加 Emoji 反应。\n- clean：模型处理完成后自动移除反应。\n- disabled：不添加任何 Emoji 反应。",
-
   "config.hachimi.gguf.model_type_desc": "如果使用的是安全防护模型，请选择 'safeguard'，否则保持默认即可。",
   "config.hachimi.gguf.context_length_desc": "Hachimi 可处理的上下文长度。可用内存较低时请选择较小的值，上下文越大可处理的消息越长。如不确定，保持默认即可。",
-
   "config.tool.file.write_mode_desc": "文件访问模式。'readonly' 禁止写入和删除；'readwrite' 允许在工作区内进行写入和删除操作。",
   "config.tool.browser.mode_desc": "浏览器启动模式。服务器环境请使用 'headless'；仅在有桌面 UI 的环境下才使用 'headful'。",
-
+  "config.validate.unsupported_version": "不支持该配置版本。",
+  "config.validate.outdated_version": "配置版本已过期，请升级。",
+  "config.validate.missing_chat": "未配置任何聊天服务商。",
+  "config.validate.missing_llm": "未配置任何大模型服务商。",
+  "config.validate.hachimi_no_providers": "Hachimi 已启用，但未配置任何服务商。",
+  "config.validate.missing_db_path": "未设置数据库路径。",
+  "config.validate.missing_default_llm_provider": "未设置默认大模型服务商。",
+  "config.validate.missing_default_llm_model": "未设置默认大模型。",
   "btn.yes": "是",
   "btn.no": "否",
   "btn.skip": "跳过",
@@ -22,10 +26,8 @@
   "btn.exit": "退出",
   "btn.exit_now": "立即退出",
   "btn.retry": "重试",
-
   "question.want_to_retry": "是否重试？",
   "question.want_to_continue": "是否继续？",
-
   "config.hachimi.gguf.setup_prompt": "是否手动输入模型详情？\n\n如果不确定，请选择「否」。",
   "config.hachimi.gguf.setup_question": "是否手动输入模型详情？",
   "config.hachimi.gguf.url_input": "GGUF 文件 URL",
@@ -34,7 +36,6 @@
   "config.hachimi.gguf.sha256_help": "请输入有效的 SHA256 哈希值。如不确定，可留空。",
   "config.hachimi.gguf.setup_success": "Hachimi 配置保存成功！",
   "config.hachimi.gguf.auto_set_msg": "已自动配置为「Qwen3-Guard Gen 0.6B」。",
-
   "config.llm.oai_compat.credential_error": "无法根据您的凭据获取信息！",
   "config.llm.oai_compat.credential_error_msg": "建议检查您的网络连接和凭据。如果网络较差或确信凭据无误，请按回车手动添加模型；否则请按 Ctrl+C 退出。",
   "config.llm.oai_compat.model_select_prompt": "选择模型",

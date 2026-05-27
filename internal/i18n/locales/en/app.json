@@ -1,0 +1,13 @@
+{
+  "app.welcome": "Welcome to Manboster!",
+  "app.loading": "[Manboster] Your Lobster is on the way, please wait...",
+  "app.daemon_running": "[Manboster] Another instance is running in daemon mode! Please run `manboster stop` and retry.",
+  "app.another_running": "[Manboster] Another instance is running in this machine! Please kill that one and retry.",
+  "app.daemon_running_quit": "[Manboster] Quitting the application!",
+  "app.config_not_found": "[Manboster] config.yaml not found, launching setup wizard...",
+  "app.config_created": "[Manboster] config.yaml created successfully. Open Manboster again to get started!",
+  "app.config_init_error": "[Manboster] Failed to initialize config. Error: %v",
+  "app.reading_config": "[Manboster] Reading configuration...",
+  "app.loader_error": "[Manboster] Error while loading: %v",
+  "app.goodbye": "[Manboster] Going to sleep, thank you for playing with it!"
+}

@@ -5,7 +5,6 @@
   "tool.datetime.date.description": "Get this machine's current date in format like 2026-01-11.",
   "tool.datetime.time.display_name": "Get Time",
   "tool.datetime.time.description": "Get this machine's current time in format like 12:34:56+08.",
-
   "tool.file.display_name": "File Tools",
   "tool.file.description": "File Tools allows you to read, write, and manage files inside the session workspace.",
   "tool.file.read.display_name": "Read File",
@@ -24,7 +23,6 @@
   "tool.file.grep.description": "Search for a keyword in a file and return all matching lines with their line numbers.",
   "tool.file.replace.display_name": "Replace in File",
   "tool.file.replace.description": "Replace occurrences of a specific text in a file. Set line to 0 to replace all occurrences, or specify a line number to restrict replacement to that line.",
-
   "tool.system.display_name": "System Info Tool",
   "tool.system.description": "System Info Tool can get system information and current running status.",
   "tool.system.os_info.display_name": "OS Information",
@@ -35,7 +33,6 @@
   "tool.system.process_info.description": "Get detailed information about a specific process by PID.",
   "tool.system.process_kill.display_name": "Kill Process",
   "tool.system.process_kill.description": "Kill a running process by PID.",
-
   "tool.memory_kv.display_name": "Memory KV Tools",
   "tool.memory_kv.description": "Memory KV Tools allows you to storage the memory with Key-Value into database and read or write it anytime.",
   "tool.memory_kv.get.display_name": "Get Memory",
@@ -46,14 +43,12 @@
   "tool.memory_kv.list.description": "List all stored memory keys.",
   "tool.memory_kv.delete.display_name": "Delete Memory",
   "tool.memory_kv.delete.description": "Delete a key-value pair from memory.",
-
   "tool.memory_md.display_name": "Memory Markdown Tools",
   "tool.memory_md.description": "Memory Markdown Tools allows you to read and write chat-specific markdown file in maximum of 64KB, if it's valid, you can call it as need before getting the response, or write it after the response. For assistant, please be often to read and write by calling this tool.",
   "tool.memory_md.get.display_name": "Get Markdown Memory",
   "tool.memory_md.get.description": "Read the chat-specific markdown memory file.",
   "tool.memory_md.set.display_name": "Set Markdown Memory",
   "tool.memory_md.set.description": "Write markdown content to the chat-specific memory file. Maximum 64KB.",
-
   "tool.cron.display_name": "Cronjob",
   "tool.cron.description": "Cronjob allows you to execute command at a constant time or delay, you can even use crontab expressions.",
   "tool.cron.set.display_name": "Create Cronjob",
@@ -64,7 +59,6 @@
   "tool.cron.list.description": "List all scheduled jobs for the current chat.",
   "tool.cron.delete.display_name": "Delete Cronjob",
   "tool.cron.delete.description": "Delete a scheduled job by name.",
-
   "tool.browser.display_name": "Manboster Web Browser Tool",
   "tool.browser.description": "Manboster Web Browser Tool gives unlimited ability for models to search for the Internet, capture webpages, surfing the Internet or download files. Also, you can use CloudFlare's browser use to proxy in order to hide real IP. If there is something you don't know, please use search to search for it.",
   "tool.browser.search.display_name": "Web Search",

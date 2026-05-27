@@ -1,0 +1,14 @@
+{
+  "daemon.start_error": "[Manboster Daemon] 启动失败：%v\n请确认后台服务未在运行。",
+  "daemon.start_success": "[Manboster Daemon] 已启动，稍后即可开始对话！",
+  "daemon.stop_success": "[Manboster Daemon] 已停止，感谢使用！",
+  "daemon.stop_stopped": "[Manboster Daemon] 后台服务已处于停止状态。",
+  "daemon.stop_error": "[Manboster Daemon] 停止失败：%v",
+  "daemon.restart_message": "[Manboster Daemon] 正在重启，请稍候...",
+  "daemon.status_running": "[Manboster Daemon] 运行中，日志路径：%s",
+  "daemon.status_not_running": "[Manboster Daemon] 未运行。可删除 %s 中的 PID 文件重置状态，或执行 'manboster reset'。错误：%v",
+  "daemon.status_error": "[Manboster Daemon] 获取 PID 文件失败：%v\n后台服务可能未在运行。",
+  "daemon.no_config": "[Manboster Daemon] 未找到配置文件，请先完成初始化配置。",
+  "daemon.log_error": "[Manboster Daemon] 读取日志文件失败：%v",
+  "daemon.log_reading": ">>> 正在读取日志文件..."
+}
