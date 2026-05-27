@@ -8,5 +8,5 @@
   "chat.telegram.collapse_length.desc": "The message length threshold above which the message will be collapsed into an expandable quote.",
 
   "chat.telegram.reaction_status": "Reaction Notify Status",
-  "chat.telegram.reaction_status.desc": "Emoji reaction notification preference.\n- enabled: an emoji reaction is added to your message while processing.\n- clean: the reaction is removed after the model finishes processing.\n- disabled: no emoji reaction.",
+  "chat.telegram.reaction_status.desc": "Emoji reaction notification preference.\n- enabled: an emoji reaction is added to your message while processing.\n- clean: the reaction is removed after the model finishes processing.\n- disabled: no emoji reaction."
 }

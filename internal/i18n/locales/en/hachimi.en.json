@@ -12,5 +12,5 @@
   "hachimi.gguf.setup.sha256_input": "SHA256",
   "hachimi.gguf.setup.sha256_help": "Please enter a valid SHA256 hash. If you are unsure, leave it empty.",
   "hachimi.gguf.setup.success": "Hachimi config saved successfully!",
-  "hachimi.gguf.setup.auto_set_msg": "Automatically configured with 'Qwen3-Guard Gen 0.6B'.",
+  "hachimi.gguf.setup.auto_set_msg": "Automatically configured with 'Qwen3-Guard Gen 0.6B'."
 }

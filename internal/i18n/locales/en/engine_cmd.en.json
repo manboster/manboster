@@ -75,5 +75,5 @@
   "engine.cmd.deop_delete_error": "Failed to remove the user.",
   "engine.cmd.deop_success": "Successfully revoked permission for %s.",
   "engine.cmd.deop_not_found": "The user you want to demote was not found.",
-  "engine.cmd.deop_find_error": "An error occurred while looking up the user.",
+  "engine.cmd.deop_find_error": "An error occurred while looking up the user."
 }
