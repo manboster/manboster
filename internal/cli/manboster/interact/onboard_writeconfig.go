@@ -37,14 +37,14 @@ func runConfigWrite(p cli.Provider, cfg config.Config) error {
 
 	err := config.Write(cfg, confPath)
 	if err != nil {
-		confErr := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardWriteError), err))
+		confErr := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardWriteError), err))
 		if confErr != nil {
 			return confErr
 		}
 		return err
 	}
 
-	err = p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardWriteSuccess), confPath))
+	err = p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardWriteSuccess), confPath))
 	if err != nil {
 		return err
 	}

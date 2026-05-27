@@ -25,13 +25,13 @@ func (t entrypointType) Name() string {
 func (t entrypointType) DisplayName() string {
 	switch t {
 	case entrypointDatabase:
-		return i18n.T(keys.EntrypointDatabase)
+		return i18n.T(keys.CliConfigEntrypointDatabase)
 	case entrypointConfig:
-		return i18n.T(keys.EntrypointConfig)
+		return i18n.T(keys.CliConfigEntrypointConfig)
 	case entrypointEditor:
-		return i18n.T(keys.EntrypointEditor)
+		return i18n.T(keys.CliConfigEntrypointEditor)
 	case entrypointQuit:
-		return i18n.T(keys.EntrypointQuit)
+		return i18n.T(keys.CliConfigEntrypointQuit)
 	default:
 		return ""
 	}
@@ -90,7 +90,7 @@ func runConfigEntrypoint(p cli.Provider) error {
 	})
 
 	for {
-		err := handle[entrypointType](p, form, options, i18n.T(keys.EntrypointSelectPrompt), i18n.T(keys.EntrypointSelectHelp))
+		err := handle[entrypointType](p, form, options, i18n.T(keys.CliConfigEntrypointSelectPrompt), i18n.T(keys.CliConfigEntrypointSelectHelp))
 		if err != nil {
 			return err
 		}

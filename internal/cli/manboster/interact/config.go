@@ -27,17 +27,17 @@ func (s configLandingSelection) Name() string {
 func (s configLandingSelection) DisplayName() string {
 	switch s {
 	case configLandingChat:
-		return i18n.T(keys.ConfigLandingChat)
+		return i18n.T(keys.CliConfigLandingChat)
 	case configLandingLLM:
-		return i18n.T(keys.ConfigLandingLLM)
+		return i18n.T(keys.CliConfigLandingLLM)
 	case configLandingTool:
-		return i18n.T(keys.ConfigLandingTool)
+		return i18n.T(keys.CliConfigLandingTool)
 	case configLandingHachimi:
-		return i18n.T(keys.ConfigLandingHachimi)
+		return i18n.T(keys.CliConfigLandingHachimi)
 	case configLandingApp:
-		return i18n.T(keys.ConfigLandingApp)
+		return i18n.T(keys.CliConfigLandingApp)
 	case configLandingQuit:
-		return i18n.T(keys.ConfigLandingQuit)
+		return i18n.T(keys.CliConfigLandingQuit)
 	default:
 		return ""
 	}
@@ -106,9 +106,9 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 	})
 
 	for {
-		err := handle[configLandingSelection](p, form, options, i18n.T(keys.ConfigLandingSelectPrompt), i18n.T(keys.ConfigLandingSelectHelp))
+		err := handle[configLandingSelection](p, form, options, i18n.T(keys.CliConfigLandingSelectPrompt), i18n.T(keys.CliConfigLandingSelectHelp))
 		if err != nil {
-			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.WizardErrorAlert), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliWizardErrorAlert), err))
 			if err != nil {
 				return config.Config{}, err
 			}

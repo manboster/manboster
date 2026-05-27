@@ -1,0 +1,8 @@
+{
+  "cli.wizard.title": "Manboster Configuration Wizard",
+  "cli.wizard.error_alert": "An error occurred while configuring: %v",
+  "cli.wizard.welcome": "Welcome to the Manboster Configuration Wizard. Enjoy your experience with your little Manbo!",
+  "cli.wizard.success": "Setup complete! Wish you have a good time with your Manbo Lobster!",
+  "cli.wizard.error_retry": "An error occurred while processing the wizard: %v",
+  "cli.wizard.config_error": "An error occurred while configuring: %v"
+}

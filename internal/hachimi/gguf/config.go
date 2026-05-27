@@ -87,10 +87,10 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 		c.GGUFurl = fmt.Sprintf("%s", ggufURL)
 		c.GGUFsha256 = fmt.Sprintf("%s", sha256)
 
-		return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.HachimiGGUFSetupSuccess))
+		return p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.HachimiGGUFSetupSuccess))
 	}
 
-	err = p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.HachimiGGUFAutoSetMsg))
+	err = p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.HachimiGGUFAutoSetMsg))
 	if err != nil {
 		return err
 	}

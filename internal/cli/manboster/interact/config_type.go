@@ -14,25 +14,25 @@ const _PURGE_ = "purge"
 const _CREATE_ = "create"
 
 var addOption = cli.Option{
-	Key:      i18n.T(keys.OptionAddNew),
+	Key:      i18n.T(keys.CliConfigOptionAddNew),
 	Value:    _ADD_,
 	Selected: false,
 }
 
 var quitOption = cli.Option{
-	Key:      i18n.T(keys.OptionQuit),
+	Key:      i18n.T(keys.CliConfigOptionQuit),
 	Value:    _QUIT_,
 	Selected: false,
 }
 
 var purgeOption = cli.Option{
-	Key:      i18n.T(keys.OptionPurge),
+	Key:      i18n.T(keys.CliConfigOptionPurge),
 	Value:    _PURGE_,
 	Selected: false,
 }
 
 var createOption = cli.Option{
-	Key:      i18n.T(keys.OptionCreateNew),
+	Key:      i18n.T(keys.CliConfigOptionCreateNew),
 	Value:    _CREATE_,
 	Selected: false,
 }

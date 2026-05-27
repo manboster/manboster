@@ -20,19 +20,19 @@ import (
 func configCmdRun(cmd *cobra.Command, args []string) {
 	res, err := ctx.DaemonCtx.Search()
 	if err == nil && res != nil {
-		color.Red(i18n.T(keys.ConfigRunDaemonRunning))
+		color.Red(i18n.T(keys.CliConfigRunDaemonRunning))
 		return
 	}
 
 	err = config.Init()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigRunInitError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
 		return
 	}
 
 	err = runConfigEntrypoint(huh.Huh{})
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigRunError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunError), err))
 	}
 }
 
@@ -41,24 +41,24 @@ func configCmdEditRun(cmd *cobra.Command, args []string) {
 	err := config.Init()
 	if err != nil {
 		if errors.Is(err, config.ErrNoConfig) && runtime.GOOS != "windows" {
-			color.Yellow(i18n.T(keys.ConfigEditNotFound))
-			color.Yellow(i18n.T(keys.ConfigEditCreatePrompt))
+			color.Yellow(i18n.T(keys.CliConfigEditNotFound))
+			color.Yellow(i18n.T(keys.CliConfigEditCreatePrompt))
 
 			var input string
 			_, _ = fmt.Scanln(&input)
 			if strings.ToLower(input) != "y" {
-				color.Cyan(i18n.T(keys.ConfigEditCancelled))
+				color.Cyan(i18n.T(keys.CliConfigEditCancelled))
 				return
 			}
 		} else {
-			color.Red(fmt.Sprintf(i18n.T(keys.ConfigRunInitError), err))
+			color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
 			return
 		}
 	}
 	p := config.Path("config.yaml")
 	err = openEditor(p)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigEditOpenError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigEditOpenError), err))
 		return
 	}
 }
@@ -68,16 +68,16 @@ func configCmdOpenRun(cmd *cobra.Command, args []string) {
 	err := config.Init()
 	if err != nil {
 		if errors.Is(err, config.ErrNoConfig) {
-			color.Red(i18n.T(keys.ConfigOpenNotFound))
+			color.Red(i18n.T(keys.CliConfigOpenNotFound))
 		} else {
-			color.Red(fmt.Sprintf(i18n.T(keys.ConfigRunInitError), err))
+			color.Red(fmt.Sprintf(i18n.T(keys.CliConfigRunInitError), err))
 		}
 		return
 	}
 	p := config.Path("config.yaml")
 	err = openWithSystemDefault(p)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigOpenError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOpenError), err))
 		return
 	}
 }
@@ -86,21 +86,21 @@ func configCmdOpenRun(cmd *cobra.Command, args []string) {
 func OnboardConfigCmdRun(cmd *cobra.Command, args []string) {
 	cfg, err := runOnboardConfig(huh.Huh{})
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigOnboardError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardError), err))
 		os.Exit(1)
 		return
 	}
 
 	err = cfg.Validate()
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigOnboardValidateErr), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardValidateErr), err))
 		return
 	}
 	err = config.Write(cfg, config.Path("config.yaml"))
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.ConfigOnboardWriteError), err))
+		color.Red(fmt.Sprintf(i18n.T(keys.CliConfigOnboardWriteError), err))
 		os.Exit(1)
 		return
 	}
-	color.Green(i18n.T(keys.ConfigOnboardSuccess))
+	color.Green(i18n.T(keys.CliConfigOnboardSuccess))
 }

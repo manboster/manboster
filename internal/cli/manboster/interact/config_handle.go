@@ -30,7 +30,7 @@ func handle[T ~string](p cli.Provider, f *configForm[T], options []cli.Option, t
 		}
 
 		if option.Value == _QUIT_ {
-			color.Yellow(i18n.T(keys.OptionBye))
+			color.Yellow(i18n.T(keys.CliConfigOptionBye))
 			return nil
 		}
 	}
@@ -58,7 +58,7 @@ func handleWithPrompt[T ~string](p cli.Provider, f *configForm[T], options []cli
 		}
 
 		if option.Value == _QUIT_ {
-			color.Yellow(i18n.T(keys.OptionBye))
+			color.Yellow(i18n.T(keys.CliConfigOptionBye))
 			return nil
 		}
 	}

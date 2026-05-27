@@ -35,7 +35,7 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 	for {
 		hachimiConfig, err := runOnboardHachimiConfig(p, hachimiProviders)
 		if err != nil {
-			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardHachimiConfigError), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardHachimiConfigError), err))
 			if err != nil {
 				return conf, err
 			}
@@ -56,7 +56,7 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 		}
 		if len(hachimiProviders) == 0 || !ok {
 			if len(hachimiProviders) == 0 && ok {
-				err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.OnboardHachimiNoMore))
+				err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.OnboardHachimiNoMore))
 				if err != nil {
 					return conf, err
 				}

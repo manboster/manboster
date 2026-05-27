@@ -24,13 +24,13 @@ func (a databaseUserPageAction) Name() string { return string(a) }
 func (a databaseUserPageAction) DisplayName() string {
 	switch a {
 	case databaseUserPagePromote:
-		return i18n.T(keys.UserPromoteAction)
+		return i18n.T(keys.CliConfigUserPromoteAction)
 	case databaseUserPageDegrade:
-		return i18n.T(keys.UserDegradeAction)
+		return i18n.T(keys.CliConfigUserDegradeAction)
 	case databaseUserPageDelete:
-		return i18n.T(keys.UserDeleteAction)
+		return i18n.T(keys.CliConfigUserDeleteAction)
 	case databaseUserPageQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -59,7 +59,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 
 		summary := fmt.Sprintf("%d users registered.", len(users))
 
-		option, err = p.Select(i18n.T(keys.UserSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigUserSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
 		if err != nil {
@@ -71,7 +71,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		}
 
 		if len(users) == 0 {
-			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserNoUsers)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigUserNoUsers)); err != nil {
 				return err
 			}
 			return nil
@@ -104,7 +104,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 		form := newConfigForm[databaseUserPageAction]()
 
 		form.Register(databaseUserPagePromote, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserPromoteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigUserPromoteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -121,11 +121,11 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			}); err != nil {
 				return err
 			}
-			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserPromoteSuccess))
+			return p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigUserPromoteSuccess))
 		})
 
 		form.Register(databaseUserPageDegrade, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserDegradeConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigUserDegradeConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -142,11 +142,11 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			}); err != nil {
 				return err
 			}
-			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserDegradeSuccess))
+			return p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigUserDegradeSuccess))
 		})
 
 		form.Register(databaseUserPageDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.UserDeleteConfirm), selectedUser.UserID), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(i18n.Te(keys.CliConfigUserDeleteConfirm, selectedUser.Platform+":"+selectedUser.UserID, nil), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -156,7 +156,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.DeleteUser(ctx, selectedUser.Platform, selectedUser.UserID); err != nil {
 				return err
 			}
-			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.UserDeleteSuccess)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigUserDeleteSuccess)); err != nil {
 				return err
 			}
 			return errQuit
@@ -164,7 +164,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 
 		form.Register(databaseUserPageQuit, nilFunc)
 
-		err = handleWithPrompt[databaseUserPageAction](p, form, opts, detail, i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[databaseUserPageAction](p, form, opts, detail, i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return err
 		}

@@ -1,8 +1,0 @@
-{
-  "wizard.title": "Manboster Configuration Wizard",
-  "wizard.error_alert": "An error occurred while configuring: %v",
-  "wizard.welcome": "Welcome to the Manboster Configuration Wizard. Enjoy your experience with your little Manbo!",
-  "wizard.success": "Setup complete! Wish you have a good time with your Manbo Lobster!",
-  "wizard.error_retry": "An error occurred while processing the wizard: %v",
-  "wizard.config_error": "An error occurred while configuring: %v"
-}

@@ -28,11 +28,11 @@ func (a databaseSessionPageAction) Name() string { return string(a) }
 func (a databaseSessionPageAction) DisplayName() string {
 	switch a {
 	case databaseSessionPageEdit:
-		return i18n.T(keys.SessionEditAction)
+		return i18n.T(keys.CliConfigSessionEditAction)
 	case databaseSessionPageDelete:
-		return i18n.T(keys.SessionDeleteAction)
+		return i18n.T(keys.CliConfigSessionDeleteAction)
 	case databaseSessionPageQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -76,7 +76,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		summary := fmt.Sprintf("%d sessions loaded, %d sessions can be purged.", len(sessions), purgeNum)
 
-		option, err = p.Select(i18n.T(keys.SessionSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigSessionSelectPrompt), summary, options, option.Value, func(o cli.Option) error {
 			return nil
 		})
 		if err != nil {
@@ -89,12 +89,12 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		if option.Value == _PURGE_ {
 			if purgeNum <= 0 {
-				if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionPurgeClean)); err != nil {
+				if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigSessionPurgeClean)); err != nil {
 					return err
 				}
 				continue
 			}
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.SessionPurgeConfirm), purgeNum), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeConfirm), purgeNum), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -113,11 +113,11 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				}
 			}
 			if len(purgeErrors) > 0 {
-				if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionPurgeError), strings.Join(purgeErrors, "\n"))); err != nil {
+				if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeError), strings.Join(purgeErrors, "\n"))); err != nil {
 					return err
 				}
 			} else {
-				if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionPurgeSuccess), purgeNum)); err != nil {
+				if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionPurgeSuccess), purgeNum)); err != nil {
 					return err
 				}
 			}
@@ -173,7 +173,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}
 
 			providerOptions := cli.BuildOptions[llmType.Provider](activatedProviders, nil)
-			providerOpt, err := p.Select(i18n.T(keys.SessionSelectProvider), "", providerOptions, selectedSession.LLMProvider, func(o cli.Option) error {
+			providerOpt, err := p.Select(i18n.T(keys.CliConfigSessionSelectProvider), "", providerOptions, selectedSession.LLMProvider, func(o cli.Option) error {
 				for _, pr := range activatedProviders {
 					if pr.Name() == o.Value {
 						return nil
@@ -197,7 +197,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}
 
 			modelOptions := cli.BuildModelOptions[llmType.Model](selectedProvider.Models(), nil)
-			modelOpt, err := p.Select(i18n.T(keys.SessionSelectModel), "", modelOptions, selectedSession.LLMProviderModel, func(o cli.Option) error {
+			modelOpt, err := p.Select(i18n.T(keys.CliConfigSessionSelectModel), "", modelOptions, selectedSession.LLMProviderModel, func(o cli.Option) error {
 				for _, m := range modelOptions {
 					if m.Value == o.Value {
 						return nil
@@ -215,7 +215,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			}); err != nil {
 				return err
 			}
-			return p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionUpdateSuccess))
+			return p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigSessionUpdateSuccess))
 		})
 
 		form.Register(databaseSessionPageDelete, func() error {
@@ -223,7 +223,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
 				txt = fmt.Sprintf("\nThis session is bound to %d chats. Deleting it will also delete the chat information.", len(cm))
 			}
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.SessionDeleteConfirm), selectedSession.SessionID, txt), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigSessionDeleteConfirm), selectedSession.SessionID, txt), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -234,20 +234,20 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 				return err
 			}
 			if err := repo.DeleteChatData(ctx, selectedSession.SessionID); err != nil {
-				if alertErr := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionDataDeleteError), err)); alertErr != nil {
+				if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionDataDeleteError), err)); alertErr != nil {
 					return alertErr
 				}
 			}
 			if cm, ok := chatsMap[selectedSession.SessionID]; ok {
 				for _, c := range cm {
 					if err := repo.DeleteChat(ctx, c.ChatID, c.ChatProvider); err != nil {
-						if alertErr := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.SessionChatDeleteError), c.ChatID, err)); alertErr != nil {
+						if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigSessionChatDeleteError), c.ChatID, err)); alertErr != nil {
 							return alertErr
 						}
 					}
 				}
 			}
-			if err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.SessionDeleteSuccess)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.CliConfigSessionDeleteSuccess)); err != nil {
 				return err
 			}
 			return errQuit
@@ -255,7 +255,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 
 		form.Register(databaseSessionPageQuit, nilFunc)
 
-		err = handleWithPrompt[databaseSessionPageAction](p, form, opts, detail.String(), i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[databaseSessionPageAction](p, form, opts, detail.String(), i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return err
 		}

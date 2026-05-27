@@ -36,3 +36,16 @@ func T(messageID string, args ...any) string {
 
 	return msg
 }
+
+// Te -> Translate Easy Mode, only passthrough name and error!
+func Te(messageID string, name string, err error) string {
+	arr := map[string]any{}
+	if err != nil {
+		arr["Error"] = err.Error()
+	}
+	if name != "" {
+		arr["Name"] = name
+	}
+	arr["MessageID"] = messageID
+	return T(messageID, arr)
+}

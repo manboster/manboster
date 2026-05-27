@@ -29,13 +29,13 @@ func (a hachimiConfigAction) Name() string {
 func (a hachimiConfigAction) DisplayName() string {
 	switch a {
 	case hachimiConfigDelete:
-		return i18n.T(keys.ActionDeleteProvider)
+		return i18n.T(keys.CliConfigActionDeleteProvider)
 	case hachimiConfigEdit:
-		return i18n.T(keys.ActionEditProvider)
+		return i18n.T(keys.CliConfigActionEditProvider)
 	case hachimiConfigSetDefault:
-		return i18n.T(keys.ActionSetDefault)
+		return i18n.T(keys.CliConfigActionSetDefault)
 	case hachimiConfigQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -82,7 +82,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 		}
 
 		var err error
-		option, err = p.Select(i18n.T(keys.ConfigHachimiSelectPrompt), i18n.T(keys.ConfigHachimiSelectHelp), options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigHachimiSelectPrompt), i18n.T(keys.CliConfigHachimiSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -146,11 +146,11 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigSetDefault, func() error {
 			cfg.Hachimi.Provider = selectedConfig.Provider
-			return p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigHachimiSetDefault), selectedConfig.Provider))
+			return p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigHachimiSetDefault), selectedConfig.Provider))
 		})
 
 		form.Register(hachimiConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigHachimiDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigHachimiDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -165,7 +165,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 					cfg.Hachimi.Provider = ""
 				}
 			}
-			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigHachimiDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigHachimiDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -183,7 +183,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 
 		form.Register(hachimiConfigQuit, nilFunc)
 
-		err = handleWithPrompt[hachimiConfigAction](p, form, opts, detail, i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[hachimiConfigAction](p, form, opts, detail, i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return cfg.Hachimi, err
 		}

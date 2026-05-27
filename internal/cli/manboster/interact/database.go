@@ -23,13 +23,13 @@ func (s databaseConfigLandingSelection) Name() string {
 func (s databaseConfigLandingSelection) DisplayName() string {
 	switch s {
 	case databaseConfigLandingSession:
-		return i18n.T(keys.DatabaseSessions)
+		return i18n.T(keys.CliConfigDatabaseSessions)
 	case databaseConfigLandingUser:
-		return i18n.T(keys.DatabaseUsers)
+		return i18n.T(keys.CliConfigDatabaseUsers)
 	case databaseConfigLandingSoul:
-		return i18n.T(keys.DatabaseSouls)
+		return i18n.T(keys.CliConfigDatabaseSouls)
 	case databaseConfigLandingQuit:
-		return i18n.T(keys.DatabaseQuit)
+		return i18n.T(keys.CliConfigDatabaseQuit)
 	default:
 		return ""
 	}
@@ -55,5 +55,5 @@ func runDatabaseConfig(p cli.Provider, repo repository.Repository) error {
 
 	form.Register(databaseConfigLandingQuit, nilFunc)
 
-	return handle[databaseConfigLandingSelection](p, form, options, i18n.T(keys.DatabaseSelectPrompt), i18n.T(keys.DatabaseSelectHelp))
+	return handle[databaseConfigLandingSelection](p, form, options, i18n.T(keys.CliConfigDatabaseSelectPrompt), i18n.T(keys.CliConfigDatabaseSelectHelp))
 }

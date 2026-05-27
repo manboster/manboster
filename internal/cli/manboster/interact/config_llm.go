@@ -29,11 +29,11 @@ func (a llmConfigAction) Name() string {
 func (a llmConfigAction) DisplayName() string {
 	switch a {
 	case llmConfigDelete:
-		return i18n.T(keys.ActionDeleteProvider)
+		return i18n.T(keys.CliConfigActionDeleteProvider)
 	case llmConfigEdit:
-		return i18n.T(keys.ActionEditProvider)
+		return i18n.T(keys.CliConfigActionEditProvider)
 	case llmConfigQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -65,7 +65,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		options = append(options, addOption, quitOption)
 
 		var err error
-		option, err = p.Select(i18n.T(keys.ConfigLLMSelectPrompt), i18n.T(keys.ConfigLLMSelectHelp), options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigLLMSelectPrompt), i18n.T(keys.CliConfigLLMSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -119,7 +119,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		form := newConfigForm[llmConfigAction]()
 
 		form.Register(llmConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigLLMDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigLLMDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -127,7 +127,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 				return fmt.Errorf("cancelled")
 			}
 			cfg.LLMs = append(cfg.LLMs[:selectedIndex], cfg.LLMs[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigLLMDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigLLMDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -145,7 +145,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 
 		form.Register(llmConfigQuit, nilFunc)
 
-		err = handleWithPrompt[llmConfigAction](p, form, opts, fmt.Sprintf("This LLM provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[llmConfigAction](p, form, opts, fmt.Sprintf("This LLM provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}

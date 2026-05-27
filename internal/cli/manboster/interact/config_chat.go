@@ -27,11 +27,11 @@ func (a chatConfigAction) Name() string {
 func (a chatConfigAction) DisplayName() string {
 	switch a {
 	case chatConfigDelete:
-		return i18n.T(keys.ActionDeleteProvider)
+		return i18n.T(keys.CliConfigActionDeleteProvider)
 	case chatConfigEdit:
-		return i18n.T(keys.ActionEditProvider)
+		return i18n.T(keys.CliConfigActionEditProvider)
 	case chatConfigQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -73,7 +73,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		}
 
 		var err error
-		option, err = p.Select(i18n.T(keys.ConfigChatSelectPrompt), i18n.T(keys.ConfigChatSelectHelp), options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigChatSelectPrompt), i18n.T(keys.CliConfigChatSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -122,7 +122,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 		form := newConfigForm[chatConfigAction]()
 
 		form.Register(chatConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigChatDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigChatDeleteConfirm), selectedConfig.Provider), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -130,7 +130,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Chats = append(cfg.Chats[:selectedIndex], cfg.Chats[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigChatDeleteSuccess), selectedConfig.Provider)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigChatDeleteSuccess), selectedConfig.Provider)); err != nil {
 				return err
 			}
 			return errQuit
@@ -148,7 +148,7 @@ func runChatConfigs(p cli.Provider, cfg config.Config) ([]config.ChatConfig, err
 
 		form.Register(chatConfigQuit, nilFunc)
 
-		err = handleWithPrompt[chatConfigAction](p, form, opts, fmt.Sprintf("This chat provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[chatConfigAction](p, form, opts, fmt.Sprintf("This chat provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}

@@ -27,11 +27,11 @@ func (a toolConfigAction) Name() string {
 func (a toolConfigAction) DisplayName() string {
 	switch a {
 	case toolConfigDelete:
-		return i18n.T(keys.ActionDeleteProvider)
+		return i18n.T(keys.CliConfigActionDeleteProvider)
 	case toolConfigEdit:
-		return i18n.T(keys.ActionEditProvider)
+		return i18n.T(keys.CliConfigActionEditProvider)
 	case toolConfigQuit:
-		return i18n.T(keys.ActionQuit)
+		return i18n.T(keys.CliConfigActionQuit)
 	default:
 		return ""
 	}
@@ -75,7 +75,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		}
 
 		var err error
-		option, err = p.Select(i18n.T(keys.ConfigToolSelectPrompt), i18n.T(keys.ConfigToolSelectHelp), options, option.Value, func(option cli.Option) error {
+		option, err = p.Select(i18n.T(keys.CliConfigToolSelectPrompt), i18n.T(keys.CliConfigToolSelectHelp), options, option.Value, func(option cli.Option) error {
 			for _, o := range options {
 				if o.Value == option.Value {
 					return nil
@@ -124,7 +124,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		form := newConfigForm[toolConfigAction]()
 
 		form.Register(toolConfigDelete, func() error {
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.ConfigToolDeleteConfirm), selectedConfig.Name), "Do you want to continue?", "Yes", "No")
+			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliConfigToolDeleteConfirm), selectedConfig.Name), "Do you want to continue?", "Yes", "No")
 			if err != nil {
 				return err
 			}
@@ -132,7 +132,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 				return fmt.Errorf("cancelled")
 			}
 			cfg.Tools = append(cfg.Tools[:selectedIndex], cfg.Tools[selectedIndex+1:]...)
-			if err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.ConfigToolDeleteSuccess), selectedConfig.Name)); err != nil {
+			if err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliConfigToolDeleteSuccess), selectedConfig.Name)); err != nil {
 				return err
 			}
 			return errQuit
@@ -141,7 +141,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 		form.Register(toolConfigEdit, func() error {
 			providerCfg := selectedProvider.Config()
 			if providerCfg == nil {
-				return p.Alert(i18n.T(keys.ConfigToolNoConfig), fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
+				return p.Alert(i18n.T(keys.CliConfigToolNoConfig), fmt.Sprintf("%s does not require any configuration.", selectedProvider.DisplayName()))
 			}
 			conf, err := EditConfig(ctx, p, providerCfg, selectedConfig.Configuration)
 			if err != nil {
@@ -154,7 +154,7 @@ func runToolConfigs(p cli.Provider, cfg config.Config) ([]config.ToolConfig, err
 
 		form.Register(toolConfigQuit, nilFunc)
 
-		err = handleWithPrompt[toolConfigAction](p, form, opts, fmt.Sprintf("This tool provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.ActionWhatToDo))
+		err = handleWithPrompt[toolConfigAction](p, form, opts, fmt.Sprintf("This tool provider %s's info:\n\n%s", selectedProvider.DisplayName(), selectedConfig.Configuration), i18n.T(keys.CliConfigActionWhatToDo))
 		if err != nil {
 			return nil, err
 		}

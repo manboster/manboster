@@ -21,7 +21,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 	for {
 		llmConfig, err := runOnboardLLMConfig(p, llmProviders)
 		if err != nil {
-			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardLLMConfigError), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardLLMConfigError), err))
 			if err != nil {
 				return nil, err
 			}

@@ -23,7 +23,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 	for {
 		chatConfig, err := runOnboardChatConfig(p, chatProviders)
 		if err != nil {
-			err := p.Alert(i18n.T(keys.WizardTitle), fmt.Sprintf(i18n.T(keys.OnboardChatConfigError), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardChatConfigError), err))
 			if err != nil {
 				return chatConfigs, err
 			}
@@ -44,7 +44,7 @@ func runOnboardChatConfigs(p cli.Provider) ([]config.ChatConfig, error) {
 		}
 		if len(chatProviders) == 0 || !ok {
 			if len(chatProviders) == 0 && ok {
-				err := p.Alert(i18n.T(keys.WizardTitle), i18n.T(keys.OnboardChatNoMoreProviders))
+				err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.T(keys.OnboardChatNoMoreProviders))
 				if err != nil {
 					return chatConfigs, err
 				}
