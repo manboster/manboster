@@ -21,7 +21,12 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		respString.WriteString(i18n.T(keys.CmdProviderList))
 		i := 0
 		for _, provider := range h.llmProviders {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, %d available Models. Run `/provider %s` to change.\n", i+1, provider.DisplayName(), len(provider.Models()), provider.Name()))
+			respString.WriteString(i18n.T(keys.CmdProviderInfo, map[string]any{
+				"ID":          i + 1,
+				"Name":        provider.Name(),
+				"DisplayName": provider.DisplayName(),
+				"Count":       len(provider.Models()),
+			}))
 			i += 1
 		}
 		respMessage.Text = &chat.TextPayload{Text: respString.String()}
@@ -56,7 +61,10 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdProviderSuccess), providerName, modelName))
+	respString.WriteString(i18n.T(keys.CmdProviderSuccess, map[string]any{
+		"Name":  providerName,
+		"Model": modelName,
+	}))
 	respMessage.Text = &chat.TextPayload{Text: respString.String()}
 	return instance.SendMessage(ctx, respMessage)
 }

@@ -28,10 +28,20 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 			return instance.SendMessage(ctx, respMessage)
 		}
 		respString.WriteString(i18n.T(keys.CmdSessionList))
-		for _, data := range sessionData {
-			respString.WriteString(fmt.Sprintf("Session ID: `%s`(Create Time: `%s`, Provider: `%s`, Model: `%s`) Run `/session %s` to change.\n", data.SessionID, data.CreatedAt.Format("2006-01-02T15:04:05 -07"), data.LLMProvider, data.LLMProviderModel, data.SessionID))
+
+		for i, data := range sessionData {
+			respString.WriteString(i18n.T(keys.CmdSessionInfo, map[string]any{
+				"ID":      i + 1,
+				"Created": data.CreatedAt.Format("2006-01-02T15:04:05-07"),
+				"Name":    data.LLMProvider,
+				"Model":   data.LLMProviderModel,
+				"Session": data.SessionID,
+			}))
 		}
-		respMessage.Text = &chat.TextPayload{Text: respString.String()}
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -45,7 +55,11 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 			color.Red(fmt.Sprintf("[Manboster Command Handler] we encountered an error when getting session: %s", err))
 			respString.WriteString(i18n.T(keys.CmdSessionGetError))
 		}
-		respMessage.Text = &chat.TextPayload{Text: respString.String()}
+
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+
 		return instance.SendMessage(ctx, respMessage)
 	}
 
@@ -53,11 +67,14 @@ func (h *Handler) cmdSession(ctx context.Context, instance chat.Provider, msg *c
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Command Handler] we encountered an error when handling updating chat's session data: %q", err))
 		respString.WriteString(i18n.T(keys.CmdSessionUpdateError))
-		respMessage.Text = &chat.TextPayload{Text: respString.String()}
+		respMessage.Text = &chat.TextPayload{
+			Text: respString.String(),
+		}
+
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdSessionSuccess), sid))
+	respString.WriteString(i18n.Te(keys.CmdSessionSuccess, sid, nil))
 	respMessage.Text = &chat.TextPayload{Text: respString.String()}
 	return instance.SendMessage(ctx, respMessage)
 }

@@ -2,7 +2,6 @@ package command
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
@@ -38,7 +37,12 @@ func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat
 	}
 
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf(i18n.T(keys.CmdSaveSuccess), sessionId, sid, p, m),
+		Text: i18n.T(keys.CmdSaveSuccess, map[string]any{
+			"Old":   sessionId,
+			"New":   sid,
+			"Name":  p,
+			"Model": m,
+		}),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }

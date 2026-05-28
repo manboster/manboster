@@ -25,7 +25,15 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		respString.Reset()
 		respString.WriteString(i18n.T(keys.CmdModelList))
 		for i, m := range p.Models() {
-			respString.WriteString(fmt.Sprintf("ID:`%d`) `%s`, context: `%d`, max output tokens: `%d` input: `$%.4f`/mtokens, output: `$%.4f`/mtokens. Run `/model %s` to change.\n", i+1, m.DisplayName, m.Context, m.MaxOutputTokens, m.InputPrice, m.OutputPrice, m.Name))
+			respString.WriteString(i18n.T(keys.CmdModelInfo, map[string]any{
+				"ID":          i + 1,
+				"DisplayName": m.DisplayName,
+				"Context":     m.Context,
+				"MaxOutput":   m.MaxOutputTokens,
+				"Input":       fmt.Sprintf("%.4f", m.InputPrice),
+				"Output":      fmt.Sprintf("%.4f", m.OutputPrice),
+				"Name":        m.Name,
+			}))
 		}
 		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
@@ -47,7 +55,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		}
 	}
 	if !flag {
-		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdModelNotFound), id))
+		respString.WriteString(i18n.Te(keys.CmdModelNotFound, id, nil))
 		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)
 	}
@@ -64,7 +72,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdModelSuccess), model))
+	respString.WriteString(i18n.Te(keys.CmdModelSuccess, model, nil))
 	respMessage.Text = &chat.TextPayload{Text: respString.String()}
 	return instance.SendMessage(ctx, respMessage)
 }

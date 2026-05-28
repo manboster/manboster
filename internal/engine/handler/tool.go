@@ -14,7 +14,7 @@ import (
 	"github.com/manboster/manboster/spec/schema"
 )
 
-func (h *Handler) HandleToolCall(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string, toolCallMsg *string) (llm.Event, bool, error) {
+func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, msg *chat.Message, event llm.Event, sid string, count *int, msgId *string, toolCallMsg *string) (llm.Event, bool, error) {
 	successExecution := false
 
 	var respEvent llm.Event

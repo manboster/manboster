@@ -45,8 +45,14 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 	}
 
 	var respString strings.Builder
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusHeader), sessionId))
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusSummary), len(sessData.Events), llmCallTimes, provider.DisplayName(), model.DisplayName))
+	respString.WriteString(i18n.Te(keys.CmdStatusHeader, sessionId, nil))
+	respString.WriteString(i18n.T(keys.CmdStatusSummary, map[string]any{
+		"Count":    len(sessData.Events),
+		"LLMCount": llmCallTimes,
+		"Name":     provider.DisplayName(),
+		"Model":    model.DisplayName,
+	}))
+
 	if isFull {
 		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusSouls), len(sessData.Souls), sessData.Souls))
 	}

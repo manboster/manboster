@@ -62,6 +62,7 @@ const (
 	CmdModelNotFound    = "engine.cmd.model.not_found"
 	CmdModelUpdateError = "engine.cmd.model.update_error"
 	CmdModelSuccess     = "engine.cmd.model.success"
+	CmdModelInfo        = "engine.cmd.model.info"
 )
 
 // Engine: command - provider
@@ -71,6 +72,7 @@ const (
 	CmdProviderNotFound    = "engine.cmd.provider.not_found"
 	CmdProviderUpdateError = "engine.cmd.provider.update_error"
 	CmdProviderSuccess     = "engine.cmd.provider.success"
+	CmdProviderInfo        = "engine.cmd.provider.info"
 )
 
 // Engine: command - session
@@ -82,6 +84,7 @@ const (
 	CmdSessionUpdateError = "engine.cmd.session.update_error"
 	CmdSessionSuccess     = "engine.cmd.session.success"
 	CmdSessionNotActive   = "engine.cmd.session.not_active"
+	CmdSessionInfo        = "engine.cmd.session.info"
 )
 
 // Engine: command - status

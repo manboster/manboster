@@ -41,12 +41,14 @@
   "engine.cmd.model.not_found": "未找到名为 `{{ .Name }}` 的模型。",
   "engine.cmd.model.update_error": "更新模型时发生错误。",
   "engine.cmd.model.success": "成功将模型切换为 `{{ .Name }}`。",
+  "engine.cmd.model.info": "`{{ .ID }}`) `{{ .DisplayName }}`, 最长上下文: `{{ .Context }}`, 最大输出词元(tokens): `{{ .MaxOutput }}` 输入价格: `${{ .Input }}`/百万词元(tokens), 输出价格: `${{ .Output }}`/百万词元(tokens). 发送 `/model {{ .Name }}` 切换至此模型.\n",
 
   "engine.cmd.provider.list": "可用服务提供商列表（使用 `/status` 查看当前服务商，支持使用`/provider [name]` 切换，将自动选择该服务商的第一个模型）：\n",
   "engine.cmd.provider.invalid": "你的输入无效。\n",
   "engine.cmd.provider.not_found": "未找到该服务商。",
   "engine.cmd.provider.update_error": "更新服务提供商时发生错误。",
   "engine.cmd.provider.success": "已成功将服务提供商切换为 `{{ .Name }}`，使用模型 `{{ .Model }}`。",
+  "engine.cmd.provider.info": "`{{ .ID }}`) `{{ .DisplayName }}`, {{ .Count }} 个模型可用。发送 `/provider {{ .Name }}` 切换。",
 
   "engine.cmd.session.list": "会话列表（最多显示 20 条最新记录，用 `/status` 命令来查看当前会话 ID）：\n",
   "engine.cmd.session.data_error": "获取会话数据时发生错误。",
@@ -55,6 +57,7 @@
   "engine.cmd.session.update_error": "切换会话时发生错误。",
   "engine.cmd.session.success": "已成功切换至会话 `{{ .Name }}`。",
   "engine.cmd.session.not_active": "当前会话不活跃，无需操作。",
+  "engine.cmd.session.info": "`{{ .ID }}`)  于 `{{ .Created }}` 创建。服务提供商： `{{ .Name }}`，模型：`{{ .Model }}`) 发送 `/session {{ .Session }}` 切换。\n",
 
   "engine.cmd.status.header": "会话 `{{ .Name }}` 当前状态：\n",
   "engine.cmd.status.summary": "已对话 {{ .Count }} 次（调用大模型 {{ .LLMCount }} 次），服务商：`{{ .Name }}`，模型：`{{ .Model }}`\n",
