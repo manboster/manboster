@@ -54,21 +54,39 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 	}))
 
 	if isFull {
-		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusSouls), len(sessData.Souls), sessData.Souls))
+		respString.WriteString(i18n.T(keys.CmdStatusSouls, map[string]any{
+			"Count": len(sessData.Souls),
+			"List":  fmt.Sprintf("%s", sessData.Souls),
+		}))
 	}
 
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusTokens), usage.TotalTokens, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens-usage.PromptTokens-usage.CompletionTokens))
+	respString.WriteString(i18n.T(keys.CmdStatusTokens, map[string]any{
+		"Count":    usage.TotalTokens,
+		"Input":    usage.PromptTokens,
+		"Output":   usage.CompletionTokens,
+		"Thinking": usage.TotalTokens - usage.PromptTokens - usage.CompletionTokens,
+	}))
+
 	if usage.TotalCost > 0 {
-		respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusCost), usage.TotalCost))
+		respString.WriteString(i18n.T(keys.CmdStatusCost, map[string]any{
+			"Cost": fmt.Sprintf("%.4f", usage.TotalCost),
+		}))
 	}
 	respString.WriteString("\n")
 
 	if isFull {
 		if usage.InputCost > 0 {
-			respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusInputPrice), model.InputPrice, usage.InputCost))
+			respString.WriteString(i18n.T(keys.CmdStatusInputPrice, map[string]any{
+				"Cost":  fmt.Sprintf("%.4f", usage.InputCost),
+				"Input": fmt.Sprintf("%.4f", model.InputPrice),
+			}))
 		}
+
 		if usage.OutputCost > 0 {
-			respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusOutputPrice), model.OutputPrice, usage.OutputCost))
+			respString.WriteString(i18n.T(keys.CmdStatusOutputPrice, map[string]any{
+				"Cost":   fmt.Sprintf("%.4f", usage.OutputCost),
+				"Output": fmt.Sprintf("%.4f", model.OutputPrice),
+			}))
 		}
 	}
 
@@ -80,6 +98,7 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 					if data.Provider == "" {
 						data.Provider = "unknown"
 					}
+
 					_, avail := modelMaps[data.Provider+":"+data.Model]
 					if !avail {
 						modelMaps[data.Provider+":"+data.Model] = 1
@@ -89,6 +108,7 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 				}
 			}
 		}
+
 		if len(modelMaps) > 0 {
 			respString.WriteString(i18n.T(keys.CmdStatusModelUsage))
 			for modelStr, count := range modelMaps {
@@ -98,10 +118,16 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 		}
 	}
 
-	respString.WriteString(fmt.Sprintf(i18n.T(keys.CmdStatusContext), totTokens, model.Context, float64(totTokens*100)/float64(model.Context)))
+	respString.WriteString(i18n.T(keys.CmdStatusContext, map[string]any{
+		"Current": totTokens,
+		"Full":    usage.TotalTokens,
+		"Percent": fmt.Sprintf("%.2f", float64(totTokens*100)/float64(model.Context)),
+	}))
+
 	if !isFull {
 		respString.WriteString(i18n.T(keys.CmdStatusFullHint))
 	}
+
 	respMessage.Text = &chat.TextPayload{
 		Text: respString.String(),
 	}

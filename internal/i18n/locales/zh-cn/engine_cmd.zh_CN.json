@@ -73,10 +73,10 @@
   "engine.cmd.op.not_found": "未找到您要授权的用户。",
   "engine.cmd.op.already_admin": "该用户已经是管理员。",
   "engine.cmd.op.create_error": "创建用户时发生错误。",
-  "engine.cmd.op.success": "已成功将 ({{ .Name }}) 设为管理员。",
+  "engine.cmd.op.success": "已成功将用户 ({{ .Name }}) 设为管理员。",
 
   "engine.cmd.deop.delete_error": "删除用户失败。",
-  "engine.cmd.deop.success": "已成功撤销 {{ .Name }} 的权限。",
+  "engine.cmd.deop.success": "已成功撤销用户 {{ .Name }} 的权限。",
   "engine.cmd.deop.not_found": "未找到您要降权的用户。",
   "engine.cmd.deop.find_error": "查找用户时发生错误。"
 }

@@ -73,10 +73,10 @@
   "engine.cmd.op.not_found": "The user you want to grant permission to was not found.",
   "engine.cmd.op.already_admin": "That user is already an Administrator.",
   "engine.cmd.op.create_error": "An error occurred while creating the user.",
-  "engine.cmd.op.success": "Successfully made ({{ .Name }}) an Administrator.",
+  "engine.cmd.op.success": "Successfully made user ({{ .Name }}) an Administrator.",
 
   "engine.cmd.deop.delete_error": "Failed to remove the user.",
-  "engine.cmd.deop.success": "Successfully revoked permission for {{ .Name }}.",
+  "engine.cmd.deop.success": "Successfully revoked permission for user {{ .Name }}.",
   "engine.cmd.deop.not_found": "The user you want to demote was not found.",
   "engine.cmd.deop.find_error": "An error occurred while looking up the user."
 }

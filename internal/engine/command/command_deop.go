@@ -29,7 +29,7 @@ func (h *Handler) cmdDeOp(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, msg)
 	}
 
-	_, err = h.repo.UserInfo(ctx, instance.Name(), targetUserID)
+	info, err := h.repo.UserInfo(ctx, instance.Name(), targetUserID)
 	if err == nil {
 		err = h.repo.DeleteUser(ctx, instance.Name(), targetUserID)
 		if err != nil {
@@ -37,7 +37,7 @@ func (h *Handler) cmdDeOp(ctx context.Context, instance chat.Provider, msg *chat
 			return instance.SendMessage(ctx, msg)
 		}
 		msg.Text = &chat.TextPayload{
-			Text: fmt.Sprintf(i18n.T(keys.CmdDeopSuccess), targetUserID),
+			Text: i18n.Te(keys.CmdDeopSuccess, instance.Name()+":"+info.UserID, nil),
 		}
 		color.Blue(fmt.Sprintf("[Manboster Engine] Successfully degraded user %s's permission.", targetUserID))
 		return instance.SendMessage(ctx, msg)
@@ -49,4 +49,3 @@ func (h *Handler) cmdDeOp(ctx context.Context, instance chat.Provider, msg *chat
 	msg.Text = &chat.TextPayload{Text: i18n.T(keys.CmdDeopFindError)}
 	return instance.SendMessage(ctx, msg)
 }
-

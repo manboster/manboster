@@ -47,7 +47,7 @@ func (h *Handler) cmdOp(ctx context.Context, instance chat.Provider, msg *chat.M
 
 	color.Red(fmt.Sprintf("[Manboster Engine] Successfully make %s operator. If this is not your action, please user /deop %s to revert it.", grantUserID, grantUserID))
 	msg.Text = &chat.TextPayload{
-		Text: fmt.Sprintf(i18n.T(keys.CmdOpSuccess), grantUserID),
+		Text: i18n.Te(keys.CmdOpSuccess, instance.Name()+":"+grantUserID, nil),
 	}
 	return instance.SendMessage(ctx, msg)
 }
