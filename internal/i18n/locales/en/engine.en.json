@@ -6,9 +6,9 @@
   "engine.load.canary": "[Manboster Engine] You are using a Canary build! We appreciate your adventurous spirit, but please do NOT store any important information in this application!",
   "engine.load.canary_warn": "[Manboster Engine] Bugs are expected in this build. Report any issues you find, and check whether they have already been fixed before reporting.",
 
-  "engine.describe.to_human": "🤖❓ Model wants to call tool `%s`(`%s`) ",
-  "engine.describe.with_params": "with params: %s",
+  "engine.describe.to_human": "🤖❓ Model wants to call tool `{{ .Name }}`(`{{ .ActualName }}`) ",
+  "engine.describe.with_params": "with params: {{ .Name }}",
   "engine.describe.continue": ", do you want to continue?",
 
-  "engine.chatdata.compact_success": "Compacted session `%s` and created a new session `%s`.\nCompacted summary data:\n```%s```\nOld session is saved. If you want to bind other chats to this new session, please run `/session %s` in that chat."
+  "engine.chatdata.compact_success": "Compacted session `{{ .Old }}` and created a new session `{{ .New }}`.\nCompacted summary data:\n```{{ .Data }}```\nOld session has been saved."
 }

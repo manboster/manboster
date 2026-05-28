@@ -55,7 +55,10 @@ func DescribeToHachimi(req llm.MessageToolCallRequestPayload, provider tool.Prov
 }
 
 func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provider) string {
-	txt := fmt.Sprintf(i18n.T(keys.UtilDescribeToHumanText), provider.DisplayName(), req.ToolName)
+	txt := i18n.T(keys.UtilDescribeToHumanText, map[string]any{
+		"Name":       provider.DisplayName(),
+		"ActualName": req.ToolName,
+	})
 	var result map[string]interface{}
 	err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
 	if err != nil {
@@ -63,7 +66,7 @@ func DescribeToHuman(req llm.MessageToolCallRequestPayload, provider tool.Provid
 	}
 	params := JSONParse(result)
 	if params != "" {
-		txt += fmt.Sprintf(i18n.T(keys.UtilDescribeWithParams), params)
+		txt += i18n.Te(keys.UtilDescribeWithParams, params, nil)
 	}
 	txt += i18n.T(keys.UtilDescribeContinue)
 	return txt

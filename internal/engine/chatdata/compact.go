@@ -121,7 +121,11 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	respMessage := mesg.Clone()
 	respMessage.MessageType = chat.MessageText
 	respMessage.Text = &chat.TextPayload{
-		Text: fmt.Sprintf(i18n.T(keys.EngineChatDataCompactSuccess), sessionId, newSessionID, compactedMessage, newSessionID),
+		Text: i18n.T(keys.EngineChatDataCompactSuccess, map[string]any{
+			"Old":  sessionId,
+			"New":  newSessionID,
+			"Data": compactedMessage,
+		}),
 	}
 	return instance.SendMessage(ctx, respMessage)
 }
