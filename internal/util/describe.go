@@ -23,6 +23,8 @@ func DescribeToHachimi(req llm.MessageToolCallRequestPayload, provider tool.Prov
 	descStr.WriteString(fmt.Sprintf("Model wants to call %s, description: %s, required min user type: %s, ", provider.Name(), purgedDescription, metadata.MinUserType))
 	if metadata.Irreversible {
 		descStr.WriteString(" this action is irreversible, ")
+	} else {
+		descStr.WriteString(" this action is reversible and readonly, ")
 	}
 
 	var args map[string]interface{}

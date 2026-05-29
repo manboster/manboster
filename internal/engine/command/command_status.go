@@ -120,7 +120,7 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 
 	respString.WriteString(i18n.T(keys.CmdStatusContext, map[string]any{
 		"Current": totTokens,
-		"Full":    usage.TotalTokens,
+		"Full":    model.Context,
 		"Percent": fmt.Sprintf("%.2f", float64(totTokens*100)/float64(model.Context)),
 	}))
 

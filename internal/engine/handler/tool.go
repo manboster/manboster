@@ -2,10 +2,13 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/engine/gatekeeper"
+	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
@@ -32,14 +35,14 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 		callMsg := msg.Clone()
 		callMsg.MessageType = chat.MessageText
 		callMsg.Reply = nil
+		callMsg.Text = &chat.TextPayload{}
 
 		toolProvider, avail := h.toolMaps[req.ToolName]
 
 		if !avail {
 			color.Red(fmt.Sprintf("[Manboster Handler] There is no tool named %q", req.ToolName))
-			callMsg.Text = &chat.TextPayload{
-				Text: fmt.Sprintf("Model called tool `%s` but not found.", safeName),
-			}
+			callMsg.Text.Text = fmt.Sprintf("Model called tool `%s` but not found.", safeName)
+
 			err := h.gateway.SendMessage(ctx, instance, callMsg)
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
@@ -62,9 +65,7 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Handler] Validate `%s` failed: %q", req.ToolName, err))
 				result := i18n.Te(keys.GatekeeperValidateRejectMsg, req.ToolName, err)
-				callMsg.Text = &chat.TextPayload{
-					Text: result,
-				}
+				callMsg.Text.Text = result
 				e := h.gateway.SendMessage(ctx, instance, callMsg)
 				if e != nil {
 					color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
@@ -79,10 +80,30 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 			}
 		}
 
+		var hachimiStatus hachimi.ResponseStatusType
 		isOK, err := h.gatekeeperService.Guard(ctx, instance, msg, toolProvider, req, sid)
+		if isOK && err != nil {
+			if errors.Is(err, gatekeeper.ErrHachimiSuspicious) {
+				hachimiStatus = hachimi.ResponseStatusInspect
+			} else if errors.Is(err, gatekeeper.ErrHachimiSafe) {
+				hachimiStatus = hachimi.ResponseStatusSafe
+			} else {
+				callMsg.Text.Text = err.Error()
+				e := h.gateway.SendMessage(ctx, instance, callMsg)
+				if e != nil {
+					color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
+				}
+				go h.gateway.Recall(ctx, instance, callMsg)
+			}
+		}
+
 		if !isOK {
 			color.Red(fmt.Sprintf("[Manboster Handler] Gatekeeper Rejected the tool call `%s`: %q", req.ToolName, err))
 			result := i18n.Te(keys.GatekeeperRejectMsg, req.ToolName, err)
+
+			if errors.Is(err, gatekeeper.ErrHachimiDenied) {
+				hachimiStatus = hachimi.ResponseStatusUnsafe
+			}
 
 			callMsg.Text = &chat.TextPayload{
 				Text: result,
@@ -110,7 +131,7 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 		}
 		color.Blue(fmt.Sprintf("[Manboster Handler] Tool call %s responded successfully.", safeName)) // with response resp.
 
-		err = h.DistributeFeedbackMsg(ctx, instance, msg, sid, toolProvider, req, err)
+		err = h.DistributeFeedbackMsg(ctx, instance, msg, sid, toolProvider, req, err, hachimiStatus)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
 		}

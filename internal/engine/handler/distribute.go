@@ -7,18 +7,30 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, err error) error {
+func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, err error, hachimiStatus hachimi.ResponseStatusType) error {
 	var txt strings.Builder
 	respMsg := msg.Clone()
 	respMsg.Reply = nil
 	respMsg.MessageType = chat.MessageText
 	respMsg.Text = &chat.TextPayload{}
+
+	switch hachimiStatus {
+	case hachimi.ResponseStatusInspect:
+		txt.WriteString(fmt.Sprintf("🐱❓ "))
+	case hachimi.ResponseStatusSafe:
+		txt.WriteString(fmt.Sprintf("🐱✅ "))
+	case hachimi.ResponseStatusUnsafe:
+		txt.WriteString(fmt.Sprintf("🐱❌ "))
+	default:
+		txt.WriteString(fmt.Sprintf("🐱➖ "))
+	}
 
 	if err == nil {
 		if toolProvider.MetaData().Represent == "" {

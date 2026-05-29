@@ -10,6 +10,7 @@
 
   "engine.gatekeeper.allow": "允许",
   "engine.gatekeeper.deny": "拒绝",
+  "engine.gatekeeper.allow_suspicious": "一小时内允许可疑行为",
 
   "engine.gatekeeper.hachimi_activated": "🐱 您已启用 Hachimi，它将在接下来 {{ .Next }} 分钟内帮您处理此工具调用，请放心使用！",
   "engine.gatekeeper.shut_up_msg": "⚠️ 在接下来 {{ .Next }} 分钟内将自动允许 {{ .Name }} 工具的调用！",
@@ -17,6 +18,7 @@
   "engine.gatekeeper.cancel_all_msg": "❌ 你已拒绝本会话内的所有工具调用！接下来 10 分钟内将自动拒绝。",
   "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi 认为此工具调用不安全！请仔细查看并决定是否允许。**\n",
   "engine.gatekeeper.hachimi_suspicious": "🐱❓ **Hachimi 认为此工具调用存在可疑行为！请仔细查看并决定是否允许。**\n",
+  "engine.gatekeeper.hachimi_suspicious_msg": "⚠️ 你在一小时内允许了 Hachimi 提示可以行为的工具调用。",
   "engine.gatekeeper.hachimi_reason": "\nHachimi 报告原因：`{{ .Error }}`\n",
   "engine.gatekeeper.reject_msg": "🚪❌Gatekeeper 拒绝了大模型调用 `{{ .Name }}` 工具的请求：{{ .Error }}",
   "engine.gatekeeper.validate_msg": "🚪❌ Gatekeeper 拒绝了大模型调用 `{{ .Name }}` 工具的请求，输入参数校验失败！原因： {{ .Error }}",

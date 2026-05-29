@@ -10,6 +10,7 @@
 
   "engine.gatekeeper.allow": "Allow",
   "engine.gatekeeper.deny": "Deny",
+  "engine.gatekeeper.allow_suspicious": "Allow Suspicious in 1 hour",
 
   "engine.gatekeeper.hachimi_activated": "🐱 You activated Hachimi. It will handle this tool for the next {{ .Next }} minutes, enjoy your time!",
   "engine.gatekeeper.shut_up_msg": "⚠️ You muted this tool call. It will automatically allow for the next {{ .Next }} minutes in tool call `{{ .Name }}`.",
@@ -17,6 +18,7 @@
   "engine.gatekeeper.cancel_all_msg": "❌ You rejected all tool calls in this session! They will automatically deny for the next 10 minutes.",
   "engine.gatekeeper.hachimi_unsafe": "🐱⚠️ **Hachimi thinks this tool call is unsafe! Please review it carefully and decide.**\n",
   "engine.gatekeeper.hachimi_suspicious": "🐱❓ **Hachimi thinks this tool call is suspicious! Please review it carefully and decide.**\n",
+  "engine.gatekeeper.hachimi_suspicious_msg": "⚠️ You allowed all suspicious calls Hachimi reported!",
   "engine.gatekeeper.hachimi_reason": "\nHachimi reports reason: `{{ .Error }}`\n",
   "engine.gatekeeper.reject_msg": "🚪❌ Gatekeeper Rejected the tool call `{{ .Name }}`: {{ .Error }}",
   "engine.gatekeeper.validate_msg": "🚪❌ Gatekeeper Rejected `{{ .Name }}`, params validate failed: {{ .Error }}",

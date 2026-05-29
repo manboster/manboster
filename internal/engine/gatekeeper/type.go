@@ -43,9 +43,17 @@ func buildSelectionWithHachimi() []chat.Selection {
 	}
 }
 
-func buildSelectionHachimi() []chat.Selection {
+func buildSelectionHachimiUnsafe() []chat.Selection {
 	return []chat.Selection{
 		{Name: i18n.T(keys.GatekeeperAllow), Value: "allow"},
+		{Name: i18n.T(keys.GatekeeperDeny), Value: "deny"},
+	}
+}
+
+func buildSelectionHachimiSuspicious() []chat.Selection {
+	return []chat.Selection{
+		{Name: i18n.T(keys.GatekeeperAllow), Value: "allow"},
+		{Name: i18n.T(keys.GatekeeperAllowSuspicious), Value: "allow-suspicious"},
 		{Name: i18n.T(keys.GatekeeperDeny), Value: "deny"},
 	}
 }

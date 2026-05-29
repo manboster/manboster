@@ -58,11 +58,11 @@ const (
 
 // cli.config: config hachimi
 const (
-	CliConfigHachimiSelectPrompt  = "cli.config.config.hachimi.select_prompt"
-	CliConfigHachimiSelectHelp    = "cli.config.config.hachimi.select_help"
-	CliConfigHachimiSetDefault    = "cli.config.config.hachimi.set_default"
-	CliConfigHachimiDeleteConfirm = "cli.config.config.hachimi.delete_confirm"
-	CliConfigHachimiDeleteSuccess = "cli.config.config.hachimi.delete_success"
+	CliConfigHachimiSelectPrompt  = "cli.config.hachimi.select_prompt"
+	CliConfigHachimiSelectHelp    = "cli.config.hachimi.select_help"
+	CliConfigHachimiSetDefault    = "cli.config.hachimi.set_default"
+	CliConfigHachimiDeleteConfirm = "cli.config.hachimi.delete_confirm"
+	CliConfigHachimiDeleteSuccess = "cli.config.hachimi.delete_success"
 )
 
 // cli.config: database landing

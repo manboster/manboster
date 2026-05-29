@@ -1,4 +1,4 @@
-package gatekeeper
+package gateway
 
 import (
 	"context"
@@ -41,6 +41,6 @@ func (s *Service) RecallRunner(ctx context.Context, instance chat.Provider, msg 
 func (s *Service) Recall(ctx context.Context, instance chat.Provider, rMsg *chat.Message) {
 	err := s.RecallRunner(ctx, instance, rMsg, 5*time.Second)
 	if err != nil {
-		color.Yellow("[Manboster Gatekeeper] Failed to recall result")
+		color.Yellow("[Manboster Gateway] Failed to recall result")
 	}
 }

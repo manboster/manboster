@@ -19,14 +19,18 @@ var metadata = schema.MetaData{
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,
+	Represent:        "💻",
 	MinUserType:      "root",
 }
 
 type Service struct{}
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	arg := RunArgs{}
+	if json.Unmarshal([]byte(args), &arg) == nil {
+		return arg.Shell
+	}
+	return ""
 }
 
 func (s *Service) Description() string {
