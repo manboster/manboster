@@ -6,13 +6,12 @@ import (
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/session/chat_session"
 	"github.com/manboster/manboster/internal/util"
-	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvider string, model string, msg *chat.Message) (string, error) {
+func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvider string, model string, chatId string) (string, error) {
 	sessionId := util.RandomString(8)
-	soulsList := s.soulService.GetSoulsList(ctx, msg.ChatID)
+	soulsList := s.soulService.GetSoulsList(ctx, chatId)
 	err := s.repo.CreateSession(ctx, types.Session{
 		SessionID:        sessionId,
 		LLMProvider:      llmProvider,
@@ -32,12 +31,18 @@ func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvid
 		Cancel:   nil,
 	})
 
-	err = s.repo.CreateChat(ctx, types.Chat{
-		ChatID:         msg.ChatID,
-		SessionID:      sessionId,
-		ChatProvider:   provider,
-		ChatPermission: 1, // TODO: add chat permission but there is no need, so occupy?
-	})
+	_, err = s.repo.GetChat(ctx, chatId, provider)
+	if err != nil {
+		err = s.repo.CreateChat(ctx, types.Chat{
+			ChatID:         chatId,
+			SessionID:      sessionId,
+			ChatProvider:   provider,
+			ChatPermission: 1, // TODO: add chat permission but there is no need, so occupy?
+		})
+
+	} else {
+		err = s.repo.UpdateChat(ctx, chatId, provider, sessionId)
+	}
 	if err != nil {
 		return "", err
 	}

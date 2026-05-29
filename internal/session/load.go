@@ -33,7 +33,7 @@ func (s *Service) LoadChatSession(ctx context.Context, instance chat.Provider, m
 	} else if errors.Is(err, repository.ErrNotFound) {
 		// if you're not an administrator, you can not create a new session
 		if isAdmin {
-			sid, err := s.NewChatSession(ctx, instance.Name(), s.config.App.DefaultLLMProvider, s.config.App.DefaultLLMModel, msg)
+			sid, err := s.NewChatSession(ctx, instance.Name(), s.config.App.DefaultLLMProvider, s.config.App.DefaultLLMModel, msg.ChatID)
 			sessionId = sid
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Session Service] We encountered an error while creating session to repository, error: %q", err))

@@ -30,9 +30,12 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to compact session: %s", err))
 			}
+
 			if isCompacted {
-				e.BuildMessageRunner(instance, newSessionId)
-				newCh, _ := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+				newCh, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+				if created {
+					e.BuildMessageRunner(instance, newSessionId)
+				}
 				newCh <- msg
 				e.sessionService.Manager.ChatSession.DeleteSession(sessionId)
 				return nil

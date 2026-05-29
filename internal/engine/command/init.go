@@ -52,7 +52,10 @@ func (h *Handler) Init() {
 		if err != nil {
 			return err
 		}
-		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, h.handler.HandleCompact)
+		return h.handleAdminCommandWithSessionID(ctx, instance, msg, sessionId, func(ctx context.Context, instance chat.Provider, msg *chat.Message, sid string) error {
+			_, err := h.handler.HandleCompact(ctx, instance, msg, sid)
+			return err
+		})
 	})
 
 	h.provider.Register(chat.CommandModel, func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {

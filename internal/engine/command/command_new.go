@@ -40,7 +40,7 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return err
 	}
 
-	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), p, m, msg)
+	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), p, m, msg.ChatID)
 	if err != nil {
 		return err
 	}

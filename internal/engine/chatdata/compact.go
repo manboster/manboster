@@ -11,26 +11,27 @@ import (
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository/types"
+	"github.com/manboster/manboster/internal/session/chat_session"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
 // Compact compacts chat data and then open a new session.
-func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *chat.Message, sessionId string) error {
+func (s *Service) Compact(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) (string, error) {
 	// overwrite context because if not specified there will be a problem that context canceled with runner.
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	msg := s.sessionManager.GetMessages(sessionId)
+	messages := s.sessionManager.GetMessages(sessionId)
 	provider, model, _ := s.sessionManager.GetModel(sessionId)
 	p, m := util.GetModelWithFallback(ctx, s.llmProviders, provider, model)
 
 	var i int
-	if len(msg) <= 10 {
-		return ErrNoNeedToCompact
+	if len(messages) <= 10 {
+		return "", ErrNoNeedToCompact
 	}
-	for i = len(msg) - 1; msg[i].Type&(llm.MessageToolCallResponse|llm.MessageToolCallRequest) != 0; i-- {
+	for i = len(messages) - 1; messages[i].Type&(llm.MessageToolCallResponse|llm.MessageToolCallRequest) != 0; i-- {
 	}
 
 	hookProviders := hook.Reg.GetProviders(hook.EngineBeforeCompact)
@@ -46,30 +47,30 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		}
 	}
 
-	messagesToCompact := msg // compact data
+	messagesToCompact := messages // compact data
 	var compactString strings.Builder
 	for _, message := range messagesToCompact {
 		compactString.WriteString(util.ConvertLLMMessageToString(message) + "\n")
 	}
 	event, err := s.gateway.LLMQuickChat(ctx, p, m, prompt.CompactSystemPrompt, compactString.String())
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if event == nil {
 		color.Red("[Manboster ChatData] event is nil")
-		return ErrCompactChatFailed
+		return "", ErrCompactChatFailed
 	}
 	if event.EventType&llm.EventMessage == 0 || event.Message == nil {
 		color.Red("event message is nil")
-		return ErrCompactChatFailed
+		return "", ErrCompactChatFailed
 	}
 	if event.Message.Type&llm.MessageText == 0 || len(event.Message.Parts) == 0 {
 		color.Red("event message parts is nil")
-		return ErrCompactChatFailed
+		return "", ErrCompactChatFailed
 	}
 	if event.Message.Parts[0].PartsType != llm.MessagePartsText || event.Message.Parts[0].Text == nil {
-		return ErrCompactChatFailed
+		return "", ErrCompactChatFailed
 	}
 
 	compactedMessage := event.Message.Parts[0].Text.Text
@@ -83,8 +84,9 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 		},
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
+
 	s.sessionManager.DeleteSession(sessionId)
 	err = s.repo.CreateSession(ctx, types.Session{
 		SessionID:        newSessionID,
@@ -96,7 +98,7 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	})
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster ChatData] Failed to create session in repository when compacting: %v", err))
-		return err
+		return "", err
 	}
 
 	hookProviders = hook.Reg.GetProviders(hook.EngineAfterCompact)
@@ -115,10 +117,21 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 	err = s.repo.ReplaceChatSessions(ctx, sessionId, newSessionID)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster ChatData] Failed to replace session in repository when compacting: %v", err))
-		return err
+		return "", err
 	}
 
-	respMessage := mesg.Clone()
+	s.sessionManager.SetSession(newSessionID, chat_session.Session{
+		Model:    model,
+		Provider: provider,
+		Events:   []llm.Event{},
+		Souls: []string{
+			"system", "previous-message-" + newSessionID,
+		},
+		Active: false,
+		Cancel: nil,
+	})
+
+	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	respMessage.Text = &chat.TextPayload{
 		Text: i18n.T(keys.EngineChatDataCompactSuccess, map[string]any{
@@ -127,5 +140,5 @@ func (s *Service) Compact(ctx context.Context, instance chat.Provider, mesg *cha
 			"Data": compactedMessage,
 		}),
 	}
-	return instance.SendMessage(ctx, respMessage)
+	return newSessionID, instance.SendMessage(ctx, respMessage)
 }

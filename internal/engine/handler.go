@@ -90,6 +90,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		if err != nil {
 			return err
 		}
+
 		if compacted {
 			ch, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
 			if created {
@@ -100,8 +101,9 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		}
 
 		respCh := make(chan int, 10)
-		event, err := e.gateway.LLMChat(ctx, p, m, msgList, respCh)
 		go e.MessageNotifyRunner(ctx, respCh, instance, msg)
+		event, err := e.gateway.LLMChat(ctx, p, m, msgList, respCh)
+
 		errChat := e.gateway.HandleLLMChatError(ctx, instance, msg, p.DisplayName(), m.DisplayName, err)
 		if errChat != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Error while sending message: %q\n", errChat))

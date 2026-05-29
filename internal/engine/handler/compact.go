@@ -15,7 +15,7 @@ import (
 )
 
 // HandleCompact compacts data
-func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) (string, error) {
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
 	text := ""
@@ -24,10 +24,10 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 	}
 	err := instance.SendMessage(ctx, respMessage)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	err = h.chatDataService.Compact(ctx, instance, msg, sessionId)
+	newSession, err := h.chatDataService.Compact(ctx, instance, msg, sessionId)
 	if err != nil {
 		if errors.Is(err, chatdata.ErrNoNeedToCompact) {
 			text = i18n.T(keys.EngineHandlerCompactNoNeed)
@@ -39,9 +39,13 @@ func (h *Handler) HandleCompact(ctx context.Context, instance chat.Provider, msg
 		respMessage.Text = &chat.TextPayload{
 			Text: text,
 		}
-		return instance.SendMessage(ctx, respMessage)
+		err = instance.SendMessage(ctx, respMessage)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Handler] We encountered an error when sending message: %q", err))
+		}
+		return "", err
 	}
-	return nil
+	return newSession, nil
 }
 
 // CheckCompact returns value about whether this should compact or not
@@ -57,17 +61,12 @@ func (h *Handler) CheckCompact(ctx context.Context, instance chat.Provider, msg 
 	}
 	// checkout whether a need to compact or not
 	if uint64(totToken) > llm.CalculateCompactTokens(m) {
-		err := h.HandleCompact(ctx, instance, msg, sessionId)
+		newSession, err := h.HandleCompact(ctx, instance, msg, sessionId)
 		if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Engine] Error while compacting data: %q", err))
 			return false, "", err
 		}
-		// get new session id
-		resp, err := h.repo.GetChat(ctx, msg.ChatID, instance.Name())
-		if err != nil {
-			color.Red(fmt.Sprintf("[Manboster Engine] Error while getting new session id: %q", err))
-			return true, resp.SessionID, err
-		}
+		return true, newSession, err
 	}
 	return false, "", nil
 }

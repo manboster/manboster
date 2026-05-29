@@ -9,5 +9,5 @@
   "app.config_init_error": "[Manboster] 配置初始化失败：{{ .Error }}",
   "app.reading_config": "[Manboster] 正在读取配置...",
   "app.loader_error": "[Manboster] 加载失败：{{ .Error }}",
-  "app.goodbye": "[Manboster] 感谢使用，再见！"
+  "app.goodbye": "[Manboster] 你的小助手要睡觉啦，感谢你和它度过了一段美好的时光！"
 }
