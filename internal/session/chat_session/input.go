@@ -39,7 +39,6 @@ func (m *Manager) SetMsg(sid string, msg *chat.Message) {
 	}
 
 	s.InputMsg = msg
-	s.InputMsgID = msg.MessageID
 	m.Sessions[sid] = s
 }
 
