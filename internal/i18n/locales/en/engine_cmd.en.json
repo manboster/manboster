@@ -78,5 +78,7 @@
   "engine.cmd.deop.delete_error": "Failed to remove the user.",
   "engine.cmd.deop.success": "Successfully revoked permission for user {{ .Name }}.",
   "engine.cmd.deop.not_found": "The user you want to demote was not found.",
-  "engine.cmd.deop.find_error": "An error occurred while looking up the user."
+  "engine.cmd.deop.find_error": "An error occurred while looking up the user.",
+
+  "engine.cmd.reset.success": "Successfully reset this chat's tool ignorance."
 }

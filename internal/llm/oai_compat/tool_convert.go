@@ -22,6 +22,13 @@ func (s *Service) ConvertTools(tools []tool.Provider) []openai.Tool {
 				Parameters:  t.Args().ToJSONSchema(),
 			},
 		}
+
+		if m, ok := oaiTool.Function.Parameters.(map[string]interface{}); ok && len(m) == 0 || oaiTool.Function.Parameters == nil {
+			oaiTool.Function.Parameters = map[string]any{
+				"type":       "object",
+				"properties": map[string]any{},
+			}
+		}
 		oaiTools = append(oaiTools, oaiTool)
 	}
 

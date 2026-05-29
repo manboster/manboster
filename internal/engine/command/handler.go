@@ -12,6 +12,10 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
+type required interface {
+	BuildMessageRunner(instance chat.Provider, sessionId string)
+}
+
 type Handler struct {
 	repo             repository.Repository
 	onboard          *onboard.Service
@@ -22,9 +26,10 @@ type Handler struct {
 	soulService      *soul.Service
 	handler          *handler.Handler
 	provider         *Provider[chat.CommandType]
+	engine           required
 }
 
-func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
+func NewHandler(engine required, repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
 	h := &Handler{
 		repo:             repo,
 		safeguardService: safeguard,
@@ -35,6 +40,7 @@ func NewHandler(repo repository.Repository, safeguard *safeguard.Service, sessio
 		onboard:          onboardService,
 		handler:          handler,
 		provider:         NewProvider[chat.CommandType](),
+		engine:           engine,
 	}
 	h.Init()
 	return h

@@ -20,7 +20,7 @@ import (
 func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.Message, toolProvider tool.Provider, req llm.MessageToolCallRequestPayload, sid string) (bool, error) {
 	executeGroup := toolProvider.CacheGroup(fmt.Sprintf("%s", req.ToolArgs))
 
-	overallUd := buildSessionId(instance.Name(), msg.ChatID, sid)
+	overallUd := BuildSessionId(instance.Name(), msg.ChatID, sid)
 	ud := buildToolId(overallUd, toolProvider.Name(), executeGroup)
 	err := s.CheckSession(ud)
 	if err != nil {
@@ -58,7 +58,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	}
 
 	return s.Select(ctx, instance, msg, selection, util.DescribeToHuman(req, toolProvider), func(msg *chat.Message) (bool, error) {
-		overallId := buildSessionId(instance.Name(), msg.ChatID, sid)
+		overallId := BuildSessionId(instance.Name(), msg.ChatID, sid)
 		id := buildToolId(overallId, toolProvider.Name(), executeGroup)
 
 		err = s.CheckSession(id)

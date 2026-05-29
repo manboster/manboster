@@ -2,7 +2,7 @@ package gatekeeper
 
 import "fmt"
 
-func buildSessionId(name string, chatId string, sid string) string {
+func BuildSessionId(name string, chatId string, sid string) string {
 	return fmt.Sprintf("%s:%s:%s", name, chatId, sid)
 }
 

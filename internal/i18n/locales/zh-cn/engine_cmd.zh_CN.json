@@ -78,5 +78,7 @@
   "engine.cmd.deop.delete_error": "删除用户失败。",
   "engine.cmd.deop.success": "已成功撤销用户 {{ .Name }} 的权限。",
   "engine.cmd.deop.not_found": "未找到您要降权的用户。",
-  "engine.cmd.deop.find_error": "查找用户时发生错误。"
+  "engine.cmd.deop.find_error": "查找用户时发生错误。",
+
+  "engine.cmd.reset.success": "成功清空了本次会话做的所有工具调用忽略或批准记忆！"
 }

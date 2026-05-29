@@ -113,3 +113,7 @@ const (
 	CmdDeopNotFound    = "engine.cmd.deop.not_found"
 	CmdDeopFindError   = "engine.cmd.deop.find_error"
 )
+
+const (
+	CmdResetSuccess = "engine.cmd.reset.success"
+)

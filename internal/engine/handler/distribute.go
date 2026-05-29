@@ -52,6 +52,13 @@ func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provi
 	txt.WriteString("\n")
 
 	count := h.sessionManager.Chat.GetToolCallCounts(sid)
+
+	id := h.sessionManager.ChatSession.GetInputMsgID(sid)
+	if id != msg.MessageID {
+		count = 0
+		h.sessionManager.ChatSession.SetMsgId(sid, msg.MessageID)
+	}
+
 	if count%10 == 0 {
 		respMsg.Text.Text = txt.String()
 		err = h.gateway.SendMessage(ctx, instance, respMsg)

@@ -56,7 +56,7 @@ func (e *Engine) Load(ctx context.Context) error {
 	e.chatDataService = chatdata.NewService(e.repo, e.sessionService.Manager.ChatSession, e.llmProviders, e.gateway)
 	e.gatekeeperService = gatekeeper.NewService(e.gateway, e.safeguardService, e.sessionService.Manager.Ignorance, e.config.Hachimi, e.hachimiProvider, e.hachimiLoaded)
 	e.handler = handler.NewHandler(e.repo, e.llmProviders, e.chatDataService, e.onboard, e.toolMaps, e.gateway, e.sessionService.Manager, e.gatekeeperService, e.safeguardService)
-	e.commandHandler = command.NewHandler(e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
+	e.commandHandler = command.NewHandler(e, e.repo, e.safeguardService, e.sessionService, e.llmProviders, e.config, e.soulService, e.onboard, e.handler)
 
 	e.processor = processor.New(e, e.sessionService, e.safeguardService, e.onboard)
 	runner.Instance = runner.NewRunner(e.processor, e.chatProviders)

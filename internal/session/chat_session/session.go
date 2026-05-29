@@ -19,6 +19,8 @@ type Session struct {
 	Active      bool
 	Cancel      context.CancelFunc
 	SessCancel  context.CancelFunc
+	InputMsg    *chat.Message
+	InputMsgID  string
 	Ch          chan *chat.Message
 }
 

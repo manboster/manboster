@@ -23,6 +23,10 @@ func NewProvider[T ~string]() *Provider[T] {
 func (p *Provider[T]) Register(t T, fn handleFunc) {
 	p.lock.Lock()
 	defer p.lock.Unlock()
+	_, ok := p.funcMap[t]
+	if ok {
+		panic("[Manboster Command Provider] provider already registered!!!")
+	}
 	p.funcMap[t] = fn
 }
 

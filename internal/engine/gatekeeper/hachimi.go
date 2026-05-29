@@ -22,7 +22,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 	msg.MessageType = chat.MessageText
 	msg.Text = &chat.TextPayload{}
 
-	sessId := buildSessionId(instance.Name(), msg.ChatID, sid)
+	sessId := BuildSessionId(instance.Name(), msg.ChatID, sid)
 	_, markType := s.ignoranceSessionManager.GetMark(sessId)
 
 	if !*s.hachimiLoaded || s.hachimiProvider == nil {

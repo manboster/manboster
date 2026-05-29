@@ -69,6 +69,7 @@ func (s *Service) HandleLLMChatError(ctx context.Context, instance chat.Provider
 	} else if strings.Contains(tips, "cancel") {
 		text = i18n.Te(keys.GatewayLLMErrorCancelled, llmProviderDisplayName, nil)
 	}
+	text += "\n" + i18n.T(keys.GatewayRetryPrompt)
 	respMessage.Text = &chat.TextPayload{
 		Text: text,
 	}

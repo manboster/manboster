@@ -5,5 +5,6 @@
   "engine.gateway.llm_error_timeout": "[Manboster] 您与服务商 {{ .Name }} 之间似乎存在连接问题，请检查网络连接后重试。",
   "engine.gateway.llm_error_auth": "[Manboster] 服务商 {{ .Name }} 拒绝访问或未授权，请检查您的 API Key 或其他凭据是否有效。",
   "engine.gateway.llm_error_cancelled": "[Manboster] 您已取消服务商 {{ .Name }} 的请求。",
-  "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 {{ .Count }} 次..."
+  "engine.gateway.trytimes": "[Manboster] 发往LLM服务商的请求失败，正在重新尝试，已经尝试了 {{ .Count }} 次...",
+  "engine.gateway.retry_prompt": "在等待一会或重新配置后，请发送 `/retry` 来重新尝试。"
 }

@@ -92,6 +92,14 @@ func (h *Handler) Init() {
 		return h.cmdCancel(ctxWithValues, instance, msg, sessionId)
 	})
 
+	h.provider.Register(chat.CommandReset, func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+		return h.cmdReset(ctx, instance, msg, sessionId)
+	})
+
+	h.provider.Register(chat.CommandRetry, func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+		return h.cmdRetry(ctx, instance, sessionId)
+	})
+
 	h.provider.Default(func(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 		if msg.ChatType == chat.ChatsPersonal {
 			return h.cmdDefault(ctx, instance, msg)

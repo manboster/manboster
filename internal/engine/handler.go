@@ -23,7 +23,8 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		color.Yellow(fmt.Sprintf("[Manboster Engine] Error while notifying provider %q: %q", instance.DisplayName(), err))
 	}
 
-	if err := ctx.Err(); err != nil {
+	err = ctx.Err()
+	if err != nil {
 		return err
 	}
 
@@ -32,15 +33,18 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		color.Red(fmt.Sprintf("[Manboster Engine] Error while building LLM message: %q", err))
 		return err
 	}
-	// enhanced prompt engineering in order to avoid injection with some effort.
-	msgData := llm.Event{
-		EventType: llm.EventMessage,
-		Message:   message,
-	}
-	e.sessionService.Manager.ChatSession.AppendEvent(sessionId, msgData)
-	err = e.chatDataService.Write(ctx, msgData, sessionId)
-	if err != nil {
-		color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
+
+	if msg.MessageType&chat.MessageFromRetry == 0 {
+		// enhanced prompt engineering in order to avoid injection with some effort.
+		msgData := llm.Event{
+			EventType: llm.EventMessage,
+			Message:   message,
+		}
+		e.sessionService.Manager.ChatSession.AppendEvent(sessionId, msgData)
+		err = e.chatDataService.Write(ctx, msgData, sessionId)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
+		}
 	}
 
 	provider, model, _ := e.sessionService.Manager.ChatSession.GetModel(sessionId)
@@ -57,6 +61,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 	} else {
 		souls = s
 	}
+
 	soulLLMMsg, err := e.soulService.BuildSystemMessage(ctx, souls)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] Error while building system message: %q", err))

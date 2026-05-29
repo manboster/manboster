@@ -43,6 +43,7 @@ const (
 	MessageFromCron
 	MessageFromCronIgnore
 	MessageStart
+	MessageFromRetry
 )
 
 const MessageTextAndImage = MessageText | MessageImage
