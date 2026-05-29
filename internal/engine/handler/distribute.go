@@ -2,14 +2,11 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/tool"
-	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
@@ -23,39 +20,36 @@ func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provi
 
 	switch hachimiStatus {
 	case hachimi.ResponseStatusInspect:
-		txt.WriteString(fmt.Sprintf("🐱❓ "))
+		txt.WriteString(fmt.Sprintf("🐱❓"))
 	case hachimi.ResponseStatusSafe:
-		txt.WriteString(fmt.Sprintf("🐱✅ "))
+		txt.WriteString(fmt.Sprintf("🐱✅"))
 	case hachimi.ResponseStatusUnsafe:
-		txt.WriteString(fmt.Sprintf("🐱❌ "))
+		txt.WriteString(fmt.Sprintf("🐱❌"))
 	default:
-		txt.WriteString(fmt.Sprintf("🐱➖ "))
+		txt.WriteString(fmt.Sprintf("🐱➖"))
 	}
 
 	if err == nil {
-		if toolProvider.MetaData().Represent == "" {
-			txt.WriteString(fmt.Sprintf("🤖✅ 🧰 `%s`", toolProvider.DisplayName()))
-			var result map[string]interface{}
-			err := json.Unmarshal([]byte(fmt.Sprintf("%v", req.ToolArgs)), &result)
-			if err != nil {
-				color.Yellow("[Manboster Handler] Failed to unmarshal tool call result")
-			}
-			params := util.JSONParse(result)
-			if params != "" {
-				txt.WriteString(fmt.Sprintf(": %s", params))
-			}
-			txt.WriteString("\n")
-		} else {
-			txt.WriteString(fmt.Sprintf("🤖✅ %s `%s`", toolProvider.MetaData().Represent, toolProvider.DisplayName()))
-			params := toolProvider.ClientRenderer(fmt.Sprintf("%s", req.ToolArgs))
-			if params != "" {
-				txt.WriteString(fmt.Sprintf(": %s", params))
-			}
-			txt.WriteString("\n")
+		txt.WriteString(" 🤖✅ ")
+	} else {
+		txt.WriteString(" 🤖❌ ")
+	}
+
+	if toolProvider.MetaData().Represent == "" {
+		txt.WriteString(fmt.Sprintf("🧰 `%s`", toolProvider.DisplayName()))
+	} else {
+		txt.WriteString(fmt.Sprintf("%s `%s`", toolProvider.MetaData().Represent, toolProvider.DisplayName()))
+	}
+
+	if err == nil {
+		params := toolProvider.ClientRenderer(fmt.Sprintf("%s", req.ToolArgs))
+		if params != "" {
+			txt.WriteString(fmt.Sprintf(": `%s`", params))
 		}
 	} else {
-		txt.WriteString(fmt.Sprintf("🤖❌ `%s`: %q.", toolProvider.DisplayName(), err))
+		txt.WriteString(fmt.Sprintf(": `%q`", err))
 	}
+	txt.WriteString("\n")
 
 	count := h.sessionManager.Chat.GetToolCallCounts(sid)
 	if count%10 == 0 {

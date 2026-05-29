@@ -16,6 +16,9 @@ func (s *Service) Chat(ctx context.Context, model string, tools []tool.Provider,
 		if msg.Type&(llm.MessageToolCallResponse) != 0 {
 			// going to check tool call resp and get it back to llm!
 			for _, resp := range msg.ToolCallResponse {
+				if resp.Result == "" {
+					resp.Result = "{}"
+				}
 				apiMsgs = append(apiMsgs, openai.ChatCompletionMessage{
 					Role:       openai.ChatMessageRoleTool,
 					Content:    resp.Result,

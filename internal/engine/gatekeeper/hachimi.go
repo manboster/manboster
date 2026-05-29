@@ -27,16 +27,16 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 
 	if !*s.hachimiLoaded || s.hachimiProvider == nil {
 		color.Yellow("[Manboster Gatekeeper] Hachimi is not loaded!")
-		return true, nil
+		return false, fmt.Errorf("hachimi is not loaded")
 	}
 
 	desc := util.DescribeToHachimi(req, toolProvider)
 	u, avail := s.ignoranceSessionManager.GetHachimiCache(desc)
 	if avail {
 		if !u {
-			return false, fmt.Errorf("hachimi thinks it's unsafe and user denied it")
+			return false, ErrHachimiDenied
 		}
-		return true, nil
+		return true, ErrHachimiSafe
 	}
 
 	resp, err := s.hachimiProvider.Chat(ctx, desc)

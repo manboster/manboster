@@ -88,6 +88,7 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 			} else if errors.Is(err, gatekeeper.ErrHachimiSafe) {
 				hachimiStatus = hachimi.ResponseStatusSafe
 			} else {
+				hachimiStatus = hachimi.ResponseStatusSafe
 				callMsg.Text.Text = err.Error()
 				e := h.gateway.SendMessage(ctx, instance, callMsg)
 				if e != nil {
@@ -105,11 +106,8 @@ func (h *Handler) HandleToolCalls(ctx context.Context, instance chat.Provider, m
 				hachimiStatus = hachimi.ResponseStatusUnsafe
 			}
 
-			callMsg.Text = &chat.TextPayload{
-				Text: result,
-			}
-			e := h.gateway.SendMessage(ctx, instance, callMsg)
-			if e != nil {
+			err = h.DistributeFeedbackMsg(ctx, instance, msg, sid, toolProvider, req, err, hachimiStatus)
+			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Handler] Error sending message: %s", err))
 			}
 

@@ -22,7 +22,6 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 	overallUd := buildSessionId(instance.Name(), msg.ChatID, sid)
 	ud := buildToolId(overallUd, toolProvider.Name(), executeGroup)
-
 	err := s.CheckSession(ud)
 	if err != nil {
 		return false, err

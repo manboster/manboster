@@ -8,7 +8,7 @@ type Response struct {
 type ResponseStatusType int8
 
 const (
-	ResponseStatusUnsafe ResponseStatusType = iota
-	ResponseStatusInspect
-	ResponseStatusSafe
+	ResponseStatusUnsafe  ResponseStatusType = -1
+	ResponseStatusInspect ResponseStatusType = 1
+	ResponseStatusSafe    ResponseStatusType = 2
 )
