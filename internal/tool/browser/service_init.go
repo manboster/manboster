@@ -2,7 +2,6 @@ package browser
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fatih/color"
 	"github.com/go-rod/rod/lib/launcher"
@@ -34,7 +33,7 @@ func (s *Service) Init(ctx context.Context, conf any) error {
 		if err != nil {
 			err := s.DownloadBrowser(browserManager)
 			if err != nil {
-				color.Red(fmt.Sprintf(i18n.T(keys.BrowserLogDownloadFailed), err))
+				color.Red(i18n.Te(keys.BrowserLogDownloadFailed, "", err))
 			}
 		} else {
 			s.isReady = true

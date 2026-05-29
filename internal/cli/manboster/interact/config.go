@@ -1,8 +1,6 @@
 package interact
 
 import (
-	"fmt"
-
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
@@ -108,7 +106,7 @@ func runConfig(p cli.Provider, cfg config.Config) (config.Config, error) {
 	for {
 		err := handle[configLandingSelection](p, form, options, i18n.T(keys.CliConfigLandingSelectPrompt), i18n.T(keys.CliConfigLandingSelectHelp))
 		if err != nil {
-			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.CliWizardErrorAlert), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliWizardErrorAlert, "", err))
 			if err != nil {
 				return config.Config{}, err
 			}

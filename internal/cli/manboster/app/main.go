@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -70,7 +69,7 @@ func MainInner() {
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	} else if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.AppConfigInitError), err))
+		color.Red(i18n.Te(keys.AppConfigInitError, "", err))
 	}
 
 	// create a universal context for this application
@@ -86,7 +85,7 @@ func MainInner() {
 	loaderInstance := loader.New(new(config.Read()))
 	err = loaderInstance.Load(ctx)
 	if err != nil {
-		color.Red(fmt.Sprintf(i18n.T(keys.AppLoaderError), err))
+		color.Red(i18n.Te(keys.AppLoaderError, "", err))
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}

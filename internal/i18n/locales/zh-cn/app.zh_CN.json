@@ -6,8 +6,8 @@
   "app.daemon_running_quit": "[Manboster] 正在退出中...",
   "app.config_not_found": "[Manboster] 未找到 config.yaml，正在启动配置向导...",
   "app.config_created": "[Manboster] config.yaml 创建成功，重新启动 Manboster 即可开始使用！",
-  "app.config_init_error": "[Manboster] 配置初始化失败：%v",
+  "app.config_init_error": "[Manboster] 配置初始化失败：{{ .Error }}",
   "app.reading_config": "[Manboster] 正在读取配置...",
-  "app.loader_error": "[Manboster] 加载失败：%v",
+  "app.loader_error": "[Manboster] 加载失败：{{ .Error }}",
   "app.goodbye": "[Manboster] 感谢使用，再见！"
 }

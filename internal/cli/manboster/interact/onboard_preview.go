@@ -15,17 +15,17 @@ func runOnboardPreview(p cli.Provider, c config.Config) (bool, error) {
 	confDescription.WriteString(i18n.T(keys.OnboardPreviewTitle) + "\n")
 	confDescription.WriteString(i18n.T(keys.OnboardPreviewRestart) + "\n\n")
 
-	confDescription.WriteString(fmt.Sprintf(i18n.T(keys.OnboardPreviewChatCount), len(c.Chats)) + "\n\n")
+	confDescription.WriteString(i18n.T(keys.OnboardPreviewChatCount, len(c.Chats)) + "\n\n")
 	for i, _ := range c.Chats {
 		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration:\n\n %s\n\n", i+1, c.Chats[i].Provider, c.Chats[i].Configuration))
 	}
 
-	confDescription.WriteString(fmt.Sprintf(i18n.T(keys.OnboardPreviewLLMCount), len(c.LLMs)) + "\n\n")
+	confDescription.WriteString(i18n.T(keys.OnboardPreviewLLMCount, len(c.LLMs)) + "\n\n")
 	for i, _ := range c.LLMs {
 		confDescription.WriteString(fmt.Sprintf("#%d's Configuration: \n\n%s \n\n", i+1, c.LLMs[i].Configuration))
 	}
 
-	confDescription.WriteString(fmt.Sprintf(i18n.T(keys.OnboardPreviewToolCount), len(c.Tools)) + "\n\n")
+	confDescription.WriteString(i18n.T(keys.OnboardPreviewToolCount, len(c.Tools)) + "\n\n")
 	for i, _ := range c.Tools {
 		confDescription.WriteString(fmt.Sprintf("#%d: %s's Configuration: \n\n", i+1, c.Tools[i].Name))
 		if c.Tools[i].Configuration != nil {

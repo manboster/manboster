@@ -144,9 +144,9 @@ func runOnboardConfig(p cli.Provider) (config.Config, error) {
 			state = wizardConfigSuccess
 		// If you are using GoLand or other JetBrains IDEs, please ignore this `condition is always true` error.
 		case wizardConfigError:
-			confirm, err := p.Prompt(fmt.Sprintf(i18n.T(keys.CliWizardErrorRetry), reportedError), i18n.T(keys.UIQuestionWantToRetry), i18n.T(keys.UIBtnRetry), i18n.T(keys.UIBtnExit))
+			confirm, err := p.Prompt(i18n.Te(keys.CliWizardErrorRetry, "", reportedError), i18n.T(keys.UIQuestionWantToRetry), i18n.T(keys.UIBtnRetry), i18n.T(keys.UIBtnExit))
 			if err != nil {
-				color.Red(fmt.Sprintf(i18n.T(keys.CliWizardConfigError), reportedError))
+				color.Red(i18n.Te(keys.CliWizardConfigError, "", reportedError))
 			}
 			if !confirm {
 				return conf, reportedError

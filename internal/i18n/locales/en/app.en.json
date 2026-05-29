@@ -6,8 +6,8 @@
   "app.daemon_running_quit": "[Manboster] Quitting the application!",
   "app.config_not_found": "[Manboster] config.yaml not found, launching setup wizard...",
   "app.config_created": "[Manboster] config.yaml created successfully. Open Manboster again to get started!",
-  "app.config_init_error": "[Manboster] Failed to initialize config. Error: %v",
+  "app.config_init_error": "[Manboster] Failed to initialize config. Error: {{ .Error }}",
   "app.reading_config": "[Manboster] Reading configuration...",
-  "app.loader_error": "[Manboster] Error while loading: %v",
+  "app.loader_error": "[Manboster] Error while loading: {{ .Error }}",
   "app.goodbye": "[Manboster] Going to sleep, thank you for playing with it!"
 }

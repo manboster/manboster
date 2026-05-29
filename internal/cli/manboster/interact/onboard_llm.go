@@ -21,7 +21,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 	for {
 		llmConfig, err := runOnboardLLMConfig(p, llmProviders)
 		if err != nil {
-			err := p.Alert(i18n.T(keys.CliWizardTitle), fmt.Sprintf(i18n.T(keys.OnboardLLMConfigError), err))
+			err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.OnboardLLMConfigError, "", err))
 			if err != nil {
 				return nil, err
 			}
@@ -29,7 +29,7 @@ func runOnboardLLMConfigs(p cli.Provider) ([]config.LLMConfig, error) {
 		}
 		confs = append(confs, llmConfig)
 
-		ok, err := p.Prompt(fmt.Sprintf(i18n.T(keys.OnboardLLMAddedCount), len(confs)), "", i18n.T(keys.UIBtnContinue), i18n.T(keys.UIBtnExit))
+		ok, err := p.Prompt(i18n.T(keys.OnboardLLMAddedCount, len(confs)), "", i18n.T(keys.UIBtnContinue), i18n.T(keys.UIBtnExit))
 		if err != nil {
 			return confs, err
 		}
