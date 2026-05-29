@@ -5,7 +5,16 @@ import (
 )
 
 var StepFunModels = []llm.Model{
-	//	"stepfun/step-3.5-flash:free",
+	//	"stepfun/step-3.7-flash",
+	{
+		DisplayName:     "StepFun Step 3.7 Flash",
+		Name:            "stepfun/step-3.7-flash",
+		Context:         262144,
+		MaxOutputTokens: 262144,
+		InputPrice:      0.20,
+		OutputPrice:     1.15,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
+	},
 	//	"stepfun/step-3.5-flash",
 	{
 		DisplayName:     "StepFun Step 3.5 Flash",

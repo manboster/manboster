@@ -7,6 +7,24 @@ import (
 // OpenAIModels defines models from GPT 5.3 series to now.
 var OpenAIModels = []llm.Model{
 	{
+		DisplayName:     "GPT 5.5 Pro",
+		Name:            "openai/gpt-5.5-pro",
+		Context:         1050000,
+		MaxOutputTokens: 128000,
+		InputPrice:      30,
+		OutputPrice:     180,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
+	},
+	{
+		DisplayName:     "GPT 5.5",
+		Name:            "openai/gpt-5.5",
+		Context:         1050000,
+		MaxOutputTokens: 128000,
+		InputPrice:      5,
+		OutputPrice:     30,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "GPT 5.4 Nano",
 		Name:            "openai/gpt-5.4-nano",
 		Context:         400000,

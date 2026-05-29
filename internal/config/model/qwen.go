@@ -6,6 +6,15 @@ import (
 
 var QwenModels = []llm.Model{
 	{
+		DisplayName:     "Qwen 3.7 Max",
+		Name:            "qwen/qwen3.7-max",
+		Context:         1000000,
+		MaxOutputTokens: 66000,
+		InputPrice:      2.5,
+		OutputPrice:     7.5,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "Qwen 3.6 Plus",
 		Name:            "qwen/qwen3.6-plus",
 		Context:         1000000,

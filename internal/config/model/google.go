@@ -7,6 +7,24 @@ import (
 // GoogleModels defines Gemini 3 & Gemma 4 to now
 var GoogleModels = []llm.Model{
 	{
+		DisplayName:     "Gemini 3.5 Flash",
+		Name:            "google/gemini-3.5-flash",
+		Context:         1048576,
+		MaxOutputTokens: 66000,
+		InputPrice:      1.5,
+		OutputPrice:     9,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
+	},
+	{
+		DisplayName:     "Gemini 3.1 Flash Lite",
+		Name:            "google/gemini-3.1-flash-lite",
+		Context:         1048576,
+		MaxOutputTokens: 66000,
+		InputPrice:      0.25,
+		OutputPrice:     1.5,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "Gemini 3.1 Pro Preview",
 		Name:            "google/gemini-3.1-pro-preview",
 		Context:         1048576,
