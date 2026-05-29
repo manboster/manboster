@@ -10,7 +10,7 @@ Inspired by IronClaw and OpenClaw, we've built a lobster more securely!
 
 At the beginning, it is a personal AI assistant which is able to chat with you with ease. However, equipped with wasm-based plugins, you can use it to do anything you want with security guaranteed!
 
-Since this project is work in progress and only shows as a MVP now, there are a few chat options(Telegram and it will add Feishu/Lark as a second supported provider in next versions) and LLM options(openrouter, kimi, DeepSeek and openai-compatible APIs.)
+Since this project is work in progress and only shows as a MVP now, there are a few chat options(Telegram and Feishu/Lark as a second supported provider in next versions) and LLM options(openrouter, kimi, DeepSeek and openai-compatible APIs)
 
 We will sincerely appreciate if you contribute your own codes!
 
