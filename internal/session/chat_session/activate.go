@@ -27,6 +27,9 @@ func (m *Manager) Deactivate(sid string) {
 
 	s, avail := m.Sessions[sid]
 	if avail {
+		if s.Active && s.Cancel != nil {
+			s.Cancel()
+		}
 		s.Active = false
 		s.Cancel = nil
 	}

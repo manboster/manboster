@@ -13,6 +13,8 @@ func (e *Engine) Distribute(ctx context.Context, instance chat.Provider, msg *ch
 	color.Blue("[Manboster Engine] Distributing message")
 	color.Blue(fmt.Sprintf("[Manboster Engine] Got a message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
+	e.sessionService.Manager.ChatSession.SetMsg(sessionId, msg)
+
 	switch msg.MessageType {
 	case chat.MessageCommand:
 		err := e.commandHandler.Handle(ctx, instance, msg, sessionId)

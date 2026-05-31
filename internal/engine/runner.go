@@ -20,9 +20,10 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 
 	for {
 		select {
-		case msg := <-ch:
-			e.sessionService.Manager.ChatSession.SetMsg(sessionId, msg)
-
+		case msg, open := <-ch:
+			if !open {
+				return nil
+			}
 			color.Blue("[Manboster Engine] Runner received message from engine")
 			timer.Reset(time.Minute * 30)
 

@@ -19,7 +19,8 @@ func (h *Handler) cmdCancel(ctx context.Context, instance chat.Provider, msg *ch
 	var text string
 	if avail {
 		if sessData.Active {
-			sessData.Cancel()
+			h.sessionService.Manager.ChatSession.Deactivate(sessionId)
+			h.sessionService.Manager.ChatSession.SessionCancel(sessionId)
 			text = "[Manboster] Successfully cancelled the request."
 		} else {
 			text = "[Manboster] The request in this session is not active."
