@@ -9,8 +9,8 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
-	"github.com/manboster/manboster/spec/schema"
 	"github.com/manboster/manboster/spec/plugin"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
@@ -75,5 +75,9 @@ func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResp
 }
 
 func (s *Service) Stop() error {
+	return nil
+}
+
+func (s *Service) Args() *schema.Args {
 	return nil
 }

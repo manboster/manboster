@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/tool"
@@ -15,19 +13,8 @@ import (
 	"github.com/manboster/manboster/spec/schema"
 )
 
-var runGetInfo = tool.FactoryRegisterInfo[NameType]{
-	Meta: schema.MetaData{
-		Name:         "get",
-		DisplayName:  i18n.T(keys.MemoryMDGetDisplayName),
-		Description:  i18n.T(keys.MemoryMDGetDescription),
-		Represent:    "📖",
-		Irreversible: false,
-	},
-	Args:           nil,
-	Run:            runGet,
-	Continue:       tool.NilContinueFunc,
-	CacheGroup:     tool.NilCacheGroupFunc,
-	ClientRenderer: tool.NilClientRendererFunc,
+type SetArgs struct {
+	Value string `json:"value" description:"Markdown content to store." example:"# Notes\ncontent" validate:"required"`
 }
 
 var runSetInfo = tool.FactoryRegisterInfo[NameType]{
@@ -43,30 +30,6 @@ var runSetInfo = tool.FactoryRegisterInfo[NameType]{
 	Continue:       tool.NilContinueFunc,
 	CacheGroup:     tool.NilCacheGroupFunc,
 	ClientRenderer: tool.NilClientRendererFunc,
-}
-
-func memoryPath(ctx context.Context) (string, error) {
-	chatID, ok := ctx.Value("chat_id").(string)
-	if !ok {
-		return "", fmt.Errorf("chat_id not found in context")
-	}
-	chatProvider, ok := ctx.Value("chat_provider").(string)
-	if !ok {
-		return "", fmt.Errorf("chat_provider not found in context")
-	}
-	return config.Path(filepath.Join("memory", fmt.Sprintf("memory-%s-%s.md", chatProvider, chatID))), nil
-}
-
-func runGet(ctx context.Context, args string) (*plugin.RunResponse, error) {
-	path, err := memoryPath(ctx)
-	if err != nil {
-		return nil, err
-	}
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
-	}
-	return &plugin.RunResponse{Response: string(data)}, nil
 }
 
 func runSet(ctx context.Context, args string) (*plugin.RunResponse, error) {
