@@ -20,6 +20,9 @@ func (s *Service) BuildSystemMessage(ctx context.Context, souls []string) (llm.M
 	var text strings.Builder
 	// system soul is automatically global!
 	for _, soul := range souls {
+		if strings.HasPrefix(soul, "_skills_") {
+			continue
+		}
 		if soul == "system" {
 			basePrompt := prompt.InitialSystemPrompt
 			replacement := ""

@@ -12,7 +12,7 @@ import (
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.skills",
 	DisplayName:      "Manboster Skills",
-	Description:      "Manboster Skills is a compatible layer for MarkDown skills made for OpenClaw, Claude Code and so on.",
+	Description:      "Manboster Skills is a compatible layer for MarkDown skills for OpenClaw, Claude Code and so on.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       -1,
@@ -23,8 +23,7 @@ var metadata = schema.MetaData{
 type Service struct{}
 
 func (s *Service) ClientRenderer(args string) string {
-	//TODO implement me
-	panic("implement me")
+	return ""
 }
 
 func (s *Service) Description() string {

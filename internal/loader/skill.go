@@ -34,14 +34,14 @@ func LoadSkills(path string) error {
 
 		fileMap[identifyName] = true
 		if entry.IsDir() {
-			err = skill.Load(filepath.Join(truePath, entry.Name()), true)
+			err = skill.Load(filepath.Join(truePath, entry.Name()), entry.Name(), true)
 			if err != nil {
 				color.Red(fmt.Sprintf("[Manboster Loader] Could not load skill %q: %q", entry.Name(), err))
 				continue
 			}
 		} else {
 			if strings.HasSuffix(entry.Name(), ".md") {
-				err = skill.Load(filepath.Join(truePath, entry.Name()), false)
+				err = skill.Load(filepath.Join(truePath, entry.Name()), strings.TrimSuffix(entry.Name(), ".md"), false)
 				if err != nil {
 					color.Red(fmt.Sprintf("[Manboster Loader] Could not load skill %q: %q", entry.Name(), err))
 					continue

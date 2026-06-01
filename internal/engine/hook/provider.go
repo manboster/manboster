@@ -1,30 +1,13 @@
 package hook
 
-import (
-	"context"
-
-	"github.com/manboster/manboster/spec/chat"
-)
-
 type EngineHookType string
 
 const (
-	EngineBeforeToolCall EngineHookType = "engine_before_tool_call"
-	EngineAfterToolCall  EngineHookType = "engine_after_tool_call"
-	EngineBeforeChat     EngineHookType = "engine_before_chat"
-	EngineAfterChat      EngineHookType = "engine_after_chat"
-	EngineBeforeCompact  EngineHookType = "engine_before_compact"
-	EngineAfterCompact   EngineHookType = "engine_after_compact"
+	EngineBeforeToolCall          EngineHookType = "engine_before_tool_call"
+	EngineAfterToolCall           EngineHookType = "engine_after_tool_call"
+	EngineBeforeChat              EngineHookType = "engine_before_chat"
+	EngineAfterChat               EngineHookType = "engine_after_chat"
+	EngineBeforeCompact           EngineHookType = "engine_before_compact"
+	EngineAfterCompact            EngineHookType = "engine_after_compact"
+	EngineBeforeBuildSystemPrompt EngineHookType = "engine_before_build_system_prompt"
 )
-
-type EngineBeforeToolCallHookProvider struct {
-	PolyfillFunc func(ctx context.Context, msg *chat.Message) (*chat.Message, error)
-}
-
-type EngineBeforeCompactHookProvider struct {
-	PolyfillFunc func(ctx context.Context, before string) error
-}
-
-type EngineAfterCompactHookProvider struct {
-	PolyfillFunc func(ctx context.Context, before string, after string) error
-}

@@ -41,11 +41,3 @@ type InstallEntry struct {
 	Bins    []string `json:"bins,omitempty"`
 	Label   string   `json:"label,omitempty"`
 }
-
-// RawData is purged from reading
-type RawData struct {
-	PWD   string      // Present Work Dir
-	Front Frontmatter // Frontmatter YAML raw data
-	Meta  Metadata    // parsed data
-	Body  string      // the body content
-}
