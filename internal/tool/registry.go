@@ -10,7 +10,6 @@ type ProviderFactory func() Provider
 
 var (
 	providerRegistry = make(map[string]ProviderFactory)
-	importedRegistry = make(map[string]bool)
 	mu               sync.RWMutex
 )
 

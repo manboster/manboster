@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/manboster/manboster/internal/config"
-	"github.com/manboster/manboster/internal/engine/hook"
 	configType "github.com/manboster/manboster/spec/config"
+	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
 )
 
@@ -15,12 +15,32 @@ var metadata = schema.MetaData{
 	Description:      "Manboster Skills is a compatible layer for MarkDown skills for OpenClaw, Claude Code and so on.",
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
-	APIVersion:       -1,
+	APIVersion:       1,
 	Requires:         nil,
 	MinUserType:      "",
 }
 
 type Service struct{}
+
+func (s *Service) Args() *schema.Args {
+	return nil
+}
+
+func (s *Service) Start(ctx context.Context) error {
+	return nil
+}
+
+func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Continue(ctx context.Context, session string) (*plugin.RunResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Stop() error {
+	return nil
+}
 
 func (s *Service) ClientRenderer(args string) string {
 	return ""
@@ -49,8 +69,6 @@ func (s *Service) Requires() []schema.RequirementData {
 func (s *Service) Config() configType.Provider {
 	return nil
 }
-
-func (s *Service) RegisterHook(registry *hook.Registry) {}
 
 func (s *Service) Migrate(ctx context.Context, from int, conf any) (any, error) {
 	return nil, nil

@@ -7,7 +7,6 @@ import (
 func init() {
 	fa := tool.NewFactory[NameType, *Service]()
 	fa.RegisterProvider(&Service{})
-	fa.RegisterNamespace(NameSearch, &runSearchInfo)
 	fa.RegisterNamespace(NameWebpage, &runWebpageInfo)
 	fa.Init()
 }

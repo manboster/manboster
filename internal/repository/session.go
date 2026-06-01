@@ -23,8 +23,7 @@ type SessionRepo struct {
 
 // CreateSession creates session for a chat.
 func (repo *SessionRepo) CreateSession(ctx context.Context, session types.Session) error {
-	sessDBType := types.MapSess(session)
-	return repo.db.WithContext(ctx).Create(&sessDBType).Error
+	return repo.db.WithContext(ctx).Create(new(types.MapSess(session))).Error
 }
 
 // GetSession gets session data
