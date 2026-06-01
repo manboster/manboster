@@ -31,7 +31,7 @@ func init() {
 			switch setting.Key {
 			case "vcs.revision":
 				if BuildCommit == "unknown" || strings.HasPrefix(BuildCommit, "Go install") {
-					BuildCommit = setting.Value
+					BuildCommit = setting.Value[:6]
 				}
 			case "vcs.time":
 				if BuildTime == "unknown" {

@@ -31,8 +31,8 @@ BTW, Manboster's code is mainly written by human, with AIs written in helper fun
 11. [Work in Progress] MCP(Model Context Protocol) Compatibility, just add them and use them as native tool calls in Manboster.
 12. [Work in Progress] Simulate UI/Input interactions, screenshot, there are a plenty of Built-in SDKs to use for building your plugins.
 13. [Work in Progress] Plugins based on wasm & extism which is lightweight and prevents malicious plugins from breaking your machine.
-14. [Work in Progress] MamboHub, a distribution center enables you to use and download skills and plugins with ease
-15. [Work in Progress] Install skills using `.manboskill` files or plugins using `.manboplugin` files, you can even develop and write your skills and plugins using `manbodev` helper!
+14. [Work in Progress] MamboHub, a distribution center enables you to use and download skills and plugins with ease. Also, we will compat ClawHub and more skill hubs.
+15. [Work in Progress] Install plugins using `.manboplugin` files, you can even develop and write your plugins using `manbodev` helper!
 
 ## QuickStart
 

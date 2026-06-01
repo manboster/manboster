@@ -73,7 +73,7 @@ func (l *Loader) Load(ctx context.Context) error {
 		color.Blue(fmt.Sprintf("[Manboster Loader] Hachimi enabled, initializing Hachimi Providers..."))
 		for _, conf := range l.cfg.Hachimi.Hachimi {
 			if l.cfg.Hachimi.Provider == conf.Provider {
-				color.Blue(fmt.Sprintf(fmt.Sprintf("[Manboster Loader] Initializing Hachimi Provider %q...", conf.Provider)))
+				color.Blue(fmt.Sprintf("[Manboster Loader] Initializing Hachimi Provider %q...", conf.Provider))
 				hProvider, err := LoadHachimiProvider(ctx, conf)
 				if err != nil {
 					color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))
@@ -85,7 +85,7 @@ func (l *Loader) Load(ctx context.Context) error {
 		}
 	}
 
-	// we activate chats after loading engine
+	// we activate chats before loading engine
 	cProviders, err := l.LoadChats(ctx, l.cfg.Chats)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Loader] We encountered an error while loading and running the chat providers: %q", err))
@@ -96,6 +96,17 @@ func (l *Loader) Load(ctx context.Context) error {
 	chatProvidersMap := make(map[string]chatType.Provider)
 	for _, p := range cProviders {
 		chatProvidersMap[p.Name()] = p
+	}
+
+	// load skills if you need to do it
+	for _, t := range tools {
+		if t.Name() == "dev.manboster.skills" {
+			err := LoadSkills(config.Path("skills"))
+			if err != nil {
+				color.Red(fmt.Sprintf("[Manboster Loader] Failed to load Skills: %q", err))
+			}
+			break
+		}
 	}
 
 	// open a new engine
