@@ -47,6 +47,12 @@
 manboster start
 ```
 
+如果你下载了 `Go` 语言的开发环境的话，你只需要在终端输入以下命令就可以把 manboster 安装到你的电脑了：
+
+```shell 
+go install github.com/manboster/manboster/cmd/manboster@latest
+```
+
 ## 加入我们！
 
 欢迎各位来为社区做出自己的一份贡献！ 在提交前记得看看[CONTRIBUTING.md](./CONTRIBUTING.md)

@@ -1,5 +1,10 @@
 package config
 
+import (
+	"runtime/debug"
+	"strings"
+)
+
 // Version defines manboster's application version.
 const Version = "0.2.0"
 
@@ -14,3 +19,25 @@ var (
 	BuildTime      string = "unknown"
 	CurrentVersion        = "unknown"
 )
+
+func init() {
+	if bi, avail := debug.ReadBuildInfo(); avail {
+		if bi.Main.Version != "(devel)" && bi.Main.Version != "" {
+			BuildCommit = "Go install, version " + bi.Main.Version
+		}
+
+		// if invalid so we injected this
+		for _, setting := range bi.Settings {
+			switch setting.Key {
+			case "vcs.revision":
+				if BuildCommit == "unknown" || strings.HasPrefix(BuildCommit, "Go install") {
+					BuildCommit = setting.Value
+				}
+			case "vcs.time":
+				if BuildTime == "unknown" {
+					BuildTime = setting.Value
+				}
+			}
+		}
+	}
+}

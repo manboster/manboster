@@ -40,6 +40,8 @@ BTW, Manboster's code is mainly written by human, with AIs written in helper fun
 2. You're required to configure your manboster when it runs in the first time, just configure it.
 3. Enjoy yourselves!
 
+If you downloaded the Go programming language development kit? Just type `go install github.com/manboster/manboster/cmd/manboster@latest` to install!
+
 For more details, please run `manboster help` in your terminal!
 
 **Notes for the Daemon**: Simply double-click would not start the daemon, if you want to create and start the daemon, please run `manboster start`.
