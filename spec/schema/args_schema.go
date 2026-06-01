@@ -24,6 +24,15 @@ func (a *Args) ToJSONSchema() map[string]any {
 		"type":       "object",
 		"properties": properties,
 	}
+
+	if a.Description != "" {
+		res["description"] = a.Description
+	}
+
+	if a.DisplayName != "" {
+		res["title"] = a.DisplayName
+	}
+
 	if len(required) > 0 {
 		res["required"] = required
 	}
@@ -32,8 +41,15 @@ func (a *Args) ToJSONSchema() map[string]any {
 
 func buildParamDef(arg *Args) map[string]any {
 	def := map[string]any{
-		"type":        arg.Type,
-		"description": arg.Description,
+		"type": arg.Type,
+	}
+
+	if arg.Description != "" {
+		def["description"] = arg.Description
+	}
+
+	if arg.DisplayName != "" {
+		def["title"] = arg.DisplayName
 	}
 
 	if arg.IsEnum && len(arg.Enum) > 0 {

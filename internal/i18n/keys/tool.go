@@ -2,12 +2,12 @@ package keys
 
 // Tool: datetime
 const (
-	DatetimeDisplayName    = "tool.datetime.display_name"
-	DatetimeDescription    = "tool.datetime.description"
-	DateGetDisplayName     = "tool.datetime.date.display_name"
-	DateGetDescription     = "tool.datetime.date.description"
-	TimeGetDisplayName     = "tool.datetime.time.display_name"
-	TimeGetDescription     = "tool.datetime.time.description"
+	DatetimeDisplayName = "tool.datetime.display_name"
+	DatetimeDescription = "tool.datetime.description"
+	DateGetDisplayName  = "tool.datetime.date.display_name"
+	DateGetDescription  = "tool.datetime.date.description"
+	TimeGetDisplayName  = "tool.datetime.time.display_name"
+	TimeGetDescription  = "tool.datetime.time.description"
 )
 
 // Tool: file
@@ -34,16 +34,16 @@ const (
 
 // Tool: system
 const (
-	SystemDisplayName             = "tool.system.display_name"
-	SystemDescription             = "tool.system.description"
-	SystemOSInfoDisplayName       = "tool.system.os_info.display_name"
-	SystemOSInfoDescription       = "tool.system.os_info.description"
-	SystemProcessListDisplayName  = "tool.system.process_list.display_name"
-	SystemProcessListDescription  = "tool.system.process_list.description"
-	SystemProcessInfoDisplayName  = "tool.system.process_info.display_name"
-	SystemProcessInfoDescription  = "tool.system.process_info.description"
-	SystemProcessKillDisplayName  = "tool.system.process_kill.display_name"
-	SystemProcessKillDescription  = "tool.system.process_kill.description"
+	SystemDisplayName            = "tool.system.display_name"
+	SystemDescription            = "tool.system.description"
+	SystemOSInfoDisplayName      = "tool.system.os_info.display_name"
+	SystemOSInfoDescription      = "tool.system.os_info.description"
+	SystemProcessListDisplayName = "tool.system.process_list.display_name"
+	SystemProcessListDescription = "tool.system.process_list.description"
+	SystemProcessInfoDisplayName = "tool.system.process_info.display_name"
+	SystemProcessInfoDescription = "tool.system.process_info.description"
+	SystemProcessKillDisplayName = "tool.system.process_kill.display_name"
+	SystemProcessKillDescription = "tool.system.process_kill.description"
 )
 
 // Tool: memory_kv
@@ -62,12 +62,12 @@ const (
 
 // Tool: memory_md
 const (
-	MemoryMDDisplayName     = "tool.memory_md.display_name"
-	MemoryMDDescription     = "tool.memory_md.description"
-	MemoryMDGetDisplayName  = "tool.memory_md.get.display_name"
-	MemoryMDGetDescription  = "tool.memory_md.get.description"
-	MemoryMDSetDisplayName  = "tool.memory_md.set.display_name"
-	MemoryMDSetDescription  = "tool.memory_md.set.description"
+	MemoryMDDisplayName    = "tool.memory_md.display_name"
+	MemoryMDDescription    = "tool.memory_md.description"
+	MemoryMDGetDisplayName = "tool.memory_md.get.display_name"
+	MemoryMDGetDescription = "tool.memory_md.get.description"
+	MemoryMDSetDisplayName = "tool.memory_md.set.display_name"
+	MemoryMDSetDescription = "tool.memory_md.set.description"
 )
 
 // Tool: cron
@@ -86,18 +86,33 @@ const (
 
 // Tool: browser
 const (
-	BrowserDisplayName                  = "tool.browser.display_name"
-	BrowserDescription                  = "tool.browser.description"
-	BrowserSearchDisplayName            = "tool.browser.search.display_name"
-	BrowserSearchDescription            = "tool.browser.search.description"
-	BrowserWebpageDisplayName           = "tool.browser.webpage.display_name"
-	BrowserWebpageDescription           = "tool.browser.webpage.description"
-	BrowserLogDownloading               = "tool.browser.log.downloading"
-	BrowserLogDownloadFailed            = "tool.browser.log.download_failed"
-	BrowserLogCloseBodyFailed           = "tool.browser.log.close_body_failed"
-	BrowserLogClosePageFailed           = "tool.browser.log.close_page_failed"
-	BrowserLogFallbackBrowser           = "tool.browser.log.fallback_browser"
-	BrowserLogPurgeOpenDocFailed        = "tool.browser.log.purge_open_doc_failed"
-	BrowserLogPurgeBodyFailed           = "tool.browser.log.purge_body_failed"
-	BrowserLogPurgeMarkdownFailed       = "tool.browser.log.purge_markdown_failed"
+	BrowserDisplayName            = "tool.browser.display_name"
+	BrowserDescription            = "tool.browser.description"
+	BrowserWebpageDisplayName     = "tool.browser.webpage.display_name"
+	BrowserWebpageDescription     = "tool.browser.webpage.description"
+	BrowserLogDownloading         = "tool.browser.log.downloading"
+	BrowserLogDownloadFailed      = "tool.browser.log.download_failed"
+	BrowserLogCloseBodyFailed     = "tool.browser.log.close_body_failed"
+	BrowserLogClosePageFailed     = "tool.browser.log.close_page_failed"
+	BrowserLogFallbackBrowser     = "tool.browser.log.fallback_browser"
+	BrowserLogPurgeOpenDocFailed  = "tool.browser.log.purge_open_doc_failed"
+	BrowserLogPurgeBodyFailed     = "tool.browser.log.purge_body_failed"
+	BrowserLogPurgeMarkdownFailed = "tool.browser.log.purge_markdown_failed"
+)
+
+const (
+	SkillsDisplayName = "tool.skills.display_name"
+	SkillsDescription = "tool.skills.description"
+
+	SkillsListDisplayName = "tool.skills.list.display_name"
+	SkillsListDescription = "tool.skills.list.description"
+
+	SkillsLoadDisplayName = "tool.skills.load.display_name"
+	SkillsLoadDescription = "tool.skills.load.description"
+
+	SkillsUnLoadDisplayName = "tool.skills.unload.display_name"
+	SkillsUnLoadDescription = "tool.skills.unload.description"
+
+	SkillsCleanDisplayName = "tool.skills.clean.display_name"
+	SkillsCleanDescription = "tool.skills.clean.description"
 )

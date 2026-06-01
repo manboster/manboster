@@ -3,6 +3,8 @@ package schema
 import (
 	"reflect"
 	"strings"
+
+	"github.com/manboster/manboster/internal/i18n"
 )
 
 // ArgsFromStruct is a useful function help you convert struct to args
@@ -33,7 +35,9 @@ func parseFields(t reflect.Type) []*Args {
 			continue
 		}
 
+		idTag := typeField.Tag.Get("id")
 		descTag := typeField.Tag.Get("description")
+		nameTag := typeField.Tag.Get("name")
 
 		name := typeField.Name
 		nameJSONTag, avail := typeField.Tag.Lookup("json")
@@ -42,9 +46,21 @@ func parseFields(t reflect.Type) []*Args {
 		}
 
 		arg := &Args{
-			Name:        name,
-			Description: descTag,
-			Required:    strings.Contains(f.Tag.Get("validate"), "required"),
+			Name:     name,
+			Required: strings.Contains(f.Tag.Get("validate"), "required"),
+		}
+
+		if descTag != "" {
+			arg.Description = descTag
+		}
+
+		if nameTag != "" {
+			arg.DisplayName = nameTag
+		}
+
+		if idTag != "" {
+			arg.Description = i18n.T(idTag + ".description")
+			arg.DisplayName = i18n.T(idTag)
 		}
 
 		if enumTag, ok := f.Tag.Lookup("enum"); ok {

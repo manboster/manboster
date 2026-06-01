@@ -10,10 +10,11 @@ type Args struct {
 	Required    bool     `json:"required" yaml:"required"`       // Required. it means this is required or not.
 	IsEnum      bool     `json:"isEnum" yaml:"isEnum"`           // Required. it means this is an enum type or not
 
-	Example    any     `json:"example,omitempty" yaml:"example"`       // Optional. This is the example that displays what the value would be like.
-	Properties []*Args `json:"properties,omitempty" yaml:"properties"` // Optional. Required when ArgsType == ArgsTypeObject
-	Items      *Args   `json:"items,omitempty" yaml:"items"`           // Optional. Required When ArgsType == ArgsTypeArray
-	Enum       []any   `json:"enum,omitempty" yaml:"enum"`             // Optional. Required when IsEnum == true
+	Example     any     `json:"example,omitempty" yaml:"example"`       // Optional. This is the example that displays what the value would be like.
+	Properties  []*Args `json:"properties,omitempty" yaml:"properties"` // Optional. Required when ArgsType == ArgsTypeObject
+	Items       *Args   `json:"items,omitempty" yaml:"items"`           // Optional. Required When ArgsType == ArgsTypeArray
+	Enum        []any   `json:"enum,omitempty" yaml:"enum"`             // Optional. Required when IsEnum == true
+	DisplayName string  `json:"displayName" yaml:"display_name"`        // Optional. Display name for the tool call
 }
 
 type ArgsType int16
