@@ -136,7 +136,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		case guardSelectContinue:
 			return true, nil
 		case guardSelectContinueAll:
-			s.ignoranceSessionManager.SetMark(overallId, true, ttl, ignorance.MarkContinueAll)
+			s.ignoranceSessionManager.SetMark(overallId, true, 10*60, ignorance.MarkContinueAll)
 			return true, errors.New(i18n.T(keys.GatekeeperContinueAllMsg))
 		case guardSelectCancel:
 			return false, fmt.Errorf("user manually canceled your request")
@@ -149,7 +149,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
 			}
-			s.ignoranceSessionManager.SetMark(overallId, true, ttl, ignorance.MarkCancelAll)
+			s.ignoranceSessionManager.SetMark(overallId, true, 10*60, ignorance.MarkCancelAll)
 			go s.gatewayService.Recall(ctx, instance, respMsg)
 			return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
 		default:
