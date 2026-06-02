@@ -27,7 +27,7 @@ func (s *Service) LLMChat(ctx context.Context, currentProvider llm.Provider, cur
 		defer cancel()
 
 		var errChat error = nil
-		event, errChat = currentProvider.Chat(timeoutCtx, currentModel.Name, s.toolProviders, msgList)
+		event, errChat = currentProvider.Chat(timeoutCtx, currentModel, s.toolProviders, msgList)
 
 		return errChat
 	}, ch)

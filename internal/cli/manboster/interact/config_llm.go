@@ -9,7 +9,6 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/llm"
 	_ "github.com/manboster/manboster/internal/llm/all"
-	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
 	llmType "github.com/manboster/manboster/spec/llm"
 )
@@ -61,7 +60,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 			llmProviders = append(llmProviders, provider)
 		}
 
-		options := util.BuildOptionsForConfig[llmType.Provider](llmProviders, nil)
+		options := cli.BuildOptions[llmType.Provider](llmProviders, nil)
 		options = append(options, addOption, quitOption)
 
 		var err error
@@ -94,17 +93,17 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		var selectedProvider llmType.Provider
 		selectedIndex := -1
 		for i, c := range cfg.LLMs {
-			if c.Provider == option.Value {
+			pr, err := llm.GetProvider(c.Provider)
+			if err != nil {
+				return nil, err
+			}
+			err = pr.Init(ctx, c.Configuration)
+			if err != nil {
+				continue
+			}
+			if pr.Name() == option.Value {
 				selectedConfig = c
 				selectedIndex = i
-				pr, err := llm.GetProvider(c.Provider)
-				if err != nil {
-					return nil, err
-				}
-				err = pr.Init(ctx, c.Configuration)
-				if err != nil {
-					continue
-				}
 				selectedProvider = pr
 				break
 			}

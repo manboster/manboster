@@ -9,8 +9,8 @@ import (
 
 // Provider defines which functions should LLM provides give.
 type Provider interface {
-	Chat(ctx context.Context, model string, tools []tool.Provider, messages []Message) (*Event, error)              // now one.
-	ChatStream(ctx context.Context, model string, tools []tool.Provider, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
+	Chat(ctx context.Context, model Model, tools []tool.Provider, messages []Message) (*Event, error)              // now one.
+	ChatStream(ctx context.Context, model Model, tools []tool.Provider, messages []Message) (<-chan *Event, error) // WIP: New Streaming chat
 	Init(ctx context.Context, config any) error
 	Stop() error
 	Name() string // identifiable name

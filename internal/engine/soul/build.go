@@ -40,11 +40,11 @@ func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessio
 	}
 
 	// append prompt
-	respString.WriteString(fmt.Sprintf("[chat metadata %s]\n%s%s(UID:%s, Role:%s) said in %s, [%s]:\n", nonceMetadata, forwardPrompt, msg.Username, msg.UserID, userType, msg.CreatedAt, chatName))
+	respString.WriteString(fmt.Sprintf("[chat metadata %s]\n%s%s(UID:%s, Role:%s) said in %s, [%s]:\n", nonceMetadata, forwardPrompt, msg.Username, msg.UserID, userType, msg.CreatedAt.Format("2006-01-02 15:04:05T-07"), chatName))
 
 	if msg.Reply != nil {
 		replyMsg := msg.Reply
-		respString.WriteString(fmt.Sprintf("Replied: %s(UID:%s) said in %s, [%s]:%s\n", replyMsg.Username, replyMsg.UserID, replyMsg.CreatedAt, chatName, forwardPrompt))
+		respString.WriteString(fmt.Sprintf("Replied: %s(UID:%s) said in %s, [%s]:%s\n", replyMsg.Username, replyMsg.UserID, replyMsg.CreatedAt.Format("2006-01-02 15:04:05T-07"), chatName, forwardPrompt))
 		str := s.ChatMessageToString(replyMsg)
 		respString.WriteString(fmt.Sprintf("[reply user input %s]\n%s\n", nonceInput, str))
 	}
@@ -56,13 +56,27 @@ func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessio
 	respMsg := &llm.Message{}
 	respMsg.Role = llm.RoleUser
 	respMsg.Type = llm.MessageText
-	respMsg.Parts = []llm.MessageParts{
-		{
-			PartsType: llm.MessagePartsText,
-			Text: &llm.MessageTextPayload{
-				Text: respString.String(),
+
+	if msg.MessageType&chat.MessageText != 0 {
+		respMsg.Parts = []llm.MessageParts{
+			{
+				PartsType: llm.MessagePartsText,
+				Text: &llm.MessageTextPayload{
+					Text: respString.String(),
+				},
 			},
-		},
+		}
+	}
+
+	if msg.MessageType&chat.MessageImage != 0 && msg.Image != nil {
+		for _, c := range msg.Image.Content {
+			respMsg.Parts = append(respMsg.Parts, llm.MessageParts{
+				PartsType: llm.MessagePartsImage,
+				Image: &llm.MessageImagePayload{
+					Content: c,
+				},
+			})
+		}
 	}
 
 	return respMsg, nil

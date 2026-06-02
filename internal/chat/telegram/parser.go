@@ -100,6 +100,13 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 		msg.MessageType |= chat.MessageText
 	}
 
+	if m.Caption != "" {
+		msg.Text = &chat.TextPayload{
+			Text: text,
+		}
+		msg.MessageType |= chat.MessageText
+	}
+
 	if m.Photo != nil {
 		msg.MessageType |= chat.MessageImage
 		reader, err := s.tgInstance.File(&m.Photo.File)
@@ -116,22 +123,6 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 				},
 			}
 		}
-
-		if m.Photo.Caption != "" {
-			msg.Text = &chat.TextPayload{
-				Text: text,
-			}
-			msg.MessageType |= chat.MessageText
-		}
-	}
-
-	if m.Video != nil {
-		if m.Video.Caption != "" {
-			msg.Text = &chat.TextPayload{
-				Text: text,
-			}
-			msg.MessageType |= chat.MessageText
-		}
 	}
 
 	if m.AlbumID != "" {
@@ -146,27 +137,20 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 			} else {
 				ms.Image.Content = msg.Image.Content
 			}
+
+			if m.Caption != "" {
+				if ms.Text == nil {
+					ms.Text = &chat.TextPayload{
+						Text: m.Caption,
+					}
+				} else {
+					ms.Text.Text += "\n" + m.Caption
+				}
+			}
+
 			SetData(id, ms)
 		}
 		return ErrImageNoNeedToTrigger
-	}
-
-	if m.Audio != nil {
-		if m.Audio.Caption != "" {
-			msg.Text = &chat.TextPayload{
-				Text: text,
-			}
-			msg.MessageType |= chat.MessageText
-		}
-	}
-
-	if m.Document != nil {
-		if m.Document.Caption != "" {
-			msg.Text = &chat.TextPayload{
-				Text: text,
-			}
-			msg.MessageType |= chat.MessageText
-		}
 	}
 
 	if m.Sticker != nil {
@@ -176,6 +160,23 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 			}
 			msg.MessageType |= chat.MessageText
 		}
+
+		reader, err := s.tgInstance.File(&m.Sticker.File)
+		if err != nil {
+			color.Yellow("[Manboster Telegram Provider] Failed to get sticker image")
+		} else {
+			content, err := util.ReaderToBase64URL(reader)
+			if err != nil {
+				color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
+			}
+			msg.MessageType |= chat.MessageImage
+			msg.Image = &chat.ImagePayload{
+				Content: []string{
+					content,
+				},
+			}
+		}
+
 	}
 
 	if msg.Text != nil {

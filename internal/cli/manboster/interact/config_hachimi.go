@@ -107,6 +107,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 			// auto set as default if it's the first one
 			if cfg.Hachimi.Provider == "" {
 				cfg.Hachimi.Provider = hachimiConfig.Provider
+				cfg.Hachimi.Enabled = true
 			}
 			continue
 		}
@@ -163,6 +164,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 					cfg.Hachimi.Provider = cfg.Hachimi.Hachimi[0].Provider
 				} else {
 					cfg.Hachimi.Provider = ""
+					cfg.Hachimi.Enabled = false
 				}
 			}
 			if err := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigHachimiDeleteSuccess, selectedConfig.Provider, nil)); err != nil {

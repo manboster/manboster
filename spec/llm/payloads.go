@@ -19,3 +19,7 @@ type MessageToolCallResponsePayload struct {
 type MessageThinkingPayload struct {
 	Thinking string `json:"thinking"`
 }
+
+type MessageImagePayload struct {
+	Content string `json:"content"`
+}
