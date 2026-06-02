@@ -26,3 +26,8 @@ type Selection struct {
 	Name  string // display name
 	Value string // actual value
 }
+
+// ImagePayload is the payload of an image...
+type ImagePayload struct {
+	Content []string // base64 url data
+}

@@ -14,7 +14,7 @@ func (s *Service) HandleCallback(ctx context.Context, c telebot.Context, onMsg f
 	var msg *chat.Message
 	msg = msg.Build(&Service{})
 	color.Blue("[Manboster Telegram Provider] Received a callback")
-	s.msgBaseParser(msg, c)
+	s.msgBaseParser(msg, c, nil)
 	//jsonify, _ := json.MarshalIndent(c.Callback(), "", " ")
 	//fmt.Println(string(jsonify))
 
