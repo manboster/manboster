@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository, code int64) error {
@@ -23,7 +24,7 @@ func (s *Service) Pair(ctx context.Context, instance chat.Provider, msg *chat.Me
 			ID:       0,
 			UserID:   msg.UserID,
 			Platform: instance.Name(),
-			Type:     types.UserRoot,
+			Type:     schema.UserRoot,
 		})
 		if err != nil {
 			text += i18n.Te(keys.EngineOnboardPairUserError, "", err)

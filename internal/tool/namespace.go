@@ -111,11 +111,11 @@ func CreateNewMetaData[T ~string](meta schema.MetaData, regInfo *FactoryRegister
 		if regInfo.Meta.Description != "" {
 			forkedMeta.Description = regInfo.Meta.Description
 		}
-		if regInfo.Meta.MinUserType != "" {
-			forkedMeta.MinUserType = regInfo.Meta.MinUserType
-		}
 		if regInfo.Meta.Represent != "" {
 			forkedMeta.Represent = regInfo.Meta.Represent
+		}
+		if regInfo.Meta.MinUserType != schema.UserUndefined {
+			forkedMeta.MinUserType = regInfo.Meta.MinUserType
 		}
 		forkedMeta.Irreversible = regInfo.Meta.Irreversible
 	}

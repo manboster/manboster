@@ -22,7 +22,7 @@ var metadata = schema.MetaData{
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,
-	MinUserType:      "admin",
+	MinUserType:      schema.UserAdmin,
 }
 
 var svc *Service

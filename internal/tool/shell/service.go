@@ -20,7 +20,7 @@ var metadata = schema.MetaData{
 	APIVersion:       1,
 	Requires:         nil,
 	Represent:        "💻",
-	MinUserType:      "root",
+	MinUserType:      schema.UserRoot,
 }
 
 type Service struct{}

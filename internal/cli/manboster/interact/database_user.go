@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/cli"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 type databaseUserPageAction string
@@ -117,7 +118,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.CreateUser(ctx, types.User{
 				UserID:   selectedUser.UserID,
 				Platform: selectedUser.Platform,
-				Type:     types.UserAdmin,
+				Type:     schema.UserAdmin,
 			}); err != nil {
 				return err
 			}
@@ -138,7 +139,7 @@ func runDatabaseUserConfig(p cli.Provider, repo repository.Repository) error {
 			if err := repo.CreateUser(ctx, types.User{
 				UserID:   selectedUser.UserID,
 				Platform: selectedUser.Platform,
-				Type:     types.UserUnknown,
+				Type:     schema.UserUnknown,
 			}); err != nil {
 				return err
 			}

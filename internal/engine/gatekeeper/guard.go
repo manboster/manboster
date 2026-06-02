@@ -8,12 +8,12 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
-	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/session/ignorance"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 // Guard is core component of Manboster gatekeeper service.
@@ -27,7 +27,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return false, err
 	}
 
-	requireUserType := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
+	requireUserType := toolProvider.MetaData().MinUserType
 	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 
 	m, mT := s.ignoranceSessionManager.GetMark(overallUd)
@@ -92,7 +92,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 
 		// get tool's min permission and compare it with current user's
 		cb := msg.SelectionCallback
-		minPermission := types.UserTypeFromString(toolProvider.MetaData().MinUserType)
+		minPermission := toolProvider.MetaData().MinUserType
 		uPermission := s.safeguardService.UserType(ctx, instance.Name(), cb.SelectionBy)
 		if uPermission < minPermission {
 			return false, fmt.Errorf("the permission user who performs the action is too low, please contact the owner")
@@ -101,11 +101,11 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		ttl := 0
 		// set TTL based on tools required user permission
 		switch minPermission {
-		case types.UserUnknown:
+		case schema.UserUnknown:
 			ttl = 60 * 240 // 4 hours
-		case types.UserAdmin:
+		case schema.UserAdmin:
 			ttl = 60 * 120 // 2 hours
-		case types.UserRoot:
+		case schema.UserRoot:
 			ttl = 60 * 30 // 30 minutes
 		default:
 		}

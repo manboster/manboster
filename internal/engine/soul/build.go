@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 // BuildLLMMessage build from a chat message to a llm message, make it easier to handle in engine
-func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessionId string, userType types.UserType) (*llm.Message, error) {
+func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessionId string, userType schema.UserType) (*llm.Message, error) {
 	var respString strings.Builder
 	// who said...
 	chatName := "(Private Chat)"

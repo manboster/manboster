@@ -17,7 +17,7 @@ var metadata = schema.MetaData{
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,
-	MinUserType:      "",
+	MinUserType:      schema.UserUnknown,
 }
 
 type Service struct{}

@@ -1,7 +1,9 @@
 package safeguard
 
-import "github.com/manboster/manboster/internal/repository/types"
+import (
+	"github.com/manboster/manboster/spec/schema"
+)
 
-func (s *Service) IsAdmin(userType types.UserType) bool {
-	return userType >= types.UserAdmin
+func (s *Service) IsAdmin(userType schema.UserType) bool {
+	return userType >= schema.UserAdmin
 }

@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manboster/manboster/internal/repository"
-	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 func validateUser(ctx context.Context, instance chat.Provider, msg *chat.Message, repo repository.Repository) error {
@@ -18,7 +18,7 @@ func validateUser(ctx context.Context, instance chat.Provider, msg *chat.Message
 	}
 
 	// if you're not root, you can't grant any user.
-	if uInfo.Type < types.UserRoot {
+	if uInfo.Type < schema.UserRoot {
 		return fmt.Errorf("access denied. You don't have any permission to make user as an operator. Please use another permitted account")
 	}
 	return nil

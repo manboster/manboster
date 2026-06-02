@@ -9,6 +9,7 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/schema"
 )
 
 // cmdOp Command gives Operator to replied users or given user ids.
@@ -37,7 +38,7 @@ func (h *Handler) cmdOp(ctx context.Context, instance chat.Provider, msg *chat.M
 	err = h.repo.CreateUser(ctx, types.User{
 		UserID:   grantUserID,
 		Platform: instance.Name(),
-		Type:     types.UserAdmin,
+		Type:     schema.UserAdmin,
 		ID:       0,
 	})
 	if err != nil {
