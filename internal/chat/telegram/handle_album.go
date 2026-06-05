@@ -36,6 +36,7 @@ func SetTimer(id string, onMsg func(message *chat.Message)) (*time.Timer, bool) 
 	defer lock.Unlock()
 	t, ok := AlbumHandlerTimerMap[id]
 	if ok {
+		t.Stop()
 		t.Reset(5 * time.Second)
 		return t, ok
 	}
@@ -52,6 +53,12 @@ func DeleteTimer(id string) {
 }
 
 func AlbumRunner(ctx context.Context, timer *time.Timer, id string, onMsg func(*chat.Message)) {
+	defer func() {
+		DeleteTimer(id)
+		DeleteData(id)
+		timer.Stop()
+	}()
+
 	for {
 		select {
 		case <-timer.C:
@@ -59,8 +66,6 @@ func AlbumRunner(ctx context.Context, timer *time.Timer, id string, onMsg func(*
 			if ok && onMsg != nil && msg != nil {
 				onMsg(msg)
 			}
-			DeleteTimer(id)
-			DeleteData(id)
 			return
 		case <-ctx.Done():
 			return

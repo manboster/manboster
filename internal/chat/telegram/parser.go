@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	manbofs "github.com/manboster/manboster/internal/fs"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"gopkg.in/telebot.v3"
@@ -108,19 +109,21 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 	}
 
 	if m.Photo != nil {
-		msg.MessageType |= chat.MessageImage
 		reader, err := s.tgInstance.File(&m.Photo.File)
 		if err != nil {
 			color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
 		} else {
-			content, err := util.ReaderToBase64URL(reader)
+			content := util.RandomString(8)
+			err = manbofs.Write(content, reader)
 			if err != nil {
 				color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
-			}
-			msg.Image = &chat.ImagePayload{
-				Content: []string{
-					content,
-				},
+			} else {
+				msg.MessageType |= chat.MessageImage
+				msg.Image = &chat.ImagePayload{
+					Content: []string{
+						content,
+					},
+				}
 			}
 		}
 	}
@@ -165,15 +168,17 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 		if err != nil {
 			color.Yellow("[Manboster Telegram Provider] Failed to get sticker image")
 		} else {
-			content, err := util.ReaderToBase64URL(reader)
+			content := util.RandomString(8)
+			err = manbofs.Write(content, reader)
 			if err != nil {
 				color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
-			}
-			msg.MessageType |= chat.MessageImage
-			msg.Image = &chat.ImagePayload{
-				Content: []string{
-					content,
-				},
+			} else {
+				msg.MessageType |= chat.MessageImage
+				msg.Image = &chat.ImagePayload{
+					Content: []string{
+						content,
+					},
+				}
 			}
 		}
 

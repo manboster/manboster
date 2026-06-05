@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/fatih/color"
+	manbofs "github.com/manboster/manboster/internal/fs"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
@@ -70,10 +72,15 @@ func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessio
 
 	if msg.MessageType&chat.MessageImage != 0 && msg.Image != nil {
 		for _, c := range msg.Image.Content {
+			data, err := manbofs.Read(c)
+			if err != nil {
+				color.Yellow("[Manboster Soul] failed to read image cache in files!")
+				continue
+			}
 			respMsg.Parts = append(respMsg.Parts, llm.MessageParts{
 				PartsType: llm.MessagePartsImage,
 				Image: &llm.MessageImagePayload{
-					Content: c,
+					Content: data,
 				},
 			})
 		}
