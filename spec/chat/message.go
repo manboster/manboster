@@ -25,6 +25,7 @@ type Message struct {
 	SelectionCallback *SelectionCallbackPayload // Optional. Required when MessageType = MessageSelectionCallback
 	Text              *TextPayload              // Optional. Required when MessageType = MessageText
 	Image             *ImagePayload             // Optional. Required when MessageType = MessageImage
+	File              *FilePayload              // Optional. Required when MessageType = MessageFile
 }
 
 // MessageType is an enum defining msg types.

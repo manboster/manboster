@@ -4,6 +4,7 @@ type MessageParts struct {
 	PartsType MessagePartsType
 	Text      *MessageTextPayload
 	Image     *MessageImagePayload
+	File      *MessageFilePayload
 }
 
 type MessagePartsType int8

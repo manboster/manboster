@@ -31,3 +31,8 @@ type Selection struct {
 type ImagePayload struct {
 	Content []string // base64 url data
 }
+
+// FilePayload is the payload of a file...
+type FilePayload struct {
+	Content []string
+}

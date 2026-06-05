@@ -86,5 +86,21 @@ func (s *Service) BuildLLMMessage(ctx context.Context, msg *chat.Message, sessio
 		}
 	}
 
+	if msg.MessageType&chat.MessageFile != 0 && msg.File != nil {
+		for _, c := range msg.File.Content {
+			data, err := manbofs.Read(c)
+			if err != nil {
+				color.Yellow("[Manboster Soul] failed to read image cache in files!")
+				continue
+			}
+			respMsg.Parts = append(respMsg.Parts, llm.MessageParts{
+				PartsType: llm.MessagePartsFile,
+				File: &llm.MessageFilePayload{
+					Content: data,
+				},
+			})
+		}
+	}
+
 	return respMsg, nil
 }

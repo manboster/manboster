@@ -10,7 +10,7 @@ import (
 
 // Manboster: Your Personal Manbo Lobster!
 // Powered by chihuo2104 (c) 2026.
-// Last Update: 2026.6.2
+// Last Update: 2026.6.5
 
 func main() {
 	err := i18n.Init()

@@ -23,3 +23,7 @@ type MessageThinkingPayload struct {
 type MessageImagePayload struct {
 	Content string `json:"content"`
 }
+
+type MessageFilePayload struct {
+	Content string `json:"content"`
+}

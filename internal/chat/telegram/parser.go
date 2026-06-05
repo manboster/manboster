@@ -108,15 +108,35 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 		msg.MessageType |= chat.MessageText
 	}
 
-	if m.Photo != nil {
-		reader, err := s.tgInstance.File(&m.Photo.File)
+	if m.Document != nil {
+		reader, err := s.tgInstance.File(&m.Document.File)
 		if err != nil {
-			color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
+			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to base64 image photo: %v", err))
 		} else {
 			content := util.RandomString(8)
 			err = manbofs.Write(content, reader)
 			if err != nil {
-				color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
+				color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to base64 image photo: %v", err))
+			} else {
+				msg.MessageType |= chat.MessageFile
+				msg.File = &chat.FilePayload{
+					Content: []string{
+						content,
+					},
+				}
+			}
+		}
+	}
+
+	if m.Photo != nil {
+		reader, err := s.tgInstance.File(&m.Photo.File)
+		if err != nil {
+			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to base64 image photo: %v", err))
+		} else {
+			content := util.RandomString(8)
+			err = manbofs.Write(content, reader)
+			if err != nil {
+				color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to base64 image photo: %v", err))
 			} else {
 				msg.MessageType |= chat.MessageImage
 				msg.Image = &chat.ImagePayload{
@@ -166,12 +186,12 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 
 		reader, err := s.tgInstance.File(&m.Sticker.File)
 		if err != nil {
-			color.Yellow("[Manboster Telegram Provider] Failed to get sticker image")
+			color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to get sticker image: %v", err))
 		} else {
 			content := util.RandomString(8)
 			err = manbofs.Write(content, reader)
 			if err != nil {
-				color.Yellow("[Manboster Telegram Provider] Failed to base64 image photo")
+				color.Yellow(fmt.Sprintf("[Manboster Telegram Provider] Failed to base64 image photo: %v", err))
 			} else {
 				msg.MessageType |= chat.MessageImage
 				msg.Image = &chat.ImagePayload{

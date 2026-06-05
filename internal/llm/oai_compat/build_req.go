@@ -77,6 +77,12 @@ func (s *Service) buildRequest(msg llm.Message, model llm.Model) []openai.ChatCo
 						URL: part.Image.Content,
 					},
 				})
+			case llm.MessagePartsFile:
+				if model.Capabilities.Input&llm.CapabilityFile == 0 {
+					color.Yellow("[Manboster LLM Provider] unsupported model")
+					continue
+				}
+				// TODO: Maybe changed to the assistants API mode
 			default:
 			}
 		}
