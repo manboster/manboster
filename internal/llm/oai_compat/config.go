@@ -12,7 +12,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-var re = regexp.MustCompile(`^[a-zA-Z0-9]+$`)
+var re = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
 
 // Config contains what you should enter in application configuration.
 type Config struct {

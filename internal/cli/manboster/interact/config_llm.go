@@ -83,6 +83,7 @@ func runLLMConfigs(p cli.Provider, cfg config.Config) ([]config.LLMConfig, error
 		if option.Value == _ADD_ {
 			llmConfig, err := runOnboardLLMConfig(p, llm.AllProviders())
 			if err != nil {
+				_ = p.Alert(i18n.T(keys.CliWizardTitle), err.Error())
 				return nil, err
 			}
 			cfg.LLMs = append(cfg.LLMs, llmConfig)
