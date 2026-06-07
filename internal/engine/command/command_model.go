@@ -33,7 +33,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 				"Input":       fmt.Sprintf("%.4f", m.InputPrice),
 				"Output":      fmt.Sprintf("%.4f", m.OutputPrice),
 				"Name":        m.Name,
-			}))
+			}) + "\n")
 		}
 		respMessage.Text = &chat.TextPayload{Text: respString.String()}
 		return instance.SendMessage(ctx, respMessage)

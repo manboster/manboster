@@ -57,6 +57,13 @@ func (c *Config) Validate() error {
 	if len(c.Model) == 0 {
 		return fmt.Errorf("no models selected")
 	}
+	duplicateMap := map[string]bool{}
+	for _, m := range c.Model {
+		if a, ok := duplicateMap[m.Name]; ok && a {
+			return fmt.Errorf("duplicate model name: %s", m.Name)
+		}
+		duplicateMap[m.Name] = true
+	}
 	if c.BaseURL == "" {
 		return fmt.Errorf("no Base URL provided")
 	}

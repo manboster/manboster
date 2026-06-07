@@ -69,6 +69,7 @@ func (c *Config) Setup(ctx context.Context, p cli.Provider) error {
 		}
 	}
 
+	c.Model = []llm.Model{}
 	for _, m := range modelValues {
 		if m == CustomModel {
 			iModel, err := InputModel()
