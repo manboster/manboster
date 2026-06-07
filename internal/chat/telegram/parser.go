@@ -157,7 +157,7 @@ func (s *Service) msgParser(msg *chat.Message, m *telebot.Message, onMsg func(ms
 		} else {
 			if ms.Image != nil {
 				ms.Image.Content = append(ms.Image.Content, msg.Image.Content...)
-			} else {
+			} else if msg.Image.Content != nil {
 				ms.Image.Content = msg.Image.Content
 			}
 
