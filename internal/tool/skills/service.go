@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -11,8 +13,8 @@ import (
 
 var metadata = schema.MetaData{
 	Name:             "dev.manboster.skills",
-	DisplayName:      "Manboster Skills",
-	Description:      "Manboster Skills is a compatible layer for MarkDown skills for OpenClaw, Claude Code and so on.",
+	DisplayName:      i18n.T(keys.SkillsDisplayName),
+	Description:      i18n.T(keys.SkillsDescription),
 	MinEngineVersion: config.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,

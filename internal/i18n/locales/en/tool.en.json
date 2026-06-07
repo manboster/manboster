@@ -79,6 +79,22 @@
   "tool.browser.log.purge_body_failed": "[Browser] Failed to extract body while processing response",
   "tool.browser.log.purge_markdown_failed": "[Browser] Failed to convert HTML to markdown",
 
+  "tool.skills.display_name": "Manboster Skills Tool",
+  "tool.skills.description": "Manboster Skills is a compatible layer for MarkDown skills for OpenClaw, Claude Code and so on.",
+
+  "tool.skills.list.display_name": "",
+  "tool.skills.list.description": "",
+
+  "tool.skills.load.display_name": "",
+  "tool.skills.load.description": "",
+
+  "tool.skills.unload.display_name": "",
+  "tool.skills.unload.description": "",
+
+  "tool.skills.clean.display_name": "",
+  "tool.skills.clean.description": "",
+
+
   "tool.request.display_name": "Manboster Request Tool",
   "tool.request.description": "Manboster Request Tool enables models to make HTTP/HTTPS requests manually.",
   "tool.request.machine.display_name": "Request Tool",
