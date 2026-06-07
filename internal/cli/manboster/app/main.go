@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/gofrs/flock"
 	ctxPkg "github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
 	"github.com/manboster/manboster/internal/config"
@@ -39,29 +38,7 @@ func Main(cmd *cobra.Command, args []string) {
 }
 
 func MainInner() {
-	// main inner check lock file is avail or not?
-	lockPath := config.Path("manboster.lock")
-	fileLock := flock.New(lockPath)
-	defer func(fileLock *flock.Flock) {
-		err := fileLock.Unlock()
-		if err != nil {
-			color.Yellow("[Manboster Client] Unlock error: %v", err)
-		}
-	}(fileLock)
-
-	locked, err := fileLock.TryLock()
-	if err != nil {
-		color.Red("[Manboster Client] Lock error: %v", err)
-		os.Exit(1)
-	}
-
-	if !locked {
-		color.Red(i18n.T(keys.AppAnotherRunning))
-		color.Red(i18n.T(keys.AppDaemonRunningQuit))
-		os.Exit(1)
-	}
-
-	err = config.Init()
+	err := config.Init()
 	if errors.Is(err, config.ErrNoConfig) {
 		color.Yellow(i18n.T(keys.AppConfigNotFound))
 		interact.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])

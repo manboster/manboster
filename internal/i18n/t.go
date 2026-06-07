@@ -1,6 +1,9 @@
 package i18n
 
 import (
+	"fmt"
+
+	"github.com/fatih/color"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
@@ -21,8 +24,8 @@ func T(messageID string, args ...any) string {
 		switch v := arg.(type) {
 		case map[string]any:
 			config.TemplateData = v
-		case int:
-			config.PluralCount = v
+		case int, uint, int32, int64, int16, uint16, uint32, uint8, int8:
+			// config.PluralCount = v // TODO: add it
 			if config.TemplateData == nil {
 				config.TemplateData = map[string]any{"Count": v}
 			}
@@ -31,6 +34,7 @@ func T(messageID string, args ...any) string {
 
 	msg, err := localizer.Localize(config)
 	if err != nil {
+		color.Yellow(fmt.Sprintf("[Manboster i18n] %v", err))
 		return messageID
 	}
 

@@ -18,9 +18,9 @@ var re = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
 type Config struct {
 	ProviderName        string            `yaml:"name" mapstructure:"name" json:"name" manboconfig:"required;id:llm.oai_compat.name" validation:"^[a-zA-Z0-9_-]+$"`
 	ProviderDisplayName string            `yaml:"display_name" mapstructure:"display_name" json:"display_name" manboconfig:"id:llm.oai_compat.display_name"`
-	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url" manboconfig:"required;id:llm.oai_compat.base_url" validation:"^https?://"`               // this is dynamic when you choose oai_compat systems
-	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key" manboconfig:"required;secret;desc_id:llm.oai_compat.api_key" validation:"^[a-zA-Z0-9_-]+$"` // your apikey
-	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model" manboconfig:"skip"`                                                                               // your wanted model's information like anthropic/claude-sonnet-4.5
+	BaseURL             string            `yaml:"base_url" mapstructure:"base_url" json:"base_url" manboconfig:"required;id:llm.oai_compat.base_url" validation:"^https?://"`          // this is dynamic when you choose oai_compat systems
+	ApiKey              string            `yaml:"api_key" mapstructure:"api_key" json:"api_key" manboconfig:"required;secret;id:llm.oai_compat.api_key" validation:"^[a-zA-Z0-9_-]+$"` // your apikey
+	Model               []llm.Model       `yaml:"model" mapstructure:"model" json:"model" manboconfig:"skip"`                                                                          // your wanted model's information like anthropic/claude-sonnet-4.5
 	Headers             map[string]string `json:"headers" mapstructure:"headers" yaml:"headers" manboconfig:"skip"`
 }
 
