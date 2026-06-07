@@ -11,7 +11,7 @@ import (
 
 // Config configures their Telegram bot.
 type Config struct {
-	BotToken             string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required;secret;id:chat.telegram.bot_token" validation:"^[a-zA-Z0-9_-:]+$"` // Telegram requires your bot token to authenticate their server.
+	BotToken             string `yaml:"bot_token" json:"bot_token" mapstructure:"bot_token" manboconfig:"required;secret;id:chat.telegram.bot_token" validation:"^[a-zA-Z0-9_:-]+$"` // Telegram requires your bot token to authenticate their server.
 	CollapseMsgLength    int16  `yaml:"collapse_msg_length" json:"collapse_msg_length" mapstructure:"collapse_msg_length" manboconfig:"required;id:chat.telegram.collapse_length;default:500"`
 	ReactionNotifyStatus string `yaml:"reaction_notify_status" json:"reaction_notify_status" mapstructure:"reaction_notify_status" manboconfig:"required;id:chat.telegram.reaction_status;default:enabled" enum:"disabled,enabled,clean"`
 }

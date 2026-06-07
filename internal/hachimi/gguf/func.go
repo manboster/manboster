@@ -10,6 +10,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
+	"github.com/manboster/manboster/internal/downloader"
 )
 
 func libPath() string {
@@ -53,7 +54,7 @@ func (s *Service) CheckModel(ctx context.Context) error {
 		s.manager.SetAvailModel(false)
 		go func() {
 			color.Yellow("[Manboster Hachimi Provider] Model not found, starting to download...")
-			dlErr := Download(ctx, s.cfg.GGUFurl, modelFileName)
+			dlErr := downloader.Download(ctx, s.cfg.GGUFurl, modelFileName)
 			if dlErr != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Hachimi Provider] Failed to download model: %s", err))
 			}

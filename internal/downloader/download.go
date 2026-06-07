@@ -1,4 +1,4 @@
-package gguf
+package downloader
 
 import (
 	"context"
@@ -7,23 +7,11 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"sync/atomic"
 	"time"
 
 	"github.com/fatih/color"
 )
 
-type progressWriter struct {
-	target     io.Writer // real target
-	downloaded *int64    // downloaded bytes
-}
-
-func (pw *progressWriter) Write(p []byte) (n int, err error) {
-	n, err = pw.target.Write(p)
-	// atomic add downloaded data
-	atomic.AddInt64(pw.downloaded, int64(n))
-	return n, err
-}
 func Download(ctx context.Context, url string, savePath string) error {
 	// set temporary filepath
 	tempPath := savePath + ".downloading"
@@ -122,26 +110,4 @@ func Download(ctx context.Context, url string, savePath string) error {
 
 	color.Green(fmt.Sprintf("[Manboster Downloader]: Successfully download! Saving to %s", savePath))
 	return nil
-}
-
-func DownloadNotifyRunner(done chan struct{}, ticker *time.Ticker, currentDownloaded *int64, totalSize int64) {
-	previous := int64(0)
-	down := int64(0)
-	for {
-		select {
-		case <-ticker.C:
-			previous = atomic.LoadInt64(&down)
-			down = atomic.LoadInt64(currentDownloaded)
-			if totalSize > 0 {
-				percent := float64(down) / float64(totalSize) * 100
-				speed := (float64(down) - float64(previous)) / 5 / 1024 / 1024
-				color.Blue(fmt.Sprintf("\r[Manboster Downloader] Now Downloading: %.2f%%  -  %.2f MB / %.2f MB, %.2f MB/s",
-					percent, float64(down)/1024/1024, float64(totalSize)/1024/1024, speed))
-			} else {
-				color.Blue(fmt.Sprintf("\r[Manboster Downloader] Now Downloading: %.2f MB", float64(down)/1024/1024))
-			}
-		case <-done:
-			return
-		}
-	}
 }
