@@ -42,10 +42,9 @@ BTW, Manboster's code is mainly written by human, with AIs written in helper fun
 
 If you downloaded the Go programming language development kit? Just type `go install github.com/manboster/manboster/cmd/manboster@latest` to install!
 
-For more details, please run `manboster help` in your terminal!
+For more details, please run `manboster help` in your terminal or [read this documentation](https://manboster.dev/docs/quickstart.html)!
 
 **Notes for the Daemon**: Simply double-click would not start the daemon, if you want to create and start the daemon, please run `manboster start`.
-
 ## Make a contribution
 
 Manboster is now open to the community and we are looking forward to your contributions! Read [CONTRIBUTING.md](./CONTRIBUTING.md) to start!

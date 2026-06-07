@@ -39,7 +39,7 @@
 
 第一次开启时，它会要求你配置信息，根据要求配置就可以继续了。
 
-更多详见命令行帮助文档： `manboster help`
+更多详见命令行帮助文档： `manboster help` 或者是 [快速开始文档](https://manboster.dev/zh-cn/docs/quickstart.html)
 
 直接启动不会开启守护进程，输入以下内容启动守护进程。
 
@@ -59,7 +59,7 @@ go install github.com/manboster/manboster/cmd/manboster@latest
 
 ## 遇到了问题？
 
-如果你遇到了问题，请先阅读[文档](https://manboster.dev/docs/)。
+如果你遇到了问题，请先阅读[文档](https://manboster.dev/zh-cn/docs/)。
 
 文档里面没有给出解决方案或者是解决方案无法解决问题时再去issue搜索这个问题，如果还没有，请开issue。
 
