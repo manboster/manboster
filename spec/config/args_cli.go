@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -139,9 +140,19 @@ func askCliProvider(
 			}
 			return chosen.Value, nil
 		}
+
+		complied, err := regexp.Compile(node.Arg.Validate)
+		if err != nil {
+			return nil, err
+		}
+
 		raw, err := p.Input(displayName, desc, initialStr(), node.IsSecret, func(input string) error {
 			if required && strings.TrimSpace(input) == "" {
 				return fmt.Errorf("%s is required", displayName)
+			}
+
+			if !complied.MatchString(input) {
+				return fmt.Errorf("%s is not matched with regex", input)
 			}
 			return nil
 		})

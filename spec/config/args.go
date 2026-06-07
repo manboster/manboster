@@ -79,6 +79,11 @@ func ArgsFromStruct(s interface{}) *Args {
 			IsEnum:      isEnum,
 		}
 
+		validate, avail := field.Tag.Lookup("validation")
+		if avail {
+			arg.Validate = validate
+		}
+
 		node := ArgsNode{
 			Arg:         arg,
 			IsSecret:    tag["secret"] == "true",

@@ -38,6 +38,7 @@ func parseFields(t reflect.Type) []*Args {
 		idTag := typeField.Tag.Get("id")
 		descTag := typeField.Tag.Get("description")
 		nameTag := typeField.Tag.Get("name")
+		validationTag := typeField.Tag.Get("validation")
 
 		name := typeField.Name
 		nameJSONTag, avail := typeField.Tag.Lookup("json")
@@ -48,6 +49,10 @@ func parseFields(t reflect.Type) []*Args {
 		arg := &Args{
 			Name:     name,
 			Required: strings.Contains(f.Tag.Get("validate"), "required"),
+		}
+
+		if validationTag != "" {
+			arg.Validate = validationTag
 		}
 
 		if descTag != "" {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"regexp"
 	"strconv"
 )
 
@@ -32,6 +33,13 @@ func validateValue(v any, args *Args, path string, required bool) error {
 	case ArgsTypeString:
 		if _, ok := v.(string); !ok {
 			return fmt.Errorf("%s must be string, got %T", path, v)
+		}
+		complied, err := regexp.Compile(args.Validate)
+		if err != nil {
+			return err
+		}
+		if !complied.MatchString(v.(string)) {
+			return fmt.Errorf("%s must match %s", path, args.Validate)
 		}
 	case ArgsTypeBool:
 		if _, ok := v.(bool); !ok {

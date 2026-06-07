@@ -15,6 +15,7 @@ type Args struct {
 	Items       *Args   `json:"items,omitempty" yaml:"items"`           // Optional. Required When ArgsType == ArgsTypeArray
 	Enum        []any   `json:"enum,omitempty" yaml:"enum"`             // Optional. Required when IsEnum == true
 	DisplayName string  `json:"displayName" yaml:"display_name"`        // Optional. Display name for the tool call
+	Validate    string  `json:"validate,omitempty" yaml:"validate"`     // Optional. Validations regex for this arg
 }
 
 type ArgsType int16

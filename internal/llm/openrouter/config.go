@@ -9,7 +9,7 @@ import (
 
 // Config contains what you should enter in application configuration.
 type Config struct {
-	ApiKey             string `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required;secret;id:llm.openrouter.api_key"` // your openrouter system's apikey
+	ApiKey             string `yaml:"api_key" json:"api_key" mapstructure:"api_key" manboconfig:"required;secret;id:llm.openrouter.api_key" validation:"^[a-zA-Z0-9_-]+$"` // your openrouter system's apikey
 	*oai_compat.Config `mapstructure:"config"`
 }
 
