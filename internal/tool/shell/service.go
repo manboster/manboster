@@ -7,20 +7,24 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.shell",
-	DisplayName:      "Shell Execution Tool",
-	Description:      "[THIS IS A DANGEROUS TOOL, IF YOU DONT KNOW WHAT YOU ARE DOING PLEASE DO NOT USE OR INSTALL IT] shell execution tool enables model to execute native shells in the system. Root Access only.",
-	MinEngineVersion: config.APILevel,
-	AppVersion:       "0.0.1",
-	APIVersion:       1,
-	Requires:         nil,
-	Represent:        "💻",
-	MinUserType:      schema.UserRoot,
+	Name:               "dev.manboster.shell",
+	DisplayName:        i18n.T(keys.ShellMachineDisplayName),
+	Description:        i18n.T(keys.ShellMachineDescription),
+	DisplayNameForUser: i18n.T(keys.ShellDisplayName),
+	DescriptionForUser: i18n.T(keys.ShellDescription),
+	MinEngineVersion:   config.APILevel,
+	AppVersion:         "0.0.1",
+	APIVersion:         1,
+	Requires:           nil,
+	Represent:          "💻",
+	MinUserType:        schema.UserRoot,
 }
 
 type Service struct{}

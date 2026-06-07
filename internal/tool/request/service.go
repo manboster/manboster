@@ -7,20 +7,24 @@ import (
 
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/i18n"
+	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
 
 var metadata = schema.MetaData{
-	Name:             "dev.manboster.request",
-	DisplayName:      "Request Tool",
-	Description:      "Request tool enables Models to make requests ",
-	MinEngineVersion: config.APILevel,
-	AppVersion:       "0.0.1",
-	APIVersion:       1,
-	Requires:         nil,
-	Represent:        "🌐",
-	MinUserType:      schema.UserRoot,
+	Name:               "dev.manboster.request",
+	DisplayName:        i18n.T(keys.RequestMachineDisplayName),
+	Description:        i18n.T(keys.RequestMachineDescription),
+	DisplayNameForUser: i18n.T(keys.RequestDisplayName),
+	DescriptionForUser: i18n.T(keys.RequestDescription),
+	MinEngineVersion:   config.APILevel,
+	AppVersion:         "0.0.1",
+	APIVersion:         1,
+	Requires:           nil,
+	Represent:          "🌐",
+	MinUserType:        schema.UserRoot,
 }
 
 type Service struct{}

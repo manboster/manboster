@@ -116,3 +116,17 @@ const (
 	SkillsCleanDisplayName = "tool.skills.clean.display_name"
 	SkillsCleanDescription = "tool.skills.clean.description"
 )
+
+const (
+	RequestDisplayName        = "tool.request.display_name"
+	RequestDescription        = "tool.request.description"
+	RequestMachineDisplayName = "tool.request.display_name"
+	RequestMachineDescription = "tool.request.description"
+)
+
+const (
+	ShellDisplayName        = "tool.shell.display_name"
+	ShellDescription        = "tool.shell.description"
+	ShellMachineDisplayName = "tool.shell.machine.display_name"
+	ShellMachineDescription = "tool.shell.machine.description"
+)

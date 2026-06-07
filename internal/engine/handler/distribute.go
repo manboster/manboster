@@ -35,10 +35,15 @@ func (h *Handler) DistributeFeedbackMsg(ctx context.Context, instance chat.Provi
 		txt.WriteString(" 🤖❌ ")
 	}
 
+	displayName := toolProvider.DisplayName()
+	if toolProvider.MetaData().DisplayNameForUser != "" {
+		displayName = toolProvider.MetaData().DisplayNameForUser
+	}
+
 	if toolProvider.MetaData().Represent == "" {
-		txt.WriteString(fmt.Sprintf("🧰 `%s`", toolProvider.DisplayName()))
+		txt.WriteString(fmt.Sprintf("🧰 `%s`", displayName))
 	} else {
-		txt.WriteString(fmt.Sprintf("%s `%s`", toolProvider.MetaData().Represent, toolProvider.DisplayName()))
+		txt.WriteString(fmt.Sprintf("%s `%s`", toolProvider.MetaData().Represent, displayName))
 	}
 
 	if err == nil {

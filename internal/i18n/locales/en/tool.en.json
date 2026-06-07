@@ -77,5 +77,15 @@
   "tool.browser.log.fallback_browser": "[Browser] Could not fetch content directly, falling back to browser...",
   "tool.browser.log.purge_open_doc_failed": "[Browser] Failed to open document while processing response",
   "tool.browser.log.purge_body_failed": "[Browser] Failed to extract body while processing response",
-  "tool.browser.log.purge_markdown_failed": "[Browser] Failed to convert HTML to markdown"
+  "tool.browser.log.purge_markdown_failed": "[Browser] Failed to convert HTML to markdown",
+
+  "tool.request.display_name": "Manboster Request Tool",
+  "tool.request.description": "Manboster Request Tool enables models to make HTTP/HTTPS requests manually.",
+  "tool.request.machine.display_name": "Request Tool",
+  "tool.request.machine.description": "Use this request tool to make HTTP/HTTPS requests and get detailed response.",
+
+  "tool.shell.display_name":  "Manboster Shell Execution Tool",
+  "tool.shell.description":  "[THIS IS A DANGEROUS TOOL, IF YOU DONT KNOW WHAT YOU ARE DOING PLEASE DO NOT USE OR INSTALL IT] shell execution tool enables model to execute native shells in the system. Root Access only.",
+  "tool.shell.machine.display_name": "Shell Execution",
+  "tool.shell.machine.description": "This tool can execute any command on this machine and be careful before using it."
 }
