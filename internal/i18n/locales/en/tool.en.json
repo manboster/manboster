@@ -82,17 +82,17 @@
   "tool.skills.display_name": "Manboster Skills Tool",
   "tool.skills.description": "Manboster Skills is a compatible layer for MarkDown skills for OpenClaw, Claude Code and so on.",
 
-  "tool.skills.list.display_name": "",
-  "tool.skills.list.description": "",
+  "tool.skills.list.display_name": "List Skills",
+  "tool.skills.list.description": "List skills you currently have",
 
-  "tool.skills.load.display_name": "",
-  "tool.skills.load.description": "",
+  "tool.skills.load.display_name": "Load a skill",
+  "tool.skills.load.description": "Load a skill to this session",
 
-  "tool.skills.unload.display_name": "",
-  "tool.skills.unload.description": "",
+  "tool.skills.unload.display_name": "Unload a skill",
+  "tool.skills.unload.description": "Unload a skill to this session",
 
-  "tool.skills.clean.display_name": "",
-  "tool.skills.clean.description": "",
+  "tool.skills.clean.display_name": "Clear all skills",
+  "tool.skills.clean.description": "Clear all skills of this session",
 
 
   "tool.request.display_name": "Manboster Request Tool",

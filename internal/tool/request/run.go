@@ -25,7 +25,7 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 		if arg.Timeout == 0 {
 			arg.Timeout = 120
 		}
-		res, err := makeRequest(arg)
+		res, err := MakeRequest(arg)
 		if err != nil {
 			return nil, fmt.Errorf("failed to execute shell: %w", err)
 		}

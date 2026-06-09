@@ -16,8 +16,8 @@ type Response struct {
 	Body       string `json:"body"`
 }
 
-// makeRequest receive RunArgs and execute
-func makeRequest(args RunArgs) (string, error) {
+// MakeRequest receive RunArgs and execute
+func MakeRequest(args RunArgs) (string, error) {
 	// get payload
 	// if it's empty, it won't report any error
 	payloadReader := strings.NewReader(args.Payload)
