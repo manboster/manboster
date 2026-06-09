@@ -120,8 +120,8 @@ const (
 const (
 	RequestDisplayName        = "tool.request.display_name"
 	RequestDescription        = "tool.request.description"
-	RequestMachineDisplayName = "tool.request.display_name"
-	RequestMachineDescription = "tool.request.description"
+	RequestMachineDisplayName = "tool.request.machine.display_name"
+	RequestMachineDescription = "tool.request.machine.description"
 )
 
 const (

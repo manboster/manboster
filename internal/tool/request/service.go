@@ -3,6 +3,8 @@ package request
 import (
 	"context"
 	"encoding/json"
+	"net"
+	"net/url"
 	"strings"
 
 	"github.com/manboster/manboster/internal/config"
@@ -11,6 +13,7 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
+	"golang.org/x/net/publicsuffix"
 )
 
 var metadata = schema.MetaData{
@@ -24,7 +27,7 @@ var metadata = schema.MetaData{
 	APIVersion:         1,
 	Requires:           nil,
 	Represent:          "🌐",
-	MinUserType:        schema.UserRoot,
+	MinUserType:        schema.UserAdmin,
 }
 
 type Service struct{}
@@ -32,7 +35,7 @@ type Service struct{}
 func (s *Service) ClientRenderer(args string) string {
 	arg := RunArgs{}
 	if json.Unmarshal([]byte(args), &arg) == nil {
-		return arg.Shell
+		return arg.URL
 	}
 	return ""
 }
@@ -71,8 +74,22 @@ func (s *Service) CacheGroup(args string) string {
 	arg := RunArgs{}
 	var respStr strings.Builder
 	if json.Unmarshal([]byte(args), &arg) == nil {
-		str := strings.Split(arg.Shell, " ")
-		respStr.WriteString(str[0])
+		parse, err := url.Parse(arg.URL)
+		if err != nil {
+			return ""
+		}
+		hostname := parse.Hostname()
+
+		if ip := net.ParseIP(hostname); ip != nil {
+			return hostname
+		}
+
+		rootDomain, err := publicsuffix.EffectiveTLDPlusOne(hostname)
+		if err != nil {
+			return ""
+		}
+
+		return rootDomain
 	}
 	return respStr.String()
 }

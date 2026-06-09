@@ -25,15 +25,11 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 		if arg.Timeout == 0 {
 			arg.Timeout = 120
 		}
-		res, err := executeShell(ctx, arg.Shell, arg.Timeout)
+		res, err := makeRequest(arg)
 		if err != nil {
 			return nil, fmt.Errorf("failed to execute shell: %w", err)
 		}
-		jsonify, err := json.Marshal(res)
-		if err != nil {
-			return nil, fmt.Errorf("failed to marshal response: %w", err)
-		}
-		resp.Response = string(jsonify)
+		resp.Response = res
 	} else {
 		return nil, fmt.Errorf("invalid arguments")
 	}
