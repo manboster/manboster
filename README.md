@@ -60,3 +60,7 @@ Before creating a new issue, search for the problem. If there is none, create it
 ## License
 
 This application's license is Apache 2.0.
+
+## Thanking
+
+Please read [THANKING.md](./THANKING.md)

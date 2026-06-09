@@ -68,3 +68,7 @@ go install github.com/manboster/manboster/cmd/manboster@latest
 ## 授权协议
 
 本软件使用Apache 2.0协议作为开源协议。
+
+## 致谢
+
+请阅读 [THANKING.md](./THANKING.md)
