@@ -130,3 +130,10 @@ const (
 	ShellMachineDisplayName = "tool.shell.machine.display_name"
 	ShellMachineDescription = "tool.shell.machine.description"
 )
+
+const (
+	SearchDisplayName        = "tool.search.display_name"
+	SearchDescription        = "tool.search.description"
+	SearchMachineDisplayName = "tool.search.machine.display_name"
+	SearchMachineDescription = "tool.search.machine.description"
+)

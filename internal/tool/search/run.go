@@ -1,4 +1,4 @@
-package request
+package search
 
 import (
 	"context"
@@ -25,11 +25,20 @@ func (s *Service) Run(ctx context.Context, args string) (*plugin.RunResponse, er
 		if arg.Timeout == 0 {
 			arg.Timeout = 120
 		}
-		res, err := MakeRequest(arg)
-		if err != nil {
-			return nil, fmt.Errorf("failed to execute request: %w", err)
+		if arg.Provider == "list" {
+			r := ListProviders()
+			re, err := json.Marshal(r)
+			if err != nil {
+				return nil, err
+			}
+			resp.Response = string(re)
+		} else {
+			err := ExecProvider(ctx, arg.Provider, arg.Content)
+			if err != nil {
+				return nil, fmt.Errorf("failed to execute shell: %w", err)
+			}
+			resp.Response = "success"
 		}
-		resp.Response = res
 	} else {
 		return nil, fmt.Errorf("invalid arguments")
 	}

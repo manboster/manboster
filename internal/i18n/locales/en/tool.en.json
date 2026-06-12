@@ -94,7 +94,6 @@
   "tool.skills.clean.display_name": "Clear all skills",
   "tool.skills.clean.description": "Clear all skills of this session",
 
-
   "tool.request.display_name": "Manboster Request Tool",
   "tool.request.description": "Manboster Request Tool enables models to make HTTP/HTTPS requests manually.",
   "tool.request.machine.display_name": "Request Tool",
@@ -103,5 +102,10 @@
   "tool.shell.display_name":  "Manboster Shell Execution Tool",
   "tool.shell.description":  "[THIS IS A DANGEROUS TOOL, IF YOU DONT KNOW WHAT YOU ARE DOING PLEASE DO NOT USE OR INSTALL IT] shell execution tool enables model to execute native shells in the system. Root Access only.",
   "tool.shell.machine.display_name": "Shell Execution",
-  "tool.shell.machine.description": "This tool can execute any command on this machine and be careful before using it."
+  "tool.shell.machine.description": "This tool can execute any command on this machine and be careful before using it.",
+
+  "tool.search.display_name": "Manboster Search Tool",
+  "tool.search.description": "Manboster Search Tool enables models to search for the Internet using provided API Keys",
+  "tool.search.machine.display_name": "Search Tool",
+  "tool.search.machine.description": "Use this tool to search for the Internet."
 }
