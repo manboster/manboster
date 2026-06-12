@@ -9,20 +9,21 @@ import (
 func (s *Service) buildRequest(msg llm.Message, model llm.Model) []openai.ChatCompletionMessage {
 	if msg.Type&(llm.MessageToolCallResponse) != 0 {
 		// going to check tool call resp and get it back to llm!
+		var res []openai.ChatCompletionMessage
 		for _, resp := range msg.ToolCallResponse {
 			if resp.Result == "" {
 				resp.Result = "{}"
 			}
 
-			var res []openai.ChatCompletionMessage
 			res = append(res, openai.ChatCompletionMessage{
 				Role:       openai.ChatMessageRoleTool,
 				Content:    resp.Result,
 				ToolCallID: resp.ID,
 				Name:       resp.ToolName,
 			})
-			return res
 		}
+
+		return res
 	}
 
 	ccMsg := openai.ChatCompletionMessage{
