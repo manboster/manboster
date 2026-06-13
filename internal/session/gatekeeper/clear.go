@@ -1,4 +1,4 @@
-package ignorance
+package gatekeeper
 
 import "strings"
 

@@ -10,7 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
-	"github.com/manboster/manboster/internal/session/ignorance"
+	"github.com/manboster/manboster/internal/session/gatekeeper"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
@@ -69,7 +69,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 		txt.WriteString(util.DescribeToHuman(req, toolProvider))
 		txt.WriteString(i18n.Te(keys.GatekeeperHachimiReason, "", errors.New(resp.Reason)))
 
-		if markType == ignorance.MarkHachimiAllSuspicious {
+		if markType == gatekeeper.MarkHachimiAllSuspicious {
 			return true, ErrHachimiSuspicious
 		}
 		return s.Select(ctx, instance, msg, buildSelectionHachimiSuspicious(), txt.String(), func(msg *chat.Message) (bool, error) {
@@ -98,7 +98,7 @@ func (s *Service) hachimiSelectionHandler(msg *chat.Message, desc string, sid st
 		return false, ErrHachimiDenied
 	case "allow-suspicious":
 		s.ignoranceSessionManager.SetHachimiCache(desc, false)
-		s.ignoranceSessionManager.SetMark(sid, true, 60*60, ignorance.MarkHachimiAllSuspicious)
+		s.ignoranceSessionManager.SetMark(sid, true, 60*60, gatekeeper.MarkHachimiAllSuspicious)
 		return true, errors.New(i18n.T(keys.GateKeeperHachimiSuspiciousMsg))
 	}
 	return false, fmt.Errorf("invalid selection value: %s", cb.SelectionValue)

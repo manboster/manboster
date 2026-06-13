@@ -1,4 +1,4 @@
-package ignorance
+package gatekeeper
 
 func (m *Manager) SetHachimiCache(params string, user bool) {
 	m.lock.Lock()

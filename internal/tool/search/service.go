@@ -14,7 +14,7 @@ import (
 )
 
 var metadata = schema.MetaData{
-	Name:               "dev.manboster.search",
+	Name:               "dev.manboster.web.search",
 	DisplayName:        i18n.T(keys.SearchMachineDisplayName),
 	Description:        i18n.T(keys.SearchMachineDescription),
 	DisplayNameForUser: i18n.T(keys.SearchDisplayName),
@@ -23,7 +23,7 @@ var metadata = schema.MetaData{
 	AppVersion:         "0.0.1",
 	APIVersion:         1,
 	Requires:           nil,
-	Represent:          "🌐",
+	Represent:          "🔍",
 	MinUserType:        schema.UserAdmin,
 }
 

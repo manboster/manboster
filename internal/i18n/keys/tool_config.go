@@ -10,3 +10,8 @@ const (
 	ToolBrowserConfigMode     = "tool.browser.mode"
 	ToolBrowserConfigModeDesc = "tool.browser.mode.desc"
 )
+
+const (
+	ToolSearchConfigProvider     = "tool.search.config.provider"
+	ToolSearchConfigProviderDesc = "tool.search.config.provider.desc"
+)

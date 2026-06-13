@@ -1,7 +1,7 @@
 package gateway
 
 import (
-	"github.com/manboster/manboster/internal/session/selection"
+	"github.com/manboster/manboster/internal/session/select"
 	"github.com/manboster/manboster/internal/tool"
 )
 
