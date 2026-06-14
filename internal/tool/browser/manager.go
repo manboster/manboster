@@ -103,7 +103,6 @@ func (m *Manager) cancelBrowserInstance(id string) error {
 func (m *Manager) timeCheckRunner(ctx context.Context, id string) error {
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
-	defer m.lock.Unlock()
 	for {
 		select {
 		case <-ticker.C:
@@ -113,13 +112,16 @@ func (m *Manager) timeCheckRunner(ctx context.Context, id string) error {
 				if time.Since(i.lastUsed) > 10*time.Minute {
 					err := i.browser.Close()
 					if err != nil {
+						m.lock.Unlock()
 						return err
 					}
 					delete(m.browserInstances, id)
+					m.lock.Unlock()
 					return nil
 				}
 			} else {
 				if !found {
+					m.lock.Unlock()
 					return nil
 				}
 			}
