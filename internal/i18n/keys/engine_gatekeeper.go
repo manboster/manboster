@@ -24,6 +24,7 @@ const (
 	GatekeeperHachimiSuspicious    = "engine.gatekeeper.hachimi_suspicious"
 	GateKeeperHachimiSuspiciousMsg = "engine.gatekeeper.hachimi_suspicious_msg"
 	GatekeeperHachimiReason        = "engine.gatekeeper.hachimi_reason"
+	GatekeeperHachimiRemoteReason  = "engine.gatekeeper.hachimi_remote_reason"
 	GatekeeperRejectMsg            = "engine.gatekeeper.reject_msg"
 	GatekeeperValidateRejectMsg    = "engine.gatekeeper.validate_msg"
 	GatekeeperHachimiHandled       = "engine.gatekeeper.hachimi_handled"

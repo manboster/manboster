@@ -20,6 +20,7 @@
   "engine.gatekeeper.hachimi_suspicious": "🐱❓ **Hachimi 认为此工具调用存在可疑行为！请仔细查看并决定是否允许。**\n",
   "engine.gatekeeper.hachimi_suspicious_msg": "⚠️ 你在一小时内允许了 Hachimi 提示可以行为的工具调用。",
   "engine.gatekeeper.hachimi_reason": "\nHachimi 报告原因：`{{ .Error }}`\n",
+  "engine.gatekeeper.hachimi_remote_reason": "\n远程大模型对此操作的解释: `{{ .Error }}`\n",
   "engine.gatekeeper.reject_msg": "🚪❌Gatekeeper 拒绝了大模型调用 `{{ .Name }}` 工具的请求：{{ .Error }}",
   "engine.gatekeeper.validate_msg": "🚪❌ Gatekeeper 拒绝了大模型调用 `{{ .Name }}` 工具的请求，输入参数校验失败！原因： {{ .Error }}",
   "engine.gatekeeper.hachimi_handled": "🐱✅ Hachimi 认为这个操作安全，自动放行了。"

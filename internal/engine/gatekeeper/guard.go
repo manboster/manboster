@@ -30,7 +30,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 	requireUserType := toolProvider.MetaData().MinUserType
 	actualUserType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
 
-	m, mT := s.ignoranceSessionManager.GetMark(overallUd)
+	m, mT := s.sessionService.Manager.Ignorance.GetMark(overallUd)
 	if m && mT == gatekeeper.MarkCancelAll {
 		return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
 	}
@@ -42,7 +42,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		return true, nil
 	}
 
-	mark, markType := s.ignoranceSessionManager.GetMark(ud)
+	mark, markType := s.sessionService.Manager.Ignorance.GetMark(ud)
 	if (mark && markType == gatekeeper.MarkHachimi && requireUserType <= actualUserType) || msg.MessageType&chat.MessageFromCron != 0 {
 		return s.HachimiHandler(ctx, instance, msg, toolProvider, req, ud, sid)
 	}
@@ -67,7 +67,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		}
 
 		// get by session id
-		m, mT := s.ignoranceSessionManager.GetMark(overallId)
+		m, mT := s.sessionService.Manager.Ignorance.GetMark(overallId)
 		if m && mT == gatekeeper.MarkCancelAll {
 			return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
 		}
@@ -80,7 +80,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		}
 
 		// get by tool id and group
-		mark, markType := s.ignoranceSessionManager.GetMark(id)
+		mark, markType := s.sessionService.Manager.Ignorance.GetMark(id)
 		if mark && markType == gatekeeper.MarkHachimi {
 			// run hachimi here...
 			return s.HachimiHandler(ctx, instance, msg, toolProvider, req, id, sid)
@@ -118,17 +118,17 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		// get resp based on
 		switch guardSelectType(cb.SelectionValue) {
 		case guardSelectHachimi:
-			s.ignoranceSessionManager.SetMark(id, true, ttl, gatekeeper.MarkHachimi)
+			s.sessionService.Manager.Ignorance.SetMark(id, true, ttl, gatekeeper.MarkHachimi)
 			return true, errors.New(i18n.T(keys.GatekeeperHachimiActivated, map[string]any{
 				"Next": ttl / 60,
 			}))
 		case guardSelectHachimiAll:
-			s.ignoranceSessionManager.SetMark(overallId, true, 60*60, gatekeeper.MarkHachimiAll)
+			s.sessionService.Manager.Ignorance.SetMark(overallId, true, 60*60, gatekeeper.MarkHachimiAll)
 			return true, errors.New(i18n.T(keys.GatekeeperHachimiActivated, map[string]any{
 				"Next": 60,
 			}))
 		case guardSelectIgnore:
-			s.ignoranceSessionManager.SetMark(id, true, ttl, gatekeeper.MarkIgnore)
+			s.sessionService.Manager.Ignorance.SetMark(id, true, ttl, gatekeeper.MarkIgnore)
 			return true, errors.New(i18n.T(keys.GatekeeperShutUpMsg, map[string]any{
 				"Next": ttl / 60,
 				"Name": toolProvider.DisplayName(),
@@ -136,12 +136,12 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 		case guardSelectContinue:
 			return true, nil
 		case guardSelectContinueAll:
-			s.ignoranceSessionManager.SetMark(overallId, true, 10*60, gatekeeper.MarkContinueAll)
+			s.sessionService.Manager.Ignorance.SetMark(overallId, true, 10*60, gatekeeper.MarkContinueAll)
 			return true, errors.New(i18n.T(keys.GatekeeperContinueAllMsg))
 		case guardSelectCancel:
 			return false, fmt.Errorf("user manually canceled your request")
 		case guardSelectCancelIgnore:
-			s.ignoranceSessionManager.SetMark(id, true, 15*60, gatekeeper.MarkCancel)
+			s.sessionService.Manager.Ignorance.SetMark(id, true, 15*60, gatekeeper.MarkCancel)
 			return false, fmt.Errorf("user manually canceled your request for this tool call for 15 minutes")
 		case guardSelectCancelAll:
 			respMsg.Text.Text = i18n.T(keys.GatekeeperCancelAllMsg)
@@ -149,7 +149,7 @@ func (s *Service) Guard(ctx context.Context, instance chat.Provider, msg *chat.M
 			if err != nil {
 				color.Yellow("[Manboster Gatekeeper] Failed to send ignore prompt message")
 			}
-			s.ignoranceSessionManager.SetMark(overallId, true, 10*60, gatekeeper.MarkCancelAll)
+			s.sessionService.Manager.Ignorance.SetMark(overallId, true, 10*60, gatekeeper.MarkCancelAll)
 			go s.gatewayService.Recall(ctx, instance, respMsg)
 			return false, fmt.Errorf("user manually canceled your all tool calls in next 10 minutes")
 		default:
