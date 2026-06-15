@@ -16,7 +16,7 @@ builds:
       - -s -w
       - -X github.com/manboster/manboster/internal/config.BuildCommit={{.ShortCommit}}
       - -X github.com/manboster/manboster/internal/config.BuildTime={{.Date}}
-      - -X github.com/manboster/manboster/internal/config.CurrentVersion={{ if .IsSnapshot }}canary{{ else }}{{ .Env.CHANNEL | default "unknown" }}{{ end }}
+      - -X github.com/manboster/manboster/internal/config.CurrentVersion={{ if .IsSnapshot }}canary{{ else }}{{ envOrDefault "CHANNEL" "unknown" }}{{ end }}
 
     goos:
       - linux
@@ -33,18 +33,16 @@ builds:
         goarch: riscv64
 
 archives:
-  - format: tar.gz
+  - formats: ["tar.gz"]
     name_template: >-
       {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: ["zip"]
 
-# 生成 SHA256 校验和
 checksum:
   name_template: 'checksums.txt'
 
-# 自动生成 Release Notes（过滤掉无意义的提交）
 changelog:
   sort: asc
   filters:
