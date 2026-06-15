@@ -1,0 +1,54 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: manboster
+    main: ./cmd/manboster/main.go
+    binary: manboster
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/manboster/manboster/internal/config.BuildCommit={{.ShortCommit}}
+      - -X github.com/manboster/manboster/internal/config.BuildTime={{.Date}}
+      - -X github.com/manboster/manboster/internal/config.CurrentVersion={{ if .IsSnapshot }}canary{{ else }}{{ .Env.CHANNEL | default "unknown" }}{{ end }}
+
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - riscv64
+    ignore:
+      - goos: darwin
+        goarch: riscv64
+      - goos: windows
+        goarch: riscv64
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    format_overrides:
+      - goos: windows
+        format: zip
+
+# 生成 SHA256 校验和
+checksum:
+  name_template: 'checksums.txt'
+
+# 自动生成 Release Notes（过滤掉无意义的提交）
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'

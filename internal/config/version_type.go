@@ -8,5 +8,6 @@ const (
 	VersionBeta    = "beta"
 	VersionAlpha   = "alpha"
 	VersionCanary  = "canary"
+	VersionNightly = "nightly"
 	VersionUnknown = "unknown"
 )
