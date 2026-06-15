@@ -67,10 +67,10 @@ jobs:
         run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
       - name: Build with GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
-          version: latest
+          version: '~> v2'
           args: release --snapshot --clean
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
