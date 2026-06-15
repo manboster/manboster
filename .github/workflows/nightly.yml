@@ -73,11 +73,11 @@ jobs:
           version: '~> v2'
           args: release --snapshot --clean
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Nightly Release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           NIGHTLY_TAG="nightly-${{ env.DATE }}"
           gh release create "$NIGHTLY_TAG" ./dist/*.tar.gz ./dist/*.zip ./dist/checksums.txt \
@@ -93,4 +93,4 @@ jobs:
           delete_tag_pattern: ^nightly-
           delete_tags: true
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
