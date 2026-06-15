@@ -24,15 +24,15 @@ BTW, Manboster's code is mainly written by human, with AIs written in helper fun
 4. Default zero-trust design, gatekeeper system and TTL settings to handle all tool calls. 
 5. Pluggable built-in tools, you can enable or disable it using `manboster config`.
 6. A built-in web search tool with headless browsers using `go-rod`. Use it to search for the Internet or give your search API's keys
-7. [Experimental] Compatibility with your old OpenClaw skills, just type `manboster skills install SKILLS.md` or `manboster skills install SKILLS.zip` to install!
-8. [Experimental] A built-in vault tool helps you store your sensitive data using industry best practices while balancing your experience. LLM NEVER has access to you credentials.
-9. [Experimental] A built-in script runner sandbox tool enables JavaScript or Python scripts can run in wasm sandbox. 
-10. [Work in Progress] Pluggable RAG memory system and mem0 theory adaption.
-11. [Work in Progress] MCP(Model Context Protocol) Compatibility, just add them and use them as native tool calls in Manboster.
-12. [Work in Progress] Simulate UI/Input interactions, screenshot, there are a plenty of Built-in SDKs to use for building your plugins.
-13. [Work in Progress] Plugins based on wasm & extism which is lightweight and prevents malicious plugins from breaking your machine.
-14. [Work in Progress] MamboHub, a distribution center enables you to use and download skills and plugins with ease. Also, we will compat ClawHub and more skill hubs.
-15. [Work in Progress] Install plugins using `.manboplugin` files, you can even develop and write your plugins using `manbodev` helper!
+7. [Work in Progress] Compatibility with your old OpenClaw skills, just type `manboster skills install SKILLS.md` or `manboster skills install SKILLS.zip` to install!
+8. [Work in Progress] A built-in vault tool helps you store your sensitive data using industry best practices while balancing your experience. LLM NEVER has access to you credentials.
+9. [Work in Progress] A built-in script runner sandbox tool enables JavaScript or Python scripts can run in wasm sandbox. 
+10. [Planned] Pluggable RAG memory system and mem0 theory adaption.
+11. [Planned] MCP(Model Context Protocol) Compatibility, just add them and use them as native tool calls in Manboster.
+12. [Planned] Simulate UI/Input interactions, screenshot, there are a plenty of Built-in SDKs to use for building your plugins.
+13. [Planned] Plugins based on wasm & extism which is lightweight and prevents malicious plugins from breaking your machine.
+14. [Planned] MamboHub, a distribution center enables you to use and download skills and plugins with ease. Also, we will compat ClawHub and more skill hubs.
+15. [Planned] Install plugins using `.manboplugin` files, you can even develop and write your plugins using `manbodev` helper!
 
 ## QuickStart
 
@@ -42,9 +42,10 @@ BTW, Manboster's code is mainly written by human, with AIs written in helper fun
 
 If you downloaded the Go programming language development kit? Just type `go install github.com/manboster/manboster/cmd/manboster@latest` to install!
 
-For more details, please run `manboster help` in your terminal or [read this documentation](https://manboster.dev/docs/quickstart.html)!
+For more details, [read this documentation](https://manboster.dev/docs/quickstart.html)!
 
 **Notes for the Daemon**: Simply double-click would not start the daemon, if you want to create and start the daemon, please run `manboster start`.
+
 ## Make a contribution
 
 Manboster is now open to the community and we are looking forward to your contributions! Read [CONTRIBUTING.md](./CONTRIBUTING.md) to start!

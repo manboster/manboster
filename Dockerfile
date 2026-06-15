@@ -9,7 +9,7 @@ WORKDIR /app
 # copy dist
 COPY --from=dist /app/build/manboster /app/manboster
 
-ENV MANBOSTER_HOMEDIR="/app/manboster"
+ENV MANBOSTER_HOME="/app/manboster"
 
 EXPOSE 8080
 # run build manboster

@@ -22,15 +22,15 @@
 4. 零信任架构设计，守门员系统会拦截住所有的工具调用请求并逐一放行，有缓存期而不是永久的允许。
 5. 可插拔可配置的内置工具，你完全可以用 `manboster config` 启用或禁用一个工具。
 6. 一个内置的搜索工具，它内置了基于 `go-rod` 的无头浏览器，你可以用它做搜索，当然，你也可以用自己的搜索API Key来搜索。
-7. [实验性功能] 兼容旧的 OpenClaw skills，只需要输入 `manboster skills install SKILLS.md` 或 `manboster skills install SKILLS.zip` 即可安装！再也不用担心老的OpenClaw技能不能在manboster里面不能用啦！
-8. [实验性功能] 内置的保险箱工具，同时兼顾使用体验的情况下采用业界最佳实践来存储敏感数据。大语言模型绝对无法访问你存在保险箱里的数据。
-9. [实验性功能] 内置的脚本运行器沙盒工具，支持大模型在 Wasm 沙盒中运行 JavaScript 或 Python 脚本。
-10. [开发中功能] 可插拔的 RAG（检索增强生成）记忆系统及对 mem0 理论的适配。
-11. [开发中功能] 模拟 UI/输入交互、屏幕截图，并提供大量内置 SDK 供你构建插件时使用。
-12. [开发中功能] MCP协议支持，只需要配置连接MCP服务器，就可以让你的Manboster轻松接入其他工具！
-13. [开发中功能] 基于 Wasm 和 Extism 的插件系统，它不仅轻量，还能防止恶意插件破坏你的机器。
-14. [开发中功能] MamboHub，一个让你可以轻松下载并使用技能与插件的分发中心。我们当然也会支持类似于 ClawHub 的 skills 安装
-15. [开发中功能] 你可以使用 .manboplugin 文件安装插件，或者是使用 manbodev 辅助工具来开发和编写自己的插件！
+7. [开发中功能] 兼容旧的 OpenClaw skills，只需要输入 `manboster skills install SKILLS.md` 或 `manboster skills install SKILLS.zip` 即可安装！再也不用担心老的OpenClaw技能不能在manboster里面不能用啦！
+8. [开发中功能] 内置的保险箱工具，同时兼顾使用体验的情况下采用业界最佳实践来存储敏感数据。大语言模型绝对无法访问你存在保险箱里的数据。
+9. [开发中功能] 内置的脚本运行器沙盒工具，支持大模型在 Wasm 沙盒中运行 JavaScript 或 Python 脚本。
+10. [计划中功能] 可插拔的 RAG（检索增强生成）记忆系统及对 mem0 理论的适配。
+11. [计划中功能] 模拟 UI/输入交互、屏幕截图，并提供大量内置 SDK 供你构建插件时使用。
+12. [计划中功能] MCP协议支持，只需要配置连接MCP服务器，就可以让你的Manboster轻松接入其他工具！
+13. [计划中功能] 基于 Wasm 和 Extism 的插件系统，它不仅轻量，还能防止恶意插件破坏你的机器。
+14. [计划中功能] MamboHub，一个让你可以轻松下载并使用技能与插件的分发中心。我们当然也会支持类似于 ClawHub 的 skills 安装
+15. [计划中功能] 你可以使用 .manboplugin 文件安装插件，或者是使用 manbodev 辅助工具来开发和编写自己的插件！
 
 
 ## 快速上手
@@ -39,7 +39,7 @@
 
 第一次开启时，它会要求你配置信息，根据要求配置就可以继续了。
 
-更多详见命令行帮助文档： `manboster help` 或者是 [快速开始文档](https://manboster.dev/zh-cn/docs/quickstart.html)
+更多详见 [快速开始文档](https://manboster.dev/zh-cn/docs/quickstart.html)
 
 直接启动不会开启守护进程，输入以下内容启动守护进程。
 

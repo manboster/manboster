@@ -1,6 +1,10 @@
 package tool
 
-import "os"
+import (
+	"os"
+
+	"github.com/manboster/manboster/internal/config"
+)
 
 var IsLoading = false
 
@@ -9,6 +13,10 @@ func init() {
 }
 
 func detectLoaderMode() bool {
+	if err := config.Init(); err != nil {
+		return false
+	}
+
 	if len(os.Args) < 2 {
 		return true
 	}
@@ -18,5 +26,6 @@ func detectLoaderMode() bool {
 		}
 		return arg != "onboard" && arg != "config"
 	}
+
 	return true
 }

@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-	"os"
-	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -15,10 +13,7 @@ func Init() error {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	// first, we check whether there is ~/.manboster/ or not
-	home, err := os.UserHomeDir()
-	if err == nil {
-		viper.AddConfigPath(filepath.Join(home, ".manboster"))
-	}
+	viper.AddConfigPath(Path(""))
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); errors.As(err, &viper.ConfigFileNotFoundError{}) {

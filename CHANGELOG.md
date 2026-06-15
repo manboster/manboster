@@ -40,7 +40,7 @@
 ## Chores
 1. update descriptions across all tool providers for clarity
 
-## v0.0.1 - Released on Apr 21, 2026
+# v0.0.1 - Released on Apr 21, 2026
 
 ## Added
 1. Core Engine
