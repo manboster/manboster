@@ -1,7 +1,7 @@
 FROM golang:alpine AS dist
 WORKDIR /app
 COPY . .
-RUN make build
+RUN apk add make && make build
 
 FROM alpine AS production
 WORKDIR /app
