@@ -5,7 +5,6 @@
   "cli.config.entrypoint.config": "配置\n管理模型和聊天服务商设置，修改默认模型或应用参数。",
   "cli.config.entrypoint.editor": "用系统默认编辑器打开 config.yaml\n（仅限高级用户使用）",
   "cli.config.entrypoint.quit": "退出配置向导\n再见！",
-
   "cli.config.landing.select_prompt": "请选择要配置的项目",
   "cli.config.landing.select_help": "请选择要配置的内容。",
   "cli.config.landing.chat": "聊天服务提供商\n添加、编辑或删除聊天服务提供商。",
@@ -14,42 +13,35 @@
   "cli.config.landing.hachimi": "Hachimi 设置\n添加、编辑或删除 Hachimi 服务提供商，或修改 Hachimi 有关的相关相关设置。",
   "cli.config.landing.app": "应用设置\n修改 Manboster 应用方面的设置。",
   "cli.config.landing.quit": "退出\n再见！",
-
   "cli.config.action.delete_provider": "删除此服务商",
   "cli.config.action.edit_provider": "编辑此服务商",
   "cli.config.action.set_default": "设为默认服务商",
   "cli.config.action.quit": "退出",
   "cli.config.action.what_to_do": "请选择要执行的操作：",
-
   "cli.config.chat.select_prompt": "请选择要配置的聊天服务商：",
   "cli.config.chat.select_help": "请选择一个聊天服务商进行配置。",
   "cli.config.chat.delete_confirm": "确定要删除 {{ .Name }} 吗？\n\n此操作不可撤销！",
   "cli.config.chat.delete_success": "聊天服务商 {{ .Name }} 已删除。",
-
   "cli.config.llm.select_prompt": "请选择要配置的大模型服务提供商：",
   "cli.config.llm.select_help": "请选择一个大模型服务提供商进行配置。",
   "cli.config.llm.delete_confirm": "确定要删除 {{ .Name }} 吗？\n\n此操作不可撤销！",
   "cli.config.llm.delete_success": "大模型服务提供商 %q 已删除。",
-
   "cli.config.tool.select_prompt": "请选择要配置的工具：",
   "cli.config.tool.select_help": "请选择一个工具进行配置。",
   "cli.config.tool.delete_confirm": "确定要删除 {{ .Name }} 吗？\n\n此操作不可撤销！",
   "cli.config.tool.delete_success": "工具 {{ .Name }} 已删除。",
   "cli.config.tool.no_config": "无需配置",
-
   "cli.config.hachimi.select_prompt": "请选择要配置的 Hachimi 服务商：",
   "cli.config.hachimi.select_help": "请选择一个 Hachimi 服务商进行配置。",
   "cli.config.hachimi.set_default": "Hachimi 服务商 {{ .Name }} 已设为默认。",
   "cli.config.hachimi.delete_confirm": "确定要删除 {{ .Name }} 吗？\n\n此操作不可撤销！",
   "cli.config.hachimi.delete_success": "Hachimi 服务商 {{ .Name }} 已删除。",
-
   "cli.config.database.select_prompt": "请选择要管理的数据库内容",
   "cli.config.database.select_help": "请选择要配置的数据库内容。",
   "cli.config.database.sessions": "会话\n管理日常聊天会话，你可以在这里清理无用会话来释放磁盘空间。",
   "cli.config.database.users": "用户\n授予或撤销特定用户的管理员权限。",
   "cli.config.database.souls": "Soul\nSoul 用于定制化你龙虾的系统提示词。",
   "cli.config.database.quit": "退出\n再见！",
-
   "cli.config.soul.select_prompt": "请选择要管理的 Soul：",
   "cli.config.soul.edit_action": "编辑此 Soul 的内容",
   "cli.config.soul.delete_action": "删除此 Soul",
@@ -65,7 +57,6 @@
   "cli.config.soul.content_help": "请输入此 Soul 的系统提示词内容。",
   "cli.config.soul.scope_input": "作用域",
   "cli.config.soul.scope_help": "请输入以逗号分隔的作用域（如 global,telegram）。",
-  
   "cli.config.run.daemon_running": "Manboster 正在运行，请先执行 'manboster stop' 停止后再操作。",
   "cli.config.run.init_error": "配置初始化失败：{{ .Error }}。请先执行 'manboster onboard' 或 'manboster' 完成初始化。",
   "cli.config.run.error": "配置过程中发生错误：{{ .Error }}",
@@ -79,13 +70,11 @@
   "cli.config.run.onboard_validate_error": "配置校验失败：{{ .Error }}",
   "cli.config.run.onboard_write_error": "写入配置失败：{{ .Error }}",
   "cli.config.run.onboard_success": "配置保存成功！",
-  
   "cli.config.option.add_new": "添加一个新的",
   "cli.config.option.quit": "退出",
   "cli.config.option.purge": "清理无用会话数据（释放空间）",
   "cli.config.option.create_new": "新建",
   "cli.config.option.bye": "再见！",
-  
   "cli.config.user.select_prompt": "请选择要管理的用户：",
   "cli.config.user.promote_action": "提升为管理员",
   "cli.config.user.degrade_action": "降级为普通用户",
@@ -97,7 +86,6 @@
   "cli.config.user.degrade_success": "用户已降级为普通用户！",
   "cli.config.user.delete_confirm": "确定要删除用户 {{ .Name }} 吗？此操作不可撤销！",
   "cli.config.user.delete_success": "用户已删除。",
-  
   "cli.config.session.select_prompt": "请选择要管理的会话：",
   "cli.config.session.edit_action": "修改此会话的服务商和模型",
   "cli.config.session.delete_action": "删除此会话",
