@@ -1,7 +1,8 @@
 {
   "tool.file.write_mode": "读写模式",
   "tool.file.write_mode.desc": "文件访问模式。'readonly' 禁止写入和删除；'readwrite' 允许在工作区内进行写入和删除操作。",
-
   "tool.browser.mode": "浏览器启动模式",
-  "tool.browser.mode.desc": "浏览器启动模式。服务器环境请使用 'headless'；仅在有桌面 UI 的环境下才使用 'headful'。"
+  "tool.browser.mode.desc": "浏览器启动模式。服务器环境请使用 'headless'；仅在有桌面 UI 的环境下才使用 'headful'。",
+  "tool.search.providers": "Search Providers",
+  "tool.search.providers.desc": "Select search providers you want to use."
 }
