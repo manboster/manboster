@@ -1,0 +1,8 @@
+{
+  "engine.handler.tool_call_limit": "Models tried the same tool call too many times or model calls returned failures too many times. We stopped it to avoid consuming useless tokens and time.",
+  "engine.handler.compact_wait": "Compacting session `{{ .Name }}`, please wait...",
+  "engine.handler.compact_no_need": "The context is small enough and does not need compacting.",
+  "engine.handler.compact_error": "An error occurred while compacting this session.",
+  "engine.handler.reject": "Access denied. You are not allowed to use this bot or this command.\nIf you believe this is a mistake, please contact the bot owner.",
+  "engine.handler.selection_gone": "This selection session no longer exists or has timed out. Please try again."
+}
