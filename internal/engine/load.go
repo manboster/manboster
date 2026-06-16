@@ -77,7 +77,7 @@ func (e *Engine) Load(ctx context.Context) error {
 			color.Yellow(i18n.T(keys.EngineLoadBeta))
 		case config.VersionAlpha:
 			color.Yellow(i18n.T(keys.EngineLoadAlpha))
-		case config.VersionCanary:
+		case config.VersionCanary, config.VersionNightly:
 			color.HiRed(i18n.T(keys.EngineLoadCanary))
 			color.Yellow(i18n.T(keys.EngineLoadCanaryWarn))
 		default:

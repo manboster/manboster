@@ -1,0 +1,5 @@
+files:
+  - source: /internal/i18n/locales/en/*.en.json
+    translation: /internal/i18n/locales/%locale%/%original_file_name%
+    translation_replace:
+      ".en.json": ".%locale_with_underscore%.json"
