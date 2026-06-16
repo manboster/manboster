@@ -79,12 +79,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NIGHTLY_TAG="nightly-${{ env.DATE }}"
-          gh release create "$NIGHTLY_TAG" ./dist/*.tar.gz ./dist/*.zip ./dist/checksums.txt \
-            --title "Nightly Build ($NIGHTLY_TAG)" \
-            --prerelease \
-            --target ${{ github.sha }} \
-            --notes "The latest version of nightly build"
+            NIGHTLY_TAG="nightly-${{ env.DATE }}"
+            DEV_SHA=$(git rev-parse HEAD) 
+            
+            gh release create "$NIGHTLY_TAG" ./dist/*.tar.gz ./dist/*.zip ./dist/checksums.txt \
+              --title "Nightly Build ($NIGHTLY_TAG)" \
+              --prerelease \
+              --target $DEV_SHA \
+              --notes "The version of nightly build"
 
       - name: Delete older Nightly releases
         uses: dev-drprasad/delete-older-releases@v0.3.3
