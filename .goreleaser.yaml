@@ -34,7 +34,7 @@ builds:
 archives:
   - formats: ["tar.gz"]
     name_template: >-
-      {{ .ProjectName }}_{{ if not eq (envOrDefault "CHANNEL" "nightly") "canary" }}{{ .Version }}_{{else}}canary_{{ end }}{{ .Os }}_{{ .Arch }}
+      {{ .ProjectName }}_{{ if ne (envOrDefault "CHANNEL" "nightly") "canary" }}{{ .Version }}_{{else}}canary_{{ end }}{{ .Os }}_{{ .Arch }}
     format_overrides:
       - goos: windows
         formats: ["zip"]
