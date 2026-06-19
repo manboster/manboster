@@ -51,10 +51,7 @@ jobs:
           fi
 
           if [[ -z "${artifact_version:-}" ]]; then
-            latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | grep -v "-" | head -n 1)"
-            if [[ -z "$latest_tag" ]]; then
-              latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | head -n 1)"
-            fi
+            latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | head -n 1)"
             artifact_version="${latest_tag#v}"
             artifact_version="${artifact_version%%-*}"
           fi
