@@ -4,7 +4,6 @@
   "hachimi.gguf.model_type.desc": "如果使用的是安全防护模型，请选择 'safeguard'，否则保持默认即可。",
   "hachimi.gguf.context_length": "上下文长度",
   "hachimi.gguf.context_length.desc": "Hachimi 可处理的上下文长度。可用内存较低时请选择较小的值，上下文越大可处理的消息越长。如果你不知道是什么，用默认值。",
-
   "hachimi.gguf.setup.prompt": "是否手动输入模型详情？\n\n如果你不知道是什么，用默认值。",
   "hachimi.gguf.setup.question": "是否手动输入模型详情？",
   "hachimi.gguf.setup.url_input": "GGUF 文件 URL",

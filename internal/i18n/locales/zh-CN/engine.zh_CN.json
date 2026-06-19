@@ -5,10 +5,8 @@
   "engine.load.alpha": "[Manboster Engine] 你正在使用 Alpha 版！新功能仍在实验阶段，欢迎测试和反馈你的体验以及报告你遇到的 bug！",
   "engine.load.canary": "[Manboster Engine] 你正在使用 Canary 版！感谢你下载最新版本的泥头车创飞自我，但是千万不要在此版本中存储任何重要信息！因为我们也无法保证它会不会正常工作。",
   "engine.load.canary_warn": "[Manboster Engine] 你在使用的这个版本出现 Bug 属于正常现象，欢迎在我们的仓库提交 Issue，但是提交前请先确认该问题是否已被修复。",
-
   "engine.describe.to_human": "🤖❓ 模型想要调用工具 `{{ .Name }}`（`{{ .ActualName}}`）",
   "engine.describe.with_params": "，参数：{{ .Name }}",
   "engine.describe.continue": "，是否允许？",
-
   "engine.chatdata.compact_success": "成功压缩了旧会话 `{{ .Old }}`！创建了新会话 `{{ .New }}`。\n压缩会话信息：\n```{{ .Data }}```\n旧会话已被保存"
 }
