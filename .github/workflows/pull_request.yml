@@ -1,0 +1,57 @@
+name: Build Check for PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "*.md"
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go.mod"
+
+      - name: Determine base version
+        id: base-version
+        run: |
+          if [[ -z "${artifact_version:-}" ]]; then
+            latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | grep -v "-" | head -n 1)"
+            if [[ -z "$latest_tag" ]]; then
+              latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | head -n 1)"
+            fi
+            artifact_version="${latest_tag#v}"
+            artifact_version="${artifact_version%%-*}"
+          fi
+
+          echo "artifact_version=$artifact_version" >> "$GITHUB_OUTPUT"
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --snapshot --clean
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHANNEL: snapshot
+          ARTIFACT_VERSION: ${{ steps.base-version.outputs.artifact_version }}
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: manboster
+          path: |
+            dist/checksums.txt
+            dist/manboster_*.tar.gz
+            dist/manboster_*.zip
