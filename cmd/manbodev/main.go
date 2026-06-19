@@ -5,8 +5,8 @@ import (
 )
 
 // Manbodev: A helpful toolchain builder for Manboster plugins
-// Powered by chihuo2104 (c) 2026
-// Last Update: 2026.4.15
+// Powered by the Manboster contributors (c) 2026
+// Last Update: 2026.6.20
 
 func main() {
 	manbodev.Init()

@@ -1,12 +1,12 @@
 # Manboster Contributing Guideline
 
-*Rev 4.1; May 26, 2026*
+*Rev 4.2; Jun 20, 2026*
 
 ## TL;DR
 
-Welcome to contribute Manboster! Manboster is an AI agent focused on security and personal conditions and we are looking forward you to join us!
+Welcome to contribute Manboster! Manboster is an AI agent focused on security and personal conditions, we are looking forward you to join us!
 
-When contributing to this project (via `git push` or Pull Request), these guidelines apply.
+When contributing to this project (via `git push` or Pull Request) or translating this application via [Crowdin](https://crowdin.com/project/manboster) or other platforms, these guidelines apply.
 
 If you are a first-time contributor, please look for the `good-first-issue` label in the opened issues.
 
@@ -24,25 +24,27 @@ We don't care that whether Claude or ChatGPT helped you code or not, however, Ma
 
 ## 2. About the Versioning
 
-2.1 The Versioning follows the principle of [SemVer](https://semver.org/).
+2.1 The Versioning of Manboster follows the principle of [SemVer](https://semver.org/).
 
-2.2 Version `0.0.1` represents minor bug fixes.
+2.2 Version `0.0.1` represents minor bug fixes while the Version `0.1.0` represents new features.
 
-2.3 Version `0.1.0` represents new features.
+2.3 Before a `0.1.0` release, Beta and Release Candidate (RC) versions should be released, tagged as `0.x.0-beta` and `0.x.0-rc`.
 
-2.4 Before a `0.1.0` release, Beta and Release Candidate (RC) versions should be released, tagged as `0.x.0-beta` and `0.x.0-rc`.
+2.4 It's **NOT ALLOWED** to add new features in RC versions.
 
-2.5 It's **NOT ALLOWED** to add new features in RC versions.
+2.5 Core contributors may release RC, Stable, and Beta versions for `0.x.0`.
 
-2.6 Core contributors may release RC, Stable, and Beta versions for `0.x.0`.
+2.6 Version `1.0.0` represents a significant leap in features and architecture. The configuration version shall be upgraded accordingly.
 
-2.7 Version `1.0.0` represents a significant leap in features and architecture. The configuration version shall be upgraded accordingly.
+2.7 Before a `1.0.0` release, Beta and Release Candidate (RC) versions should be released, tagged as `x.0.0-beta`, and `x.0.0-rc`.
 
-2.8 Before a `1.0.0` release, Alpha, Beta, and Release Candidate (RC) versions should be released, tagged as `x.0.0-alpha`, `x.0.0-beta`, and `x.0.0-rc`.
+2.8 Beta versions can be released multiple times based on the condition and requirement, tagged as `v0.0.0-beta.1`, for example.
 
 2.9 Core contributors may release RC and Beta versions for `1.0.0`. Only the owner can release stable `1.0.0` versions.
 
-2.10 Core contributors shall create new git branches for 0.1.0 and 1.0.0 versions (e.g., `dev-v0.x`, `dev-v1.x`) and merge bug fixes from older versions.
+2.10 Core contributors shall create new git branches for 0.1.0 and 1.0.0 versions (e.g., `dev`) and merge bug fixes from older versions.
+
+2.11 We offer `canary` versions, which was built from the very fresh recently pushes. We reserve 3 latest release's tags and delete them occasionally.
 
 ## 3. About the commit 
 
@@ -93,6 +95,8 @@ If you continuously contribute high-quality codes, I'm happy to invite you to jo
 ## Changelogs
 
 This guideline may be updated as needed. Please review it frequently to stay informed of changes.
+
+Rev 4.2: Simplify versioning details & add translation in Crowdin, Updated on 2026.6.20
 
 Rev 4.1: Fixed typo, Updated on 2026.5.26
 
