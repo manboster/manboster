@@ -36,6 +36,8 @@ jobs:
             artifact_version="${tag#v}"
             if [[ "$tag" == *"-beta"* ]]; then
               channel="beta"
+            elif [[ "$tag" == *"-rc"* ]]; then
+              channel="rc"
             else
               channel="stable"
             fi

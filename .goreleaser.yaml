@@ -16,7 +16,7 @@ builds:
       - -s -w
       - -X github.com/manboster/manboster/internal/config.BuildCommit={{.ShortCommit}}
       - -X github.com/manboster/manboster/internal/config.BuildTime={{.Date}}
-      - -X github.com/manboster/manboster/internal/config.CurrentVersion={{ if .IsSnapshot }}{{ envOrDefault "CHANNEL" "nightly" }}{{ else }}{{ envOrDefault "CHANNEL" "unknown" }}{{ end }}
+      - -X github.com/manboster/manboster/internal/config.CurrentVersion={{ if .IsSnapshot }}{{ envOrDefault "CHANNEL" "snapshot" }}{{ else }}{{ envOrDefault "CHANNEL" "unknown" }}{{ end }}
     goos:
       - linux
       - darwin
