@@ -34,18 +34,18 @@ builds:
 archives:
   - formats: ["tar.gz"]
     name_template: >-
-      {{ .ProjectName }}_{{ if ne (envOrDefault "CHANNEL" "nightly") "canary" }}{{ .Version }}_{{else}}canary_{{ end }}{{ .Os }}_{{ .Arch }}
+      {{ .ProjectName }}_{{ if .IsSnapshot }}{{ envOrDefault "ARTIFACT_VERSION" .Version }}-{{ .ShortCommit }}{{ else }}{{ .Version }}{{ end }}_{{ .Os }}_{{ .Arch }}
     format_overrides:
       - goos: windows
         formats: ["zip"]
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-      - '^chore:'
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
