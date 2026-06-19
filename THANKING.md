@@ -4,6 +4,14 @@ We thank contributors contributed to this project:
 
 [TBF]
 
+The Manboster package is currently maintaining by them, so we also thank them for making Manboster installed more easily:
+
+| Platform                       |  Maintainer                                    |
+|--------------------------------|------------------------------------------------|
+| Homebrew Tap                   | [Lockinwize Lolite](https://github.com/mzwing) |
+| AOSC OS                        | [chihuo2104](https://github.com/chihuo2104)    |
+| AUR(Archlinux User Repository) | [GrassBlock](https://github.com/grassblock1)   |
+
 We also thank people and projects who inspired or engaged in this project.
 
 Projects:
