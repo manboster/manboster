@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
+      - dev
+    paths-ignore:
+      - "*.md"
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "*.md"
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go.mod"
+
+      - name: Determine release mode
+        id: release-mode
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_type }}" == "tag" ]]; then
+            tag="${{ github.ref_name }}"
+            artifact_version="${tag#v}"
+            if [[ "$tag" == *"-beta"* ]]; then
+              channel="beta"
+            else
+              channel="stable"
+            fi
+            extra_args=""
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "dev" ]]; then
+            channel="canary"
+            extra_args="--snapshot"
+          else
+            channel="snapshot"
+            extra_args="--snapshot"
+          fi
+
+          if [[ -z "${artifact_version:-}" ]]; then
+            latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | grep -v "-" | head -n 1)"
+            if [[ -z "$latest_tag" ]]; then
+              latest_tag="$(git tag -l "v[0-9]*" --sort=-v:refname | head -n 1)"
+            fi
+            artifact_version="${latest_tag#v}"
+            artifact_version="${artifact_version%%-*}"
+          fi
+
+          {
+            echo "channel=$channel"
+            echo "extra_args=$extra_args"
+            echo "artifact_version=$artifact_version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release ${{ steps.release-mode.outputs.extra_args }} --clean
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ steps.release-mode.outputs.channel }}
+          ARTIFACT_VERSION: ${{ steps.release-mode.outputs.artifact_version }}
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: manboster
+          path: |
+            dist/checksums.txt
+            dist/manboster_*.tar.gz
+            dist/manboster_*.zip
+
+      - name: Update canary release
+        if: steps.release-mode.outputs.channel == 'canary'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git tag --force canary "${{ github.sha }}"
+          git push --force origin refs/tags/canary:refs/tags/canary
+
+          gh release delete canary --yes || true
+
+      - name: Update canary release
+        if: steps.release-mode.outputs.channel == 'canary'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: canary
+          prerelease: true
+          name: Canary Build
+          body: |
+            The latest developer preview from ${{ github.sha }}.
+          files: |
+            dist/checksums.txt
+            dist/manboster_*.tar.gz
+            dist/manboster_*.zip
+          fail_on_unmatched_files: true
