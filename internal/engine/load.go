@@ -68,9 +68,9 @@ func (e *Engine) Load(ctx context.Context) error {
 	}()
 
 	// version tips
-	if config.VersionType(config.CurrentChannel) != config.ChannelStable {
+	if config.ChannelType(config.CurrentChannel) != config.ChannelStable {
 		color.Yellow(i18n.T(keys.EngineLoadUnstable))
-		switch config.VersionType(config.CurrentChannel) {
+		switch config.ChannelType(config.CurrentChannel) {
 		case config.ChannelRC:
 			color.Yellow(i18n.T(keys.EngineLoadRC))
 		case config.ChannelBeta:

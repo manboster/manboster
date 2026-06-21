@@ -18,7 +18,7 @@ func OnboardWarningPrompt(provider cli.Provider) (bool, error) {
 		return t, err
 	}
 
-	if config.VersionType(config.CurrentChannel) != config.ChannelStable {
+	if config.ChannelType(config.CurrentChannel) != config.ChannelStable {
 		return provider.Prompt(
 			i18n.T(keys.OnboardWarningUnstableTitle),
 			i18n.T(keys.OnboardWarningUnstablePrompt),
