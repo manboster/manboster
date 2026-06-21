@@ -3,5 +3,5 @@ files:
     translation: /internal/i18n/locales/%locale%/%file_name%.%locale_with_underscore%.json
     translation_replace:
       ".en.": "."
-  - source: README.md
-    translation: README.%locale_with_underscore%.md
+  - source: /README.md
+    translation: /README.%locale_with_underscore%.md
