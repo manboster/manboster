@@ -1,13 +1,13 @@
 package config
 
-type VersionType string
+type ChannelType string
 
 const (
-	VersionStable  = "stable"
-	VersionRC      = "rc"
-	VersionBeta    = "beta"
-	VersionAlpha   = "alpha"
-	VersionCanary  = "canary"
-	VersionNightly = "nightly"
-	VersionUnknown = "unknown"
+	ChannelStable  = "stable"
+	ChannelRC      = "rc"
+	ChannelBeta    = "beta"
+	ChannelAlpha   = "alpha"
+	ChannelCanary  = "canary"
+	ChannelNightly = "nightly"
+	ChannelUnknown = "unknown"
 )

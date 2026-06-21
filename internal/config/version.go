@@ -17,7 +17,7 @@ const V = 0
 var (
 	BuildCommit    string = "unknown"
 	BuildTime      string = "unknown"
-	CurrentVersion        = "unknown"
+	CurrentChannel        = "unknown"
 )
 
 func init() {
