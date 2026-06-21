@@ -6,12 +6,12 @@ endif
 COMMIT := $(shell git rev-parse HEAD | cut -c1-6)
 TIME := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 CONFIG_PKG := github.com/manboster/manboster/internal/config
-VERSION ?= canary
-VER ?= 0.1.0
+CHANNEL ?= canary
+VERSION ?= 0.1.0
 
-RELEASE := $(VER)-$(VERSION)-$(COMMIT)-
+RELEASE := $(VERSION)-$(CHANNEL)-$(COMMIT)-
 
-LDFLAGS := -ldflags "-s -w -X '$(CONFIG_PKG).BuildCommit=$(COMMIT)' -X '$(CONFIG_PKG).BuildTime=$(TIME)' -X '$(CONFIG_PKG).CurrentVersion=$(VERSION)'"
+LDFLAGS := -ldflags "-s -w -X '$(CONFIG_PKG).BuildCommit=$(COMMIT)' -X '$(CONFIG_PKG).BuildTime=$(TIME)' -X '$(CONFIG_PKG).CurrentChannel=$(CHANNEL)'"
 
 .PHONY: run build build-release build-release-all build-linux-amd64 build-linux-i386 build-linux-arm64 build-mac build-mac-intel build-mac-amd64 build-win-amd64 build-win-arm64 build-win build-linux
 run :
