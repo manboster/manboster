@@ -1,0 +1,19 @@
+{
+  "llm.openrouter.provider": "OpenRouter",
+  "llm.openrouter.api_key": "OpenRouter API 密钥",
+  "llm.openrouter.api_key.desc": "你的 OpenRouter API Key。\n如果你还没有一个key的话，你可以去 https://openrouter.ai/workspaces/default/keys 创建一个。",
+  "llm.oai_compat.provider": "OpenAI 兼容 API",
+  "llm.oai_compat.name": "服务提供商的名称",
+  "llm.oai_compat.name.desc": "服务提供商的标识名称。\n你可以自由填写，但是不能包含空格。",
+  "llm.oai_compat.display_name": "服务提供商的显示名称",
+  "llm.oai_compat.display_name.desc": "在应用中显示的服务商名称。如果你不确定的话可以不填。",
+  "llm.oai_compat.base_url": "API 调用地址",
+  "llm.oai_compat.base_url.desc": "调用 API 所使用的地址。\n如果没有，请联系你的服务提供商获取这个地址。",
+  "llm.oai_compat.api_key": "API 密钥",
+  "llm.oai_compat.api_key.desc": "您的 API Key。\n如果还没有，请前往服务商的 API Key 管理页面创建。",
+  "llm.oai_compat.setup.credential_error": "无法根据您的凭据获取信息！",
+  "llm.oai_compat.setup.credential_error_msg": "建议检查您的网络连接和凭据。如果网络较差或确信凭据无误，请按回车手动添加模型；否则请按 Ctrl+C 退出。",
+  "llm.oai_compat.setup.model_select_prompt": "选择模型",
+  "llm.oai_compat.setup.model_select_help": "请选择您的 API 支持的模型。之后可通过 `manboster config` 修改默认值。",
+  "llm.oai_compat.setup.other_model": "其他模型"
+}
