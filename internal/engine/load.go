@@ -35,7 +35,7 @@ func (e *Engine) Load(ctx context.Context) error {
 	}
 
 	e.soulService = soul.NewService(e.repo)
-	e.sessionService = session.NewService(e.repo, e.soulService, e.config)
+	e.sessionService = session.NewService(e.repo, e.soulService, e.config, e.onboard)
 
 	e.safeguardService = safeguard.NewService(e.repo)
 

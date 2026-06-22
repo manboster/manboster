@@ -32,7 +32,7 @@ func (s *Service) LoadChatSession(ctx context.Context, instance chat.Provider, m
 		s.Manager.ChatSession.SetSoul(sessionId, sessInfo.ActivatedSouls)
 	} else if errors.Is(err, repository.ErrNotFound) {
 		// if you're not an administrator, you can not create a new session
-		if isAdmin {
+		if isAdmin || (s.onboard != nil && s.onboard.Active()) {
 			sid, err := s.NewChatSession(ctx, instance.Name(), s.config.App.DefaultLLMProvider, s.config.App.DefaultLLMModel, msg.ChatID)
 			sessionId = sid
 			if err != nil {
