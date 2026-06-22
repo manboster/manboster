@@ -14,7 +14,7 @@ type Service struct {
 	active  bool
 }
 
-// New creates a onboard service
+// New creates an onboard service
 func New() *Service {
 	return &Service{
 		lock:    sync.Mutex{},
