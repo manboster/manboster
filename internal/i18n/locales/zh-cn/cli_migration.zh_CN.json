@@ -1,9 +1,9 @@
 {
-  "cli.migration.wizard": "Manboster Migration Wizard",
-  "cli.migration.started": "Starting inspection on your configuration...",
-  "cli.migration.failed": "Failed to execute migration: {{ .Error }}",
-  "cli.migration.success": "Successfully executed migration process!",
-  "cli.migration.none": "There is nothing to do!",
-  "cli.migration.confirm": "Do you want to migrate? This action is IRREVERSIBLE!",
-  "cli.migration.030_home_dir.detected": "Detected older application directory generated before Manboster 0.3.0, once migrated, it will move to the correct directory."
+  "cli.migration.wizard": "Manboster 迁移向导",
+  "cli.migration.started": "正在检查您的配置……",
+  "cli.migration.failed": "迁移失败！错误：{{ .Error }}",
+  "cli.migration.success": "迁移成功！",
+  "cli.migration.none": "没有可以迁移的，无事可做！",
+  "cli.migration.confirm": "确认要迁移吗？此操作不可撤销！",
+  "cli.migration.030_home_dir.detected": "检测到在 Manboster 0.3.0之前生成的旧配置文件夹，一旦迁移，它将移动到正确的新文件夹。"
 }
