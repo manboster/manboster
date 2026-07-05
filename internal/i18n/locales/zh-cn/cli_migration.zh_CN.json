@@ -1,0 +1,9 @@
+{
+  "cli.migration.wizard": "Manboster Migration Wizard",
+  "cli.migration.started": "Starting inspection on your configuration...",
+  "cli.migration.failed": "Failed to execute migration: {{ .Error }}",
+  "cli.migration.success": "Successfully executed migration process!",
+  "cli.migration.none": "There is nothing to do!",
+  "cli.migration.confirm": "Do you want to migrate? This action is IRREVERSIBLE!",
+  "cli.migration.030_home_dir.detected": "Detected older application directory generated before Manboster 0.3.0, once migrated, it will move to the correct directory."
+}
