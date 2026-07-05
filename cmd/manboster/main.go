@@ -8,9 +8,9 @@ import (
 	"github.com/manboster/manboster/internal/i18n"
 )
 
-// Manboster: Your Personal Manbo Lobster!
-// Powered by the Manboster contributors (c) 2026.
-// Last Update: 2026.6.20
+// Manboster: Your Personal AI Agent Manbo Lobster!
+// Powered by chihuo2104 and the other Manboster contributors (c) 2026.
+// Last Update: 2026.7.5
 
 func main() {
 	err := i18n.Init()

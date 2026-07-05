@@ -18,7 +18,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	respMessage.MessageType = chat.MessageText
 	var respString strings.Builder
 
-	provider, model, _ := h.sessionService.Manager.ChatSession.GetModel(sid)
+	provider, model, _ := h.sessionManager.ChatSession.GetModel(sid)
 
 	p, _ := util.GetModelWithFallback(ctx, h.llmProviders, provider, model)
 	if len(msg.Command.CommandArgs) == 0 {
@@ -61,7 +61,7 @@ func (h *Handler) cmdModel(ctx context.Context, instance chat.Provider, msg *cha
 	}
 
 	model = id
-	h.sessionService.Manager.ChatSession.SetModel(sid, provider, id)
+	h.sessionManager.ChatSession.SetModel(sid, provider, id)
 	err := h.repo.UpdateSession(ctx, sid, map[string]interface{}{
 		"llm_provider_model": model,
 	})

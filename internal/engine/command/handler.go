@@ -2,6 +2,7 @@ package command
 
 import (
 	"github.com/manboster/manboster/internal/config"
+	chatEngine "github.com/manboster/manboster/internal/engine/chat"
 	"github.com/manboster/manboster/internal/engine/handler"
 	"github.com/manboster/manboster/internal/engine/onboard"
 	"github.com/manboster/manboster/internal/engine/safeguard"
@@ -20,7 +21,8 @@ type Handler struct {
 	repo             repository.Repository
 	onboard          *onboard.Service
 	safeguardService *safeguard.Service
-	sessionService   *session.Service
+	sessionManager   *session.Manager
+	chatService      *chatEngine.Service
 	llmProviders     map[string]llm.Provider
 	config           *config.Config
 	soulService      *soul.Service
@@ -29,11 +31,12 @@ type Handler struct {
 	engine           required
 }
 
-func NewHandler(engine required, repo repository.Repository, safeguard *safeguard.Service, sessionService *session.Service, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler) *Handler {
+func NewHandler(engine required, repo repository.Repository, safeguard *safeguard.Service, sessionManager *session.Manager, llmProviders map[string]llm.Provider, config *config.Config, soul *soul.Service, onboardService *onboard.Service, handler *handler.Handler, chatService *chatEngine.Service) *Handler {
 	h := &Handler{
 		repo:             repo,
 		safeguardService: safeguard,
-		sessionService:   sessionService,
+		sessionManager:   sessionManager,
+		chatService:      chatService,
 		llmProviders:     llmProviders,
 		config:           config,
 		soulService:      soul,

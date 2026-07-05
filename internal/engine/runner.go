@@ -33,19 +33,19 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 			}
 
 			if isCompacted {
-				newCh, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+				newCh, created := e.sessionManager.ChatSession.LoadOrCreateChan(newSessionId)
 				if created {
 					e.BuildMessageRunner(instance, newSessionId)
 				}
 				newCh <- msg
-				e.sessionService.Manager.ChatSession.DeleteSession(sessionId)
+				e.sessionManager.ChatSession.DeleteSession(sessionId)
 				return nil
 			}
 
 			cancelCtx, cancel := context.WithCancel(ctx)
-			e.sessionService.Manager.ChatSession.Activate(sessionId, cancel)
+			e.sessionManager.ChatSession.Activate(sessionId, cancel)
 			err = e.MessageHandler(cancelCtx, instance, msg, sessionId)
-			e.sessionService.Manager.ChatSession.Deactivate(sessionId)
+			e.sessionManager.ChatSession.Deactivate(sessionId)
 
 			if err != nil {
 				err := instance.Notify(ctx, msg, chat.ActionError)
@@ -56,7 +56,7 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 			}
 		case <-timer.C:
 			color.Yellow("[Manboster Engine Runner] Timed out for receiving message, bye!")
-			e.sessionService.Manager.ChatSession.DeleteSession(sessionId)
+			e.sessionManager.ChatSession.DeleteSession(sessionId)
 			return nil
 		case <-ctx.Done():
 			return ctx.Err()
@@ -68,8 +68,8 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 func (e *Engine) BuildMessageRunner(instance chat.Provider, sessionId string) {
 	color.Blue("[Manboster Engine] This session is not available in memory storage, now loading from database")
 	cancelCtx, cancelFunc := context.WithCancel(context.Background())
-	e.sessionService.Manager.ChatSession.SetSessionCancel(sessionId, cancelFunc)
-	ch, _ := e.sessionService.Manager.ChatSession.LoadOrCreateChan(sessionId)
+	e.sessionManager.ChatSession.SetSessionCancel(sessionId, cancelFunc)
+	ch, _ := e.sessionManager.ChatSession.LoadOrCreateChan(sessionId)
 	go func() {
 		err := e.MessageRunner(cancelCtx, instance, sessionId, ch)
 		if err != nil {

@@ -25,7 +25,7 @@ func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *ch
 
 	respMessage := msg.Clone()
 	respMessage.MessageType = chat.MessageText
-	sessData, _ := h.sessionService.Manager.ChatSession.GetSession(sessionId)
+	sessData, _ := h.sessionManager.ChatSession.GetSession(sessionId)
 	p, m := util.GetModelWithFallback(ctx, h.llmProviders, sessData.Provider, sessData.Model)
 	provider := p
 	model := m

@@ -8,12 +8,12 @@ import (
 
 // cmdRetry retries last error chat
 func (h *Handler) cmdRetry(ctx context.Context, instance chat.Provider, sessionId string) error {
-	ch, ok := h.sessionService.Manager.ChatSession.LoadOrCreateChan(sessionId)
+	ch, ok := h.sessionManager.ChatSession.LoadOrCreateChan(sessionId)
 	if ok {
 		h.engine.BuildMessageRunner(instance, sessionId)
 	}
 
-	msg := h.sessionService.Manager.ChatSession.GetInputMsg(sessionId)
+	msg := h.sessionManager.ChatSession.GetInputMsg(sessionId)
 	if msg == nil {
 		return nil
 	}

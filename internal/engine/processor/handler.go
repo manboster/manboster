@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/session"
+	chatEngine "github.com/manboster/manboster/internal/engine/chat"
 	"github.com/manboster/manboster/spec/chat"
 )
 
@@ -19,14 +19,13 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 	// get user information
 	resultProcess = ProcessDrop
 	uType := s.safeguardService.UserType(ctx, instance.Name(), msg.UserID)
-	// allowed := chat.MessageSelectionCallback | chat.MessageSelection | chat.MessageCommand | chat.MessageFromCron | chat.MessageFromCronIgnore
 
 	// first we check personal chats
 	if msg.ChatType == chat.ChatsPersonal {
 		resultProcess = ProcessHandle
 
 		// checkout onboard message available or not, MessageCommand is passthrough
-		if s.onboard != nil && s.onboard.Active() && msg.MessageType&chat.MessageCommand == 0 {
+		if s.safeguardService.IsOnboarding() && msg.MessageType&chat.MessageCommand == 0 {
 			msg.MessageType = chat.MessageStart
 		}
 
@@ -51,11 +50,13 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 	switch resultProcess {
 	case ProcessHandle:
 		// get message types
-		sessionId, err := s.sessionService.LoadChatSession(ctx, instance, msg, s.safeguardService.IsAdmin(uType))
+		sessionId, err := s.chatService.LoadChatSession(ctx, instance, msg)
 		// if you're not an administrator, you can not create a new session
-		if errors.Is(err, session.ErrAccessDenied) {
-			color.Yellow(fmt.Sprintf("[Manboster Processor] We detected an unknown user wants to start a new chat!"))
-			msg.MessageType = chat.MessageUnknown
+		if errors.Is(err, chatEngine.ErrCreateRequired) {
+			if !(s.safeguardService.IsAdmin(uType) || s.safeguardService.IsOnboarding()) {
+				color.Yellow(fmt.Sprintf("[Manboster Processor] We detected an unknown user wants to start a new chat!"))
+				msg.MessageType = chat.MessageUnknown
+			}
 		} else if err != nil {
 			color.Red(fmt.Sprintf("[Manboster Processor] We encountered an error while processing message: %q", err))
 			return err
@@ -64,7 +65,7 @@ func (s *Service) Process(ctx context.Context, instance chat.Provider, msg *chat
 	//case ProcessDrop:
 	//	return nil
 	//case ProcessConsider:
-	//	return nil // TODO: manboster active mode
+	//	return nil // TODO: manboster active mode, waiting for slot available...
 	default:
 		return nil
 	}

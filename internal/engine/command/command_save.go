@@ -18,20 +18,20 @@ func (h *Handler) cmdSave(ctx context.Context, instance chat.Provider, msg *chat
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
+	_, avail := h.sessionManager.ChatSession.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{Text: i18n.T(keys.CmdSessionNotActive)}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	p, m, _ := h.sessionService.Manager.ChatSession.GetModel(sessionId)
-	h.sessionService.Manager.ChatSession.DeleteSession(sessionId)
-	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
+	p, m, _ := h.sessionManager.ChatSession.GetModel(sessionId)
+
+	err := h.chatService.DeleteChatSession(ctx, instance, msg, sessionId, false)
 	if err != nil {
 		return err
 	}
 
-	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), p, m, msg.ChatID)
+	sid, err := h.chatService.NewChatSession(ctx, instance, p, m, msg.ChatID)
 	if err != nil {
 		return err
 	}

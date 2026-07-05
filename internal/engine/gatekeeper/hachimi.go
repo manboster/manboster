@@ -23,7 +23,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 	msg.Text = &chat.TextPayload{}
 
 	sessId := BuildSessionId(instance.Name(), msg.ChatID, sid)
-	_, markType := s.sessionService.Manager.Ignorance.GetMark(sessId)
+	_, markType := s.sessionManager.Ignorance.GetMark(sessId)
 
 	if !*s.hachimiLoaded || s.hachimiProvider == nil {
 		color.Yellow("[Manboster Gatekeeper] Hachimi is not loaded!")
@@ -31,7 +31,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 	}
 
 	desc := util.DescribeToHachimi(req, toolProvider)
-	u, avail := s.sessionService.Manager.Ignorance.GetHachimiCache(desc)
+	u, avail := s.sessionManager.Ignorance.GetHachimiCache(desc)
 	if avail {
 		if !u {
 			return false, ErrHachimiDenied
@@ -43,7 +43,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 	if err != nil {
 		return false, err
 	}
-	s.sessionService.Manager.Ignorance.UpdateMark(id)
+	s.sessionManager.Ignorance.UpdateMark(id)
 
 	if resp == nil {
 		resp = &hachimi.Response{
@@ -52,7 +52,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 		}
 	}
 
-	provider, model, _ := s.sessionService.Manager.ChatSession.GetModel(sid)
+	provider, model, _ := s.sessionManager.ChatSession.GetModel(sid)
 	p, m := util.GetModelWithFallback(ctx, s.llmProviders, provider, model)
 
 	var descMsg strings.Builder
@@ -105,7 +105,7 @@ func (s *Service) HachimiHandler(ctx context.Context, instance chat.Provider, me
 			return s.hachimiSelectionHandler(msg, desc, sessId)
 		})
 	case hachimi.ResponseStatusSafe:
-		s.sessionService.Manager.Ignorance.SetHachimiCache(desc, true)
+		s.sessionManager.Ignorance.SetHachimiCache(desc, true)
 
 		color.Blue("[Manboster Gatekeeper] Hachimi thinks it's safe to go!")
 
@@ -120,14 +120,14 @@ func (s *Service) hachimiSelectionHandler(msg *chat.Message, desc string, sid st
 	cb := msg.SelectionCallback
 	switch cb.SelectionValue {
 	case "allow":
-		s.sessionService.Manager.Ignorance.SetHachimiCache(desc, true)
+		s.sessionManager.Ignorance.SetHachimiCache(desc, true)
 		return true, ErrHachimiSafe
 	case "deny":
-		s.sessionService.Manager.Ignorance.SetHachimiCache(desc, false)
+		s.sessionManager.Ignorance.SetHachimiCache(desc, false)
 		return false, ErrHachimiDenied
 	case "allow-suspicious":
-		s.sessionService.Manager.Ignorance.SetHachimiCache(desc, false)
-		s.sessionService.Manager.Ignorance.SetMark(sid, true, 60*60, gatekeeper.MarkHachimiAllSuspicious)
+		s.sessionManager.Ignorance.SetHachimiCache(desc, false)
+		s.sessionManager.Ignorance.SetMark(sid, true, 60*60, gatekeeper.MarkHachimiAllSuspicious)
 		return true, errors.New(i18n.T(keys.GateKeeperHachimiSuspiciousMsg))
 	}
 	return false, fmt.Errorf("invalid selection value: %s", cb.SelectionValue)

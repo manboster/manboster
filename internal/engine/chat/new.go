@@ -1,4 +1,4 @@
-package session
+package chat
 
 import (
 	"context"
@@ -6,12 +6,15 @@ import (
 	"github.com/manboster/manboster/internal/repository/types"
 	"github.com/manboster/manboster/internal/session/chat_session"
 	"github.com/manboster/manboster/internal/util"
+	"github.com/manboster/manboster/spec/chat"
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvider string, model string, chatId string) (string, error) {
+func (s *Service) NewChatSession(ctx context.Context, instance chat.Provider, chatId string, llmProvider string, model string) (string, error) {
 	sessionId := util.RandomString(8)
 	soulsList := s.soulService.GetSoulsList(ctx, chatId)
+	provider := instance.Name()
+
 	err := s.repo.CreateSession(ctx, types.Session{
 		SessionID:        sessionId,
 		LLMProvider:      llmProvider,
@@ -21,8 +24,9 @@ func (s *Service) NewChatSession(ctx context.Context, provider string, llmProvid
 	if err != nil {
 		return "", err
 	}
+
 	// set a new session
-	s.Manager.ChatSession.SetSession(sessionId, chat_session.Session{
+	s.sessionManager.ChatSession.SetSession(sessionId, chat_session.Session{
 		Model:    model,
 		Provider: llmProvider,
 		Events:   []llm.Event{},
