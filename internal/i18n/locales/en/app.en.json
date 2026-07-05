@@ -9,5 +9,7 @@
   "app.config_init_error": "[Manboster] Failed to initialize config. Error: {{ .Error }}",
   "app.reading_config": "[Manboster] Reading configuration...",
   "app.loader_error": "[Manboster] Error while loading: {{ .Error }}",
-  "app.goodbye": "[Manboster] Your lobster is going to sleep, thank you for playing with it!"
+  "app.goodbye": "[Manboster] Your lobster is going to sleep, thank you for playing with it!",
+  "app.data_warning": "[Manboster] Pay attention please! It seems that you're using the older application configuration directory. After Manboster 0.3.0, we will automatically use user's configuration directory as default directory instead of ~/.manboster, if you want to migrate, just run `manboster migrate`. If you've done this, please ignore this prompt.",
+  "app.input_prompt": "Press Enter to continue..."
 }

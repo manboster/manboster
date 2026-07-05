@@ -39,6 +39,7 @@ func Main(cmd *cobra.Command, args []string) {
 
 func MainInner() {
 	err := config.Init()
+	config.LookupOlderPaths()
 	if errors.Is(err, config.ErrNoConfig) {
 		color.Yellow(i18n.T(keys.AppConfigNotFound))
 		interact.OnboardConfigCmdRun(&cobra.Command{}, os.Args[1:])

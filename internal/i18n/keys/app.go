@@ -13,4 +13,7 @@ const (
 	AppReadingConfig     = "app.reading_config"
 	AppLoaderError       = "app.loader_error"
 	AppGoodbye           = "app.goodbye"
+	AppInputPrompt       = "app.input_prompt"
+
+	AppDataWarning = "app.data_warning"
 )
