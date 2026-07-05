@@ -12,7 +12,7 @@ At the beginning, it is a personal AI assistant which is able to chat with you w
 
 Since this project is work in progress and only shows as a MVP now, there are a few chat options(Telegram and Feishu/Lark as a second supported provider in next versions) and LLM options(openrouter, kimi, DeepSeek and openai-compatible APIs)
 
-We will sincerely appreciate if you contribute your own codes!
+欢迎来为社区做出自己的一份贡献！
 
 另外，Manboster的主要代码和架构都是由人完成的，剩下的部分实用函数补充和繁杂任务，以及让AI提供了部分架构建议，人最后拍板是否采纳。
 
@@ -25,7 +25,7 @@ We will sincerely appreciate if you contribute your own codes!
 5. 可插拔可配置的内置工具，你完全可以用 `manboster config` 启用或禁用一个工具。
 6. 一个内置的搜索工具，它内置了基于 `go-rod` 的无头浏览器，你可以用它做搜索，当然，你也可以用自己的搜索API Key来搜索。 Use it to search for the Internet or give your search API's keys
 7. [开发中功能] 兼容旧的 OpenClaw skills，只需要输入 `manboster skills install SKILLS.md` 或 `manboster skills install SKILLS.zip` 即可安装！再也不用担心老的OpenClaw技能不能在manboster里面不能用啦！
-8. [Work in Progress] A built-in vault tool helps you store your sensitive data using industry best practices while balancing your experience. LLM NEVER has access to you credentials.
+8. [Work in Progress] A built-in vault tool helps you store your sensitive data using industry best practices while balancing your experience. 大语言模型绝对无法访问你存在保险箱里的数据。
 9. [开发中功能] 内置的脚本运行器沙盒工具，支持大模型在 Wasm 沙盒中运行 JavaScript 或 Python 脚本。
 10. [计划中功能] 可插拔的 RAG（检索增强生成）记忆系统及对 mem0 理论的适配。
 11. [计划中功能] MCP协议支持，只需要配置连接MCP服务器，就可以让你的Manboster轻松接入其他工具！
