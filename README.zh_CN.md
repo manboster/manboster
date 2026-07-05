@@ -1,4 +1,4 @@
-# 🐱🦞Manboster: 你的曼波虾头小助手！
+# 🐱🦞Manboster: Your Personal AI Agent Manbo Lobster!
 
 [English Version](README.md)
 
@@ -6,7 +6,7 @@
 
 我们取了龙虾OpenClaw和龙虾增强版IronClaw的精华，做了一个更加安全的Lobster，并把它取名为Manboster。
 
-## Meet Your Personal Lobster
+## Meet Your Personal AI Agent: Manbo Lobster
 
 At the beginning, it is a personal AI assistant which is able to chat with you with ease. However, equipped with wasm-based plugins, you can use it to do anything you want with security guaranteed!
 
