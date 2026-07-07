@@ -1,0 +1,14 @@
+{
+  "app.daemon.start_error": "[Manboster Daemon] 启动失败：{{ .Error }}\n请确认后台服务未在运行。",
+  "app.daemon.start_success": "[Manboster Daemon] 已启动，稍后即可开始对话！",
+  "app.daemon.stop_success": "[Manboster Daemon] 已停止，感谢使用！",
+  "app.daemon.stop_stopped": "[Manboster Daemon] 后台服务已处于停止状态。",
+  "app.daemon.stop_error": "[Manboster Daemon] 停止失败：{{ .Error }}",
+  "app.daemon.restart_message": "[Manboster Daemon] 正在重启，请稍候...",
+  "app.daemon.status_running": "[Manboster Daemon] 运行中，日志路径：{{ .Name }}",
+  "app.daemon.status_not_running": "[Manboster Daemon] 未运行。可删除 {{ .Name }} 中的 PID 文件重置状态，或执行 'manboster reset'。错误：{{ .Error }}",
+  "app.daemon.status_error": "[Manboster Daemon] 获取 PID 文件失败：{{ .Error }}\n后台服务可能未在运行。",
+  "app.daemon.no_config": "[Manboster Daemon] 未找到配置文件，请先完成初始化配置。",
+  "app.daemon.log_error": "[Manboster Daemon] 读取日志文件失败：{{ .Error }}",
+  "app.daemon.log_reading": ">>> 正在读取日志文件..."
+}

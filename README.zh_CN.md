@@ -1,4 +1,4 @@
-# 🐱🦞Manboster: 你的曼波虾头小助手！ 
+# 🐱🦞Manboster: 你的曼波虾头AI小助手！
 
 [English Version](README.md)
 
