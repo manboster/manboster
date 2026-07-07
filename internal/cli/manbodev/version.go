@@ -18,5 +18,5 @@ func versionCmd() *cobra.Command {
 }
 
 func versionCmdExecutor(cmd *cobra.Command, args []string) {
-	fmt.Printf("Manbodev version %s %s, commit %s, build at %s %s/%s\n", config.Version, config.CurrentVersion, config.BuildCommit, config.BuildTime, runtime.GOOS, runtime.GOARCH)
+	fmt.Printf("Manbodev version %s %s, commit %s, build at %s %s/%s\n", config.Version, config.CurrentChannel, config.BuildCommit, config.BuildTime, runtime.GOOS, runtime.GOARCH)
 }

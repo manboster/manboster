@@ -17,30 +17,22 @@ func (h *Handler) cmdNew(ctx context.Context, instance chat.Provider, msg *chat.
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	_, avail := h.sessionService.Manager.ChatSession.GetSession(sessionId)
+	_, avail := h.sessionManager.ChatSession.GetSession(sessionId)
 	if !avail {
 		respMessage.Text = &chat.TextPayload{Text: i18n.T(keys.CmdSessionNotActive)}
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	p, m, _ := h.sessionService.Manager.ChatSession.GetModel(sessionId)
+	p, m, _ := h.sessionManager.ChatSession.GetModel(sessionId)
 
-	h.sessionService.Manager.ChatSession.DeleteSession(sessionId)
-	err := h.repo.DeleteChat(ctx, msg.ChatID, instance.Name())
+	h.sessionManager.ChatSession.DeleteSession(sessionId)
+
+	err := h.chatService.DeleteChatSession(ctx, instance, msg, sessionId, true)
 	if err != nil {
 		return err
 	}
 
-	err = h.repo.DeleteChatData(ctx, sessionId)
-	if err != nil {
-		return err
-	}
-	err = h.repo.DeleteSession(ctx, sessionId)
-	if err != nil {
-		return err
-	}
-
-	sid, err := h.sessionService.NewChatSession(ctx, instance.Name(), p, m, msg.ChatID)
+	sid, err := h.chatService.NewChatSession(ctx, instance, msg.ChatID, p, m)
 	if err != nil {
 		return err
 	}

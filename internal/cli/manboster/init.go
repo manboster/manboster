@@ -8,6 +8,7 @@ import (
 	"github.com/gofrs/flock"
 	"github.com/manboster/manboster/internal/cli/manboster/app"
 	"github.com/manboster/manboster/internal/cli/manboster/daemon"
+	"github.com/manboster/manboster/internal/cli/manboster/installation"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
@@ -38,6 +39,10 @@ func Init() {
 	rootCmd.AddCommand(daemon.StatusCmd())
 	// Add log options (along with daemon)
 	rootCmd.AddCommand(daemon.LogCmd())
+
+	rootCmd.AddCommand(installation.MigrateCmd())
+	rootCmd.AddCommand(installation.UninstallCmd())
+	rootCmd.AddCommand(installation.ResetCmd())
 
 	// Disable smart completion in order to clean help, no more about it!
 	rootCmd.CompletionOptions.DisableDefaultCmd = true

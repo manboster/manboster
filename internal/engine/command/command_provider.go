@@ -49,7 +49,7 @@ func (h *Handler) cmdProvider(ctx context.Context, instance chat.Provider, msg *
 	providerName := h.llmProviders[id].Name()
 	modelName := h.llmProviders[id].Models()[0].Name
 
-	h.sessionService.Manager.ChatSession.SetModel(sessionId, providerName, modelName)
+	h.sessionManager.ChatSession.SetModel(sessionId, providerName, modelName)
 	err := h.repo.UpdateSession(ctx, sessionId, map[string]interface{}{
 		"llm_provider":       providerName,
 		"llm_provider_model": modelName,

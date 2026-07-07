@@ -22,7 +22,7 @@ func (h *Handler) cmdReset(ctx context.Context, instance chat.Provider, msg *cha
 		return instance.SendMessage(ctx, respMessage)
 	}
 
-	h.sessionService.Manager.Ignorance.Clear(gatekeeper.BuildSessionId(instance.Name(), msg.ChatID, sessionId))
+	h.sessionManager.Ignorance.Clear(gatekeeper.BuildSessionId(instance.Name(), msg.ChatID, sessionId))
 	respMessage.Text = &chat.TextPayload{
 		Text: i18n.T(keys.CmdResetSuccess),
 	}

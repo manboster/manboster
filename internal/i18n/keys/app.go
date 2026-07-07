@@ -13,4 +13,11 @@ const (
 	AppReadingConfig     = "app.reading_config"
 	AppLoaderError       = "app.loader_error"
 	AppGoodbye           = "app.goodbye"
+	AppInputPrompt       = "app.input_prompt"
+
+	AppUninstallPrompt  = "app.uninstall_prompt"
+	AppUninstallSuccess = "app.uninstall_success"
+	AppUninstallError   = "app.uninstall_error"
+
+	AppDataWarning = "app.data_warning"
 )

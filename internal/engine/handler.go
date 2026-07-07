@@ -40,20 +40,20 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 			EventType: llm.EventMessage,
 			Message:   message,
 		}
-		e.sessionService.Manager.ChatSession.AppendEvent(sessionId, msgData)
+		e.sessionManager.ChatSession.AppendEvent(sessionId, msgData)
 		err = e.chatDataService.Write(ctx, msgData, sessionId)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Engine] Failed to write message data to repository, your chat data would not be saved! sessionId: %s, chatId: %s, provider: %s, error: %q", sessionId, msg.ChatID, instance.Name(), err))
 		}
 	}
 
-	provider, model, _ := e.sessionService.Manager.ChatSession.GetModel(sessionId)
-	msgList := e.sessionService.Manager.ChatSession.GetMessages(sessionId)
+	provider, model, _ := e.sessionManager.ChatSession.GetModel(sessionId)
+	msgList := e.sessionManager.ChatSession.GetMessages(sessionId)
 	p, m := util.GetModelWithFallback(ctx, e.llmProviders, provider, model)
 	respMessage := msg.Clone()
 
 	var souls []string
-	s, avail := e.sessionService.Manager.ChatSession.GetSoul(sessionId)
+	s, avail := e.sessionManager.ChatSession.GetSoul(sessionId)
 	if !avail {
 		souls = []string{
 			"system",
@@ -92,7 +92,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		}
 
 		if compacted {
-			ch, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(newSessionId)
+			ch, created := e.sessionManager.ChatSession.LoadOrCreateChan(newSessionId)
 			if created {
 				e.BuildMessageRunner(instance, newSessionId)
 			}
@@ -125,7 +125,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 		}
 
 		// write the whole event immediately
-		e.sessionService.Manager.ChatSession.AppendEvent(sessionId, *event)
+		e.sessionManager.ChatSession.AppendEvent(sessionId, *event)
 		msgList = append(msgList, *event.Message)
 
 		// add model cost
@@ -191,7 +191,7 @@ func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg
 				count = 0
 			}
 
-			e.sessionService.Manager.ChatSession.AppendEvent(sessionId, respEvent)
+			e.sessionManager.ChatSession.AppendEvent(sessionId, respEvent)
 			msgList = append(msgList, *respEvent.Message)
 
 			// it should be written with tool req and tool resp.

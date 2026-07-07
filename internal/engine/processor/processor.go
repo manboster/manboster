@@ -3,7 +3,7 @@ package processor
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/engine/onboard"
+	chatEngine "github.com/manboster/manboster/internal/engine/chat"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/spec/chat"
@@ -16,16 +16,16 @@ type required interface {
 // Service processes information passed from the application then go to the handler.
 type Service struct {
 	engine           required
-	sessionService   *session.Service
+	sessionManager   *session.Manager
+	chatService      *chatEngine.Service
 	safeguardService *safeguard.Service
-	onboard          *onboard.Service
 }
 
-func New(engine required, sessionService *session.Service, safeguardService *safeguard.Service, onboardService *onboard.Service) *Service {
+func New(engine required, sessionManager *session.Manager, safeguardService *safeguard.Service, chatService *chatEngine.Service) *Service {
 	return &Service{
 		engine:           engine,
-		sessionService:   sessionService,
+		sessionManager:   sessionManager,
 		safeguardService: safeguardService,
-		onboard:          onboardService,
+		chatService:      chatService,
 	}
 }

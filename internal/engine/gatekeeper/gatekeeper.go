@@ -12,21 +12,21 @@ import (
 type Service struct {
 	gatewayService   *gateway.Service
 	safeguardService *safeguard.Service
-	sessionService   *session.Service
+	sessionManager   *session.Manager
 	hachimiConfig    config.HachimiConfigs
 	hachimiProvider  hachimi.Provider
 	hachimiLoaded    *bool
 	llmProviders     map[string]llm.Provider
 }
 
-func NewService(gatewayService *gateway.Service, safeguardService *safeguard.Service, hachimiConfig config.HachimiConfigs, hachimiProvider hachimi.Provider, hachimiLoaded *bool, sessionService *session.Service, llmProviders map[string]llm.Provider) *Service {
+func NewService(gatewayService *gateway.Service, safeguardService *safeguard.Service, hachimiConfig config.HachimiConfigs, hachimiProvider hachimi.Provider, hachimiLoaded *bool, sessionManager *session.Manager, llmProviders map[string]llm.Provider) *Service {
 	return &Service{
 		gatewayService:   gatewayService,
 		safeguardService: safeguardService,
 		hachimiConfig:    hachimiConfig,
 		hachimiProvider:  hachimiProvider,
 		hachimiLoaded:    hachimiLoaded,
-		sessionService:   sessionService,
+		sessionManager:   sessionManager,
 		llmProviders:     llmProviders,
 	}
 }

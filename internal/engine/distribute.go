@@ -13,7 +13,7 @@ func (e *Engine) Distribute(ctx context.Context, instance chat.Provider, msg *ch
 	color.Blue("[Manboster Engine] Distributing message")
 	color.Blue(fmt.Sprintf("[Manboster Engine] Got a message from %s by %s(%s), Type: %d", displayName, msg.Username, msg.UserID, msg.MessageType))
 
-	e.sessionService.Manager.ChatSession.SetMsg(sessionId, msg)
+	e.sessionManager.ChatSession.SetMsg(sessionId, msg)
 
 	switch msg.MessageType {
 	case chat.MessageCommand:
@@ -44,7 +44,7 @@ func (e *Engine) Distribute(ctx context.Context, instance chat.Provider, msg *ch
 	}
 
 	color.Blue("[Manboster Engine] Getting channel...")
-	ch, created := e.sessionService.Manager.ChatSession.LoadOrCreateChan(sessionId)
+	ch, created := e.sessionManager.ChatSession.LoadOrCreateChan(sessionId)
 	if created {
 		e.BuildMessageRunner(instance, sessionId)
 	}

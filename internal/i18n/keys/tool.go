@@ -100,6 +100,7 @@ const (
 	BrowserLogPurgeMarkdownFailed = "tool.browser.log.purge_markdown_failed"
 )
 
+// tool: skills module
 const (
 	SkillsDisplayName = "tool.skills.display_name"
 	SkillsDescription = "tool.skills.description"

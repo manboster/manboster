@@ -2,6 +2,7 @@ package engine
 
 import (
 	"github.com/manboster/manboster/internal/config"
+	chatEngine "github.com/manboster/manboster/internal/engine/chat"
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/command"
 	"github.com/manboster/manboster/internal/engine/gatekeeper"
@@ -20,15 +21,17 @@ import (
 )
 
 type Engine struct {
-	sessionService  *session.Service
-	llmProviders    map[string]llm.Provider
-	toolProviders   []tool.Provider
-	chatProviders   map[string]chat.Provider
+	sessionManager *session.Manager
+	llmProviders   map[string]llm.Provider
+	toolProviders  []tool.Provider
+	chatProviders  map[string]chat.Provider
+
 	hachimiProvider hachimi.Provider
 	hachimiLoaded   *bool
-	toolMaps        map[string]tool.Provider
-	config          *config.Config
-	repo            repository.Repository
+
+	toolMaps map[string]tool.Provider
+	config   *config.Config
+	repo     repository.Repository
 
 	commandHandler    *command.Handler
 	handler           *handler.Handler
@@ -39,6 +42,7 @@ type Engine struct {
 	soulService       *soul.Service
 	gatekeeperService *gatekeeper.Service
 	processor         *processor.Service
+	chatService       *chatEngine.Service
 }
 
 func New(cfg *config.Config, repo repository.Repository, llmProviders map[string]llm.Provider, chatProviders map[string]chat.Provider, toolProviders []tool.Provider, hachimiProvider hachimi.Provider, hachimiLoaded *bool) (*Engine, error) {
