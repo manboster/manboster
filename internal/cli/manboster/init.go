@@ -10,6 +10,7 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/daemon"
 	"github.com/manboster/manboster/internal/cli/manboster/installation"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
+	"github.com/manboster/manboster/internal/cli/manboster/migration"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
@@ -40,7 +41,8 @@ func Init() {
 	// Add log options (along with daemon)
 	rootCmd.AddCommand(daemon.LogCmd())
 
-	rootCmd.AddCommand(installation.MigrateCmd())
+	rootCmd.AddCommand(migration.MigrateCmd())
+
 	rootCmd.AddCommand(installation.UninstallCmd())
 	rootCmd.AddCommand(installation.ResetCmd())
 

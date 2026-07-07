@@ -1,4 +1,4 @@
-package installation
+package migration
 
 import "github.com/spf13/cobra"
 

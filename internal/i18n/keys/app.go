@@ -19,5 +19,9 @@ const (
 	AppUninstallSuccess = "app.uninstall_success"
 	AppUninstallError   = "app.uninstall_error"
 
+	AppResetPrompt  = "app.reset_prompt"
+	AppResetSuccess = "app.reset_success"
+	AppResetError   = "app.reset_error"
+
 	AppDataWarning = "app.data_warning"
 )
