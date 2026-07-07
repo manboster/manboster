@@ -1,8 +1,0 @@
-{
-  "cli.wizard.title": "Manboster 配置向导",
-  "cli.wizard.error_alert": "配置过程中发生错误：{{ .Error }}",
-  "cli.wizard.welcome": "欢迎使用 Manboster 配置向导，希望你可以和你的 Manboster 相处愉快！",
-  "cli.wizard.success": "配置完成！享受你的虾头小助手吧！",
-  "cli.wizard.error_retry": "向导处理过程中发生错误：{{ .Error }}",
-  "cli.wizard.config_error": "配置过程中发生错误：{{ .Error }}"
-}
