@@ -11,5 +11,12 @@
   "app.loader_error": "[Manboster] 加载失败：{{ .Error }}",
   "app.goodbye": "[Manboster] 你的小助手要睡觉啦，感谢你和它度过了一段美好的时光！",
   "app.data_warning": "[Manboster] 请注意！你似乎正在使用旧的应用程序配置目录。在 Manboster 0.3.0 版本之后，我们将会自动使用用户的配置目录作为默认目录，而不是 ~/.manboster 。 如果您想要迁移，请运行 `manboster migrate` 。如果您已经这样做了，请忽略此提示。",
-  "app.input_prompt": "按 Enter 键以继续......"
+  "app.input_prompt": "按 Enter 键以继续......",
+  "app.reset_prompt": "Do you want to reset Manboster's configuration? THIS ACTION IS IRREVERSIBLE!(yes/No)",
+  "app.reset_success": "Successfully reset Manboster's all configuration!",
+  "app.reset_error": "Failed to reset Manboster! Error: {{ .Error }}",
+  "app.uninstall_prompt": "Do you want to uninstall Manboster? THIS ACTION IS IRREVERSIBLE! (yes/No)",
+  "app.uninstall_data_prompt": "Do you want to remove all Manboster's data? THIS ACTION IS IRREVERSIBLE! (yes/No)",
+  "app.uninstall_success": "Successfully uninstalled Manboster, see you again!",
+  "app.uninstall_error": "Failed to uninstall Manboster: {{ .Error }}"
 }
