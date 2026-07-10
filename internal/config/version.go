@@ -6,7 +6,7 @@ import (
 )
 
 // Version defines manboster's application version.
-const Version = "0.2.1"
+const Version = "0.3.0"
 
 // APILevel defines the current level(Tool) supported in Manboster.
 const APILevel = 1
@@ -18,12 +18,14 @@ var (
 	BuildCommit    string = "unknown"
 	BuildTime      string = "unknown"
 	CurrentChannel        = "unknown"
+	Package               = "none"
 )
 
 func init() {
 	if bi, avail := debug.ReadBuildInfo(); avail {
 		if bi.Main.Version != "(devel)" && bi.Main.Version != "" {
 			BuildCommit = "Go install, version " + bi.Main.Version
+			Package = "goinstall"
 		}
 
 		// if invalid so we injected this

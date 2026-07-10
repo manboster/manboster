@@ -11,5 +11,15 @@
   "app.loader_error": "[Manboster] Error while loading: {{ .Error }}",
   "app.goodbye": "[Manboster] Your lobster is going to sleep, thank you for playing with it!",
   "app.data_warning": "[Manboster] Pay attention please! It seems that you're using the older application configuration directory. After Manboster 0.3.0, we will automatically use user's configuration directory as default directory instead of ~/.manboster, if you want to migrate, just run `manboster migrate`. If you've done this, please ignore this prompt.",
-  "app.input_prompt": "Press Enter to continue..."
+  "app.input_prompt": "Press Enter to continue...",
+
+  "app.reset_prompt": "Do you want to reset Manboster's configuration? THIS ACTION IS IRREVERSIBLE!(yes/No)",
+  "app.reset_success": "Successfully reset Manboster's all configuration!",
+  "app.reset_error": "Failed to reset Manboster! Error: {{ .Error }}",
+
+  "app.uninstall_prompt": "Do you want to uninstall Manboster? THIS ACTION IS IRREVERSIBLE! (yes/No)",
+  "app.uninstall_data_prompt": "Do you want to remove all Manboster's data? THIS ACTION IS IRREVERSIBLE! (yes/No)",
+
+  "app.uninstall_success": "Successfully uninstalled Manboster, see you again!",
+  "app.uninstall_error": "Failed to uninstall Manboster: {{ .Error }}"
 }
