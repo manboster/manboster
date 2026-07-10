@@ -10,10 +10,10 @@ import (
 	"github.com/manboster/manboster/internal/cli/manboster/daemon"
 	"github.com/manboster/manboster/internal/cli/manboster/installation"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
-	"github.com/manboster/manboster/internal/cli/manboster/migration"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/migration"
 	"github.com/spf13/cobra"
 )
 

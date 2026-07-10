@@ -41,6 +41,14 @@ func Path(filename string) string {
 }
 
 func LookupOlderPaths() {
+	if DetectOlderPath() {
+		color.Yellow(i18n.T(keys.AppDataWarning))
+		color.Yellow(i18n.T(keys.AppInputPrompt))
+		_, _ = bufio.NewReader(os.Stdin).ReadBytes('\n')
+	}
+}
+
+func DetectOlderPath() bool {
 	_ = godotenv.Load()
 	dir := os.Getenv("MANBOSTER_HOME")
 	p := ""
@@ -51,8 +59,7 @@ func LookupOlderPaths() {
 	}
 
 	if _, err := os.ReadDir(filepath.Join(p, ".manboster")); err == nil {
-		color.Yellow(i18n.T(keys.AppDataWarning))
-		color.Yellow(i18n.T(keys.AppInputPrompt))
-		_, _ = bufio.NewReader(os.Stdin).ReadBytes('\n')
+		return true
 	}
+	return false
 }
