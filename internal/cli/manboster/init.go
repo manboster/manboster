@@ -49,6 +49,8 @@ func Init() {
 	// Disable smart completion in order to clean help, no more about it!
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
+	cobra.MousetrapHelpText = ""
+
 	// main inner check lock file is avail or not?
 	lockPath := config.Path("manboster.lock")
 	fileLock := flock.New(lockPath)

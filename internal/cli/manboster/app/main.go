@@ -3,12 +3,14 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/inconshreveable/mousetrap"
 	ctxPkg "github.com/manboster/manboster/internal/cli/manboster/ctx"
 	"github.com/manboster/manboster/internal/cli/manboster/interact"
 	"github.com/manboster/manboster/internal/config"
@@ -35,6 +37,10 @@ func Main(cmd *cobra.Command, args []string) {
 	}
 
 	MainInner()
+
+	if mousetrap.StartedByExplorer() {
+		_, _ = fmt.Scanln()
+	}
 }
 
 func MainInner() {
