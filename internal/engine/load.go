@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/manboster/manboster/internal/config"
 	chatEngine "github.com/manboster/manboster/internal/engine/chat"
 	"github.com/manboster/manboster/internal/engine/chatdata"
 	"github.com/manboster/manboster/internal/engine/command"
@@ -72,9 +71,9 @@ func (e *Engine) Load(ctx context.Context) error {
 	}()
 
 	// version tips
-	if release.ChannelType(config.CurrentChannel) != release.ChannelStable {
+	if release.ChannelType(release.CurrentChannel) != release.ChannelStable {
 		color.Yellow(i18n.T(keys.EngineLoadUnstable))
-		switch release.ChannelType(config.CurrentChannel) {
+		switch release.ChannelType(release.CurrentChannel) {
 		case release.ChannelRC:
 			color.Yellow(i18n.T(keys.EngineLoadRC))
 		case release.ChannelBeta:

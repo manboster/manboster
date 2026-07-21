@@ -5,7 +5,7 @@ endif
 
 COMMIT := $(shell git rev-parse HEAD | cut -c1-6)
 TIME := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
-CONFIG_PKG := github.com/manboster/manboster/internal/config
+CONFIG_PKG := github.com/manboster/manboster/internal/release
 CHANNEL ?= canary
 VERSION ?= 0.1.0
 

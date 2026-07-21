@@ -3,9 +3,9 @@ package skills
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/release"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
 	"github.com/manboster/manboster/spec/schema"
@@ -15,7 +15,7 @@ var metadata = schema.MetaData{
 	Name:             "dev.manboster.skills",
 	DisplayName:      i18n.T(keys.SkillsDisplayName),
 	Description:      i18n.T(keys.SkillsDescription),
-	MinEngineVersion: config.APILevel,
+	MinEngineVersion: release.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,

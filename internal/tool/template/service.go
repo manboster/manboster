@@ -3,8 +3,8 @@ package template
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
+	"github.com/manboster/manboster/internal/release"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/schema"
 )
@@ -13,7 +13,7 @@ var metadata = schema.MetaData{
 	Name:             "dev.manboster.template",
 	DisplayName:      "Tool Template",
 	Description:      "This is a template of tool call, you can copy and paste its code.",
-	MinEngineVersion: config.APILevel,
+	MinEngineVersion: release.APILevel,
 	AppVersion:       "0.0.0",
 	APIVersion:       -1,
 	Requires:         nil,

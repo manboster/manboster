@@ -3,10 +3,10 @@ package memory_md
 import (
 	"context"
 
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/hook"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/release"
 	"github.com/manboster/manboster/internal/repository"
 	configType "github.com/manboster/manboster/spec/config"
 	"github.com/manboster/manboster/spec/plugin"
@@ -17,7 +17,7 @@ var metadata = schema.MetaData{
 	Name:             "dev.manboster.memory.md",
 	DisplayName:      i18n.T(keys.MemoryMDDisplayName),
 	Description:      i18n.T(keys.MemoryMDDescription),
-	MinEngineVersion: config.APILevel,
+	MinEngineVersion: release.APILevel,
 	AppVersion:       "0.0.1",
 	APIVersion:       1,
 	Requires:         nil,

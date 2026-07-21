@@ -10,7 +10,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/cli/helper"
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/release"
@@ -29,7 +28,7 @@ func uninstallCmd(cmd *cobra.Command, args []string) {
 	color.Red(i18n.T(keys.AppUninstallPrompt))
 	chr := helper.GetChar()
 	if strings.ToLower(chr) == "y" {
-		switch release.PackageType(config.Package) {
+		switch release.PackageType(release.Package) {
 		case release.PackageAUR:
 			color.Yellow(i18n.Te(keys.AppUninstallError, "", errors.New("you installed Manboster via AUR, use `paru -R manboster-bin` or `yay -R manboster-bin` to uninstall")))
 			os.Exit(1)

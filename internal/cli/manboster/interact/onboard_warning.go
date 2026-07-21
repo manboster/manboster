@@ -1,7 +1,6 @@
 package interact
 
 import (
-	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/release"
@@ -19,7 +18,7 @@ func OnboardWarningPrompt(provider cli.Provider) (bool, error) {
 		return t, err
 	}
 
-	if release.ChannelType(config.CurrentChannel) != release.ChannelStable {
+	if release.ChannelType(release.CurrentChannel) != release.ChannelStable {
 		return provider.Prompt(
 			i18n.T(keys.OnboardWarningUnstableTitle),
 			i18n.T(keys.OnboardWarningUnstablePrompt),

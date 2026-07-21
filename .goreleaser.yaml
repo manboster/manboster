@@ -14,9 +14,9 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/manboster/manboster/internal/config.BuildCommit={{.ShortCommit}}
-      - -X github.com/manboster/manboster/internal/config.BuildTime={{.Date}}
-      - -X github.com/manboster/manboster/internal/config.CurrentChannel={{ if .IsSnapshot }}{{ envOrDefault "CHANNEL" "snapshot" }}{{ else }}{{ envOrDefault "CHANNEL" "unknown" }}{{ end }}
+      - -X github.com/manboster/manboster/internal/release.BuildCommit={{.ShortCommit}}
+      - -X github.com/manboster/manboster/internal/release.BuildTime={{.Date}}
+      - -X github.com/manboster/manboster/internal/release.CurrentChannel={{ if .IsSnapshot }}{{ envOrDefault "CHANNEL" "snapshot" }}{{ else }}{{ envOrDefault "CHANNEL" "unknown" }}{{ end }}
     goos:
       - linux
       - darwin
