@@ -59,20 +59,20 @@ func migrateCmd(cmd *cobra.Command, args []string) {
 		for _, patch := range patchesList {
 			newconf, err = patch.Migrate(cfg)
 			if err != nil {
-				color.Green(i18n.Te(keys.MigrationFailed, "", err))
+				color.Red(i18n.Te(keys.MigrationFailed, "", err))
 				continue
 			}
 		}
 
-		err := config.Write(newconf, config.Path(""))
+		err := config.Write(newconf, config.Path("config.yaml"))
 		if err != nil {
-			color.Green(i18n.Te(keys.MigrationFailed, "", err))
+			color.Red(i18n.Te(keys.MigrationFailed, "", err))
 			return
 		}
 
-		color.Red(i18n.T(keys.MigrationSuccess))
+		color.Green(i18n.T(keys.MigrationSuccess))
+	} else {
+		color.Yellow(i18n.Te(keys.MigrationFailed, "", errors.New("user canceled")))
+		os.Exit(1)
 	}
-
-	color.Yellow(i18n.Te(keys.MigrationFailed, "", errors.New("user canceled")))
-	os.Exit(1)
 }

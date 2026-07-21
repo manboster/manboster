@@ -19,6 +19,7 @@ import (
 	"github.com/manboster/manboster/internal/engine/soul"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/release"
 	"github.com/manboster/manboster/internal/session"
 )
 
@@ -71,16 +72,16 @@ func (e *Engine) Load(ctx context.Context) error {
 	}()
 
 	// version tips
-	if config.ChannelType(config.CurrentChannel) != config.ChannelStable {
+	if release.ChannelType(config.CurrentChannel) != release.ChannelStable {
 		color.Yellow(i18n.T(keys.EngineLoadUnstable))
-		switch config.ChannelType(config.CurrentChannel) {
-		case config.ChannelRC:
+		switch release.ChannelType(config.CurrentChannel) {
+		case release.ChannelRC:
 			color.Yellow(i18n.T(keys.EngineLoadRC))
-		case config.ChannelBeta:
+		case release.ChannelBeta:
 			color.Yellow(i18n.T(keys.EngineLoadBeta))
-		case config.ChannelAlpha:
+		case release.ChannelAlpha:
 			color.Yellow(i18n.T(keys.EngineLoadAlpha))
-		case config.ChannelCanary, config.ChannelNightly:
+		case release.ChannelCanary, release.ChannelNightly:
 			color.HiRed(i18n.T(keys.EngineLoadCanary))
 			color.Yellow(i18n.T(keys.EngineLoadCanaryWarn))
 		default:

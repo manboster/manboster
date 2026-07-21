@@ -13,6 +13,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/release"
 	"github.com/spf13/cobra"
 )
 
@@ -28,14 +29,14 @@ func uninstallCmd(cmd *cobra.Command, args []string) {
 	color.Red(i18n.T(keys.AppUninstallPrompt))
 	chr := helper.GetChar()
 	if strings.ToLower(chr) == "y" {
-		switch config.PackageType(config.Package) {
-		case config.PackageAUR:
+		switch release.PackageType(config.Package) {
+		case release.PackageAUR:
 			color.Yellow(i18n.Te(keys.AppUninstallError, "", errors.New("you installed Manboster via AUR, use `paru -R manboster-bin` or `yay -R manboster-bin` to uninstall")))
 			os.Exit(1)
-		case config.PackageAOSC:
+		case release.PackageAOSC:
 			color.Yellow(i18n.Te(keys.AppUninstallError, "", errors.New("you installed Manboster via oma, use `oma remove manboster` to uninstall")))
 			os.Exit(1)
-		case config.PackageBrew:
+		case release.PackageBrew:
 			color.Yellow(i18n.Te(keys.AppUninstallError, "", errors.New("you installed Manboster via brew, use `brew remove manboster` to uninstall")))
 			os.Exit(1)
 		default:

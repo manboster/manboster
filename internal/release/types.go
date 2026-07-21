@@ -1,4 +1,4 @@
-package config
+package release
 
 type ChannelType string
 

@@ -4,6 +4,7 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
+	"github.com/manboster/manboster/internal/release"
 	"github.com/manboster/manboster/spec/cli"
 )
 
@@ -18,7 +19,7 @@ func OnboardWarningPrompt(provider cli.Provider) (bool, error) {
 		return t, err
 	}
 
-	if config.ChannelType(config.CurrentChannel) != config.ChannelStable {
+	if release.ChannelType(config.CurrentChannel) != release.ChannelStable {
 		return provider.Prompt(
 			i18n.T(keys.OnboardWarningUnstableTitle),
 			i18n.T(keys.OnboardWarningUnstablePrompt),

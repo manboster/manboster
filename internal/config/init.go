@@ -27,6 +27,23 @@ func Init() error {
 	return nil
 }
 
+func Load(path string) error {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	// first, we check whether there is ~/.manboster/ or not
+	viper.AddConfigPath(path)
+
+	if err := viper.ReadInConfig(); errors.As(err, &viper.ConfigFileNotFoundError{}) {
+		return ErrNoConfig
+	} else if err != nil {
+		return err
+	}
+	if err := viper.Unmarshal(&conf); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Read provides a whole data using viper to application.
 func Read() Config {
 	return conf
