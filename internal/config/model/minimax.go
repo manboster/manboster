@@ -6,6 +6,16 @@ import (
 
 var MinimaxModels = []llm.Model{
 	{
+		DisplayName:     "Minimax M3",
+		Name:            "minimax/minimax-m3",
+		Context:         1048576,
+		MaxOutputTokens: 131000,
+		InputPrice:      0.3,
+		OutputPrice:     1.6,
+		CachedPrice:     0.06,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityText | llm.CapabilityVideo, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "Minimax M2.7",
 		Name:            "minimax/minimax-m2.7",
 		Context:         204800,

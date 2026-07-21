@@ -7,9 +7,11 @@ type Model struct {
 	Context         uint64       `yaml:"context" json:"context" mapstructure:"context"`                               // max token of this context
 	MaxOutputTokens uint64       `yaml:"max_output_tokens" json:"max_output_tokens" mapstructure:"max_output_tokens"` // max output tokens
 	Capabilities    Capabilities `yaml:"capabilities" json:"capabilities" mapstructure:"capabilities"`                // Shows this model's input & output capabilities
+	Reasoning       bool         `yaml:"reasoning" json:"reasoning" mapstructure:"reasoning"`                         // It's a reasoning model or not
 
 	InputPrice  float64 `yaml:"input_price" json:"input_price" mapstructure:"input_price"`    // Optional. Input price USD, per 1m tokens
 	OutputPrice float64 `yaml:"output_price" json:"output_price" mapstructure:"output_price"` // Optional. Output price, USD, per 1m tokens
+	CachedPrice float64 `yaml:"cached_price" json:"cached_price" mapstructure:"cached_price"` // Optional. Cached price, USD, per 1m tokens
 }
 
 // Capabilities defines the capability now using

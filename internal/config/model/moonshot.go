@@ -5,6 +5,17 @@ import (
 )
 
 var MoonshotModels = []llm.Model{
+	//	"moonshotai/kimi-k3",
+	{
+		DisplayName:     "Kimi K3",
+		Name:            "moonshotai/kimi-k3",
+		Context:         1048576,
+		MaxOutputTokens: 1048576,
+		InputPrice:      3,
+		OutputPrice:     15,
+		CachedPrice:     0.3,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
+	},
 	//	"moonshotai/kimi-k2.6",
 	{
 		DisplayName:     "Kimi K2.6",

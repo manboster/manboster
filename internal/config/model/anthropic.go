@@ -7,12 +7,33 @@ import (
 // AnthropicModels defines data from Claude Sonnet/Haiku/Opus 4.5 to now
 var AnthropicModels = []llm.Model{
 	{
+		DisplayName:     "Claude Fable 5",
+		Name:            "anthropic/claude-fable-5",
+		Context:         1000000,
+		MaxOutputTokens: 128000,
+		InputPrice:      10,
+		OutputPrice:     50,
+		Reasoning:       true,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
+	},
+	{
+		DisplayName:     "Claude Sonnet 5",
+		Name:            "anthropic/claude-sonnet-5",
+		Context:         1000000,
+		MaxOutputTokens: 128000,
+		InputPrice:      2,
+		OutputPrice:     10,
+		Reasoning:       true,
+		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
+	},
+	{
 		DisplayName:     "Claude Opus 4.8",
 		Name:            "anthropic/claude-opus-4.8",
 		Context:         1000000,
 		MaxOutputTokens: 128000,
 		InputPrice:      5,
 		OutputPrice:     25,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -22,6 +43,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      5,
 		OutputPrice:     25,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	{
@@ -31,6 +53,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      3,
 		OutputPrice:     15,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	{
@@ -40,6 +63,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      5,
 		OutputPrice:     25,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	{
@@ -49,6 +73,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 64000,
 		InputPrice:      3,
 		OutputPrice:     15,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -58,6 +83,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 64000,
 		InputPrice:      5,
 		OutputPrice:     25,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -67,6 +93,7 @@ var AnthropicModels = []llm.Model{
 		MaxOutputTokens: 64000,
 		InputPrice:      1,
 		OutputPrice:     5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 }
