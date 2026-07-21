@@ -13,6 +13,7 @@ var StepFunModels = []llm.Model{
 		MaxOutputTokens: 262144,
 		InputPrice:      0.20,
 		OutputPrice:     1.15,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	//	"stepfun/step-3.5-flash",
@@ -23,6 +24,7 @@ var StepFunModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.10,
 		OutputPrice:     0.30,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }

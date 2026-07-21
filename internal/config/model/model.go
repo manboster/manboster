@@ -20,6 +20,9 @@ func Models() []llm.Model {
 		XAIModels,
 		XiaomiModels,
 		DeepSeekModels,
+		LongCatModels,
+		ByteDanceModels,
+		TencentModels,
 	)
 }
 

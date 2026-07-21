@@ -13,6 +13,7 @@ var DeepSeekModels = []llm.Model{
 		MaxOutputTokens: 384000,
 		InputPrice:      1.74,
 		OutputPrice:     3.48,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -22,6 +23,7 @@ var DeepSeekModels = []llm.Model{
 		MaxOutputTokens: 384000,
 		InputPrice:      0.14,
 		OutputPrice:     0.28,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -31,6 +33,7 @@ var DeepSeekModels = []llm.Model{
 		MaxOutputTokens: 16384,
 		InputPrice:      0.26,
 		OutputPrice:     0.38,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -40,6 +43,7 @@ var DeepSeekModels = []llm.Model{
 		MaxOutputTokens: 16384,
 		InputPrice:      0.45,
 		OutputPrice:     2.15,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }

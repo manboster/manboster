@@ -12,6 +12,7 @@ var QwenModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      2.5,
 		OutputPrice:     7.5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -21,6 +22,7 @@ var QwenModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.325,
 		OutputPrice:     1.95,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -30,6 +32,7 @@ var QwenModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.065,
 		OutputPrice:     0.26,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -39,6 +42,7 @@ var QwenModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.39,
 		OutputPrice:     2.34,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 }

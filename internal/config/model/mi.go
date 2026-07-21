@@ -15,6 +15,7 @@ var XiaomiModels = []llm.Model{
 		MaxOutputTokens: 131000,
 		InputPrice:      1,
 		OutputPrice:     3,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -24,6 +25,7 @@ var XiaomiModels = []llm.Model{
 		MaxOutputTokens: 131000,
 		InputPrice:      0.4,
 		OutputPrice:     2,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityAudio | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -33,6 +35,7 @@ var XiaomiModels = []llm.Model{
 		MaxOutputTokens: 103000,
 		InputPrice:      1,
 		OutputPrice:     3,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -42,6 +45,7 @@ var XiaomiModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.4,
 		OutputPrice:     2,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityAudio | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -51,6 +55,7 @@ var XiaomiModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.09,
 		OutputPrice:     0.29,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }

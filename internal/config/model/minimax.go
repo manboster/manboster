@@ -13,6 +13,7 @@ var MinimaxModels = []llm.Model{
 		InputPrice:      0.3,
 		OutputPrice:     1.6,
 		CachedPrice:     0.06,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -22,6 +23,7 @@ var MinimaxModels = []llm.Model{
 		MaxOutputTokens: 131000,
 		InputPrice:      0.3,
 		OutputPrice:     1.2,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -31,6 +33,7 @@ var MinimaxModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.118,
 		OutputPrice:     0.99,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -40,6 +43,7 @@ var MinimaxModels = []llm.Model{
 		MaxOutputTokens: 2048,
 		InputPrice:      0.3,
 		OutputPrice:     1.2,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }

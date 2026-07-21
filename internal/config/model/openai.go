@@ -46,6 +46,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      30,
 		OutputPrice:     180,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -55,6 +56,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      5,
 		OutputPrice:     30,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -64,6 +66,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      0.2,
 		OutputPrice:     1.25,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -73,6 +76,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      0.75,
 		OutputPrice:     4.5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -82,6 +86,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      2.5,
 		OutputPrice:     15,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -91,6 +96,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      30,
 		OutputPrice:     180,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -100,6 +106,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 128000,
 		InputPrice:      1.75,
 		OutputPrice:     14,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -109,6 +116,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 1600,
 		InputPrice:      1.75,
 		OutputPrice:     14,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityFile, Output: llm.CapabilityText},
 	},
 	{
@@ -118,6 +126,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 8192,
 		InputPrice:      0.03,
 		OutputPrice:     0.11,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 	{
@@ -127,6 +136,7 @@ var OpenAIModels = []llm.Model{
 		MaxOutputTokens: 8192,
 		InputPrice:      0.039,
 		OutputPrice:     0.19,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }

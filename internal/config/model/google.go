@@ -13,6 +13,7 @@ var GoogleModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      1.5,
 		OutputPrice:     9,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
 	},
 	{
@@ -22,6 +23,7 @@ var GoogleModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.25,
 		OutputPrice:     1.5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
 	},
 	{
@@ -31,6 +33,7 @@ var GoogleModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      2,
 		OutputPrice:     12,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
 	},
 	{
@@ -40,15 +43,17 @@ var GoogleModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.5,
 		OutputPrice:     3,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityAll, Output: llm.CapabilityText},
 	},
 	{
 		DisplayName:     "Google Gemma 4 26B A4B",
 		Name:            "google/gemma-4-26b-a4b-it",
 		Context:         262144,
-		MaxOutputTokens: 8192, // max output token defines as 262144 in openrouter, we hard limit it to 8192.
+		MaxOutputTokens: 262144, // max output token defines as 262144 in openrouter, we hard limit it to 8192.
 		InputPrice:      0.13,
 		OutputPrice:     0.4,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 	{
@@ -58,6 +63,7 @@ var GoogleModels = []llm.Model{
 		MaxOutputTokens: 33000,
 		InputPrice:      0.14,
 		OutputPrice:     0.4,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage | llm.CapabilityVideo, Output: llm.CapabilityText},
 	},
 }

@@ -14,6 +14,7 @@ var MoonshotModels = []llm.Model{
 		InputPrice:      3,
 		OutputPrice:     15,
 		CachedPrice:     0.3,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	//	"moonshotai/kimi-k2.6",
@@ -24,6 +25,7 @@ var MoonshotModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.8,
 		OutputPrice:     3.5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	//	"moonshotai/kimi-k2.5",
@@ -34,6 +36,7 @@ var MoonshotModels = []llm.Model{
 		MaxOutputTokens: 66000,
 		InputPrice:      0.3827,
 		OutputPrice:     1.72,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityTextAndImage, Output: llm.CapabilityText},
 	},
 	// kimi k2 thinking
@@ -44,6 +47,7 @@ var MoonshotModels = []llm.Model{
 		MaxOutputTokens: 16384,
 		InputPrice:      0.6,
 		OutputPrice:     2.5,
+		Reasoning:       true,
 		Capabilities:    llm.Capabilities{Input: llm.CapabilityText, Output: llm.CapabilityText},
 	},
 }
