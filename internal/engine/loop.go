@@ -13,7 +13,7 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-func (e *Engine) MessageHandler(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
+func (e *Engine) MessageHandlerLoop(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
 	color.Blue("[Manboster Engine] Now handling message...")
 
 	// now, notify process!

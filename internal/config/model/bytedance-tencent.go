@@ -2,6 +2,7 @@ package model
 
 import "github.com/manboster/manboster/spec/llm"
 
+// ByteDanceModels are model information from https://docs.volcengine.com/docs/82379/1330310 & https://docs.volcengine.com/docs/82379/1544106
 var ByteDanceModels = []llm.Model{
 	{
 		DisplayName:     "Doubao Seed 2.1 Pro",

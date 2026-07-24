@@ -55,6 +55,7 @@ func (s *Service) buildResponse(resp openai.ChatCompletionResponse, model llm.Mo
 			PromptTokens:     resp.Usage.PromptTokens,
 			CompletionTokens: resp.Usage.CompletionTokens,
 			TotalTokens:      resp.Usage.TotalTokens,
+			CachedTokens:     resp.Usage.PromptTokensDetails.CachedTokens,
 		},
 	}, nil
 }

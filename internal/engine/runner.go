@@ -44,7 +44,7 @@ func (e *Engine) MessageRunner(ctx context.Context, instance chat.Provider, sess
 
 			cancelCtx, cancel := context.WithCancel(ctx)
 			e.sessionManager.ChatSession.Activate(sessionId, cancel)
-			err = e.MessageHandler(cancelCtx, instance, msg, sessionId)
+			err = e.MessageHandlerLoop(cancelCtx, instance, msg, sessionId)
 			e.sessionManager.ChatSession.Deactivate(sessionId)
 
 			if err != nil {
