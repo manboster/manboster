@@ -7,9 +7,17 @@ type Agent struct {
 	ID       string       // Agent ID
 	Powered  llm.Model    // Powered by which model
 	Provider llm.Provider // Provided by who
-	Events   []llm.Event  // Events used
+	Events   []llm.Event  // Events used by this agent
 	Cost     llm.Usage    // Usage used by this agent
 	Session  string       // SessionID belongs to
 	Father   *Agent       // If it's nil, it's the root agent of Manboster
 	Children []*Agent     // The Agent's children
+}
+
+func Create(provider llm.Provider, model llm.Model, session string) (string, error) {
+	return "", nil // TODO
+}
+
+func (a *Agent) Create(provider llm.Provider, model llm.Model, session string) error {
+	return nil // TODO
 }

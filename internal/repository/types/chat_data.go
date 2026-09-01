@@ -20,6 +20,7 @@ type ChatData struct {
 	MessagePayload   string // json encoded
 	InputCost        float64
 	OutputCost       float64
+	CachedCost       float64
 	TotalCost        float64
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
