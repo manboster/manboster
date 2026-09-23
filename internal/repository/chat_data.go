@@ -9,50 +9,50 @@ import (
 	"gorm.io/gorm"
 )
 
-type ChatDataRepository interface {
-	CreateChatData(ctx context.Context, chatData types.ChatData) error
-	GetChatData(ctx context.Context, sessionId string) ([]types.ChatData, error)
-	DeleteChatData(ctx context.Context, sessionId string) error
-	CountChatDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error)
+type EventDataRepository interface {
+	CreateEventData(ctx context.Context, chatData types.EventData) error
+	GetEventData(ctx context.Context, sessionId string) ([]types.EventData, error)
+	DeleteEventData(ctx context.Context, sessionId string) error
+	CountEventDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error)
 	GetTotalToken(ctx context.Context, sessionId string) (int, error)
 }
 
-type ChatDataRepo struct {
+type EventDataRepo struct {
 	db *gorm.DB
 }
 
-// CreateChatData creates chats data
-func (repo *ChatDataRepo) CreateChatData(ctx context.Context, chatData types.ChatData) error {
-	dbChatDataType := types.MapCD(chatData)
-	return repo.db.WithContext(ctx).Create(&dbChatDataType).Error
+// CreateEventData creates chats data
+func (repo *EventDataRepo) CreateEventData(ctx context.Context, chatData types.EventData) error {
+	dbEventDataType := types.MapCD(chatData)
+	return repo.db.WithContext(ctx).Create(&dbEventDataType).Error
 }
 
-// GetChatData gets chats' data from database
-func (repo *ChatDataRepo) GetChatData(ctx context.Context, sessionId string) ([]types.ChatData, error) {
-	var dbChatData []dbtypes.ChatData
-	var chatData []types.ChatData
+// GetEventData gets chats' data from database
+func (repo *EventDataRepo) GetEventData(ctx context.Context, sessionId string) ([]types.EventData, error) {
+	var dbEventData []dbtypes.EventData
+	var chatData []types.EventData
 
 	// get chat data list from session ids
-	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Find(&dbChatData)
+	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Find(&dbEventData)
 	if resp.Error != nil {
 		return nil, resp.Error
 	}
 
 	// iterate to build a raw chat data array
-	for _, dbChatDataVal := range dbChatData {
-		chatData = append(chatData, types.MapChatData(dbChatDataVal))
+	for _, dbEventDataVal := range dbEventData {
+		chatData = append(chatData, types.MapEventData(dbEventDataVal))
 	}
 	return chatData, nil
 }
 
-// DeleteChatData deletes chats data via sessionId
-func (repo *ChatDataRepo) DeleteChatData(ctx context.Context, sessionId string) error {
-	return repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Delete(&dbtypes.ChatData{}).Error
+// DeleteEventData deletes chats data via sessionId
+func (repo *EventDataRepo) DeleteEventData(ctx context.Context, sessionId string) error {
+	return repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Delete(&dbtypes.EventData{}).Error
 }
 
-// CountChatDataTokenBySession counts all input/output tokens used in this chat session
-func (repo *ChatDataRepo) CountChatDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error) {
-	data, err := repo.GetChatData(ctx, sessionId)
+// CountEventDataTokenBySession counts all input/output tokens used in this chat session
+func (repo *EventDataRepo) CountEventDataTokenBySession(ctx context.Context, sessionId string) (llm.Usage, error) {
+	data, err := repo.GetEventData(ctx, sessionId)
 	if err != nil {
 		return llm.Usage{}, err
 	}
@@ -65,26 +65,26 @@ func (repo *ChatDataRepo) CountChatDataTokenBySession(ctx context.Context, sessi
 	usage.OutputCost = 0
 	usage.TotalCost = 0
 
-	for _, dbChatData := range data {
-		usage.PromptTokens += dbChatData.PromptTokens
-		usage.CompletionTokens += dbChatData.CompletionTokens
-		usage.TotalTokens += dbChatData.TotalTokens
-		usage.InputCost += dbChatData.InputCost
-		usage.OutputCost += dbChatData.OutputCost
-		usage.TotalCost += dbChatData.TotalCost
+	for _, dbEventData := range data {
+		usage.PromptTokens += dbEventData.PromptTokens
+		usage.CompletionTokens += dbEventData.CompletionTokens
+		usage.TotalTokens += dbEventData.TotalTokens
+		usage.InputCost += dbEventData.InputCost
+		usage.OutputCost += dbEventData.OutputCost
+		usage.TotalCost += dbEventData.TotalCost
 	}
 	return usage, nil
 }
 
 // GetTotalToken gets latest token used in this chat session
-func (repo *ChatDataRepo) GetTotalToken(ctx context.Context, sessionId string) (int, error) {
-	var dbChatData []dbtypes.ChatData
-	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Order("created_at DESC").Find(&dbChatData)
+func (repo *EventDataRepo) GetTotalToken(ctx context.Context, sessionId string) (int, error) {
+	var dbEventData []dbtypes.EventData
+	resp := repo.db.WithContext(ctx).Where("session_id = ?", sessionId).Order("created_at DESC").Find(&dbEventData)
 	if resp.Error != nil {
 		return -1, resp.Error
 	}
 
-	for _, chatData := range dbChatData {
+	for _, chatData := range dbEventData {
 		if chatData.TotalTokens > 0 {
 			return chatData.TotalTokens, nil
 		}

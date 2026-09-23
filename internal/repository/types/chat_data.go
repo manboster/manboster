@@ -7,9 +7,9 @@ import (
 	"github.com/manboster/manboster/spec/llm"
 )
 
-type ChatData struct {
+type EventData struct {
 	ID               uint64
-	SessionID        string
+	EventID          string
 	Role             llm.RoleType
 	MessageType      llm.MessageType
 	Model            string
@@ -26,42 +26,42 @@ type ChatData struct {
 	UpdatedAt        time.Time
 }
 
-func MapCD(chatData ChatData) types.ChatData {
-	return types.ChatData{
-		ID:               chatData.ID,
-		SessionID:        chatData.SessionID,
-		Role:             string(chatData.Role),
-		MessageType:      int16(chatData.MessageType),
-		Model:            chatData.Model,
-		Provider:         chatData.Provider,
-		PromptTokens:     chatData.PromptTokens,
-		CompletionTokens: chatData.CompletionTokens,
-		TotalTokens:      chatData.TotalTokens,
-		MessagePayload:   chatData.MessagePayload,
-		InputCost:        chatData.InputCost,
-		OutputCost:       chatData.OutputCost,
-		TotalCost:        chatData.TotalCost,
-		CreatedAt:        chatData.CreatedAt,
-		UpdatedAt:        chatData.UpdatedAt,
+func MapCD(eventData EventData) types.EventData {
+	return types.EventData{
+		ID:               eventData.ID,
+		EventID:          eventData.EventID,
+		Role:             string(eventData.Role),
+		MessageType:      int16(eventData.MessageType),
+		Model:            eventData.Model,
+		Provider:         eventData.Provider,
+		PromptTokens:     eventData.PromptTokens,
+		CompletionTokens: eventData.CompletionTokens,
+		TotalTokens:      eventData.TotalTokens,
+		MessagePayload:   eventData.MessagePayload,
+		InputCost:        eventData.InputCost,
+		OutputCost:       eventData.OutputCost,
+		TotalCost:        eventData.TotalCost,
+		CreatedAt:        eventData.CreatedAt,
+		UpdatedAt:        eventData.UpdatedAt,
 	}
 }
 
-func MapChatData(chatData types.ChatData) ChatData {
-	return ChatData{
-		ID:               chatData.ID,
-		SessionID:        chatData.SessionID,
-		Role:             llm.RoleType(chatData.Role),
-		MessageType:      llm.MessageType(chatData.MessageType),
-		Model:            chatData.Model,
-		Provider:         chatData.Provider,
-		PromptTokens:     chatData.PromptTokens,
-		CompletionTokens: chatData.CompletionTokens,
-		TotalTokens:      chatData.TotalTokens,
-		MessagePayload:   chatData.MessagePayload,
-		InputCost:        chatData.InputCost,
-		OutputCost:       chatData.OutputCost,
-		TotalCost:        chatData.TotalCost,
-		CreatedAt:        chatData.CreatedAt,
-		UpdatedAt:        chatData.UpdatedAt,
+func MapEventData(eventData types.EventData) EventData {
+	return EventData{
+		ID:               eventData.ID,
+		EventID:          eventData.EventID,
+		Role:             llm.RoleType(eventData.Role),
+		MessageType:      llm.MessageType(eventData.MessageType),
+		Model:            eventData.Model,
+		Provider:         eventData.Provider,
+		PromptTokens:     eventData.PromptTokens,
+		CompletionTokens: eventData.CompletionTokens,
+		TotalTokens:      eventData.TotalTokens,
+		MessagePayload:   eventData.MessagePayload,
+		InputCost:        eventData.InputCost,
+		OutputCost:       eventData.OutputCost,
+		TotalCost:        eventData.TotalCost,
+		CreatedAt:        eventData.CreatedAt,
+		UpdatedAt:        eventData.UpdatedAt,
 	}
 }

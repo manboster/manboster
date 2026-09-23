@@ -13,7 +13,7 @@ import (
 )
 
 func (h *Handler) cmdStatus(ctx context.Context, instance chat.Provider, msg *chat.Message, sessionId string) error {
-	usage, err := h.repo.CountChatDataTokenBySession(ctx, sessionId)
+	usage, err := h.repo.CountEventDataTokenBySession(ctx, sessionId)
 	if err != nil {
 		return err
 	}

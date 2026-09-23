@@ -12,7 +12,7 @@ import (
 // MergeChatSession merges chat from repository, used to fetch all messages into application
 func (s *Service) MergeChatSession(ctx context.Context, sessionId string) error {
 	// then we begin to read latest messages database storages
-	chatDataInfo, err := s.repo.GetChatData(ctx, sessionId)
+	chatDataInfo, err := s.repo.GetEventData(ctx, sessionId)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Engine] We encountered an error while getting chat data, error: %q", err))
 		return nil

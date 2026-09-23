@@ -6,7 +6,7 @@ import "gorm.io/gorm"
 type Repository interface {
 	UserRepository
 	ChatRepository
-	ChatDataRepository
+	EventDataRepository
 	SessionRepository
 	SoulRepository
 }
@@ -14,7 +14,7 @@ type Repository interface {
 type Repo struct {
 	*SessionRepo
 	*SoulRepo
-	*ChatDataRepo
+	*EventDataRepo
 	*UserRepo
 	*ChatRepo
 }
@@ -27,7 +27,7 @@ func New(db *gorm.DB) *Repo {
 		SoulRepo: &SoulRepo{
 			db: db,
 		},
-		ChatDataRepo: &ChatDataRepo{
+		EventDataRepo: &EventDataRepo{
 			db: db,
 		},
 		UserRepo: &UserRepo{

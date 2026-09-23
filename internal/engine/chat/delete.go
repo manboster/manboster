@@ -13,7 +13,7 @@ func (s *Service) DeleteChatSession(ctx context.Context, instance chat.Provider,
 	}
 
 	if deleteData {
-		err = s.repo.DeleteChatData(ctx, sessionId)
+		err = s.repo.DeleteEventData(ctx, sessionId)
 		if err != nil {
 			return err
 		}

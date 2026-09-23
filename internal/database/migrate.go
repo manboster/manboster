@@ -30,7 +30,7 @@ func (c *Client) Migrate() error {
 		return err
 	}
 
-	err = c.db.AutoMigrate(&types.ChatData{})
+	err = c.db.AutoMigrate(&types.EventData{})
 	if err != nil {
 		return err
 	}

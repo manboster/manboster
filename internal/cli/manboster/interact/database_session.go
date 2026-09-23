@@ -107,7 +107,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 					if err := repo.DeleteSession(ctx, sess.SessionID); err != nil {
 						purgeErrors = append(purgeErrors, fmt.Sprintf("session %s: %q", sess.SessionID, err))
 					}
-					if err := repo.DeleteChatData(ctx, sess.SessionID); err != nil {
+					if err := repo.DeleteEventData(ctx, sess.SessionID); err != nil {
 						purgeErrors = append(purgeErrors, fmt.Sprintf("chat data %s: %q", sess.SessionID, err))
 					}
 				}
@@ -233,7 +233,7 @@ func runDatabaseSessionConfig(p cli.Provider, repo repository.Repository) error 
 			if err := repo.DeleteSession(ctx, selectedSession.SessionID); err != nil {
 				return err
 			}
-			if err := repo.DeleteChatData(ctx, selectedSession.SessionID); err != nil {
+			if err := repo.DeleteEventData(ctx, selectedSession.SessionID); err != nil {
 				if alertErr := p.Alert(i18n.T(keys.CliWizardTitle), i18n.Te(keys.CliConfigSessionDataDeleteError, "", err)); alertErr != nil {
 					return alertErr
 				}

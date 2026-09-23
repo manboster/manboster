@@ -9,13 +9,13 @@ import (
 )
 
 func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) error {
-	var chatData types.ChatData
+	var chatData types.EventData
 
 	if (event.EventType&llm.EventMessage == 0) && (event.EventType&llm.EventUsage == 0) {
 		return nil
 	}
 
-	chatData.SessionID = sessionId
+	chatData.EventID = sessionId
 	if event.EventType&llm.EventMessage != 0 && event.Message != nil {
 		jsonify, err := json.Marshal(event.Message)
 		if err != nil {
@@ -38,5 +38,5 @@ func (s *Service) Write(ctx context.Context, event llm.Event, sessionId string) 
 		chatData.TotalCost = event.Usage.TotalCost
 	}
 
-	return s.repo.CreateChatData(ctx, chatData)
+	return s.repo.CreateEventData(ctx, chatData)
 }
