@@ -7,7 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/hybridgroup/yzma/pkg/llama"
-	"github.com/manboster/manboster/internal/hachimi"
+	"github.com/manboster/manboster/spec/hachimi"
 )
 
 func (s *Service) Chat(ctx context.Context, evalMsg string) (*hachimi.Response, error) {

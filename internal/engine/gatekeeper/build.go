@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/manboster/manboster/internal/config/prompt"
-	"github.com/manboster/manboster/internal/hachimi"
+	"github.com/manboster/manboster/spec/hachimi"
 )
 
 func BuildSessionId(name string, chatId string, sid string) string {

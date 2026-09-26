@@ -8,11 +8,11 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/engine/gatekeeper"
-	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/i18n"
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/hachimi"
 	"github.com/manboster/manboster/spec/llm"
 	"github.com/manboster/manboster/spec/schema"
 )

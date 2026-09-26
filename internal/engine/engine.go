@@ -12,11 +12,11 @@ import (
 	"github.com/manboster/manboster/internal/engine/processor"
 	"github.com/manboster/manboster/internal/engine/safeguard"
 	"github.com/manboster/manboster/internal/engine/soul"
-	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/repository"
 	"github.com/manboster/manboster/internal/session"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/hachimi"
 	"github.com/manboster/manboster/spec/llm"
 )
 

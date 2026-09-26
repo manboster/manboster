@@ -4,8 +4,8 @@ import (
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/engine/gateway"
 	"github.com/manboster/manboster/internal/engine/safeguard"
-	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/session"
+	"github.com/manboster/manboster/spec/hachimi"
 	"github.com/manboster/manboster/spec/llm"
 )
 

@@ -3,9 +3,11 @@ package hachimi
 import (
 	"fmt"
 	"sync"
+
+	"github.com/manboster/manboster/spec/hachimi"
 )
 
-type ProviderFactory func() Provider
+type ProviderFactory func() hachimi.Provider
 
 var (
 	providerRegistry = make(map[string]ProviderFactory)
@@ -18,7 +20,7 @@ func Register(name string, factory ProviderFactory) {
 	providerRegistry[name] = factory
 }
 
-func GetProvider(name string) (Provider, error) {
+func GetProvider(name string) (hachimi.Provider, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 	factory, ok := providerRegistry[name]
@@ -40,10 +42,10 @@ func AvailProviders() []string {
 }
 
 // AllProviders gets all providers back
-func AllProviders() []Provider {
+func AllProviders() []hachimi.Provider {
 	mu.RLock()
 	defer mu.RUnlock()
-	var list []Provider
+	var list []hachimi.Provider
 	for p := range providerRegistry {
 		list = append(list, providerRegistry[p]())
 	}

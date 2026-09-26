@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/hybridgroup/yzma/pkg/llama"
-	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/spec/config"
+	"github.com/manboster/manboster/spec/hachimi"
 )
 
 type Service struct {

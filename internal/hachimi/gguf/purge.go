@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/manboster/manboster/internal/hachimi"
+	"github.com/manboster/manboster/spec/hachimi"
 )
 
 var hachimiRegex = regexp.MustCompile(`Safety:\s*(Safe|Unsafe|Controversial)\s*\n?\s*Categories:\s*(.*)`)

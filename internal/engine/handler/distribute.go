@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/manboster/manboster/internal/hachimi"
 	"github.com/manboster/manboster/internal/tool"
 	"github.com/manboster/manboster/spec/chat"
+	"github.com/manboster/manboster/spec/hachimi"
 	"github.com/manboster/manboster/spec/llm"
 )
 
