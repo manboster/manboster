@@ -6,7 +6,3 @@ type Store struct {
 	Father   string   `json:"father"`
 	Children []string `json:"children"`
 }
-
-func Restore() {
-
-}

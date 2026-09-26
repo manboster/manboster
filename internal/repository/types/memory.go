@@ -18,7 +18,7 @@ type Memory struct {
 	UpdatedAt time.Time
 }
 
-func MapMem(memory Memory) types.Memory {
+func (memory Memory) Map() types.Memory {
 	val, err := json.Marshal(memory.Scope)
 	if err != nil {
 		color.Red(fmt.Sprintf("[Manboster Repository] We encountered an error when converting type memory to gorm object: %v; Memory Object data: %+v", err, memory))
@@ -34,7 +34,7 @@ func MapMem(memory Memory) types.Memory {
 	}
 }
 
-func MapMemory(memory types.Memory) Memory {
+func MemoryFrom(memory types.Memory) Memory {
 	var mem Memory
 	err := json.Unmarshal([]byte(memory.Scope), &mem.Scope)
 	if err != nil {

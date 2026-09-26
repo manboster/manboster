@@ -17,7 +17,7 @@ type Session struct {
 	UpdatedAt        time.Time
 }
 
-func MapSess(session Session) types.Session {
+func (session Session) Map() types.Session {
 	jsonify, _ := json.Marshal(session.ActivatedSouls)
 	return types.Session{
 		ID:               session.ID,
@@ -30,7 +30,7 @@ func MapSess(session Session) types.Session {
 	}
 }
 
-func MapSession(session types.Session) Session {
+func SessionFrom(session types.Session) Session {
 	var activatedSouls []string
 	_ = json.Unmarshal([]byte(session.ActivatedSouls), &activatedSouls)
 

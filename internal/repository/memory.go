@@ -31,7 +31,7 @@ func NewMemoryRepo(db *gorm.DB) *MemoryRepo {
 }
 
 func (repo *MemoryRepo) CreateMemory(ctx context.Context, m types.Memory) error {
-	dbMemory := types.MapMem(m)
+	dbMemory := m.Map()
 	return repo.db.WithContext(ctx).Create(&dbMemory).Error
 }
 
@@ -41,7 +41,7 @@ func (repo *MemoryRepo) GetMemory(ctx context.Context, key string) (types.Memory
 	if err != nil {
 		return types.Memory{}, err
 	}
-	return types.MapMemory(m), nil
+	return types.MemoryFrom(m), nil
 }
 
 func (repo *MemoryRepo) EditMemoryScope(ctx context.Context, key string, scope []string) error {

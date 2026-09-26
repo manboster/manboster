@@ -29,7 +29,7 @@ func NewCronRepo(db *gorm.DB) CronRepository {
 }
 
 func (repo *CronRepo) CreateCronjob(ctx context.Context, cj types.Cron) error {
-	cronjobDatabaseType := types.MapCr(cj)
+	cronjobDatabaseType := cj.Map()
 	return repo.db.WithContext(ctx).Create(&cronjobDatabaseType).Error
 }
 
@@ -41,7 +41,7 @@ func (repo *CronRepo) GetCronjobByChatID(ctx context.Context, chat string, provi
 		return nil, resp.Error
 	}
 	for _, cronjob := range cronjobDB {
-		cj = append(cj, types.MapCron(cronjob))
+		cj = append(cj, types.CronFrom(cronjob))
 	}
 	return cj, nil
 }
@@ -52,7 +52,7 @@ func (repo *CronRepo) GetCronjobByName(ctx context.Context, name string) (types.
 	if resp.Error != nil {
 		return types.Cron{}, resp.Error
 	}
-	return types.MapCron(cronDatabase), nil
+	return types.CronFrom(cronDatabase), nil
 }
 
 func (repo *CronRepo) GetAllCronjob(ctx context.Context) ([]types.Cron, error) {
@@ -63,7 +63,7 @@ func (repo *CronRepo) GetAllCronjob(ctx context.Context) ([]types.Cron, error) {
 		return nil, resp.Error
 	}
 	for _, cron := range cronDatabase {
-		cj = append(cj, types.MapCron(cron))
+		cj = append(cj, types.CronFrom(cron))
 	}
 	return cj, nil
 }

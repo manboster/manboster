@@ -23,7 +23,7 @@ type EventDataRepo struct {
 
 // CreateEventData creates chats data
 func (repo *EventDataRepo) CreateEventData(ctx context.Context, chatData types.EventData) error {
-	dbEventDataType := types.MapCD(chatData)
+	dbEventDataType := chatData.Map()
 	return repo.db.WithContext(ctx).Create(&dbEventDataType).Error
 }
 
@@ -40,7 +40,7 @@ func (repo *EventDataRepo) GetEventData(ctx context.Context, sessionId string) (
 
 	// iterate to build a raw chat data array
 	for _, dbEventDataVal := range dbEventData {
-		chatData = append(chatData, types.MapEventData(dbEventDataVal))
+		chatData = append(chatData, types.EventDataFrom(dbEventDataVal))
 	}
 	return chatData, nil
 }

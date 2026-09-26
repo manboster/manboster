@@ -16,6 +16,7 @@ type EventData struct {
 	Provider         string
 	PromptTokens     int
 	CompletionTokens int
+	CachedTokens     int
 	TotalTokens      int
 	MessagePayload   string // json encoded
 	InputCost        float64
@@ -26,7 +27,7 @@ type EventData struct {
 	UpdatedAt        time.Time
 }
 
-func MapCD(eventData EventData) types.EventData {
+func (eventData EventData) Map() types.EventData {
 	return types.EventData{
 		ID:               eventData.ID,
 		EventID:          eventData.EventID,
@@ -40,13 +41,14 @@ func MapCD(eventData EventData) types.EventData {
 		MessagePayload:   eventData.MessagePayload,
 		InputCost:        eventData.InputCost,
 		OutputCost:       eventData.OutputCost,
+		CachedCost:       eventData.CachedCost,
 		TotalCost:        eventData.TotalCost,
 		CreatedAt:        eventData.CreatedAt,
 		UpdatedAt:        eventData.UpdatedAt,
 	}
 }
 
-func MapEventData(eventData types.EventData) EventData {
+func EventDataFrom(eventData types.EventData) EventData {
 	return EventData{
 		ID:               eventData.ID,
 		EventID:          eventData.EventID,
@@ -60,6 +62,7 @@ func MapEventData(eventData types.EventData) EventData {
 		MessagePayload:   eventData.MessagePayload,
 		InputCost:        eventData.InputCost,
 		OutputCost:       eventData.OutputCost,
+		CachedCost:       eventData.CachedCost,
 		TotalCost:        eventData.TotalCost,
 		CreatedAt:        eventData.CreatedAt,
 		UpdatedAt:        eventData.UpdatedAt,

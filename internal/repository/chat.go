@@ -23,7 +23,7 @@ type ChatRepo struct {
 
 // CreateChat creates a new chat information
 func (repo *ChatRepo) CreateChat(ctx context.Context, chat types.Chat) error {
-	dbChat := types.MapC(chat)
+	dbChat := chat.Map()
 	return repo.db.WithContext(ctx).Create(&dbChat).Error
 }
 
@@ -34,7 +34,7 @@ func (repo *ChatRepo) GetChat(ctx context.Context, chatId string, provider strin
 	if err != nil {
 		return types.Chat{}, err
 	}
-	return types.MapChat(dbChatInfo), nil
+	return types.ChatFrom(dbChatInfo), nil
 }
 
 // GetAllChats gets all chat's information
@@ -47,7 +47,7 @@ func (repo *ChatRepo) GetAllChats(ctx context.Context) ([]types.Chat, error) {
 
 	var chats []types.Chat
 	for _, dbChat := range dbChatInfo {
-		chats = append(chats, types.MapChat(dbChat))
+		chats = append(chats, types.ChatFrom(dbChat))
 	}
 	return chats, nil
 }

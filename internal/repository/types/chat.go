@@ -16,7 +16,7 @@ type Chat struct {
 	UpdatedAt      time.Time
 }
 
-func MapC(chat Chat) types.Chat {
+func (chat Chat) Map() types.Chat {
 	return types.Chat{
 		ID:             chat.ID,
 		ChatID:         chat.ChatID,
@@ -28,7 +28,7 @@ func MapC(chat Chat) types.Chat {
 	}
 }
 
-func MapChat(chat types.Chat) Chat {
+func ChatFrom(chat types.Chat) Chat {
 	return Chat{
 		ID:             chat.ID,
 		ChatID:         chat.ChatID,

@@ -23,7 +23,7 @@ type SessionRepo struct {
 
 // CreateSession creates session for a chat.
 func (repo *SessionRepo) CreateSession(ctx context.Context, session types.Session) error {
-	return repo.db.WithContext(ctx).Create(new(types.MapSess(session))).Error
+	return repo.db.WithContext(ctx).Create(new(session.Map())).Error
 }
 
 // GetSession gets session data
@@ -33,7 +33,7 @@ func (repo *SessionRepo) GetSession(ctx context.Context, sessionId string) (type
 	if err != nil {
 		return types.Session{}, err
 	}
-	return types.MapSession(sessDBType), nil
+	return types.SessionFrom(sessDBType), nil
 }
 
 // GetSessions return first 20 session data
@@ -45,7 +45,7 @@ func (repo *SessionRepo) GetSessions(ctx context.Context) ([]types.Session, erro
 		return nil, resp.Error
 	}
 	for _, session := range dbSessions {
-		s = append(s, types.MapSession(session))
+		s = append(s, types.SessionFrom(session))
 	}
 	return s, nil
 }
@@ -59,7 +59,7 @@ func (repo *SessionRepo) GetAllSessions(ctx context.Context) ([]types.Session, e
 		return nil, resp.Error
 	}
 	for _, session := range dbSessions {
-		s = append(s, types.MapSession(session))
+		s = append(s, types.SessionFrom(session))
 	}
 	return s, nil
 }

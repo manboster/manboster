@@ -13,6 +13,7 @@ type EventData struct {
 
 	PromptTokens     int `gorm:"column:prompt_tokens;default:0"`
 	CompletionTokens int `gorm:"column:completion_tokens;default:0"`
+	CachedTokens     int `gorm:"column:cached_tokens;default:0"`
 	TotalTokens      int `gorm:"column:total_tokens;default:0"`
 
 	InputCost  float64 `gorm:"column:input_cost;default:0"`

@@ -14,7 +14,7 @@ type Cron struct {
 	CreateBy     string `json:"create_by"`
 }
 
-func MapCron(c types.Cron) Cron {
+func CronFrom(c types.Cron) Cron {
 	return Cron{
 		ID:           c.ID,
 		Name:         c.Name,
@@ -28,7 +28,7 @@ func MapCron(c types.Cron) Cron {
 	}
 }
 
-func MapCr(c Cron) types.Cron {
+func (c Cron) Map() types.Cron {
 	return types.Cron{
 		ID:           c.ID,
 		Name:         c.Name,
