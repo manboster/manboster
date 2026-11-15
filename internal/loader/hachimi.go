@@ -7,10 +7,10 @@ import (
 	"github.com/fatih/color"
 	"github.com/manboster/manboster/internal/config"
 	"github.com/manboster/manboster/internal/hachimi"
-	"github.com/manboster/manboster/spec/hachimi"
+	specHachimi "github.com/manboster/manboster/spec/hachimi"
 )
 
-func LoadHachimiProvider(ctx context.Context, conf config.HachimiConfig) (hachimi.Provider, error) {
+func LoadHachimiProvider(ctx context.Context, conf config.HachimiConfig) (specHachimi.Provider, error) {
 	provider, err := hachimi.GetProvider(conf.Provider)
 	if err != nil {
 		color.Yellow(fmt.Sprintf("[Manboster Loader] Could not load Hachimi Provider: %q", err))
@@ -22,14 +22,14 @@ func LoadHachimiProvider(ctx context.Context, conf config.HachimiConfig) (hachim
 	if err != nil {
 		return nil, err
 	}
-	go func(ctx context.Context, p hachimi.Provider) {
+	go func(ctx context.Context, p specHachimi.Provider) {
 		err := p.Start(ctx)
 		if err != nil {
 			color.Yellow(fmt.Sprintf("[Manboster Loader] Error starting Hachimi provider: %v", err))
 		}
 
 		<-ctx.Done()
-		defer func(p hachimi.Provider) {
+		defer func(p specHachimi.Provider) {
 			err := p.Stop()
 			if err != nil {
 				color.Yellow(fmt.Sprintf("[Manboster Loader] Error stopping Hachimi provider: %v", err))

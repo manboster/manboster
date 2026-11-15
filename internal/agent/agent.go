@@ -13,3 +13,23 @@ type Agent struct {
 	Father   *Agent       `json:"-"`        // If it's nil, it's the root agent of Manboster Session
 	Children []*Agent     `json:"-"`        // The Agent's children
 }
+
+// Store stores Agent to DTO(Data Transfer Object)
+func (a Agent) Store() Store {
+	father := ""
+	if a.Father != nil {
+		father = a.Father.ID
+	}
+	var children []string
+	if a.Children != nil && len(a.Children) > 0 {
+		for _, child := range a.Children {
+			children = append(children, child.ID)
+		}
+	}
+	return Store{
+		ID:       a.ID,
+		Data:     a,
+		Father:   father,
+		Children: children,
+	}
+}
