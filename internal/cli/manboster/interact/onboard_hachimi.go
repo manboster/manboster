@@ -11,7 +11,7 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
-	"github.com/manboster/manboster/spec/hachimi"
+	specHachimi "github.com/manboster/manboster/spec/hachimi"
 )
 
 // runOnboardHachimiConfigs runs hachimi Config
@@ -94,12 +94,12 @@ func runOnboardHachimiConfigs(p cli.Provider) (config.HachimiConfigs, error) {
 	}
 }
 
-func runOnboardHachimiConfig(p cli.Provider, hachimiProviders []hachimi.Provider) (config.HachimiConfig, error) {
+func runOnboardHachimiConfig(p cli.Provider, hachimiProviders []specHachimi.Provider) (config.HachimiConfig, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	conf := config.HachimiConfig{}
-	options := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
+	options := util.BuildOptionsForConfig[specHachimi.Provider](hachimiProviders, nil)
 	hachimiProviderOption, err := p.Select(i18n.T(keys.OnboardHachimiSelectProvider), "", options, "", func(option cli.Option) error {
 		for _, provider := range hachimiProviders {
 			if provider.Name() == option.Value {

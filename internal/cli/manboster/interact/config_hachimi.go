@@ -11,7 +11,7 @@ import (
 	"github.com/manboster/manboster/internal/i18n/keys"
 	"github.com/manboster/manboster/internal/util"
 	"github.com/manboster/manboster/spec/cli"
-	"github.com/manboster/manboster/spec/hachimi"
+	specHachimi "github.com/manboster/manboster/spec/hachimi"
 )
 
 type hachimiConfigAction string
@@ -49,7 +49,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 	var option cli.Option
 	for {
 		// reload on every iteration so changes are reflected
-		var hachimiProviders []hachimi.Provider
+		var hachimiProviders []specHachimi.Provider
 		for _, c := range cfg.Hachimi.Hachimi {
 			provider, err := hachimi.GetProvider(c.Provider)
 			if err != nil {
@@ -69,7 +69,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 		}
 
 		// build options, mark default provider
-		rawOptions := util.BuildOptionsForConfig[hachimi.Provider](hachimiProviders, nil)
+		rawOptions := util.BuildOptionsForConfig[specHachimi.Provider](hachimiProviders, nil)
 		var options []cli.Option
 		for _, o := range rawOptions {
 			if o.Value == cfg.Hachimi.Provider {
@@ -114,7 +114,7 @@ func runHachimiConfigs(p cli.Provider, cfg config.Config) (config.HachimiConfigs
 		}
 
 		var selectedConfig config.HachimiConfig
-		var selectedProvider hachimi.Provider
+		var selectedProvider specHachimi.Provider
 		selectedIndex := -1
 		for i, c := range cfg.Hachimi.Hachimi {
 			if c.Provider == option.Value {
